@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{97C21DF3-B55F-4098-BB8F-29F1C57A61F5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ChangeDresser</RootNamespace>
+    <AssemblyName>ChangeDresser</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Assemblies\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\Assemblies\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\RimWorldWin_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\RimWorldWin_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Building_Dresser.cs" />
+    <Compile Include="DresserJobDriver\JobDriver_ChangeBodyType.cs" />
+    <Compile Include="DresserJobDriver\JobDriver_ChangeGender.cs" />
+    <Compile Include="DresserJobDriver\JobDriver_ChangeHeadType.cs" />
+    <Compile Include="DresserJobDriver\JobDriver_ChangeSkinColor.cs" />
+    <Compile Include="DresserJobDriver\JobDriver_ChangeHairStyle.cs" />
+    <Compile Include="UI\DresserUI.cs" />
+    <Compile Include="DresserJobDriver\JobDriver_ChangeHairColor.cs" />
+    <Compile Include="DresserJobDriver\JobDriver_ChangeApparelColor.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\DTO\DresserDTO.cs" />
+    <Compile Include="UI\DTO\SelectionWidgetDTOs\ApparelColorSelectionDTO.cs" />
+    <Compile Include="UI\DTO\SelectionWidgetDTOs\ApparelSelectionsContainer.cs" />
+    <Compile Include="UI\DTO\SelectionWidgetDTOs\BodyTypeSelectionDTO.cs" />
+    <Compile Include="UI\DTO\SelectionWidgetDTOs\HairColorSelectionDTO.cs" />
+    <Compile Include="UI\DTO\SelectionWidgetDTOs\HairStyleSelectionDTO.cs" />
+    <Compile Include="UI\DTO\SelectionWidgetDTOs\EditorTypeSelectionDTO.cs" />
+    <Compile Include="UI\DTO\SelectionWidgetDTOs\GenderSelectionDTO.cs" />
+    <Compile Include="UI\DTO\SelectionWidgetDTOs\HeadTypeSelectionDTO.cs" />
+    <Compile Include="UI\DTO\SelectionWidgetDTOs\SliderWidgetDTO.cs" />
+    <Compile Include="UI\Enums\CurrentEditorEnum.cs" />
+    <Compile Include="UI\DTO\SelectionWidgetDTOs\ASelectionWidgetDTO.cs" />
+    <Compile Include="UI\DTO\SelectionWidgetDTOs\SelectionColorWidgetDTO.cs" />
+    <Compile Include="UI\Util\WidgetUtil.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

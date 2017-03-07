@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<JobDefs>
+  <JobDef>
+    <defName>ChangeApparelColor</defName>
+    <driverClass>ChangeDresser.DresserJobDriver.JobDriver_ChangeApparelColor</driverClass>
+    <reportString>Getting changed.</reportString>
+  </JobDef>
+  <JobDef>
+    <defName>ChangeHairColor</defName>
+    <driverClass>ChangeDresser.DresserJobDriver.JobDriver_ChangeHairColor</driverClass>
+    <reportString>Change hair color.</reportString>
+  </JobDef>
+  <JobDef>
+    <defName>ChangeHairStyle</defName>
+    <driverClass>ChangeDresser.DresserJobDriver.JobDriver_ChangeHairStyle</driverClass>
+    <reportString>Change hair style.</reportString>
+  </JobDef>
+  <JobDef>
+    <defName>ChangeSkinColor</defName>
+    <driverClass>ChangeDresser.DresserJobDriver.JobDriver_ChangeSkinColor</driverClass>
+    <reportString>Change skin color.</reportString>
+  </JobDef>
+  <JobDef>
+    <defName>ChangeBodyType</defName>
+    <driverClass>ChangeDresser.DresserJobDriver.JobDriver_ChangeBodyType</driverClass>
+    <reportString>Change body type.</reportString>
+  </JobDef>
+  <JobDef>
+    <defName>ChangeHeadType</defName>
+    <driverClass>ChangeDresser.DresserJobDriver.JobDriver_ChangeHeadType</driverClass>
+    <reportString>Change head type.</reportString>
+  </JobDef>
+  <JobDef>
+    <defName>ChangeGender</defName>
+    <driverClass>ChangeDresser.DresserJobDriver.JobDriver_ChangeGender</driverClass>
+    <reportString>Change gender.</reportString>
+  </JobDef>
+</JobDefs>

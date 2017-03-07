@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ThingDefs>
+
+  <ThingDef ParentName="ArtableFurnitureBase">
+    <defName>ChangeDresser</defName>
+    <label>change dresser</label>
+    <Description>Change the color of apparel.</Description>
+    <ThingClass>ChangeDresser.Building_Dresser</ThingClass>
+    <graphicData>
+      <texPath>Furniture/ColorChangeDresser</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <shaderType>CutoutComplex</shaderType>
+	  <drawSize>(1.5, 1.5)</drawSize>
+    </graphicData>
+    <stuffCategories>
+      <li>Metallic</li>
+      <li>Woody</li>
+      <li>Stony</li>
+    </stuffCategories>
+    <costStuffCount>40</costStuffCount>
+      <CostList>
+         <Steel>40</Steel>
+      </CostList>
+      <AltitudeLayer>Building</AltitudeLayer>
+      <statBases>
+         <WorkToBuild>1000</WorkToBuild>
+         <MaxHitPoints>100</MaxHitPoints>
+         <Flammability>1.0</Flammability>
+		 <Beauty>20</Beauty>
+      </statBases>
+      <Size>(1,1)</Size>
+      <DesignationCategory>Furniture</DesignationCategory>
+      <Passability>Impassable</Passability>
+      <hasInteractionCell>True</hasInteractionCell>
+      <interactionCellOffset>(0,0,1)</interactionCellOffset>
+   </ThingDef>
+</ThingDefs>

@@ -1,0 +1,6 @@
+D:\Steam\steamapps\common\RimWorld\Mods\ClothingColorChange\Source\obj\Release\ClothingColorChange.dll
+D:\Steam\steamapps\common\RimWorld\Mods\ClothingColorChange\Assemblies\ClothingColorChange.dll
+D:\Steam\steamapps\common\RimWorld\Mods\ClothingColorChange\Source\obj\Release\ColorChangeDresser.csprojResolveAssemblyReference.cache
+D:\Steam\steamapps\common\RimWorld\Mods\ColorChangeDresser\Source\obj\Release\ColorChangeDresser.csprojResolveAssemblyReference.cache
+D:\Steam\steamapps\common\RimWorld\Mods\ColorChangeDresser\Assemblies\ChangeDresser.dll
+D:\Steam\steamapps\common\RimWorld\Mods\ColorChangeDresser\Source\obj\Release\ChangeDresser.dll
