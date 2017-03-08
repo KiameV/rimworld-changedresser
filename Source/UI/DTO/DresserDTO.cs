@@ -48,15 +48,6 @@ namespace ChangeDresser.UI.DTO
             this.Pawn = pawn;
             this.CurrentEditorEnum = currentEditorEnum;
 
-            /*this.OriginalClothingColor = new Color[pawn.apparel.WornApparelCount];
-            for (int i = 0; i < pawn.apparel.WornApparelCount; ++i)
-            {
-                this.OriginalClothingColor[i] = pawn.apparel.WornApparel[i].DrawColor;
-            }
-
-            this.OriginalBodyType = pawn.story.bodyType;
-            this.OriginalCrownType = pawn.story.HeadGraphicPath;*/
-
             this.EditorTypeSelectionDto = new EditorTypeSelectionDTO(this.CurrentEditorEnum);
             this.EditorTypeSelectionDto.SelectionChangeListener += delegate (object sender)
             {

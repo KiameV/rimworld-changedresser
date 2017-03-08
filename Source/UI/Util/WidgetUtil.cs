@@ -38,7 +38,6 @@ namespace ChangeDresser.UI.Util
         private static readonly Texture2D previousTexture = ContentFinder<Texture2D>.Get("UI/previous", true);
         private static readonly Texture2D colorPickerTexture = ContentFinder<Texture2D>.Get("UI/colorpicker", true);
         private static readonly Texture2D editIconTexture = ContentFinder<Texture2D>.Get("UI/edit", true);
-        private static readonly Texture2D colorPreviewTexture = new Texture2D(200, 20);
 
         public static readonly Vector2 NavButtonSize = new Vector2(30f, 30f);
         public static readonly Vector2 ButtonSize = new Vector2(150f, 30f);
@@ -68,10 +67,7 @@ namespace ChangeDresser.UI.Util
             Text.Font = GameFont.Medium;
 
             Rect colorPickerRect = new Rect(0, 25f, width, colorPickerTexture.height * width / colorPickerTexture.width);
-            GUI.BeginGroup(new Rect(left, top, width, colorPickerRect.height + 50f));
-
-            GUI.color = dto.SelectedColor;
-            GUI.Box(new Rect((width - colorPreviewTexture.width) * 0.5f, 0, colorPreviewTexture.width, 20f), colorPreviewTexture);
+            GUI.BeginGroup(new Rect(left, top, width, colorPickerRect.height + 30f));
 
             GUI.color = Color.white;
             if (GUI.RepeatButton(colorPickerRect, colorPickerTexture, GUI.skin.label))
@@ -166,8 +162,9 @@ namespace ChangeDresser.UI.Util
             }
             else
             {
+                const float cellHeight = 40f;
                 Rect apparelListRect = new Rect(left, top, width, 150f);
-                Rect apparealScrollRect = new Rect(0f, 0f, width - 16f, 160f + NavButtonSize.y + 10f);
+                Rect apparealScrollRect = new Rect(0f, 0f, width - 16f, apparelSelectionsContainer.Count * cellHeight + NavButtonSize.y);
 
                 GUI.BeginGroup(apparelListRect);
                 scrollPos = GUI.BeginScrollView(new Rect(GenUI.AtZero(apparelListRect)), scrollPos, apparealScrollRect);
@@ -180,7 +177,6 @@ namespace ChangeDresser.UI.Util
                 }
                 Text.Font = GameFont.Medium;
 
-                const float cellHeight = 40f;
                 for (int i = 0; i < apparelSelectionsContainer.Count; ++i)
                 {
                     Apparel apparel = apparelSelectionsContainer[i].Apparel;
