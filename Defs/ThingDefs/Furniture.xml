@@ -10,7 +10,7 @@
       <texPath>Furniture/ColorChangeDresser</texPath>
       <graphicClass>Graphic_Multi</graphicClass>
       <shaderType>CutoutComplex</shaderType>
-	  <drawSize>(1.5, 1.5)</drawSize>
+	  <drawSize>(1, 1)</drawSize>
     </graphicData>
     <stuffCategories>
       <li>Metallic</li>
@@ -28,6 +28,7 @@
          <Flammability>1.0</Flammability>
 		 <Beauty>20</Beauty>
       </statBases>
+	  <castEdgeShadows>true</castEdgeShadows>
       <Size>(1,1)</Size>
       <DesignationCategory>Furniture</DesignationCategory>
       <Passability>Impassable</Passability>
