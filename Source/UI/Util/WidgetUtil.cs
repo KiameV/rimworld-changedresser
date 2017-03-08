@@ -67,7 +67,7 @@ namespace ChangeDresser.UI.Util
             Text.Font = GameFont.Medium;
 
             Rect colorPickerRect = new Rect(0, 25f, width, colorPickerTexture.height * width / colorPickerTexture.width);
-            GUI.BeginGroup(new Rect(left, top, width, colorPickerRect.height + 30f));
+            GUI.BeginGroup(new Rect(left, top, width, colorPickerRect.height + 60f));
 
             GUI.color = Color.white;
             if (GUI.RepeatButton(colorPickerRect, colorPickerTexture, GUI.skin.label))
@@ -75,7 +75,7 @@ namespace ChangeDresser.UI.Util
                 dto.SelectedColor = GetColorFromTexture(Event.current.mousePosition, colorPickerRect, colorPickerTexture);
             }
 
-            GUI.BeginGroup(new Rect(0, 30f + colorPickerRect.height, width, 20f));
+            GUI.BeginGroup(new Rect(0, colorPickerRect.height + 30f, width, 20f));
             GUIStyle centeredStyle = GUI.skin.label;
             centeredStyle.alignment = TextAnchor.MiddleCenter;
             GUI.Label(new Rect(0f, 0f, 10f, 20f), "R", centeredStyle);
