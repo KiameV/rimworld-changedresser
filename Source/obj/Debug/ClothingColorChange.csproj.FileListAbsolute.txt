@@ -1,4 +1,0 @@
-D:\Steam\steamapps\common\RimWorld\Mods\ClothingColorChange\Assemblies\ClothingColorChange.dll
-D:\Steam\steamapps\common\RimWorld\Mods\ClothingColorChange\Assemblies\ClothingColorChange.pdb
-D:\Steam\steamapps\common\RimWorld\Mods\ClothingColorChange\Source\obj\Debug\ClothingColorChange.dll
-D:\Steam\steamapps\common\RimWorld\Mods\ClothingColorChange\Source\obj\Debug\ClothingColorChange.pdb
