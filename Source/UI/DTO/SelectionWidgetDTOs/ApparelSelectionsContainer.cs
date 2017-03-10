@@ -23,14 +23,25 @@
  */
 using RimWorld;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
 {
     class ApparelSelectionsContainer
     {
         public List<ApparelColorSelectionDTO> ApparelColorSelections { get; private set; }
-        public ApparelColorSelectionDTO DyeAllSelectionDto { get; private set; }
-        public ApparelColorSelectionDTO SelectedApparel { get; set; }
+        public List<SelectionColorWidgetDTO> SelectedApparel { get; private set; }
+        public bool CopyColorSelected { get; private set; }
+        private Color copyColor = Color.white;
+        public Color CopyColor
+        {
+            get { return this.copyColor; }
+            set
+            {
+                this.copyColor = value;
+                this.CopyColorSelected = true;
+            }
+        }
 
         public ApparelSelectionsContainer(List<Apparel> apparel)
         {
@@ -40,9 +51,8 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
                 this.ApparelColorSelections.Add(new ApparelColorSelectionDTO(a));
             }
 
-            this.DyeAllSelectionDto = new ApparelColorSelectionDTO(null);
-
-            this.SelectedApparel = null;
+            this.SelectedApparel = new List<SelectionColorWidgetDTO>();
+            this.CopyColorSelected = false;
         }
 
         public int Count { get { return this.ApparelColorSelections.Count; } }
@@ -58,6 +68,43 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
             {
                 dto.ResetToDefault();
             }
+            this.SelectedApparel.Clear();
+        }
+
+        public void DeselectAll()
+        {
+            this.SelectedApparel.Clear();
+        }
+
+        public void SelectAll()
+        {
+            this.DeselectAll();
+            foreach (ApparelColorSelectionDTO dto in this.ApparelColorSelections)
+            {
+                this.SelectedApparel.Add(dto);
+            }
+        }
+
+        public void Select(ApparelColorSelectionDTO dto, bool isShiftPressed)
+        {
+            if (!isShiftPressed)
+            {
+                this.DeselectAll();
+                this.SelectedApparel.Add(dto);
+            }
+            else
+            {
+                bool removed = this.SelectedApparel.Remove(dto);
+                if (!removed)
+                {
+                    this.SelectedApparel.Add(dto);
+                }
+            }
+        }
+
+        public bool IsSelected(ApparelColorSelectionDTO dto)
+        {
+            return this.SelectedApparel.Contains(dto);
         }
     }
 }

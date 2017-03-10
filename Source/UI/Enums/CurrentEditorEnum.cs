@@ -25,8 +25,9 @@ namespace ChangeDresser.UI.Enums
 {
     enum CurrentEditorEnum
     {
-        HairStyle,
-        HairColor,
+        Hair,
+        //HairStyle,
+        //HairColor,
         SkinColor,
         ApparelColor,
         BodyType,

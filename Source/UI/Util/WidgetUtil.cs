@@ -24,8 +24,10 @@
 using ChangeDresser.UI.DTO;
 using ChangeDresser.UI.DTO.SelectionWidgetDTOs;
 using RimWorld;
+using System.Collections.Generic;
 using UnityEngine;
 using Verse;
+using System;
 
 namespace ChangeDresser.UI.Util
 {
@@ -37,7 +39,9 @@ namespace ChangeDresser.UI.Util
         private static readonly Texture2D nextTexture = ContentFinder<Texture2D>.Get("UI/next", true);
         private static readonly Texture2D previousTexture = ContentFinder<Texture2D>.Get("UI/previous", true);
         private static readonly Texture2D colorPickerTexture = ContentFinder<Texture2D>.Get("UI/colorpicker", true);
-        private static readonly Texture2D editIconTexture = ContentFinder<Texture2D>.Get("UI/edit", true);
+        //private static readonly Texture2D editIconTexture = ContentFinder<Texture2D>.Get("UI/edit", true);
+        private static readonly Texture2D copyIconTexture = ContentFinder<Texture2D>.Get("UI/copy", true);
+        private static readonly Texture2D pasteIconTexture = ContentFinder<Texture2D>.Get("UI/paste", true);
 
         public static readonly Vector2 NavButtonSize = new Vector2(30f, 30f);
         public static readonly Vector2 ButtonSize = new Vector2(150f, 30f);
@@ -64,40 +68,58 @@ namespace ChangeDresser.UI.Util
 
         public static void AddColorSelectorWidget(float left, float top, float width, SelectionColorWidgetDTO dto)
         {
-            Text.Font = GameFont.Medium;
-
-            Rect colorPickerRect = new Rect(0, 25f, width, colorPickerTexture.height * width / colorPickerTexture.width);
-            GUI.BeginGroup(new Rect(left, top, width, colorPickerRect.height + 60f));
-
-            GUI.color = Color.white;
-            if (GUI.RepeatButton(colorPickerRect, colorPickerTexture, GUI.skin.label))
-            {
-                dto.SelectedColor = GetColorFromTexture(Event.current.mousePosition, colorPickerRect, colorPickerTexture);
-            }
-
-            GUI.BeginGroup(new Rect(0, colorPickerRect.height + 30f, width, 20f));
-            GUIStyle centeredStyle = GUI.skin.label;
-            centeredStyle.alignment = TextAnchor.MiddleCenter;
-            GUI.Label(new Rect(0f, 0f, 10f, 20f), "R", centeredStyle);
-            string rText = GUI.TextField(new Rect(12f, 0f, 30f, 20f), ColorConvert(dto.SelectedColor.r), 3);
-
-            GUI.Label(new Rect(52f, 0f, 10f, 20f), "G", centeredStyle);
-            string gText = GUI.TextField(new Rect(64f, 0f, 30f, 20f), ColorConvert(dto.SelectedColor.g), 3);
-
-            GUI.Label(new Rect(104f, 0f, 10f, 20f), "B", centeredStyle);
-            string bText = GUI.TextField(new Rect(116f, 0f, 30f, 20f), ColorConvert(dto.SelectedColor.b), 3);
-            GUI.EndGroup();
-            GUI.EndGroup();
-
-            Color c = dto.SelectedColor;
-            c.r = ColorConvert(rText);
-            c.g = ColorConvert(gText);
-            c.b = ColorConvert(bText);
-            dto.SelectedColor = c;
-
-            Text.Anchor = TextAnchor.UpperLeft;
+            List<SelectionColorWidgetDTO> l = new List<SelectionColorWidgetDTO>(1);
+            l.Add(dto);
+            AddColorSelectorWidget(left, top, width, l);
         }
-        
+
+        public static void AddColorSelectorWidget(float left, float top, float width, List<SelectionColorWidgetDTO> dtos)
+        {
+            if (dtos.Count > 0)
+            {
+                Text.Font = GameFont.Medium;
+
+                Rect colorPickerRect = new Rect(0, 25f, width, colorPickerTexture.height * width / colorPickerTexture.width);
+                GUI.BeginGroup(new Rect(left, top, width, colorPickerRect.height + 60f));
+
+                GUI.color = Color.white;
+                if (GUI.RepeatButton(colorPickerRect, colorPickerTexture, GUI.skin.label))
+                {
+                    SetColorToSelected(dtos, GetColorFromTexture(Event.current.mousePosition, colorPickerRect, colorPickerTexture));
+                }
+
+                GUI.BeginGroup(new Rect(0, colorPickerRect.height + 30f, width, 20f));
+                GUIStyle centeredStyle = GUI.skin.label;
+                centeredStyle.alignment = TextAnchor.MiddleCenter;
+                GUI.Label(new Rect(0f, 0f, 10f, 20f), "R", centeredStyle);
+                string rText = GUI.TextField(new Rect(12f, 0f, 30f, 20f), ColorConvert(dtos[0].SelectedColor.r), 3);
+
+                GUI.Label(new Rect(52f, 0f, 10f, 20f), "G", centeredStyle);
+                string gText = GUI.TextField(new Rect(64f, 0f, 30f, 20f), ColorConvert(dtos[0].SelectedColor.g), 3);
+
+                GUI.Label(new Rect(104f, 0f, 10f, 20f), "B", centeredStyle);
+                string bText = GUI.TextField(new Rect(116f, 0f, 30f, 20f), ColorConvert(dtos[0].SelectedColor.b), 3);
+                GUI.EndGroup();
+                GUI.EndGroup();
+
+                Color c = dtos[0].SelectedColor;
+                c.r = ColorConvert(rText);
+                c.g = ColorConvert(gText);
+                c.b = ColorConvert(bText);
+                SetColorToSelected(dtos, c);
+
+                Text.Anchor = TextAnchor.UpperLeft;
+            }
+        }
+
+        private static void SetColorToSelected(List<SelectionColorWidgetDTO> dtos, Color color)
+        {
+            foreach(SelectionColorWidgetDTO dto in dtos)
+            {
+                dto.SelectedColor = color;
+            }
+        }
+
         public static void AddSliderWidget(float left, float top, float width, SliderWidgetDTO sliderWidgetDto)
         {
             Text.Anchor = TextAnchor.MiddleCenter;
@@ -124,28 +146,26 @@ namespace ChangeDresser.UI.Util
 
             Rect rect = new Rect(left + 50, top, width - 50, NavButtonSize.y);
             GUI.BeginGroup(rect);
+            GUI.color = Color.white;
+            Text.Font = GameFont.Medium;
+            Rect previousButtonRect = new Rect(0, 0, NavButtonSize.x, NavButtonSize.y);
+            if (GUI.Button(previousButtonRect, previousTexture))
             {
-                GUI.color = Color.white;
-                Text.Font = GameFont.Medium;
-                Rect previousButtonRect = new Rect(0, 0, NavButtonSize.x, NavButtonSize.y);
-                if (GUI.Button(previousButtonRect, previousTexture))
-                {
-                    selectionWidgetDto.DecreaseIndex();
-                }
+                selectionWidgetDto.DecreaseIndex();
+            }
 
-                Rect labelRect = new Rect(NavButtonSize.x + buffer, 0, rect.width - (2 * NavButtonSize.x) - (2 * buffer), NavButtonSize.y);
-                var centeredStyle = GUI.skin.label;
-                centeredStyle.alignment = TextAnchor.MiddleCenter;
-                GUI.Label(labelRect, selectionWidgetDto.SelectedItemLabel, centeredStyle);
+            Rect labelRect = new Rect(NavButtonSize.x + buffer, 0, rect.width - (2 * NavButtonSize.x) - (2 * buffer), NavButtonSize.y);
+            var centeredStyle = GUI.skin.label;
+            centeredStyle.alignment = TextAnchor.MiddleCenter;
+            GUI.Label(labelRect, selectionWidgetDto.SelectedItemLabel, centeredStyle);
 
-                GUI.color = Color.grey;
-                Widgets.DrawBox(labelRect, 1);
+            GUI.color = Color.grey;
+            Widgets.DrawBox(labelRect, 1);
 
-                Rect nextButtonRect = new Rect(rect.width - NavButtonSize.x, 0, NavButtonSize.x, NavButtonSize.y);
-                if (GUI.Button(nextButtonRect, nextTexture))
-                {
-                    selectionWidgetDto.IncreaseIndex();
-                }
+            Rect nextButtonRect = new Rect(rect.width - NavButtonSize.x, 0, NavButtonSize.x, NavButtonSize.y);
+            if (GUI.Button(nextButtonRect, nextTexture))
+            {
+                selectionWidgetDto.IncreaseIndex();
             }
             GUI.EndGroup();
             Text.Anchor = TextAnchor.UpperLeft;
@@ -164,36 +184,60 @@ namespace ChangeDresser.UI.Util
             {
                 const float cellHeight = 40f;
                 Rect apparelListRect = new Rect(left, top, width, 150f);
-                Rect apparealScrollRect = new Rect(0f, 0f, width - 16f, apparelSelectionsContainer.Count * cellHeight + NavButtonSize.y);
+                Rect apparelScrollRect = new Rect(0f, 0f, width - 16f, apparelSelectionsContainer.Count * cellHeight + NavButtonSize.y);
 
                 GUI.BeginGroup(apparelListRect);
-                scrollPos = GUI.BeginScrollView(new Rect(GenUI.AtZero(apparelListRect)), scrollPos, apparealScrollRect);
+                scrollPos = GUI.BeginScrollView(new Rect(GenUI.AtZero(apparelListRect)), scrollPos, apparelScrollRect);
 
                 GUI.color = Color.white;
                 Text.Font = GameFont.Small;
                 if (Widgets.ButtonText(new Rect(40, 0, width - 56, NavButtonSize.y), "Dye All"))
                 {
-                    apparelSelectionsContainer.SelectedApparel = apparelSelectionsContainer.DyeAllSelectionDto;
+                    apparelSelectionsContainer.SelectAll();
                 }
                 Text.Font = GameFont.Medium;
 
                 for (int i = 0; i < apparelSelectionsContainer.Count; ++i)
                 {
-                    Apparel apparel = apparelSelectionsContainer[i].Apparel;
+                    ApparelColorSelectionDTO dto = apparelSelectionsContainer[i];
+                    Apparel apparel = dto.Apparel;
                     GUI.BeginGroup(new Rect(0, NavButtonSize.y + 5f + i * cellHeight, apparelListRect.width, cellHeight));
+
                     Widgets.ThingIcon(new Rect(0f, 0f, 40f, cellHeight), apparel);
                     Text.Font = GameFont.Small;
-                    Widgets.Label(new Rect(45f, 0f, apparealScrollRect.width - 90f, cellHeight), apparel.Label);
-                    if (Widgets.ButtonImage(new Rect(apparealScrollRect.width - 40f, 0 + 4f, 32f, 32f), editIconTexture))
+                    Text.Anchor = TextAnchor.MiddleCenter;
+                    Rect textRect = new Rect(45f, 0f, apparelScrollRect.width - 90f, cellHeight);
+                    if (apparelSelectionsContainer.IsSelected(dto))
                     {
-                        apparelSelectionsContainer.SelectedApparel = apparelSelectionsContainer[i];
+                        GUI.color = Color.white;
+                    }
+                    else
+                    {
+                        GUI.color = Color.gray;
+                    }
+                    Widgets.Label(textRect, new GUIContent(apparel.Label, "Hold Shift and click another\nitem to select multiple."));
+                    if (Widgets.ButtonInvisible(textRect, false))
+                    {
+                        apparelSelectionsContainer.Select(dto, Event.current.shift);
+                    }
+                    GUI.color = Color.white;
+                    if (Widgets.ButtonImage(new Rect(apparelScrollRect.width - 40f, 0, 32f, 16f), copyIconTexture))
+                    {
+                        apparelSelectionsContainer.CopyColor = apparel.DrawColor;
+                    }
+                    if (apparelSelectionsContainer.CopyColorSelected)
+                    {
+                        if (Widgets.ButtonImage(new Rect(apparelScrollRect.width - 40f, 16f, 32f, 16f), pasteIconTexture))
+                        {
+                            dto.SelectedColor = apparelSelectionsContainer.CopyColor;
+                        }
                     }
                     GUI.EndGroup();
                 }
                 GUI.EndScrollView();
                 GUI.EndGroup();
 
-                if (apparelSelectionsContainer.SelectedApparel != null)
+                if (apparelSelectionsContainer.SelectedApparel.Count > 0)
                 {
                     AddColorSelectorWidget(left, top + apparelListRect.height + 10f, width, apparelSelectionsContainer.SelectedApparel);
                 }

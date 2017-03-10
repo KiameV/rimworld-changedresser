@@ -69,17 +69,8 @@ namespace ChangeDresser.UI.DTO
             this.HairColorSelectionDto = new HairColorSelectionDTO(this.Pawn.story.hairColor);
 
             this.ApparelSelectionsContainer = new ApparelSelectionsContainer(this.Pawn.apparel.WornApparel);
-            this.ApparelSelectionsContainer.DyeAllSelectionDto.UpdatePawnListener += this.DyeAllUpdatePawnListener;
 
             this.SkinColorSliderDto = new SliderWidgetDTO(this.Pawn.story.melanin, 0, 1);
-        }
-
-        private void DyeAllUpdatePawnListener(object sender, object value)
-        {
-            foreach (ApparelColorSelectionDTO dto in this.ApparelSelectionsContainer.ApparelColorSelections)
-            {
-                dto.SelectedColor = (Color)value;
-            }
         }
 
         public void SetUpdatePawnListeners(UpdatePawnListener updatePawn)

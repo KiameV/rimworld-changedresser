@@ -34,5 +34,20 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
         {
             this.Apparel = apparel;
         }
+
+        public override bool Equals(object o)
+        {
+            if (o != null &&
+                o is ApparelColorSelectionDTO)
+            {
+                return this.Apparel.Label.Equals(((ApparelColorSelectionDTO)o).Apparel.Label);
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Apparel.Label.GetHashCode();
+        }
     }
 }

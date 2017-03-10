@@ -16,7 +16,7 @@ namespace ChangeDresser.DresserJobDriver
             {
                 initAction = delegate
                 {
-                    Find.WindowStack.Add(new DresserUI(new DresserDTO(this.GetActor(), CurrentEditorEnum.HairColor)));
+                    Find.WindowStack.Add(new DresserUI(new DresserDTO(this.GetActor(), CurrentEditorEnum.Hair)));
                 }
             };
             yield break;

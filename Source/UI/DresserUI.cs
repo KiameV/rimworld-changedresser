@@ -69,7 +69,7 @@ namespace ChangeDresser.UI
             }
 
             Text.Font = GameFont.Medium;
-            // Top Left 0 - 50
+
             Widgets.Label(new Rect(0f, 0f, this.InitialSize.y / 2f + 45f, 50f), "Dresser");
 
             float portraitBuffer = 30f;
@@ -90,11 +90,9 @@ namespace ChangeDresser.UI
                 case CurrentEditorEnum.BodyType:
                     WidgetUtil.AddSelectorWidget(editorLeft, editorTop, editorWidth, this.dresserDto.BodyTypeSelectionDto);
                     break;
-                case CurrentEditorEnum.HairColor:
-                    WidgetUtil.AddColorSelectorWidget(editorLeft, editorTop, editorWidth, this.dresserDto.HairColorSelectionDto);
-                    break;
-                case CurrentEditorEnum.HairStyle:
+                case CurrentEditorEnum.Hair:
                     WidgetUtil.AddSelectorWidget(editorLeft, editorTop, editorWidth, this.dresserDto.HairStyleSelectionDto);
+                    WidgetUtil.AddColorSelectorWidget(editorLeft, editorTop + WidgetUtil.NavButtonSize.y + 10f, editorWidth, this.dresserDto.HairColorSelectionDto);
                     break;
                 case CurrentEditorEnum.HeadType:
                     WidgetUtil.AddSelectorWidget(editorLeft, editorTop, editorWidth, this.dresserDto.HeadTypeSelectionDto);
@@ -106,6 +104,12 @@ namespace ChangeDresser.UI
                     WidgetUtil.AddSelectorWidget(editorLeft, editorTop, editorWidth, this.dresserDto.GenderSelectionDto);
                     break;
             }
+            
+            Text.Anchor = TextAnchor.MiddleCenter;
+            Text.Font = GameFont.Small;
+            GUI.Label(new Rect(0, 75, this.InitialSize.y / 2f, 50f), GUI.tooltip);
+            Text.Font = GameFont.Medium;
+            Text.Anchor = TextAnchor.UpperLeft;
 
             float xWidth = 150;
             float xBuffer = (this.InitialSize.x - xWidth) / 2;
