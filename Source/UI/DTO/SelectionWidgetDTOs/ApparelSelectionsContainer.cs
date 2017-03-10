@@ -32,18 +32,10 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
         public List<ApparelColorSelectionDTO> ApparelColorSelections { get; private set; }
         public List<SelectionColorWidgetDTO> SelectedApparel { get; private set; }
         public bool CopyColorSelected { get; private set; }
+        public ColorPresetsDTO ColorPresetsDTO { get; private set; }
         private Color copyColor = Color.white;
-        public Color CopyColor
-        {
-            get { return this.copyColor; }
-            set
-            {
-                this.copyColor = value;
-                this.CopyColorSelected = true;
-            }
-        }
 
-        public ApparelSelectionsContainer(List<Apparel> apparel)
+        public ApparelSelectionsContainer(List<Apparel> apparel, ColorPresetsDTO presetsDto)
         {
             this.ApparelColorSelections = new List<ApparelColorSelectionDTO>(apparel.Count);
             foreach (Apparel a in apparel)
@@ -52,7 +44,18 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
             }
 
             this.SelectedApparel = new List<SelectionColorWidgetDTO>();
+            this.ColorPresetsDTO = presetsDto;
             this.CopyColorSelected = false;
+        }
+
+        public Color CopyColor
+        {
+            get { return this.copyColor; }
+            set
+            {
+                this.copyColor = value;
+                this.CopyColorSelected = true;
+            }
         }
 
         public int Count { get { return this.ApparelColorSelections.Count; } }
@@ -69,6 +72,7 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
                 dto.ResetToDefault();
             }
             this.SelectedApparel.Clear();
+            this.ColorPresetsDTO.Deselect();
         }
 
         public void DeselectAll()
@@ -79,6 +83,7 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
         public void SelectAll()
         {
             this.DeselectAll();
+            this.ColorPresetsDTO.Deselect();
             foreach (ApparelColorSelectionDTO dto in this.ApparelColorSelections)
             {
                 this.SelectedApparel.Add(dto);
@@ -87,6 +92,7 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
 
         public void Select(ApparelColorSelectionDTO dto, bool isShiftPressed)
         {
+            this.ColorPresetsDTO.Deselect();
             if (!isShiftPressed)
             {
                 this.DeselectAll();

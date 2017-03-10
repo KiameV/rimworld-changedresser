@@ -27,9 +27,17 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
 {
     class HairColorSelectionDTO : SelectionColorWidgetDTO
     {
-        public HairColorSelectionDTO(Color originalColor) : base(originalColor)
+        public ColorPresetsDTO ColorPresetsDTO { get; private set; }
+
+        public HairColorSelectionDTO(Color originalColor, ColorPresetsDTO presetsDto) : base(originalColor)
         {
-            // Empty
+            this.ColorPresetsDTO = presetsDto;
+        }
+
+        public new void ResetToDefault()
+        {
+            base.ResetToDefault();
+            this.ColorPresetsDTO.Deselect();
         }
     }
 }

@@ -29,6 +29,7 @@ using Verse;
 using ChangeDresser.UI.Enums;
 using ChangeDresser.UI.DTO.SelectionWidgetDTOs;
 using System.Reflection;
+using ChangeDresser.Util;
 
 namespace ChangeDresser.UI
 {
@@ -92,7 +93,7 @@ namespace ChangeDresser.UI
                     break;
                 case CurrentEditorEnum.Hair:
                     WidgetUtil.AddSelectorWidget(editorLeft, editorTop, editorWidth, this.dresserDto.HairStyleSelectionDto);
-                    WidgetUtil.AddColorSelectorWidget(editorLeft, editorTop + WidgetUtil.NavButtonSize.y + 10f, editorWidth, this.dresserDto.HairColorSelectionDto);
+                    WidgetUtil.AddColorSelectorWidget(editorLeft, editorTop + WidgetUtil.NavButtonSize.y + 10f, editorWidth, this.dresserDto.HairColorSelectionDto, this.dresserDto.HairColorSelectionDto.ColorPresetsDTO);
                     break;
                 case CurrentEditorEnum.HeadType:
                     WidgetUtil.AddSelectorWidget(editorLeft, editorTop, editorWidth, this.dresserDto.HeadTypeSelectionDto);
@@ -105,7 +106,7 @@ namespace ChangeDresser.UI
                     break;
             }
             
-            Text.Anchor = TextAnchor.MiddleCenter;
+            Text.Anchor = TextAnchor.MiddleLeft;
             Text.Font = GameFont.Small;
             GUI.Label(new Rect(0, 75, this.InitialSize.y / 2f, 50f), GUI.tooltip);
             Text.Font = GameFont.Medium;
@@ -127,8 +128,8 @@ namespace ChangeDresser.UI
                 this.saveChangedOnExit = true;
                 this.Close();
             }
-            Text.Anchor = TextAnchor.UpperLeft;
             GUI.EndGroup();
+            Text.Anchor = TextAnchor.UpperLeft;
         }
 
         private void ResetToDefault()
@@ -140,6 +141,8 @@ namespace ChangeDresser.UI
         public override void PreClose()
         {
             base.PreClose();
+            IOUtil.SaveColorPresets(ColorPresetType.Apparel, this.dresserDto.ApparelSelectionsContainer.ColorPresetsDTO);
+            IOUtil.SaveColorPresets(ColorPresetType.Hair, this.dresserDto.HairColorSelectionDto.ColorPresetsDTO);
             if (!this.saveChangedOnExit)
             {
                 this.ResetToDefault();

@@ -39,7 +39,6 @@ namespace ChangeDresser.UI.Util
         private static readonly Texture2D nextTexture = ContentFinder<Texture2D>.Get("UI/next", true);
         private static readonly Texture2D previousTexture = ContentFinder<Texture2D>.Get("UI/previous", true);
         private static readonly Texture2D colorPickerTexture = ContentFinder<Texture2D>.Get("UI/colorpicker", true);
-        //private static readonly Texture2D editIconTexture = ContentFinder<Texture2D>.Get("UI/edit", true);
         private static readonly Texture2D copyIconTexture = ContentFinder<Texture2D>.Get("UI/copy", true);
         private static readonly Texture2D pasteIconTexture = ContentFinder<Texture2D>.Get("UI/paste", true);
 
@@ -47,6 +46,7 @@ namespace ChangeDresser.UI.Util
         public static readonly Vector2 ButtonSize = new Vector2(150f, 30f);
         public static readonly Vector2 PortraitSize = new Vector2(192f, 192f);
         private static Vector2 scrollPos = new Vector2(0, 0);
+        private static readonly Texture2D ColorPreset = new Texture2D(20, 20);
 
         public static Rect AddPortraitWidget(float left, float top, DresserDTO dresserDto)
         {
@@ -63,60 +63,123 @@ namespace ChangeDresser.UI.Util
 
             GUI.color = Color.white;
             Widgets.DrawBox(rect, 1);
+
+            for (int x = 0; x < ColorPreset.width; ++x)
+                for (int y = 0; y < ColorPreset.height; ++y)
+                    ColorPreset.SetPixel(x, y, Color.white);
+
             return rect;
         }
 
-        public static void AddColorSelectorWidget(float left, float top, float width, SelectionColorWidgetDTO dto)
+        public static void AddColorSelectorWidget(float left, float top, float width, SelectionColorWidgetDTO selectionDto, ColorPresetsDTO presetsDto)
         {
             List<SelectionColorWidgetDTO> l = new List<SelectionColorWidgetDTO>(1);
-            l.Add(dto);
-            AddColorSelectorWidget(left, top, width, l);
+            l.Add(selectionDto);
+            AddColorSelectorWidget(left, top, width, l, presetsDto);
         }
 
-        public static void AddColorSelectorWidget(float left, float top, float width, List<SelectionColorWidgetDTO> dtos)
+        public static void AddColorSelectorWidget(float left, float top, float width, List<SelectionColorWidgetDTO> selectionDtos, ColorPresetsDTO presetsDto)
         {
-            if (dtos.Count > 0)
+            Text.Font = GameFont.Medium;
+
+            Rect colorPickerRect = new Rect(0, 25f, width, colorPickerTexture.height * width / colorPickerTexture.width);
+            GUI.BeginGroup(new Rect(left, top, width, colorPickerRect.height + 60f));
+
+            GUI.color = Color.white;
+            if (GUI.RepeatButton(colorPickerRect, colorPickerTexture, GUI.skin.label))
             {
-                Text.Font = GameFont.Medium;
+                SetColorToSelected(selectionDtos, presetsDto, GetColorFromTexture(Event.current.mousePosition, colorPickerRect, colorPickerTexture));
+            }
 
-                Rect colorPickerRect = new Rect(0, 25f, width, colorPickerTexture.height * width / colorPickerTexture.width);
-                GUI.BeginGroup(new Rect(left, top, width, colorPickerRect.height + 60f));
+            GUI.BeginGroup(new Rect(0, colorPickerRect.height + 30f, width, 20f));
+            GUIStyle centeredStyle = GUI.skin.label;
+            centeredStyle.alignment = TextAnchor.MiddleCenter;
+            Color rgbColor = Color.white;
+            if (presetsDto.HasSelected())
+            {
+                rgbColor = presetsDto.GetSelectedColor();
+            }
+            else if (selectionDtos.Count > 0)
+            {
+                rgbColor = selectionDtos[0].SelectedColor;
+            }
+            GUI.Label(new Rect(0f, 0f, 10f, 20f), "R", centeredStyle);
+            string rText = GUI.TextField(new Rect(12f, 0f, 30f, 20f), ColorConvert(rgbColor.r), 3);
 
-                GUI.color = Color.white;
-                if (GUI.RepeatButton(colorPickerRect, colorPickerTexture, GUI.skin.label))
+            GUI.Label(new Rect(52f, 0f, 10f, 20f), "G", centeredStyle);
+            string gText = GUI.TextField(new Rect(64f, 0f, 30f, 20f), ColorConvert(rgbColor.g), 3);
+
+            GUI.Label(new Rect(104f, 0f, 10f, 20f), "B", centeredStyle);
+            string bText = GUI.TextField(new Rect(116f, 0f, 30f, 20f), ColorConvert(rgbColor.b), 3);
+
+            bool skipRGB = false;
+            float l = 156f;
+            for (int i = 0; i < presetsDto.Count; ++i)
+            {
+                GUI.color = presetsDto[i];
+
+                l += ColorPreset.width + 4;
+                Rect presetRect = new Rect(l, 0f, ColorPreset.width, ColorPreset.height);
+                GUI.Label(presetRect, new GUIContent(ColorPreset, 
+                    "Change: Hold shift and select a preset.\nUnselect: Hold shift and select the same preset."));
+                if (Widgets.ButtonInvisible(presetRect, false))
                 {
-                    SetColorToSelected(dtos, GetColorFromTexture(Event.current.mousePosition, colorPickerRect, colorPickerTexture));
+                    if (Event.current.shift)
+                    {
+                        if (presetsDto.IsSelected(i))
+                        {
+                            presetsDto.Deselect();
+                        }
+                        else
+                        {
+                            if (selectionDtos.Count > 0 &&
+                                !presetsDto.HasSelected())
+                            {
+                                presetsDto.SetColor(i, selectionDtos[0].SelectedColor);
+                            }
+                            presetsDto.SetSelected(i);
+                        }
+                    }
+                    else
+                    {
+                        SetColorToSelected(selectionDtos, null, presetsDto[i]);
+                    }
+                    skipRGB = true;
                 }
+                GUI.color = Color.white;
+                if (presetsDto.IsSelected(i))
+                {
+                    Widgets.DrawBox(presetRect, 1);
+                }
+            }
+            GUI.EndGroup();
+            GUI.EndGroup();
 
-                GUI.BeginGroup(new Rect(0, colorPickerRect.height + 30f, width, 20f));
-                GUIStyle centeredStyle = GUI.skin.label;
-                centeredStyle.alignment = TextAnchor.MiddleCenter;
-                GUI.Label(new Rect(0f, 0f, 10f, 20f), "R", centeredStyle);
-                string rText = GUI.TextField(new Rect(12f, 0f, 30f, 20f), ColorConvert(dtos[0].SelectedColor.r), 3);
-
-                GUI.Label(new Rect(52f, 0f, 10f, 20f), "G", centeredStyle);
-                string gText = GUI.TextField(new Rect(64f, 0f, 30f, 20f), ColorConvert(dtos[0].SelectedColor.g), 3);
-
-                GUI.Label(new Rect(104f, 0f, 10f, 20f), "B", centeredStyle);
-                string bText = GUI.TextField(new Rect(116f, 0f, 30f, 20f), ColorConvert(dtos[0].SelectedColor.b), 3);
-                GUI.EndGroup();
-                GUI.EndGroup();
-
-                Color c = dtos[0].SelectedColor;
+            if (!skipRGB &&
+                (selectionDtos.Count > 0 || presetsDto.HasSelected()))
+            {
+                Color c = Color.white;
                 c.r = ColorConvert(rText);
                 c.g = ColorConvert(gText);
                 c.b = ColorConvert(bText);
-                SetColorToSelected(dtos, c);
 
-                Text.Anchor = TextAnchor.UpperLeft;
+                SetColorToSelected(selectionDtos, presetsDto, c);
             }
+            Text.Anchor = TextAnchor.UpperLeft;
         }
 
-        private static void SetColorToSelected(List<SelectionColorWidgetDTO> dtos, Color color)
+        private static void SetColorToSelected(List<SelectionColorWidgetDTO> dtos, ColorPresetsDTO presetsDto, Color color)
         {
-            foreach(SelectionColorWidgetDTO dto in dtos)
+            if (presetsDto != null && presetsDto.HasSelected())
             {
-                dto.SelectedColor = color;
+                presetsDto.SetSelectedColor(color);
+            }
+            else if (dtos.Count > 0)
+            {
+                foreach (SelectionColorWidgetDTO dto in dtos)
+                {
+                    dto.SelectedColor = color;
+                }
             }
         }
 
@@ -191,9 +254,13 @@ namespace ChangeDresser.UI.Util
 
                 GUI.color = Color.white;
                 Text.Font = GameFont.Small;
-                if (Widgets.ButtonText(new Rect(40, 0, width - 56, NavButtonSize.y), "Dye All"))
+                if (Widgets.ButtonText(new Rect(20, 0, 100, NavButtonSize.y), "Select All"))
                 {
                     apparelSelectionsContainer.SelectAll();
+                }
+                if (Widgets.ButtonText(new Rect(apparelScrollRect.width - 120, 0, 100, NavButtonSize.y), "Deselect All"))
+                {
+                    apparelSelectionsContainer.DeselectAll();
                 }
                 Text.Font = GameFont.Medium;
 
@@ -236,11 +303,8 @@ namespace ChangeDresser.UI.Util
                 }
                 GUI.EndScrollView();
                 GUI.EndGroup();
-
-                if (apparelSelectionsContainer.SelectedApparel.Count > 0)
-                {
-                    AddColorSelectorWidget(left, top + apparelListRect.height + 10f, width, apparelSelectionsContainer.SelectedApparel);
-                }
+                
+                AddColorSelectorWidget(left, top + apparelListRect.height + 10f, width, apparelSelectionsContainer.SelectedApparel, apparelSelectionsContainer.ColorPresetsDTO);
             }
             Text.Anchor = TextAnchor.UpperLeft;
         }

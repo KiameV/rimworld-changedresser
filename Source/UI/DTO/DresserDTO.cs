@@ -23,9 +23,9 @@
  */
 using ChangeDresser.UI.DTO.SelectionWidgetDTOs;
 using ChangeDresser.UI.Enums;
-using UnityEngine;
 using Verse;
 using ChangeDresser.UI.Util;
+using ChangeDresser.Util;
 
 namespace ChangeDresser.UI.DTO
 {
@@ -66,9 +66,9 @@ namespace ChangeDresser.UI.DTO
                 this.HeadTypeSelectionDto.Gender = (Gender)this.GenderSelectionDto.SelectedItem;
             };
 
-            this.HairColorSelectionDto = new HairColorSelectionDTO(this.Pawn.story.hairColor);
+            this.HairColorSelectionDto = new HairColorSelectionDTO(this.Pawn.story.hairColor, IOUtil.LoadColorPresets(ColorPresetType.Hair));
 
-            this.ApparelSelectionsContainer = new ApparelSelectionsContainer(this.Pawn.apparel.WornApparel);
+            this.ApparelSelectionsContainer = new ApparelSelectionsContainer(this.Pawn.apparel.WornApparel, IOUtil.LoadColorPresets(ColorPresetType.Apparel));
 
             this.SkinColorSliderDto = new SliderWidgetDTO(this.Pawn.story.melanin, 0, 1);
         }
