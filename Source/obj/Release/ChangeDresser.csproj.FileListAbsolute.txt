@@ -1,0 +1,2 @@
+D:\Steam\steamapps\common\RimWorld\Mods\ChangeDresser\Assemblies\ChangeDresser.dll
+D:\Steam\steamapps\common\RimWorld\Mods\ChangeDresser\Source\obj\Release\ChangeDresser.dll
