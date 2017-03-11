@@ -24,9 +24,7 @@
 using System.Collections.Generic;
 using Verse;
 using Verse.AI;
-using ChangeDresser.UI;
 using ChangeDresser.UI.Enums;
-using ChangeDresser.UI.DTO;
 
 namespace ChangeDresser.UI.DTO
 {

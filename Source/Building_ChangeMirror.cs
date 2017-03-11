@@ -33,7 +33,6 @@ namespace ChangeDresser
     {
         private JobDef changeApparelColorJobDef = DefDatabase<JobDef>.GetNamed("ChangeApparelColor", true);
         private JobDef changeHairStyleJobDef = DefDatabase<JobDef>.GetNamed("ChangeHairStyle", true);
-        private JobDef changeSkinColorJobDef = DefDatabase<JobDef>.GetNamed("ChangeSkinColor", true);
         private JobDef changeHeadTypeJobDef = DefDatabase<JobDef>.GetNamed("ChangeHeadType", true);
 
         public readonly List<CurrentEditorEnum> SupportedEditors = new List<CurrentEditorEnum>();
@@ -45,7 +44,6 @@ namespace ChangeDresser
             SupportedEditors.Add(CurrentEditorEnum.ApparelColor);
             SupportedEditors.Add(CurrentEditorEnum.Hair);
             SupportedEditors.Add(CurrentEditorEnum.HeadType);
-            SupportedEditors.Add(CurrentEditorEnum.SkinColor);
         }
 
         [DebuggerHidden]
@@ -68,14 +66,6 @@ namespace ChangeDresser
                 delegate
                 {
                     Job job = new Job(this.changeHairStyleJobDef, this);
-                    myPawn.jobs.TryTakeOrderedJob(job);
-                }));
-
-            list.Add(new FloatMenuOption(
-                "Change skin color",
-                delegate
-                {
-                    Job job = new Job(this.changeSkinColorJobDef, this);
                     myPawn.jobs.TryTakeOrderedJob(job);
                 }));
 

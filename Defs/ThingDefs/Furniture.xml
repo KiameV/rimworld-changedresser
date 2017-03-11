@@ -31,13 +31,13 @@
 	  <castEdgeShadows>true</castEdgeShadows>
       <Size>(1,1)</Size>
       <DesignationCategory>Furniture</DesignationCategory>
-      <Passability>Impassable</Passability>
+	  <Passability>PassThroughOnly</Passability>
       <hasInteractionCell>True</hasInteractionCell>
       <interactionCellOffset>(0,0,1)</interactionCellOffset>
    </ThingDef>
    
-  <ThingDef ParentName="ArtableFurnitureBase">
-    <defName>ChangeDresserFull</defName>
+  <ThingDef ParentName="BuildingBase">
+    <defName>ChangeMirror</defName>
     <label>change mirror</label>
     <Description>Apply makeup and cut and dye hair.</Description>
     <ThingClass>ChangeDresser.Building_ChangeMirror</ThingClass>
@@ -52,22 +52,26 @@
       <li>Woody</li>
       <li>Stony</li>
     </stuffCategories>
-    <costStuffCount>30</costStuffCount>
+    <costStuffCount>20</costStuffCount>
       <CostList>
-         <Steel>50</Steel>
+         <Steel>20</Steel>
       </CostList>
       <AltitudeLayer>Building</AltitudeLayer>
       <statBases>
-         <WorkToBuild>1000</WorkToBuild>
+         <WorkToBuild>1500</WorkToBuild>
          <MaxHitPoints>50</MaxHitPoints>
          <Flammability>1.0</Flammability>
 		 <Beauty>20</Beauty>
       </statBases>
-	  <castEdgeShadows>true</castEdgeShadows>
+	  <CastEdgeShadows>False</CastEdgeShadows>
       <Size>(1,1)</Size>
       <DesignationCategory>Furniture</DesignationCategory>
-      <Passability>Impassable</Passability>
+	  <Passability>Standable</Passability>
       <hasInteractionCell>True</hasInteractionCell>
       <interactionCellOffset>(0,0,1)</interactionCellOffset>
+	  <building>
+		<canPlaceOverWall>true</canPlaceOverWall>
+		<isEdifice>false</isEdifice>
+	  </building>
    </ThingDef>
 </ThingDefs>
