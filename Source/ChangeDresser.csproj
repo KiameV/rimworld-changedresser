@@ -48,6 +48,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Building_ChangeMirror.cs" />
     <Compile Include="Building_Dresser.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeBodyType.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeGender.cs" />
@@ -55,11 +56,11 @@
     <Compile Include="DresserJobDriver\JobDriver_ChangeSkinColor.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeHairStyle.cs" />
     <Compile Include="UI\DresserUI.cs" />
-    <Compile Include="DresserJobDriver\JobDriver_ChangeHairColor.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeApparelColor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\DTO\ColorPresetsDTO.cs" />
     <Compile Include="UI\DTO\DresserDTO.cs" />
+    <Compile Include="UI\DTO\DresserDtoFactory.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\ApparelColorSelectionDTO.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\ApparelSelectionsContainer.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\BodyTypeSelectionDTO.cs" />

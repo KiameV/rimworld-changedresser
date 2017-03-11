@@ -21,17 +21,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-namespace ChangeDresser.UI.Enums
+using RimWorld;
+using System.Collections.Generic;
+using Verse;
+
+namespace ChangeDresser.UI.DTO.StorageDTOs
 {
-    public enum CurrentEditorEnum
+    class StorageGroupDTO
     {
-        Hair,
-        //HairStyle,
-        //HairColor,
-        SkinColor,
-        ApparelColor,
-        BodyType,
-        HeadType,
-        Gender
+        private List<Apparel> apparelList = new List<Apparel>(4);
+        public Pawn Pawn { get; private set; }
+
+        public string Name { get; set; }
+        public bool RestrictToPawn { get; set; }
+        public bool ForceSwitch { get; set; }
+
+        public StorageGroupDTO(Pawn pawn)
+        {
+            this.Name = "";
+            this.RestrictToPawn = true;
+            this.Pawn = pawn;
+        }
+
+        public List<Apparel> ApparelList
+        {
+            get { return this.apparelList;  }
+            set
+            {
+                if (value == null)
+                    this.apparelList.Clear();
+                else
+                    this.apparelList = value;
+            }
+        }
+
+        public void TakeOwnership(Pawn pawn)
+        {
+            this.Pawn = pawn;
+        }
     }
 }

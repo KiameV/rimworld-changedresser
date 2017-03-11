@@ -35,4 +35,39 @@
       <hasInteractionCell>True</hasInteractionCell>
       <interactionCellOffset>(0,0,1)</interactionCellOffset>
    </ThingDef>
+   
+  <ThingDef ParentName="ArtableFurnitureBase">
+    <defName>ChangeDresserFull</defName>
+    <label>change mirror</label>
+    <Description>Apply makeup and cut and dye hair.</Description>
+    <ThingClass>ChangeDresser.Building_ChangeMirror</ThingClass>
+    <graphicData>
+      <texPath>Furniture/ColorChangeDresser_mirror</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <shaderType>CutoutComplex</shaderType>
+	  <drawSize>(1, 1)</drawSize>
+    </graphicData>
+    <stuffCategories>
+      <li>Metallic</li>
+      <li>Woody</li>
+      <li>Stony</li>
+    </stuffCategories>
+    <costStuffCount>30</costStuffCount>
+      <CostList>
+         <Steel>50</Steel>
+      </CostList>
+      <AltitudeLayer>Building</AltitudeLayer>
+      <statBases>
+         <WorkToBuild>1000</WorkToBuild>
+         <MaxHitPoints>50</MaxHitPoints>
+         <Flammability>1.0</Flammability>
+		 <Beauty>20</Beauty>
+      </statBases>
+	  <castEdgeShadows>true</castEdgeShadows>
+      <Size>(1,1)</Size>
+      <DesignationCategory>Furniture</DesignationCategory>
+      <Passability>Impassable</Passability>
+      <hasInteractionCell>True</hasInteractionCell>
+      <interactionCellOffset>(0,0,1)</interactionCellOffset>
+   </ThingDef>
 </ThingDefs>

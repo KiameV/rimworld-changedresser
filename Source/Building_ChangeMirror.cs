@@ -29,14 +29,12 @@ using Verse.AI;
 
 namespace ChangeDresser
 {
-    public class Building_Dresser : Building
+    class Building_ChangeMirror : Building
     {
         private JobDef changeApparelColorJobDef = DefDatabase<JobDef>.GetNamed("ChangeApparelColor", true);
         private JobDef changeHairStyleJobDef = DefDatabase<JobDef>.GetNamed("ChangeHairStyle", true);
         private JobDef changeSkinColorJobDef = DefDatabase<JobDef>.GetNamed("ChangeSkinColor", true);
-        private JobDef changeBodyTypeJobDef = DefDatabase<JobDef>.GetNamed("ChangeBodyType", true);
         private JobDef changeHeadTypeJobDef = DefDatabase<JobDef>.GetNamed("ChangeHeadType", true);
-        private JobDef changeGenderJobDef = DefDatabase<JobDef>.GetNamed("ChangeGender", true);
 
         public readonly List<CurrentEditorEnum> SupportedEditors = new List<CurrentEditorEnum>();
 
@@ -45,8 +43,6 @@ namespace ChangeDresser
             base.SpawnSetup(map);
 
             SupportedEditors.Add(CurrentEditorEnum.ApparelColor);
-            SupportedEditors.Add(CurrentEditorEnum.BodyType);
-            SupportedEditors.Add(CurrentEditorEnum.Gender);
             SupportedEditors.Add(CurrentEditorEnum.Hair);
             SupportedEditors.Add(CurrentEditorEnum.HeadType);
             SupportedEditors.Add(CurrentEditorEnum.SkinColor);
@@ -66,7 +62,7 @@ namespace ChangeDresser
                         myPawn.jobs.TryTakeOrderedJob(job);
                     }));
             }
-
+            
             list.Add(new FloatMenuOption(
                 "Change hair style",
                 delegate
@@ -84,26 +80,10 @@ namespace ChangeDresser
                 }));
 
             list.Add(new FloatMenuOption(
-                "Change body type",
-                delegate
-                {
-                    Job job = new Job(this.changeBodyTypeJobDef, this);
-                    myPawn.jobs.TryTakeOrderedJob(job);
-                }));
-
-            list.Add(new FloatMenuOption(
                 "Change head type",
                 delegate
                 {
                     Job job = new Job(this.changeHeadTypeJobDef, this);
-                    myPawn.jobs.TryTakeOrderedJob(job);
-                }));
-
-            list.Add(new FloatMenuOption(
-                "Change gender",
-                delegate
-                {
-                    Job job = new Job(this.changeGenderJobDef, this);
                     myPawn.jobs.TryTakeOrderedJob(job);
                 }));
             return list;

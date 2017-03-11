@@ -26,6 +26,7 @@ using ChangeDresser.UI.Enums;
 using Verse;
 using ChangeDresser.UI.Util;
 using ChangeDresser.Util;
+using System.Collections.Generic;
 
 namespace ChangeDresser.UI.DTO
 {
@@ -43,12 +44,12 @@ namespace ChangeDresser.UI.DTO
         public SliderWidgetDTO SkinColorSliderDto { get; private set; }
         public HeadTypeSelectionDTO HeadTypeSelectionDto { get; private set; }
 
-        public DresserDTO(Pawn pawn, CurrentEditorEnum currentEditorEnum)
+        public DresserDTO(Pawn pawn, CurrentEditorEnum currentEditorEnum, List<CurrentEditorEnum> editors)
         {
             this.Pawn = pawn;
             this.CurrentEditorEnum = currentEditorEnum;
 
-            this.EditorTypeSelectionDto = new EditorTypeSelectionDTO(this.CurrentEditorEnum);
+            this.EditorTypeSelectionDto = new EditorTypeSelectionDTO(this.CurrentEditorEnum, editors);
             this.EditorTypeSelectionDto.SelectionChangeListener += delegate (object sender)
             {
                 this.CurrentEditorEnum = (CurrentEditorEnum)this.EditorTypeSelectionDto.SelectedItem;

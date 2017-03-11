@@ -28,21 +28,22 @@ using ChangeDresser.UI;
 using ChangeDresser.UI.Enums;
 using ChangeDresser.UI.DTO;
 
-namespace ChangeDresser.DresserJobDriver
+namespace ChangeDresser.UI.DTO
 {
-    internal class JobDriver_ChangeHairColor : JobDriver
+    static class DresserDtoFactory
     {
-        protected override IEnumerable<Toil> MakeNewToils()
+        public static DresserDTO Create(Pawn pawn, Job job, CurrentEditorEnum selectedEditor)
         {
-            yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch).FailOnDespawnedOrNull(TargetIndex.A);
-            yield return new Toil
+            List<CurrentEditorEnum> editors;
+            if (job.targetA.Thing is Building_Dresser)
             {
-                initAction = delegate
-                {
-                    Find.WindowStack.Add(new DresserUI(new DresserDTO(this.GetActor(), CurrentEditorEnum.Hair)));
-                }
-            };
-            yield break;
+                editors = ((Building_Dresser)job.targetA.Thing).SupportedEditors;
+            }
+            else
+            {
+                editors = ((Building_ChangeMirror)job.targetA.Thing).SupportedEditors;
+            }
+            return new DresserDTO(pawn, selectedEditor, editors);
         }
     }
 }

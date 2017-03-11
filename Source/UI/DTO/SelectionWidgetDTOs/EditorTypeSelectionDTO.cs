@@ -30,14 +30,9 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
     class EditorTypeSelectionDTO : ASelectionWidgetDTO
     {
         private List<CurrentEditorEnum> editors;
-        public EditorTypeSelectionDTO(CurrentEditorEnum currentEditor) : base()
+        public EditorTypeSelectionDTO(CurrentEditorEnum currentEditor, List<CurrentEditorEnum> editors) : base()
         {
-            Array a = Enum.GetValues(typeof(CurrentEditorEnum));
-            this.editors = new List<CurrentEditorEnum>(a.Length);
-            foreach (CurrentEditorEnum e in a)
-            {
-                this.editors.Add(e);
-            }
+            this.editors = new List<CurrentEditorEnum>(editors);
 
             for (int i = 0; i < this.editors.Count; ++i)
             {
