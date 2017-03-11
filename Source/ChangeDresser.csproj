@@ -69,10 +69,11 @@
     <Compile Include="UI\DTO\SelectionWidgetDTOs\GenderSelectionDTO.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\HeadTypeSelectionDTO.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\SliderWidgetDTO.cs" />
-    <Compile Include="UI\DTO\SelectionWidgetDTOs\SpeciesSelectionWidgetDTO.cs" />
+    <Compile Include="UI\DTO\StorageDTOs\StorageGroupDTO.cs" />
     <Compile Include="UI\Enums\CurrentEditorEnum.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\ASelectionWidgetDTO.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\SelectionColorWidgetDTO.cs" />
+    <Compile Include="UI\StorageUI.cs" />
     <Compile Include="UI\Util\WidgetUtil.cs" />
     <Compile Include="Util\IOUtil.cs" />
   </ItemGroup>
