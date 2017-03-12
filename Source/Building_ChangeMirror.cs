@@ -47,17 +47,17 @@ namespace ChangeDresser
         }
 
         [DebuggerHidden]
-        public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Pawn myPawn)
+        public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Pawn pawn)
         {
             List<FloatMenuOption> list = new List<FloatMenuOption>();
-            if (myPawn.apparel.WornApparel.Count > 0)
+            if (pawn.apparel.WornApparel.Count > 0)
             {
                 list.Add(new FloatMenuOption(
                     "Change outfit's colors",
                     delegate
                     {
                         Job job = new Job(this.changeApparelColorJobDef, this);
-                        myPawn.jobs.TryTakeOrderedJob(job);
+                        pawn.jobs.TryTakeOrderedJob(job);
                     }));
             }
             
@@ -66,7 +66,7 @@ namespace ChangeDresser
                 delegate
                 {
                     Job job = new Job(this.changeHairStyleJobDef, this);
-                    myPawn.jobs.TryTakeOrderedJob(job);
+                    pawn.jobs.TryTakeOrderedJob(job);
                 }));
 
             list.Add(new FloatMenuOption(
@@ -74,7 +74,7 @@ namespace ChangeDresser
                 delegate
                 {
                     Job job = new Job(this.changeBodyJobDef, this);
-                    myPawn.jobs.TryTakeOrderedJob(job);
+                    pawn.jobs.TryTakeOrderedJob(job);
                 }));
             return list;
         }

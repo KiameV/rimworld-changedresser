@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+using ChangeDresser.UI.DTO.StorageDTOs;
 using ChangeDresser.UI.Enums;
 using RimWorld;
 using System.Collections.Generic;
@@ -37,14 +38,12 @@ namespace ChangeDresser
         private JobDef changeHairStyleJobDef = DefDatabase<JobDef>.GetNamed("ChangeHairStyle", true);
         private JobDef changeBodyJobDef = DefDatabase<JobDef>.GetNamed("ChangeBody", true);
         private JobDef storeApparelJobDef = DefDatabase<JobDef>.GetNamed("StoreApparel", true);
+        private JobDef wearApparelGroupJobDef = DefDatabase<JobDef>.GetNamed("WearApparelGroup", true);
 
         public readonly List<CurrentEditorEnum> SupportedEditors = new List<CurrentEditorEnum>();
 
         private List<Apparel> storedApparel = new List<Apparel>();
-        private string storageGroupName = "";
-        private string restrictToPawnId = "";
-        private string restrictToPawnName = "";
-        private bool forceSwitchBattle = false;
+        private List<StorageGroupDTO> storageGroups = new List<StorageGroupDTO>();
 
         public override void SpawnSetup(Map map)
         {
@@ -58,19 +57,9 @@ namespace ChangeDresser
         public override void ExposeData()
         {
             base.ExposeData();
-
-            Scribe_Values.LookValue<string>(ref this.storageGroupName, "storageGroupName", "", false);
-            Scribe_Values.LookValue<string>(ref this.restrictToPawnId, "restrictToPawnId", "", false);
-            Scribe_Values.LookValue<string>(ref this.restrictToPawnName, "restrictToPawnName", "", false);
-            Scribe_Values.LookValue<bool>(ref this.forceSwitchBattle, "ForceSwitchBattle", false, false);
+            
             Scribe_Collections.LookList(ref this.storedApparel, "storedApparel", LookMode.Deep, new object[0]);
-            /*if (Scribe.mode == LoadSaveMode.ResolvingCrossRefs)
-            {
-                for (int i = 0; i < this.storedApparel.Count; i++)
-                {
-                    this.storedApparel[i].wearer = this.pawn;
-                }
-            }*/
+            Scribe_Collections.LookList(ref this.storageGroups, "storageGroups", LookMode.Deep, new object[0]);
         }
 
         public override string GetInspectString()
@@ -79,7 +68,7 @@ namespace ChangeDresser
             //sb.AppendLine("Stored Items: ".Translate() + ": " + -10f.ToStringTemperature("F0"));
             return sb.ToString();
         }
-        
+
         public List<Apparel> StoredApparel
         {
             get
@@ -95,42 +84,58 @@ namespace ChangeDresser
                     this.storedApparel = new List<Apparel>();
             }
         }
-        public string StorageGroupName
+
+        public List<StorageGroupDTO> StorageGroups
         {
-            get { return this.storageGroupName; }
-            set { this.storageGroupName = value; }
+            get
+            {
+                if (this.storageGroups == null)
+                    this.storageGroups = new List<StorageGroupDTO>();
+                return this.storageGroups;
+            }
         }
 
-        public string RestrictToPawnId
+        public void Remove(StorageGroupDTO storageGroupDto)
         {
-            get { return this.restrictToPawnId; }
-            set { this.restrictToPawnId = value; }
+            for (int i = 0; i < this.storageGroups.Count; ++i)
+            {
+                if (this.storageGroups[i] == storageGroupDto)
+                {
+                    this.storageGroups.RemoveAt(i);
+                    break;
+                }
+            }
         }
 
-        public string RestrictToPawnName
+        public bool TryGetStorageGroup(Pawn pawn, string apparelGroupName, out StorageGroupDTO storageGroupDTO)
         {
-            get { return this.restrictToPawnName; }
-            set { this.restrictToPawnName = value; }
-        }
-
-        public bool ForceSwitchBattle
-        {
-            get { return this.forceSwitchBattle; }
-            set { this.forceSwitchBattle = value; }
+            foreach (StorageGroupDTO dto in this.storageGroups)
+            {
+                if (dto.Name.Equals(apparelGroupName))
+                {
+                    if (dto.CanPawnAccess(pawn))
+                    {
+                        storageGroupDTO = dto;
+                        return true;
+                    }
+                }
+            }
+            storageGroupDTO = null;
+            return false;
         }
 
         [DebuggerHidden]
-        public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Pawn myPawn)
+        public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Pawn pawn)
         {
             List<FloatMenuOption> list = new List<FloatMenuOption>();
-            if (myPawn.apparel.WornApparel.Count > 0)
+            if (pawn.apparel.WornApparel.Count > 0)
             {
                 list.Add(new FloatMenuOption(
                     "Change outfit's colors",
                     delegate
                     {
                         Job job = new Job(this.changeApparelColorJobDef, this);
-                        myPawn.jobs.TryTakeOrderedJob(job);
+                        pawn.jobs.TryTakeOrderedJob(job);
                     }));
             }
 
@@ -139,7 +144,7 @@ namespace ChangeDresser
                 delegate
                 {
                     Job job = new Job(this.changeHairStyleJobDef, this);
-                    myPawn.jobs.TryTakeOrderedJob(job);
+                    pawn.jobs.TryTakeOrderedJob(job);
                 }));
 
             list.Add(new FloatMenuOption(
@@ -147,7 +152,7 @@ namespace ChangeDresser
                 delegate
                 {
                     Job job = new Job(this.changeBodyJobDef, this);
-                    myPawn.jobs.TryTakeOrderedJob(job);
+                    pawn.jobs.TryTakeOrderedJob(job);
                 }));
 
             list.Add(new FloatMenuOption(
@@ -155,8 +160,42 @@ namespace ChangeDresser
                 delegate
                 {
                     Job job = new Job(this.storeApparelJobDef, this);
-                    myPawn.jobs.TryTakeOrderedJob(job);
+                    pawn.jobs.TryTakeOrderedJob(job);
                 }));
+
+            bool isWearingSet = false;
+            foreach (StorageGroupDTO dto in this.StorageGroups)
+            {
+                isWearingSet = dto.IsPawnWearing(pawn);
+                if (isWearingSet)
+                {
+                    list.Add(new FloatMenuOption(
+                    "Unwear Group \"" + dto.Name + "\"",
+                    delegate
+                    {
+                        Job job = new SwapApparelJob(this.wearApparelGroupJobDef, this, dto.Name);
+                        pawn.jobs.TryTakeOrderedJob(job);
+                    }));
+                    break;
+                }
+            }
+
+            if (!isWearingSet)
+            {
+                foreach (StorageGroupDTO dto in this.StorageGroups)
+                {
+                    if (dto.CanPawnAccess(pawn))
+                    {
+                        list.Add(new FloatMenuOption(
+                            "Wear Group \"" + dto.Name + "\"",
+                            delegate
+                            {
+                                Job job = new SwapApparelJob(this.wearApparelGroupJobDef, this, dto.Name);
+                                pawn.jobs.TryTakeOrderedJob(job);
+                            }));
+                    }
+                }
+            }
             return list;
         }
     }

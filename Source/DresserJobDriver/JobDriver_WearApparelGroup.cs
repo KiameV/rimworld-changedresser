@@ -24,11 +24,11 @@
 using System.Collections.Generic;
 using Verse;
 using Verse.AI;
-using ChangeDresser.UI;
+using ChangeDresser.UI.DTO.StorageDTOs;
 
 namespace ChangeDresser.DresserJobDriver
 {
-    internal class JobDriver_StoreApparel : JobDriver
+    internal class JobDriver_WearApparelGroup : JobDriver
     {
         protected override IEnumerable<Toil> MakeNewToils()
         {
@@ -37,7 +37,19 @@ namespace ChangeDresser.DresserJobDriver
             {
                 initAction = delegate
                 {
-                    Find.WindowStack.Add(new StorageUI((Building_Dresser)base.CurJob.targetA, this.GetActor()));
+                    Building_Dresser dresser = (Building_Dresser)base.CurJob.targetA;
+                    string apparelGroupName = ((SwapApparelJob)base.CurJob).ApparelGroupName;
+                    Pawn pawn = this.GetActor();
+
+                    StorageGroupDTO dto;
+                    if (!dresser.TryGetStorageGroup(pawn, apparelGroupName, out dto))
+                    {
+                        Messages.Message(pawn.Name.ToStringShort + " was unable to find apparel group " + apparelGroupName + ".", MessageSound.Negative);
+                    }
+                    else
+                    {
+                        dto.SwapWith(pawn);
+                    }
                 }
             };
             yield break;

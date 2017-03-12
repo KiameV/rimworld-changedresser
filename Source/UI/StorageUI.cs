@@ -21,34 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-using ChangeDresser.UI.DTO;
 using ChangeDresser.UI.Util;
 using RimWorld;
 using UnityEngine;
 using Verse;
-using ChangeDresser.UI.Enums;
-using ChangeDresser.UI.DTO.SelectionWidgetDTOs;
-using System.Reflection;
-using ChangeDresser.Util;
 using ChangeDresser.UI.DTO.StorageDTOs;
 using System;
 using System.Collections.Generic;
+using static ChangeDresser.UI.StorageGroupUI;
 
 namespace ChangeDresser.UI
 {
     class StorageUI : Window
     {
-        private StorageGroupDTO storageGroupDto;
+        private readonly Building_Dresser Dresser;
+        private readonly Pawn Pawn;
         private Vector2 scrollPos = new Vector2(0, 0);
 
-        public StorageUI(StorageGroupDTO storageGroupDto)
+        public StorageUI(Building_Dresser dresser, Pawn pawn)
         {
+            this.Dresser = dresser;
+            this.Pawn = pawn;
+
             this.closeOnEscapeKey = true;
             this.doCloseButton = true;
             this.doCloseX = true;
             this.absorbInputAroundWindow = true;
             this.forcePause = true;
-            this.storageGroupDto = storageGroupDto;
         }
 
         public override Vector2 InitialSize
@@ -61,109 +60,168 @@ namespace ChangeDresser.UI
 
         public override void DoWindowContents(Rect inRect)
         {
-            Text.Font = GameFont.Medium;
-            Text.Anchor = TextAnchor.MiddleCenter;
-            Widgets.Label(new Rect(0, 0, 200, 50), "Apparel Storage");
-
-            /*if (this.storageGroupDto.IsPawnRestricted)
+            try
             {
-                Widgets.Label(new Rect(250, 0, 200, 50), "Owner: " + this.storageGroupDto.RestrictToPawnName);
-            }
-
-            Rect rect = new Rect(0, 50, inRect.width, 30);
-            Text.Font = GameFont.Small;
-            GUI.BeginGroup(rect);
-            GUI.Label(new Rect(0, 0, 100, rect.height), "Group Name:", WidgetUtil.MiddleCenter);
-            this.storageGroupDto.GroupName = Widgets.TextField(new Rect(110, 0, 150, rect.height), this.storageGroupDto.GroupName);
-
-            GUI.Label(new Rect(280, 0, 100, rect.height), "Restrict to Pawn:", WidgetUtil.MiddleCenter);
-            this.storageGroupDto.IsPawnRestricted = GUI.Toggle(new Rect(390, 7, rect.height, rect.height), this.storageGroupDto.IsPawnRestricted, "");
-
-            GUI.Label(new Rect(440, 0, 150, rect.height), "Force Switch Combat:", WidgetUtil.MiddleCenter);
-            this.storageGroupDto.ForceSwitchBattle = GUI.Toggle(new Rect(600, 7, rect.height, rect.height), this.storageGroupDto.ForceSwitchBattle, "");
-            GUI.EndGroup();*/
-
-            List<Apparel> wornApparel = this.storageGroupDto.Pawn.apparel.WornApparel;
-            List<Apparel> storedApparel = this.storageGroupDto.StoredApparel;
-
-            const float cellHeight = 40f;
-            float apparelListWidth = inRect.width * 0.5f - 10f;
-            Rect apparelListRect = new Rect(0, 90, apparelListWidth, inRect.height - 90);
-            Rect apparelScrollRect = new Rect(0f, 0f, apparelListWidth - 16f, wornApparel.Count * cellHeight);
-
-            GUI.BeginGroup(apparelListRect);
-            this.scrollPos = GUI.BeginScrollView(new Rect(GenUI.AtZero(apparelListRect)), this.scrollPos, apparelScrollRect);
-
-            GUI.color = Color.white;
-            Text.Font = GameFont.Medium;
-            for (int i = 0; i < wornApparel.Count; ++i)
-            {
-                Apparel apparel = wornApparel[i];
-                Rect rowRect = new Rect(0, 2f + i * cellHeight, apparelListRect.width, cellHeight);
-                GUI.BeginGroup(rowRect);
-
-                Widgets.ThingIcon(new Rect(0f, 0f, cellHeight, cellHeight), apparel);
+                Text.Font = GameFont.Medium;
+                Text.Anchor = TextAnchor.MiddleCenter;
+                Widgets.Label(new Rect(0, 0, 200, 50), "Apparel Storage");
 
                 Text.Font = GameFont.Small;
-                Widgets.Label(new Rect(cellHeight + 5f, 0f, rowRect.width - 35f, cellHeight), apparel.Label);
+                if (Widgets.ButtonText(new Rect(inRect.width * 0.5f, 10, 200, 30), "Apparel Group"))
+                {
+                    List<FloatMenuOption> list = new List<FloatMenuOption>();
+                    list.Add(new FloatMenuOption("Create From Worn", delegate
+                    {
+                        StorageGroupDTO dto = new StorageGroupDTO();
+                        this.Dresser.StorageGroups.Add(dto);
+                        Find.WindowStack.Add(new StorageGroupUI(dto, ApparelFromEnum.Pawn, this.Dresser, this.Pawn, true));
+                    }));
+                    list.Add(new FloatMenuOption("Create From Stored", delegate
+                    {
+                        StorageGroupDTO dto = new StorageGroupDTO();
+                        this.Dresser.StorageGroups.Add(dto);
+                        Find.WindowStack.Add(new StorageGroupUI(dto, ApparelFromEnum.Storage, this.Dresser, this.Pawn, true));
+                    }));
+                    for (int i = 0; i < this.Dresser.StorageGroups.Count; ++i)
+                    {
+                        StorageGroupDTO dto = this.Dresser.StorageGroups[i];
+                        string label = "";
+                        if (dto.IsBeingWorn)
+                        {
+                            label = label + " (Being worn)";
+                        }
+
+                        if (!dto.CanPawnAccess(this.Pawn))
+                        {
+                            list.Add(new FloatMenuOption("Claim " + dto.Name + label, delegate
+                            {
+                                dto.RestrictToPawn(this.Pawn);
+                            }));
+                        }
+                        else
+                        {
+                            list.Add(new FloatMenuOption("Edit " + dto.Name + " From Worn" + label, delegate
+                            {
+                                Find.WindowStack.Add(new StorageGroupUI(dto, ApparelFromEnum.Pawn, this.Dresser, this.Pawn, false));
+                            }));
+                            list.Add(new FloatMenuOption("Edit " + dto.Name + " From Storage" + label, delegate
+                            {
+                                Find.WindowStack.Add(new StorageGroupUI(dto, ApparelFromEnum.Storage, this.Dresser, this.Pawn, false));
+                            }));
+                        }
+                    }
+                    Find.WindowStack.Add(new FloatMenu(list, null, false));
+                }
+
+                /*if (this.storageGroupDto.IsPawnRestricted)
+                {
+                    Widgets.Label(new Rect(250, 0, 200, 50), "Owner: " + this.storageGroupDto.RestrictToPawnName);
+                }
+
+                Rect rect = new Rect(0, 50, inRect.width, 30);
+                Text.Font = GameFont.Small;
+                GUI.BeginGroup(rect);
+                GUI.Label(new Rect(0, 0, 100, rect.height), "Group Name:", WidgetUtil.MiddleCenter);
+                this.storageGroupDto.GroupName = Widgets.TextField(new Rect(110, 0, 150, rect.height), this.storageGroupDto.GroupName);
+
+                GUI.Label(new Rect(280, 0, 100, rect.height), "Restrict to Pawn:", WidgetUtil.MiddleCenter);
+                this.storageGroupDto.IsPawnRestricted = GUI.Toggle(new Rect(390, 7, rect.height, rect.height), this.storageGroupDto.IsPawnRestricted, "");
+
+                GUI.Label(new Rect(440, 0, 150, rect.height), "Force Switch Combat:", WidgetUtil.MiddleCenter);
+                this.storageGroupDto.ForceSwitchBattle = GUI.Toggle(new Rect(600, 7, rect.height, rect.height), this.storageGroupDto.ForceSwitchBattle, "");
+                GUI.EndGroup();*/
+
+                List<Apparel> wornApparel = this.Pawn.apparel.WornApparel;
+                List<Apparel> storedApparel = this.Dresser.StoredApparel;
+
+                const float cellHeight = 40f;
+                float apparelListWidth = inRect.width * 0.5f - 10f;
+                Rect apparelListRect = new Rect(0, 90, apparelListWidth, inRect.height - 90);
+                Rect apparelScrollRect = new Rect(0f, 0f, apparelListWidth - 16f, wornApparel.Count * cellHeight);
+
+                GUI.BeginGroup(apparelListRect);
+                this.scrollPos = GUI.BeginScrollView(new Rect(GenUI.AtZero(apparelListRect)), this.scrollPos, apparelScrollRect);
 
                 GUI.color = Color.white;
-                if (Widgets.ButtonImage(new Rect(rowRect.width - 30f, 0, 30, 30), WidgetUtil.nextTexture))
+                Text.Font = GameFont.Medium;
+                for (int i = 0; i < wornApparel.Count; ++i)
                 {
-                    this.storageGroupDto.Pawn.apparel.Remove(apparel);
-                    storedApparel.Add(apparel);
-                    GUI.EndGroup();
-                    break;
-                }
-                GUI.EndGroup();
-            }
-            GUI.EndScrollView();
-            GUI.EndGroup();
+                    Apparel apparel = wornApparel[i];
+                    Rect rowRect = new Rect(0, 2f + i * cellHeight, apparelListRect.width, cellHeight);
+                    GUI.BeginGroup(rowRect);
 
-            
-            apparelListRect = new Rect(inRect.width - apparelListWidth, 90, apparelListWidth, inRect.height - 90);
-            apparelScrollRect = new Rect(0f, 0f, apparelListWidth - 16f, storedApparel.Count * cellHeight);
+                    Widgets.ThingIcon(new Rect(0f, 0f, cellHeight, cellHeight), apparel);
 
-            GUI.BeginGroup(apparelListRect);
-            this.scrollPos = GUI.BeginScrollView(new Rect(GenUI.AtZero(apparelListRect)), this.scrollPos, apparelScrollRect);
+                    Text.Font = GameFont.Small;
+                    Widgets.Label(new Rect(cellHeight + 5f, 0f, rowRect.width - 40f - cellHeight, cellHeight), apparel.Label);
 
-            GUI.color = Color.white;
-            Text.Font = GameFont.Medium;
-            for (int i = 0; i < storedApparel.Count; ++i)
-            {
-                Apparel apparel = storedApparel[i];
-                Rect rowRect = new Rect(0, 2f + i * cellHeight, apparelListRect.width, cellHeight);
-                GUI.BeginGroup(rowRect);
-
-                Rect buttonRect = new Rect(0, 0, 30, 30);
-                bool canWear = this.storageGroupDto.Pawn.apparel.CanWearWithoutDroppingAnything(apparel.def);
-                if (canWear)
-                {
-                    if (Widgets.ButtonImage(buttonRect, WidgetUtil.previousTexture))
+                    GUI.color = Color.white;
+                    if (Widgets.ButtonImage(new Rect(rowRect.width - 35f, 10, 20, 20), WidgetUtil.nextTexture))
                     {
-                        storedApparel.Remove(apparel);
-                        this.storageGroupDto.Pawn.apparel.Wear(apparel);
+                        this.Pawn.apparel.Remove(apparel);
+                        storedApparel.Add(apparel);
                         GUI.EndGroup();
                         break;
                     }
+                    GUI.EndGroup();
                 }
-                else
-                {
-                    Widgets.ButtonImage(buttonRect, WidgetUtil.cantTexture);
-                }
+                GUI.EndScrollView();
+                GUI.EndGroup();
 
-                Widgets.ThingIcon(new Rect(35f, 0f, cellHeight, cellHeight), apparel);
-                Text.Font = GameFont.Small;
-                Text.Anchor = TextAnchor.MiddleCenter;
-                Widgets.Label(new Rect(cellHeight + 45f, 0f, rowRect.width - cellHeight - 45f, cellHeight), apparel.Label);
+
+                apparelListRect = new Rect(inRect.width - apparelListWidth, 90, apparelListWidth, inRect.height - 90);
+                apparelScrollRect = new Rect(0f, 0f, apparelListWidth - 16f, storedApparel.Count * cellHeight);
+
+                GUI.BeginGroup(apparelListRect);
+                this.scrollPos = GUI.BeginScrollView(new Rect(GenUI.AtZero(apparelListRect)), this.scrollPos, apparelScrollRect);
+
+                GUI.color = Color.white;
+                Text.Font = GameFont.Medium;
+                for (int i = 0; i < storedApparel.Count; ++i)
+                {
+                    Apparel apparel = storedApparel[i];
+                    Rect rowRect = new Rect(0, 2f + i * cellHeight, apparelListRect.width, cellHeight);
+                    GUI.BeginGroup(rowRect);
+
+                    Rect buttonRect = new Rect(5, 10, 20, 20);
+                    bool canWear = this.Pawn.apparel.CanWearWithoutDroppingAnything(apparel.def);
+                    if (canWear)
+                    {
+                        if (Widgets.ButtonImage(buttonRect, WidgetUtil.previousTexture))
+                        {
+                            storedApparel.Remove(apparel);
+                            this.Pawn.apparel.Wear(apparel);
+                            GUI.EndGroup();
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        Widgets.ButtonImage(buttonRect, WidgetUtil.cantTexture);
+                    }
+
+                    Widgets.ThingIcon(new Rect(35f, 0f, cellHeight, cellHeight), apparel);
+                    Text.Font = GameFont.Small;
+                    Text.Anchor = TextAnchor.MiddleCenter;
+                    Widgets.Label(new Rect(cellHeight + 45f, 0f, rowRect.width - cellHeight - 45f, cellHeight), apparel.Label);
+
+                    GUI.EndGroup();
+                }
+                GUI.EndScrollView();
 
                 GUI.EndGroup();
             }
-            GUI.EndScrollView();
-
-            Text.Anchor = TextAnchor.UpperLeft;
-            GUI.color = Color.white;
-            GUI.EndGroup();
+            catch (Exception e)
+            {
+                Log.Error(this.GetType().Name + " closed due to: " + e.GetType().Name + " " + e.Message);
+                Messages.Message(this.GetType().Name + " closed due to: " + e.GetType().Name + " " + e.Message, MessageSound.Negative);
+                base.Close();
+            }
+            finally
+            {
+                Text.Anchor = TextAnchor.UpperLeft;
+                GUI.color = Color.white;
+            }
         }
     }
 }

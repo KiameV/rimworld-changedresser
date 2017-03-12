@@ -21,72 +21,158 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-using System.Collections.Generic;
 using RimWorld;
+using System.Collections.Generic;
 using Verse;
 
 namespace ChangeDresser.UI.DTO.StorageDTOs
 {
-    class StorageGroupDTO
+    public class StorageGroupDTO : IExposable
     {
-        public Pawn Pawn { get; private set; }
+        private List<Apparel> apparelList = new List<Apparel>();
+        private string name = "";
+        private string restrictToPawnId = "";
+        private string restrictToPawnName = "";
+        private bool forceSwitchBattle = false;
+        private string isBeingWornById = "";
+        private string isBeingWornByName = "";
 
-        public readonly Building_Dresser Dresser;
-
-        public StorageGroupDTO(Building_Dresser dresser, Pawn pawn)
+        public bool HasName()
         {
-            this.Dresser = dresser;
-            this.Pawn = pawn;
-
-            Log.Warning("StorageGroupDTO: Dresser" + (string)((dresser == null) ? "null" : "instance"));
-            Log.Warning("Pawn" + (string)((Pawn == null) ? "null" : "instance"));
-            Log.Warning("IsPawnRestricted " + this.IsPawnRestricted);
-            Log.Warning("GroupName " + this.GroupName);
-            Log.Warning("ForceSwitchBattle " + this.ForceSwitchBattle);
-            Log.Warning("StoredApparel Count " + this.StoredApparel.Count);
+            return this.name.Length > 0;
         }
 
-        public bool IsPawnRestricted
+        public string Name
         {
-            get
-            {
-                return this.Pawn.ThingID.Equals(this.Dresser.RestrictToPawnId);
-            }
+            get { return this.name; }
             set
             {
-                if (value)
+                if (value == null ||
+                    (value != null && value.Trim().Length == 0))
                 {
-                    this.Dresser.RestrictToPawnId = this.Pawn.ThingID;
-                    this.Dresser.RestrictToPawnName = this.Pawn.Name.ToStringShort;
+                    this.name = "";
                 }
                 else
                 {
-                    this.Dresser.RestrictToPawnId = "";
+                    this.name = value.Trim();
                 }
             }
         }
 
-        public string GroupName
+        public void ExposeData()
         {
-            get { return this.Dresser.StorageGroupName; }
-            set { this.Dresser.StorageGroupName = value; }
+            Scribe_Values.LookValue<string>(ref this.name, "name", "", false);
+            Scribe_Values.LookValue<string>(ref this.restrictToPawnId, "restrictToPawnId", "", false);
+            Scribe_Values.LookValue<string>(ref this.restrictToPawnName, "restrictToPawnName", "", false);
+            Scribe_Values.LookValue<bool>(ref this.forceSwitchBattle, "forceSwitchBattle", false, false);
+            Scribe_Values.LookValue<string>(ref this.isBeingWornById, "isBeingWornById", "", false);
+            Scribe_Values.LookValue<string>(ref this.isBeingWornByName, "isBeingWornByName", "", false);
+            Scribe_Collections.LookList(ref this.apparelList, "apparelList", LookMode.Deep, new object[0]);
         }
 
-        public bool ForceSwitchBattle
+        public void SwapWith(Pawn pawn)
         {
-            get { return this.Dresser.ForceSwitchBattle; }
-            set { this.Dresser.ForceSwitchBattle = value; }
+            List<Apparel> wasWearing = new List<Apparel>(pawn.apparel.WornApparel);
+            foreach (Apparel a in wasWearing)
+            {
+                pawn.apparel.Remove(a);
+            }
+
+            foreach (Apparel a in this.apparelList)
+            {
+                pawn.apparel.Wear(a);
+            }
+
+            this.apparelList.Clear();
+            this.apparelList = wasWearing;
+            if (this.IsBeingWorn)
+            {
+                this.isBeingWornById = "";
+                this.isBeingWornByName = "";
+            }
+            else
+            {
+                this.isBeingWornById = pawn.ThingID;
+                this.isBeingWornByName = pawn.Name.ToStringShort;
+            }
         }
 
-        public List<Apparel> StoredApparel
+        public bool CanPawnAccess(Pawn pawn)
         {
-            get { return this.Dresser.StoredApparel; }
-            set { this.Dresser.StoredApparel = value; }
+            if (!this.IsRestricted)
+                return true;
+            if (pawn.ThingID.Equals(this.restrictToPawnId))
+                return true;
+            return false;
+        }
+
+        public void RestrictToPawn(Pawn pawn)
+        {
+            this.restrictToPawnId = pawn.ThingID;
+            this.restrictToPawnName = pawn.Name.ToStringShort;
+            this.isBeingWornById = "";
+            this.isBeingWornByName = "";
+        }
+
+        public List<Apparel> Apparel { get { return this.apparelList; } }
+
+        public bool IsRestricted
+        {
+            get
+            {
+                if (this.restrictToPawnId == "")
+                    return false;
+                if (this.restrictToPawnId.Length == 0)
+                    return false;
+                return true;
+            }
+        }
+
+        public string RestrictToPawnId
+        {
+            get { return this.restrictToPawnId; }
+            set { this.restrictToPawnId = value; }
         }
 
         public string RestrictToPawnName
         {
-            get { return this.Dresser.RestrictToPawnName; }
+            get { return this.restrictToPawnName; }
+            set { this.restrictToPawnName = value; }
+        }
+
+        public bool ForceSwitchBattle
+        {
+            get { return this.forceSwitchBattle; }
+            set { this.forceSwitchBattle = value; }
+        }
+
+        public bool IsBeingWorn
+        {
+            get
+            {
+                if (this.isBeingWornById == "")
+                    return false;
+                if (this.isBeingWornById.Length == 0)
+                    return false;
+                return true;
+            }
+        }
+
+        public void ClearWornBy()
+        {
+            this.isBeingWornById = "";
+            this.isBeingWornByName = "";
+        }
+
+        public bool IsPawnWearing(Pawn pawn)
+        {
+            return pawn.ThingID.Equals(this.isBeingWornById);
+        }
+
+        public void Unrestrict()
+        {
+            this.restrictToPawnId = "";
+            this.restrictToPawnName = "";
         }
     }
 }

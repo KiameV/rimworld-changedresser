@@ -30,6 +30,7 @@ using ChangeDresser.UI.Enums;
 using ChangeDresser.UI.DTO.SelectionWidgetDTOs;
 using System.Reflection;
 using ChangeDresser.Util;
+using System;
 
 namespace ChangeDresser.UI
 {
@@ -62,67 +63,80 @@ namespace ChangeDresser.UI
 
         public override void DoWindowContents(Rect inRect)
         {
-            if (this.rerenderPawn)
+            try
             {
-                this.dresserDto.Pawn.Drawer.renderer.graphics.ResolveAllGraphics();
-                PortraitsCache.SetDirty(this.dresserDto.Pawn);
-                this.rerenderPawn = false;
+                if (this.rerenderPawn)
+                {
+                    this.dresserDto.Pawn.Drawer.renderer.graphics.ResolveAllGraphics();
+                    PortraitsCache.SetDirty(this.dresserDto.Pawn);
+                    this.rerenderPawn = false;
+                }
+
+                Text.Font = GameFont.Medium;
+
+                Widgets.Label(new Rect(0f, 0f, this.InitialSize.y / 2f + 45f, 50f), "Dresser");
+
+                float portraitBuffer = 30f;
+
+                Rect portraitRect = WidgetUtil.AddPortraitWidget(portraitBuffer, 150f, this.dresserDto);
+
+                float editorLeft = portraitRect.xMax + portraitBuffer;
+                float editorTop = 30f + WidgetUtil.SelectionRowHeight;
+                float editorWidth = 325f;
+
+                WidgetUtil.AddSelectorWidget(portraitRect.xMax + portraitBuffer, 10f, editorWidth, null, this.dresserDto.EditorTypeSelectionDto);
+
+                switch ((CurrentEditorEnum)this.dresserDto.EditorTypeSelectionDto.SelectedItem)
+                {
+                    case CurrentEditorEnum.ApparelColor:
+                        WidgetUtil.AddAppararelColorSelectionWidget(editorLeft, editorTop, editorWidth, this.dresserDto.ApparelSelectionsContainer);
+                        break;
+                    case CurrentEditorEnum.Body:
+                        WidgetUtil.AddSelectorWidget(editorLeft, editorTop, editorWidth, "Body Type:", this.dresserDto.BodyTypeSelectionDto);
+                        WidgetUtil.AddSelectorWidget(editorLeft, editorTop + WidgetUtil.SelectionRowHeight + 20f, editorWidth, "Head Type:", this.dresserDto.HeadTypeSelectionDto);
+                        WidgetUtil.AddSliderWidget(editorLeft, editorTop + ((WidgetUtil.SelectionRowHeight + 20f) * 2f), editorWidth, "Skin Color:", this.dresserDto.SkinColorSliderDto);
+                        break;
+                    case CurrentEditorEnum.Hair:
+                        WidgetUtil.AddSelectorWidget(editorLeft, editorTop, editorWidth, "Hair Style:", this.dresserDto.HairStyleSelectionDto);
+                        WidgetUtil.AddColorSelectorWidget(editorLeft, editorTop + WidgetUtil.SelectionRowHeight + 10f, editorWidth, this.dresserDto.HairColorSelectionDto, this.dresserDto.HairColorSelectionDto.ColorPresetsDTO);
+                        break;
+                }
+
+                Text.Anchor = TextAnchor.MiddleLeft;
+                Text.Font = GameFont.Small;
+                GUI.Label(new Rect(0, 75, this.InitialSize.y / 2f, 50f), GUI.tooltip);
+                Text.Font = GameFont.Medium;
+                Text.Anchor = TextAnchor.UpperLeft;
+
+                float xWidth = 150;
+                float xBuffer = (this.InitialSize.x - xWidth) / 2;
+                Rect bottomButtonsRect = new Rect(editorLeft, this.InitialSize.y - WidgetUtil.SelectionRowHeight - 36, xWidth, WidgetUtil.SelectionRowHeight);
+                GUI.BeginGroup(bottomButtonsRect);
+                Text.Anchor = TextAnchor.MiddleCenter;
+                Text.Font = GameFont.Small;
+                GUI.color = Color.white;
+                if (Widgets.ButtonText(new Rect(0, 0, 60, WidgetUtil.SelectionRowHeight), "Reset"))
+                {
+                    this.ResetToDefault();
+                }
+                if (Widgets.ButtonText(new Rect(90, 0, 60, WidgetUtil.SelectionRowHeight), "Save"))
+                {
+                    this.saveChangedOnExit = true;
+                    this.Close();
+                }
+                GUI.EndGroup();
             }
-
-            Text.Font = GameFont.Medium;
-
-            Widgets.Label(new Rect(0f, 0f, this.InitialSize.y / 2f + 45f, 50f), "Dresser");
-
-            float portraitBuffer = 30f;
-
-            Rect portraitRect = WidgetUtil.AddPortraitWidget(portraitBuffer, 150f, this.dresserDto);
-
-            float editorLeft = portraitRect.xMax + portraitBuffer;
-            float editorTop = 30f + WidgetUtil.SelectionRowHeight;
-            float editorWidth = 325f;
-
-            WidgetUtil.AddSelectorWidget(portraitRect.xMax + portraitBuffer, 10f, editorWidth, null, this.dresserDto.EditorTypeSelectionDto);
-
-            switch ((CurrentEditorEnum)this.dresserDto.EditorTypeSelectionDto.SelectedItem)
+            catch (Exception e)
             {
-                case CurrentEditorEnum.ApparelColor:
-                    WidgetUtil.AddAppararelColorSelectionWidget(editorLeft, editorTop, editorWidth, this.dresserDto.ApparelSelectionsContainer);
-                    break;
-                case CurrentEditorEnum.Body:
-                    WidgetUtil.AddSelectorWidget(editorLeft, editorTop, editorWidth, "Body Type:", this.dresserDto.BodyTypeSelectionDto);
-                    WidgetUtil.AddSelectorWidget(editorLeft, editorTop + WidgetUtil.SelectionRowHeight + 20f, editorWidth, "Head Type:", this.dresserDto.HeadTypeSelectionDto);
-                    WidgetUtil.AddSliderWidget(editorLeft, editorTop + ((WidgetUtil.SelectionRowHeight + 20f) * 2f), editorWidth, "Skin Color:", this.dresserDto.SkinColorSliderDto);
-                    break;
-                case CurrentEditorEnum.Hair:
-                    WidgetUtil.AddSelectorWidget(editorLeft, editorTop, editorWidth, "Hair Style:", this.dresserDto.HairStyleSelectionDto);
-                    WidgetUtil.AddColorSelectorWidget(editorLeft, editorTop + WidgetUtil.SelectionRowHeight + 10f, editorWidth, this.dresserDto.HairColorSelectionDto, this.dresserDto.HairColorSelectionDto.ColorPresetsDTO);
-                    break;
+                Log.Error(this.GetType().Name + " closed due to: " + e.GetType().Name + " " + e.Message);
+                Messages.Message(this.GetType().Name + " closed due to: " + e.GetType().Name + " " + e.Message, MessageSound.Negative);
+                base.Close();
             }
-            
-            Text.Anchor = TextAnchor.MiddleLeft;
-            Text.Font = GameFont.Small;
-            GUI.Label(new Rect(0, 75, this.InitialSize.y / 2f, 50f), GUI.tooltip);
-            Text.Font = GameFont.Medium;
-            Text.Anchor = TextAnchor.UpperLeft;
-
-            float xWidth = 150;
-            float xBuffer = (this.InitialSize.x - xWidth) / 2;
-            Rect bottomButtonsRect = new Rect(editorLeft, this.InitialSize.y - WidgetUtil.SelectionRowHeight - 36, xWidth, WidgetUtil.SelectionRowHeight);
-            GUI.BeginGroup(bottomButtonsRect);
-            Text.Anchor = TextAnchor.MiddleCenter;
-            Text.Font = GameFont.Small;
-            GUI.color = Color.white;
-            if (Widgets.ButtonText(new Rect(0, 0, 60, WidgetUtil.SelectionRowHeight), "Reset"))
+            finally
             {
-                this.ResetToDefault();
+                Text.Anchor = TextAnchor.UpperLeft;
+                GUI.color = Color.white;
             }
-            if (Widgets.ButtonText(new Rect(90, 0, 60, WidgetUtil.SelectionRowHeight), "Save"))
-            {
-                this.saveChangedOnExit = true;
-                this.Close();
-            }
-            GUI.EndGroup();
-            Text.Anchor = TextAnchor.UpperLeft;
         }
 
         private void ResetToDefault()

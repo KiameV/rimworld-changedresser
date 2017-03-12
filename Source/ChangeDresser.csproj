@@ -52,7 +52,9 @@
     <Compile Include="Building_Dresser.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeBody.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeHairStyle.cs" />
+    <Compile Include="DresserJobDriver\JobDriver_WearApparelGroup.cs" />
     <Compile Include="DresserJobDriver\JobDriver_StoreApparel.cs" />
+    <Compile Include="UI\DTO\StorageDTOs\StorageGroupDTO.cs" />
     <Compile Include="UI\DresserUI.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeApparelColor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -68,10 +70,11 @@
     <Compile Include="UI\DTO\SelectionWidgetDTOs\GenderSelectionDTO.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\HeadTypeSelectionDTO.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\SliderWidgetDTO.cs" />
-    <Compile Include="UI\DTO\StorageDTOs\StorageGroupDTO.cs" />
+    <Compile Include="UI\DTO\StorageDTOs\SwapApparelJob.cs" />
     <Compile Include="UI\Enums\CurrentEditorEnum.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\ASelectionWidgetDTO.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\SelectionColorWidgetDTO.cs" />
+    <Compile Include="UI\StorageGroupUI.cs" />
     <Compile Include="UI\StorageUI.cs" />
     <Compile Include="UI\Util\WidgetUtil.cs" />
     <Compile Include="Util\IOUtil.cs" />
