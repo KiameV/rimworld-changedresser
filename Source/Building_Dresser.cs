@@ -22,8 +22,10 @@
  * SOFTWARE.
  */
 using ChangeDresser.UI.Enums;
+using RimWorld;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 using Verse;
 using Verse.AI;
 
@@ -33,23 +35,88 @@ namespace ChangeDresser
     {
         private JobDef changeApparelColorJobDef = DefDatabase<JobDef>.GetNamed("ChangeApparelColor", true);
         private JobDef changeHairStyleJobDef = DefDatabase<JobDef>.GetNamed("ChangeHairStyle", true);
-        private JobDef changeSkinColorJobDef = DefDatabase<JobDef>.GetNamed("ChangeSkinColor", true);
-        private JobDef changeBodyTypeJobDef = DefDatabase<JobDef>.GetNamed("ChangeBodyType", true);
-        private JobDef changeHeadTypeJobDef = DefDatabase<JobDef>.GetNamed("ChangeHeadType", true);
-        private JobDef changeGenderJobDef = DefDatabase<JobDef>.GetNamed("ChangeGender", true);
+        private JobDef changeBodyJobDef = DefDatabase<JobDef>.GetNamed("ChangeBody", true);
+        private JobDef storeApparelJobDef = DefDatabase<JobDef>.GetNamed("StoreApparel", true);
 
         public readonly List<CurrentEditorEnum> SupportedEditors = new List<CurrentEditorEnum>();
+
+        private List<Apparel> storedApparel = new List<Apparel>();
+        private string storageGroupName = "";
+        private string restrictToPawnId = "";
+        private string restrictToPawnName = "";
+        private bool forceSwitchBattle = false;
 
         public override void SpawnSetup(Map map)
         {
             base.SpawnSetup(map);
 
             SupportedEditors.Add(CurrentEditorEnum.ApparelColor);
-            SupportedEditors.Add(CurrentEditorEnum.BodyType);
-            SupportedEditors.Add(CurrentEditorEnum.Gender);
+            SupportedEditors.Add(CurrentEditorEnum.Body);
             SupportedEditors.Add(CurrentEditorEnum.Hair);
-            SupportedEditors.Add(CurrentEditorEnum.HeadType);
-            SupportedEditors.Add(CurrentEditorEnum.SkinColor);
+        }
+
+        public override void ExposeData()
+        {
+            base.ExposeData();
+
+            Scribe_Values.LookValue<string>(ref this.storageGroupName, "storageGroupName", "", false);
+            Scribe_Values.LookValue<string>(ref this.restrictToPawnId, "restrictToPawnId", "", false);
+            Scribe_Values.LookValue<string>(ref this.restrictToPawnName, "restrictToPawnName", "", false);
+            Scribe_Values.LookValue<bool>(ref this.forceSwitchBattle, "ForceSwitchBattle", false, false);
+            Scribe_Collections.LookList(ref this.storedApparel, "storedApparel", LookMode.Deep, new object[0]);
+            /*if (Scribe.mode == LoadSaveMode.ResolvingCrossRefs)
+            {
+                for (int i = 0; i < this.storedApparel.Count; i++)
+                {
+                    this.storedApparel[i].wearer = this.pawn;
+                }
+            }*/
+        }
+
+        public override string GetInspectString()
+        {
+            StringBuilder sb = new StringBuilder(base.GetInspectString());
+            //sb.AppendLine("Stored Items: ".Translate() + ": " + -10f.ToStringTemperature("F0"));
+            return sb.ToString();
+        }
+        
+        public List<Apparel> StoredApparel
+        {
+            get
+            {
+                if (this.storedApparel == null)
+                    this.storedApparel = new List<Apparel>();
+                return this.storedApparel;
+            }
+            set
+            {
+                this.storedApparel = value;
+                if (this.storedApparel == null)
+                    this.storedApparel = new List<Apparel>();
+            }
+        }
+        public string StorageGroupName
+        {
+            get { return this.storageGroupName; }
+            set { this.storageGroupName = value; }
+        }
+
+        public string RestrictToPawnId
+        {
+            get { return this.restrictToPawnId; }
+            set { this.restrictToPawnId = value; }
+        }
+
+        public string RestrictToPawnName
+        {
+            get { return this.restrictToPawnName; }
+            set { this.restrictToPawnName = value; }
+        }
+
+        public bool ForceSwitchBattle
+        {
+            get { return this.forceSwitchBattle; }
+            set { this.forceSwitchBattle = value; }
         }
 
         [DebuggerHidden]
@@ -76,34 +143,18 @@ namespace ChangeDresser
                 }));
 
             list.Add(new FloatMenuOption(
-                "Change skin color",
+                "Change body attributes",
                 delegate
                 {
-                    Job job = new Job(this.changeSkinColorJobDef, this);
+                    Job job = new Job(this.changeBodyJobDef, this);
                     myPawn.jobs.TryTakeOrderedJob(job);
                 }));
 
             list.Add(new FloatMenuOption(
-                "Change body type",
+                "Store Apparel",
                 delegate
                 {
-                    Job job = new Job(this.changeBodyTypeJobDef, this);
-                    myPawn.jobs.TryTakeOrderedJob(job);
-                }));
-
-            list.Add(new FloatMenuOption(
-                "Change head type",
-                delegate
-                {
-                    Job job = new Job(this.changeHeadTypeJobDef, this);
-                    myPawn.jobs.TryTakeOrderedJob(job);
-                }));
-
-            list.Add(new FloatMenuOption(
-                "Change gender",
-                delegate
-                {
-                    Job job = new Job(this.changeGenderJobDef, this);
+                    Job job = new Job(this.storeApparelJobDef, this);
                     myPawn.jobs.TryTakeOrderedJob(job);
                 }));
             return list;

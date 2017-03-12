@@ -30,7 +30,7 @@ using ChangeDresser.UI.DTO;
 
 namespace ChangeDresser.DresserJobDriver
 {
-    internal class JobDriver_ChangeBodyType : JobDriver
+    internal class JobDriver_StoreApparel : JobDriver
     {
         protected override IEnumerable<Toil> MakeNewToils()
         {
@@ -39,7 +39,7 @@ namespace ChangeDresser.DresserJobDriver
             {
                 initAction = delegate
                 {
-                    Find.WindowStack.Add(new DresserUI(DresserDtoFactory.Create(this.GetActor(), base.CurJob, CurrentEditorEnum.BodyType)));
+                    Find.WindowStack.Add(new StorageUI(new UI.DTO.StorageDTOs.StorageGroupDTO((Building_Dresser)base.CurJob.targetA, this.GetActor())));
                 }
             };
             yield break;

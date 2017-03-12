@@ -50,11 +50,9 @@
   <ItemGroup>
     <Compile Include="Building_ChangeMirror.cs" />
     <Compile Include="Building_Dresser.cs" />
-    <Compile Include="DresserJobDriver\JobDriver_ChangeBodyType.cs" />
-    <Compile Include="DresserJobDriver\JobDriver_ChangeGender.cs" />
-    <Compile Include="DresserJobDriver\JobDriver_ChangeHeadType.cs" />
-    <Compile Include="DresserJobDriver\JobDriver_ChangeSkinColor.cs" />
+    <Compile Include="DresserJobDriver\JobDriver_ChangeBody.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeHairStyle.cs" />
+    <Compile Include="DresserJobDriver\JobDriver_StoreApparel.cs" />
     <Compile Include="UI\DresserUI.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeApparelColor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -21,43 +21,72 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-using RimWorld;
 using System.Collections.Generic;
+using RimWorld;
 using Verse;
 
 namespace ChangeDresser.UI.DTO.StorageDTOs
 {
     class StorageGroupDTO
     {
-        private List<Apparel> apparelList = new List<Apparel>(4);
         public Pawn Pawn { get; private set; }
 
-        public string Name { get; set; }
-        public bool RestrictToPawn { get; set; }
-        public bool ForceSwitch { get; set; }
+        public readonly Building_Dresser Dresser;
 
-        public StorageGroupDTO(Pawn pawn)
+        public StorageGroupDTO(Building_Dresser dresser, Pawn pawn)
         {
-            this.Name = "";
-            this.RestrictToPawn = true;
+            this.Dresser = dresser;
             this.Pawn = pawn;
+
+            Log.Warning("StorageGroupDTO: Dresser" + (string)((dresser == null) ? "null" : "instance"));
+            Log.Warning("Pawn" + (string)((Pawn == null) ? "null" : "instance"));
+            Log.Warning("IsPawnRestricted " + this.IsPawnRestricted);
+            Log.Warning("GroupName " + this.GroupName);
+            Log.Warning("ForceSwitchBattle " + this.ForceSwitchBattle);
+            Log.Warning("StoredApparel Count " + this.StoredApparel.Count);
         }
 
-        public List<Apparel> ApparelList
+        public bool IsPawnRestricted
         {
-            get { return this.apparelList;  }
+            get
+            {
+                return this.Pawn.ThingID.Equals(this.Dresser.RestrictToPawnId);
+            }
             set
             {
-                if (value == null)
-                    this.apparelList.Clear();
+                if (value)
+                {
+                    this.Dresser.RestrictToPawnId = this.Pawn.ThingID;
+                    this.Dresser.RestrictToPawnName = this.Pawn.Name.ToStringShort;
+                }
                 else
-                    this.apparelList = value;
+                {
+                    this.Dresser.RestrictToPawnId = "";
+                }
             }
         }
 
-        public void TakeOwnership(Pawn pawn)
+        public string GroupName
         {
-            this.Pawn = pawn;
+            get { return this.Dresser.StorageGroupName; }
+            set { this.Dresser.StorageGroupName = value; }
+        }
+
+        public bool ForceSwitchBattle
+        {
+            get { return this.Dresser.ForceSwitchBattle; }
+            set { this.Dresser.ForceSwitchBattle = value; }
+        }
+
+        public List<Apparel> StoredApparel
+        {
+            get { return this.Dresser.StoredApparel; }
+            set { this.Dresser.StoredApparel = value; }
+        }
+
+        public string RestrictToPawnName
+        {
+            get { return this.Dresser.RestrictToPawnName; }
         }
     }
 }

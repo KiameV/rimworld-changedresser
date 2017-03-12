@@ -78,31 +78,24 @@ namespace ChangeDresser.UI
             Rect portraitRect = WidgetUtil.AddPortraitWidget(portraitBuffer, 150f, this.dresserDto);
 
             float editorLeft = portraitRect.xMax + portraitBuffer;
-            float editorTop = 30f + WidgetUtil.NavButtonSize.y;
+            float editorTop = 30f + WidgetUtil.SelectionRowHeight;
             float editorWidth = 325f;
 
-            WidgetUtil.AddSelectorWidget(portraitRect.xMax + portraitBuffer, 10f, editorWidth, this.dresserDto.EditorTypeSelectionDto);
+            WidgetUtil.AddSelectorWidget(portraitRect.xMax + portraitBuffer, 10f, editorWidth, null, this.dresserDto.EditorTypeSelectionDto);
 
             switch ((CurrentEditorEnum)this.dresserDto.EditorTypeSelectionDto.SelectedItem)
             {
                 case CurrentEditorEnum.ApparelColor:
                     WidgetUtil.AddAppararelColorSelectionWidget(editorLeft, editorTop, editorWidth, this.dresserDto.ApparelSelectionsContainer);
                     break;
-                case CurrentEditorEnum.BodyType:
-                    WidgetUtil.AddSelectorWidget(editorLeft, editorTop, editorWidth, this.dresserDto.BodyTypeSelectionDto);
+                case CurrentEditorEnum.Body:
+                    WidgetUtil.AddSelectorWidget(editorLeft, editorTop, editorWidth, "Body Type:", this.dresserDto.BodyTypeSelectionDto);
+                    WidgetUtil.AddSelectorWidget(editorLeft, editorTop + WidgetUtil.SelectionRowHeight + 20f, editorWidth, "Head Type:", this.dresserDto.HeadTypeSelectionDto);
+                    WidgetUtil.AddSliderWidget(editorLeft, editorTop + ((WidgetUtil.SelectionRowHeight + 20f) * 2f), editorWidth, "Skin Color:", this.dresserDto.SkinColorSliderDto);
                     break;
                 case CurrentEditorEnum.Hair:
-                    WidgetUtil.AddSelectorWidget(editorLeft, editorTop, editorWidth, this.dresserDto.HairStyleSelectionDto);
-                    WidgetUtil.AddColorSelectorWidget(editorLeft, editorTop + WidgetUtil.NavButtonSize.y + 10f, editorWidth, this.dresserDto.HairColorSelectionDto, this.dresserDto.HairColorSelectionDto.ColorPresetsDTO);
-                    break;
-                case CurrentEditorEnum.HeadType:
-                    WidgetUtil.AddSelectorWidget(editorLeft, editorTop, editorWidth, this.dresserDto.HeadTypeSelectionDto);
-                    break;
-                case CurrentEditorEnum.SkinColor:
-                    WidgetUtil.AddSliderWidget(editorLeft, editorTop, editorWidth, this.dresserDto.SkinColorSliderDto);
-                    break;
-                case CurrentEditorEnum.Gender:
-                    WidgetUtil.AddSelectorWidget(editorLeft, editorTop, editorWidth, this.dresserDto.GenderSelectionDto);
+                    WidgetUtil.AddSelectorWidget(editorLeft, editorTop, editorWidth, "Hair Style:", this.dresserDto.HairStyleSelectionDto);
+                    WidgetUtil.AddColorSelectorWidget(editorLeft, editorTop + WidgetUtil.SelectionRowHeight + 10f, editorWidth, this.dresserDto.HairColorSelectionDto, this.dresserDto.HairColorSelectionDto.ColorPresetsDTO);
                     break;
             }
             
@@ -114,16 +107,16 @@ namespace ChangeDresser.UI
 
             float xWidth = 150;
             float xBuffer = (this.InitialSize.x - xWidth) / 2;
-            Rect bottomButtonsRect = new Rect(editorLeft, this.InitialSize.y - WidgetUtil.NavButtonSize.y - 36, xWidth, WidgetUtil.NavButtonSize.y);
+            Rect bottomButtonsRect = new Rect(editorLeft, this.InitialSize.y - WidgetUtil.SelectionRowHeight - 36, xWidth, WidgetUtil.SelectionRowHeight);
             GUI.BeginGroup(bottomButtonsRect);
             Text.Anchor = TextAnchor.MiddleCenter;
             Text.Font = GameFont.Small;
             GUI.color = Color.white;
-            if (Widgets.ButtonText(new Rect(0, 0, 60, WidgetUtil.NavButtonSize.y), "Reset"))
+            if (Widgets.ButtonText(new Rect(0, 0, 60, WidgetUtil.SelectionRowHeight), "Reset"))
             {
                 this.ResetToDefault();
             }
-            if (Widgets.ButtonText(new Rect(90, 0, 60, WidgetUtil.NavButtonSize.y), "Save"))
+            if (Widgets.ButtonText(new Rect(90, 0, 60, WidgetUtil.SelectionRowHeight), "Save"))
             {
                 this.saveChangedOnExit = true;
                 this.Close();

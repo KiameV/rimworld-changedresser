@@ -16,23 +16,13 @@
     <reportString>Change hair style and/or color.</reportString>
   </JobDef>
   <JobDef>
-    <defName>ChangeSkinColor</defName>
-    <driverClass>ChangeDresser.DresserJobDriver.JobDriver_ChangeSkinColor</driverClass>
-    <reportString>Change skin color.</reportString>
+    <defName>ChangeBody</defName>
+    <driverClass>ChangeDresser.DresserJobDriver.JobDriver_ChangeBody</driverClass>
+    <reportString>Change body attributes.</reportString>
   </JobDef>
   <JobDef>
-    <defName>ChangeBodyType</defName>
-    <driverClass>ChangeDresser.DresserJobDriver.JobDriver_ChangeBodyType</driverClass>
-    <reportString>Change body type.</reportString>
-  </JobDef>
-  <JobDef>
-    <defName>ChangeHeadType</defName>
-    <driverClass>ChangeDresser.DresserJobDriver.JobDriver_ChangeHeadType</driverClass>
-    <reportString>Change head type.</reportString>
-  </JobDef>
-  <JobDef>
-    <defName>ChangeGender</defName>
-    <driverClass>ChangeDresser.DresserJobDriver.JobDriver_ChangeGender</driverClass>
-    <reportString>Change gender.</reportString>
+    <defName>StoreApparel</defName>
+    <driverClass>ChangeDresser.DresserJobDriver.JobDriver_StoreApparel</driverClass>
+    <reportString>Store Apparel.</reportString>
   </JobDef>
 </JobDefs>

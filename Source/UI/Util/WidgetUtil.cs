@@ -34,19 +34,37 @@ namespace ChangeDresser.UI.Util
     delegate void SelectionChangeListener(object sender);
     delegate void UpdatePawnListener(object sender, object value);
 
-    class WidgetUtil
+    static class WidgetUtil
     {
-        private static readonly Texture2D nextTexture = ContentFinder<Texture2D>.Get("UI/next", true);
-        private static readonly Texture2D previousTexture = ContentFinder<Texture2D>.Get("UI/previous", true);
-        private static readonly Texture2D colorPickerTexture = ContentFinder<Texture2D>.Get("UI/colorpicker", true);
-        private static readonly Texture2D copyIconTexture = ContentFinder<Texture2D>.Get("UI/copy", true);
-        private static readonly Texture2D pasteIconTexture = ContentFinder<Texture2D>.Get("UI/paste", true);
+        public static readonly Texture2D nextTexture = ContentFinder<Texture2D>.Get("UI/next", true);
+        public static readonly Texture2D previousTexture = ContentFinder<Texture2D>.Get("UI/previous", true);
+        public static readonly Texture2D cantTexture = ContentFinder<Texture2D>.Get("UI/x", true);
+        public static readonly Texture2D colorPickerTexture = ContentFinder<Texture2D>.Get("UI/colorpicker", true);
+        public static readonly Texture2D copyIconTexture = ContentFinder<Texture2D>.Get("UI/copy", true);
+        public static readonly Texture2D pasteIconTexture = ContentFinder<Texture2D>.Get("UI/paste", true);
 
         public static readonly Vector2 NavButtonSize = new Vector2(30f, 30f);
         public static readonly Vector2 ButtonSize = new Vector2(150f, 30f);
         public static readonly Vector2 PortraitSize = new Vector2(192f, 192f);
         private static Vector2 scrollPos = new Vector2(0, 0);
         private static readonly Texture2D ColorPreset = new Texture2D(20, 20);
+
+        public static float SelectionRowHeight { get { return NavButtonSize.y; } }
+
+        private static GUIStyle middleCenterGuiStyle = null;
+
+        public static GUIStyle MiddleCenter
+        {
+            get
+            {
+                if (middleCenterGuiStyle == null)
+                {
+                    middleCenterGuiStyle = GUI.skin.label;
+                    middleCenterGuiStyle.alignment = TextAnchor.MiddleCenter;
+                }
+                return middleCenterGuiStyle;
+            }
+        }
 
         public static Rect AddPortraitWidget(float left, float top, DresserDTO dresserDto)
         {
@@ -92,8 +110,6 @@ namespace ChangeDresser.UI.Util
             }
 
             GUI.BeginGroup(new Rect(0, colorPickerRect.height + 30f, width, 20f));
-            GUIStyle centeredStyle = GUI.skin.label;
-            centeredStyle.alignment = TextAnchor.MiddleCenter;
             Color rgbColor = Color.white;
             if (presetsDto.HasSelected())
             {
@@ -103,13 +119,13 @@ namespace ChangeDresser.UI.Util
             {
                 rgbColor = selectionDtos[0].SelectedColor;
             }
-            GUI.Label(new Rect(0f, 0f, 10f, 20f), "R", centeredStyle);
+            GUI.Label(new Rect(0f, 0f, 10f, 20f), "R", MiddleCenter);
             string rText = GUI.TextField(new Rect(12f, 0f, 30f, 20f), ColorConvert(rgbColor.r), 3);
 
-            GUI.Label(new Rect(52f, 0f, 10f, 20f), "G", centeredStyle);
+            GUI.Label(new Rect(52f, 0f, 10f, 20f), "G", MiddleCenter);
             string gText = GUI.TextField(new Rect(64f, 0f, 30f, 20f), ColorConvert(rgbColor.g), 3);
 
-            GUI.Label(new Rect(104f, 0f, 10f, 20f), "B", centeredStyle);
+            GUI.Label(new Rect(104f, 0f, 10f, 20f), "B", MiddleCenter);
             string bText = GUI.TextField(new Rect(116f, 0f, 30f, 20f), ColorConvert(rgbColor.b), 3);
 
             bool skipRGB = false;
@@ -183,44 +199,44 @@ namespace ChangeDresser.UI.Util
             }
         }
 
-        public static void AddSliderWidget(float left, float top, float width, SliderWidgetDTO sliderWidgetDto)
+        public static void AddSliderWidget(float left, float top, float width, string label, SliderWidgetDTO sliderWidgetDto)
         {
-            Text.Anchor = TextAnchor.MiddleCenter;
-            Text.Font = GameFont.Small;
-
-            Rect rect = new Rect(left, top + 5f, width, NavButtonSize.y);
+            Rect rect = new Rect(left, top + 5f, width, SelectionRowHeight);
             GUI.BeginGroup(rect);
 
             GUI.color = Color.white;
+            GUI.Label(new Rect(0, 0, 75, SelectionRowHeight), label, MiddleCenter);
             sliderWidgetDto.SelectedValue = GUI.HorizontalSlider(
-                new Rect(20, 10f, width - 20, NavButtonSize.y), 
+                new Rect(80, 10f, width - 100, SelectionRowHeight), 
                 sliderWidgetDto.SelectedValue, sliderWidgetDto.MinValue, sliderWidgetDto.MaxValue);
 
             GUI.EndGroup();
-
-            Text.Font = GameFont.Medium;
-            Text.Anchor = TextAnchor.UpperLeft;
         }
 
-        public static void AddSelectorWidget(float left, float top, float width, ASelectionWidgetDTO selectionWidgetDto)
+        public static void AddSelectorWidget(float left, float top, float width, string label, ASelectionWidgetDTO selectionWidgetDto)
         {
             const float buffer = 5f;
             Text.Anchor = TextAnchor.MiddleCenter;
 
-            Rect rect = new Rect(left + 50, top, width - 50, NavButtonSize.y);
+            Rect rect = new Rect(left, top, width, SelectionRowHeight);
             GUI.BeginGroup(rect);
             GUI.color = Color.white;
             Text.Font = GameFont.Medium;
-            Rect previousButtonRect = new Rect(0, 0, NavButtonSize.x, NavButtonSize.y);
+            left = 0;
+            if (label != null)
+            {
+                GUI.Label(new Rect(0, 0, 75, SelectionRowHeight), label, MiddleCenter);
+                left = 80;
+            }
+
+            Rect previousButtonRect = new Rect(left, 0, NavButtonSize.x, NavButtonSize.y);
             if (GUI.Button(previousButtonRect, previousTexture))
             {
                 selectionWidgetDto.DecreaseIndex();
             }
 
-            Rect labelRect = new Rect(NavButtonSize.x + buffer, 0, rect.width - (2 * NavButtonSize.x) - (2 * buffer), NavButtonSize.y);
-            var centeredStyle = GUI.skin.label;
-            centeredStyle.alignment = TextAnchor.MiddleCenter;
-            GUI.Label(labelRect, selectionWidgetDto.SelectedItemLabel, centeredStyle);
+            Rect labelRect = new Rect(NavButtonSize.x + buffer + left, 0, rect.width - (2 * NavButtonSize.x) - (2 * buffer) - left, NavButtonSize.y);
+            GUI.Label(labelRect, selectionWidgetDto.SelectedItemLabel, MiddleCenter);
 
             GUI.color = Color.grey;
             Widgets.DrawBox(labelRect, 1);
@@ -239,26 +255,24 @@ namespace ChangeDresser.UI.Util
             Text.Anchor = TextAnchor.MiddleCenter;
             if (apparelSelectionsContainer.Count == 0)
             {
-                var centeredStyle = GUI.skin.label;
-                centeredStyle.alignment = TextAnchor.MiddleCenter;
-                GUI.Label(new Rect(left, top, width, NavButtonSize.y), "No clothing is being worn.", centeredStyle);
+                GUI.Label(new Rect(left, top, width, SelectionRowHeight), "No clothing is being worn.", MiddleCenter);
             }
             else
             {
                 const float cellHeight = 40f;
                 Rect apparelListRect = new Rect(left, top, width, 150f);
-                Rect apparelScrollRect = new Rect(0f, 0f, width - 16f, apparelSelectionsContainer.Count * cellHeight + NavButtonSize.y);
+                Rect apparelScrollRect = new Rect(0f, 0f, width - 16f, apparelSelectionsContainer.Count * cellHeight + SelectionRowHeight);
 
                 GUI.BeginGroup(apparelListRect);
                 scrollPos = GUI.BeginScrollView(new Rect(GenUI.AtZero(apparelListRect)), scrollPos, apparelScrollRect);
 
                 GUI.color = Color.white;
                 Text.Font = GameFont.Small;
-                if (Widgets.ButtonText(new Rect(20, 0, 100, NavButtonSize.y), "Select All"))
+                if (Widgets.ButtonText(new Rect(20, 0, 100, SelectionRowHeight), "Select All"))
                 {
                     apparelSelectionsContainer.SelectAll();
                 }
-                if (Widgets.ButtonText(new Rect(apparelScrollRect.width - 120, 0, 100, NavButtonSize.y), "Deselect All"))
+                if (Widgets.ButtonText(new Rect(apparelScrollRect.width - 120, 0, 100, SelectionRowHeight), "Deselect All"))
                 {
                     apparelSelectionsContainer.DeselectAll();
                 }
@@ -268,7 +282,7 @@ namespace ChangeDresser.UI.Util
                 {
                     ApparelColorSelectionDTO dto = apparelSelectionsContainer[i];
                     Apparel apparel = dto.Apparel;
-                    GUI.BeginGroup(new Rect(0, NavButtonSize.y + 5f + i * cellHeight, apparelListRect.width, cellHeight));
+                    GUI.BeginGroup(new Rect(0, SelectionRowHeight + 5f + i * cellHeight, apparelListRect.width, cellHeight));
 
                     Widgets.ThingIcon(new Rect(0f, 0f, 40f, cellHeight), apparel);
                     Text.Font = GameFont.Small;
