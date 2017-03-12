@@ -39,7 +39,8 @@ namespace ChangeDresser.Util
             try
             { 
                 string fileName;
-                if (TryGetFileName(type, out fileName))
+                if (TryGetFileName(type, out fileName) &&
+                    File.Exists(fileName))
                 {
                     // Load Data
                     using (StreamReader sr = new StreamReader(fileName))
@@ -77,8 +78,9 @@ namespace ChangeDresser.Util
             }
             catch (Exception e)
             {
-                Messages.Message("Problem while loading Color Presets for " + type + ".", MessageSound.Negative);
-                Log.Error(e.GetType() + " " + e.Message);
+                Messages.Message("Problem while loading Color Presets for " + type + ".", MessageSound.Silent);
+                Log.Warning(e.GetType() + " " + e.Message);
+                return CreateDefaultColorPresets();
             }
             return presetsDto;
         }
@@ -93,18 +95,32 @@ namespace ChangeDresser.Util
 
         public static void SaveColorPresets(ColorPresetType type, ColorPresetsDTO presetsDto)
         {
-            string fileName;
-            TryGetFileName(type, out fileName);
-
-            // Write Data
-            using (StreamWriter sw = new StreamWriter(fileName))
+            try
             {
-                sw.WriteLine("Version 1");
-                for (int i = 0; i < presetsDto.Count; ++i)
+                string fileName;
+                if (!TryGetFileName(type, out fileName))
                 {
-                    Color c = presetsDto[i];
-                    sw.WriteLine(c.r + ":" + c.g + ":" + c.b);
+                    throw new Exception("Unable to get file name.");
                 }
+
+                // Write Data
+                using (FileStream fileStream = File.Open(fileName, FileMode.OpenOrCreate, FileAccess.Write))
+                {
+                    using (StreamWriter sw = new StreamWriter(fileStream))
+                    {
+                        sw.WriteLine("Version 1");
+                        for (int i = 0; i < presetsDto.Count; ++i)
+                        {
+                            Color c = presetsDto[i];
+                            sw.WriteLine(c.r + ":" + c.g + ":" + c.b);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Messages.Message("Problem while saving Color Presets for " + type + ".", MessageSound.Silent);
+                Log.Error(e.GetType() + " " + e.Message);
             }
         }
 
@@ -113,11 +129,6 @@ namespace ChangeDresser.Util
             if (TryGetDirectoryPath(type, out fileName))
             {
                 fileName = Path.Combine(fileName, type.ToString() + ".xml");
-                if (!File.Exists(fileName))
-                {
-                    File.Create(fileName);
-                    return false;
-                }
                 return true;
             }
             return false;
