@@ -80,8 +80,9 @@ namespace ChangeDresser.Util
             {
                 Messages.Message("Problem while loading Color Presets for " + type + ".", MessageSound.Silent);
                 Log.Warning(e.GetType() + " " + e.Message);
-                return CreateDefaultColorPresets();
+                presetsDto = CreateDefaultColorPresets();
             }
+            presetsDto.IsModified = false;
             return presetsDto;
         }
 

@@ -31,11 +31,13 @@ namespace ChangeDresser.UI.DTO
 
         private Color[] ColorPresets { get; set; }
         private int SelectedIndex { get; set; }
+        public bool IsModified { get; set; }
 
         public ColorPresetsDTO()
         {
             this.ColorPresets = new Color[6];
             this.Deselect();
+            this.IsModified = false;
         }
 
         public void Deselect()
@@ -60,7 +62,11 @@ namespace ChangeDresser.UI.DTO
 
         public void SetColor(int i, Color c)
         {
-            this.ColorPresets[i] = c;
+            if (!this.ColorPresets[i].Equals(c))
+            {
+                this.ColorPresets[i] = c;
+                this.IsModified = true;
+            }
         }
 
         public void SetSelected(int i)
@@ -71,6 +77,7 @@ namespace ChangeDresser.UI.DTO
         internal void SetSelectedColor(Color c)
         {
             this.ColorPresets[this.SelectedIndex] = c;
+            this.IsModified = true;
         }
 
         public Color this[int i]
@@ -81,7 +88,7 @@ namespace ChangeDresser.UI.DTO
             }
             set
             {
-                this.ColorPresets[i] = value;
+                this.SetColor(i, value);
             }
         }
     }

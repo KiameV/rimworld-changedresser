@@ -95,6 +95,8 @@ namespace ChangeDresser.UI
                         WidgetUtil.AddSelectorWidget(editorLeft, editorTop, editorWidth, "Body Type:", this.dresserDto.BodyTypeSelectionDto);
                         WidgetUtil.AddSelectorWidget(editorLeft, editorTop + WidgetUtil.SelectionRowHeight + 20f, editorWidth, "Head Type:", this.dresserDto.HeadTypeSelectionDto);
                         WidgetUtil.AddSliderWidget(editorLeft, editorTop + ((WidgetUtil.SelectionRowHeight + 20f) * 2f), editorWidth, "Skin Color:", this.dresserDto.SkinColorSliderDto);
+                        GUI.Label(new Rect(editorLeft, 300f, editorWidth, 40f), "Changing Gender may have adverse effects.\nUse at own risk.", WidgetUtil.MiddleCenter);
+                        WidgetUtil.AddSelectorWidget(editorLeft, 340f, editorWidth, "Gender:", this.dresserDto.GenderSelectionDto);
                         break;
                     case CurrentEditorEnum.Hair:
                         WidgetUtil.AddSelectorWidget(editorLeft, editorTop, editorWidth, "Hair Style:", this.dresserDto.HairStyleSelectionDto);
@@ -147,12 +149,34 @@ namespace ChangeDresser.UI
 
         public override void PreClose()
         {
-            base.PreClose();
-            IOUtil.SaveColorPresets(ColorPresetType.Apparel, this.dresserDto.ApparelSelectionsContainer.ColorPresetsDTO);
-            IOUtil.SaveColorPresets(ColorPresetType.Hair, this.dresserDto.HairColorSelectionDto.ColorPresetsDTO);
-            if (!this.saveChangedOnExit)
+            try
             {
-                this.ResetToDefault();
+                base.PreClose();
+
+                if (this.dresserDto.ApparelSelectionsContainer.ColorPresetsDTO.IsModified)
+                {
+                    Messages.Message("Apparel Presets saved.", MessageSound.Silent);
+                    IOUtil.SaveColorPresets(ColorPresetType.Apparel, this.dresserDto.ApparelSelectionsContainer.ColorPresetsDTO);
+                }
+                else
+                    Messages.Message("Apparel Presets not modified.", MessageSound.Silent);
+
+                if (this.dresserDto.HairColorSelectionDto.ColorPresetsDTO.IsModified)
+                {
+                    Messages.Message("Hair Presets saved.", MessageSound.Silent);
+                    IOUtil.SaveColorPresets(ColorPresetType.Hair, this.dresserDto.HairColorSelectionDto.ColorPresetsDTO);
+                }
+                else
+                    Messages.Message("Hair Presets not modified.", MessageSound.Silent);
+
+                if (!this.saveChangedOnExit)
+                {
+                    this.ResetToDefault();
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error("Error on DresserUI.PreClose: " + e.GetType().Name + " " + e.Message);
             }
         }
 
