@@ -25,8 +25,8 @@ namespace ChangeDresser.UI.Enums
 {
     public enum CurrentEditorEnum
     {
-        Hair,
-        ApparelColor,
-        Body,
+        ChangeDresserHair,
+        ChangeDresserApparelColor,
+        ChangeDresserBody,
     }
 }

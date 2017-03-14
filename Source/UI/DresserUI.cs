@@ -74,7 +74,7 @@ namespace ChangeDresser.UI
 
                 Text.Font = GameFont.Medium;
 
-                Widgets.Label(new Rect(0f, 0f, this.InitialSize.y / 2f + 45f, 50f), "Dresser");
+                Widgets.Label(new Rect(0f, 0f, this.InitialSize.y / 2f + 45f, 50f), "ChangeDresser.DresserLabel".Translate());
 
                 float portraitBuffer = 30f;
 
@@ -88,18 +88,18 @@ namespace ChangeDresser.UI
 
                 switch ((CurrentEditorEnum)this.dresserDto.EditorTypeSelectionDto.SelectedItem)
                 {
-                    case CurrentEditorEnum.ApparelColor:
+                    case CurrentEditorEnum.ChangeDresserApparelColor:
                         WidgetUtil.AddAppararelColorSelectionWidget(editorLeft, editorTop, editorWidth, this.dresserDto.ApparelSelectionsContainer);
                         break;
-                    case CurrentEditorEnum.Body:
-                        WidgetUtil.AddSelectorWidget(editorLeft, editorTop, editorWidth, "Body Type:", this.dresserDto.BodyTypeSelectionDto);
-                        WidgetUtil.AddSelectorWidget(editorLeft, editorTop + WidgetUtil.SelectionRowHeight + 20f, editorWidth, "Head Type:", this.dresserDto.HeadTypeSelectionDto);
-                        WidgetUtil.AddSliderWidget(editorLeft, editorTop + ((WidgetUtil.SelectionRowHeight + 20f) * 2f), editorWidth, "Skin Color:", this.dresserDto.SkinColorSliderDto);
-                        GUI.Label(new Rect(editorLeft, 300f, editorWidth, 40f), "Changing Gender may have adverse effects.\nUse at own risk.", WidgetUtil.MiddleCenter);
-                        WidgetUtil.AddSelectorWidget(editorLeft, 340f, editorWidth, "Gender:", this.dresserDto.GenderSelectionDto);
+                    case CurrentEditorEnum.ChangeDresserBody:
+                        WidgetUtil.AddSelectorWidget(editorLeft, editorTop, editorWidth, "ChangeDresser.BodyType".Translate() + ":", this.dresserDto.BodyTypeSelectionDto);
+                        WidgetUtil.AddSelectorWidget(editorLeft, editorTop + WidgetUtil.SelectionRowHeight + 20f, editorWidth, "ChangeDresser.HeadType".Translate() + ":", this.dresserDto.HeadTypeSelectionDto);
+                        WidgetUtil.AddSliderWidget(editorLeft, editorTop + ((WidgetUtil.SelectionRowHeight + 20f) * 2f), editorWidth, "ChangeDresser.SkinColor".Translate() + ":", this.dresserDto.SkinColorSliderDto);
+                        GUI.Label(new Rect(editorLeft, 300f, editorWidth, 40f), "ChangeDresser.GenderChangeWarning".Translate(), WidgetUtil.MiddleCenter);
+                        WidgetUtil.AddSelectorWidget(editorLeft, 340f, editorWidth, "ChangeDresser.Gender".Translate() + ":", this.dresserDto.GenderSelectionDto);
                         break;
-                    case CurrentEditorEnum.Hair:
-                        WidgetUtil.AddSelectorWidget(editorLeft, editorTop, editorWidth, "Hair Style:", this.dresserDto.HairStyleSelectionDto);
+                    case CurrentEditorEnum.ChangeDresserHair:
+                        WidgetUtil.AddSelectorWidget(editorLeft, editorTop, editorWidth, "ChangeDresser.HairStyle".Translate() + ":", this.dresserDto.HairStyleSelectionDto);
                         WidgetUtil.AddColorSelectorWidget(editorLeft, editorTop + WidgetUtil.SelectionRowHeight + 10f, editorWidth, this.dresserDto.HairColorSelectionDto, this.dresserDto.HairColorSelectionDto.ColorPresetsDTO);
                         break;
                 }
@@ -117,11 +117,11 @@ namespace ChangeDresser.UI
                 Text.Anchor = TextAnchor.MiddleCenter;
                 Text.Font = GameFont.Small;
                 GUI.color = Color.white;
-                if (Widgets.ButtonText(new Rect(0, 0, 60, WidgetUtil.SelectionRowHeight), "Reset"))
+                if (Widgets.ButtonText(new Rect(0, 0, 60, WidgetUtil.SelectionRowHeight), "ChangeDresser.Reset".Translate()))
                 {
                     this.ResetToDefault();
                 }
-                if (Widgets.ButtonText(new Rect(90, 0, 60, WidgetUtil.SelectionRowHeight), "Save"))
+                if (Widgets.ButtonText(new Rect(90, 0, 60, WidgetUtil.SelectionRowHeight), "ChangeDresser.Save".Translate()))
                 {
                     this.saveChangedOnExit = true;
                     this.Close();
@@ -155,19 +155,13 @@ namespace ChangeDresser.UI
 
                 if (this.dresserDto.ApparelSelectionsContainer.ColorPresetsDTO.IsModified)
                 {
-                    Messages.Message("Apparel Presets saved.", MessageSound.Silent);
                     IOUtil.SaveColorPresets(ColorPresetType.Apparel, this.dresserDto.ApparelSelectionsContainer.ColorPresetsDTO);
                 }
-                else
-                    Messages.Message("Apparel Presets not modified.", MessageSound.Silent);
 
                 if (this.dresserDto.HairColorSelectionDto.ColorPresetsDTO.IsModified)
                 {
-                    Messages.Message("Hair Presets saved.", MessageSound.Silent);
                     IOUtil.SaveColorPresets(ColorPresetType.Hair, this.dresserDto.HairColorSelectionDto.ColorPresetsDTO);
                 }
-                else
-                    Messages.Message("Hair Presets not modified.", MessageSound.Silent);
 
                 if (!this.saveChangedOnExit)
                 {

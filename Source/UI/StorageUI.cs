@@ -64,19 +64,19 @@ namespace ChangeDresser.UI
             {
                 Text.Font = GameFont.Medium;
                 Text.Anchor = TextAnchor.MiddleCenter;
-                Widgets.Label(new Rect(0, 0, 200, 50), "Apparel Storage");
+                Widgets.Label(new Rect(0, 0, 200, 50), "ChangeDresser.ApparelStorageApparelStorageLabel".Translate());
 
                 Text.Font = GameFont.Small;
-                if (Widgets.ButtonText(new Rect(inRect.width * 0.5f, 10, 200, 30), "Apparel Group"))
+                if (Widgets.ButtonText(new Rect(inRect.width * 0.5f, 10, 200, 30), "ChangeDresser.ApparelGroup".Translate()))
                 {
                     List<FloatMenuOption> list = new List<FloatMenuOption>();
-                    list.Add(new FloatMenuOption("Create From Worn", delegate
+                    list.Add(new FloatMenuOption("ChangeDresser.CreateFromWorn".Translate(), delegate
                     {
                         StorageGroupDTO dto = new StorageGroupDTO();
                         this.Dresser.StorageGroups.Add(dto);
                         Find.WindowStack.Add(new StorageGroupUI(dto, ApparelFromEnum.Pawn, this.Dresser, this.Pawn, true));
                     }));
-                    list.Add(new FloatMenuOption("Create From Stored", delegate
+                    list.Add(new FloatMenuOption("ChangeDresser.CreateFromStorage".Translate(), delegate
                     {
                         StorageGroupDTO dto = new StorageGroupDTO();
                         this.Dresser.StorageGroups.Add(dto);
@@ -88,23 +88,23 @@ namespace ChangeDresser.UI
                         string label = "";
                         if (dto.IsBeingWorn)
                         {
-                            label = label + " (Being worn)";
+                            label = label + " (" + "ChangeDresser.BeingWorn".Translate() + ")";
                         }
 
                         if (!dto.CanPawnAccess(this.Pawn))
                         {
-                            list.Add(new FloatMenuOption("Claim " + dto.Name + label, delegate
+                            list.Add(new FloatMenuOption("ChangeDresser.ClaimApparelGroup".Translate() + " " + dto.Name + label, delegate
                             {
                                 dto.RestrictToPawn(this.Pawn);
                             }));
                         }
                         else
                         {
-                            list.Add(new FloatMenuOption("Edit " + dto.Name + " From Worn" + label, delegate
+                            list.Add(new FloatMenuOption("ChangeDresser.EditApparelGroup".Translate() + " " + dto.Name + " " + "ChangeDresser.FromWorn".Translate() + label, delegate
                             {
                                 Find.WindowStack.Add(new StorageGroupUI(dto, ApparelFromEnum.Pawn, this.Dresser, this.Pawn, false));
                             }));
-                            list.Add(new FloatMenuOption("Edit " + dto.Name + " From Storage" + label, delegate
+                            list.Add(new FloatMenuOption("ChangeDresser.EditApparelGroup".Translate() + " " + dto.Name + " " + "ChangeDresser.FromStorage".Translate() + label, delegate
                             {
                                 Find.WindowStack.Add(new StorageGroupUI(dto, ApparelFromEnum.Storage, this.Dresser, this.Pawn, false));
                             }));

@@ -51,7 +51,7 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
         {
             get
             {
-                return this.genders[base.index].ToString();
+                return this.genders[base.index].ToString().Translate().CapitalizeFirst();
             }
         }
 

@@ -39,7 +39,7 @@ namespace ChangeDresser.DresserJobDriver
             {
                 initAction = delegate
                 {
-                    Find.WindowStack.Add(new DresserUI(DresserDtoFactory.Create(this.GetActor(), base.CurJob, CurrentEditorEnum.Body)));
+                    Find.WindowStack.Add(new DresserUI(DresserDtoFactory.Create(this.GetActor(), base.CurJob, CurrentEditorEnum.ChangeDresserBody)));
                 }
             };
             yield break;

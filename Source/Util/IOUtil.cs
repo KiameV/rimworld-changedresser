@@ -78,7 +78,7 @@ namespace ChangeDresser.Util
             }
             catch (Exception e)
             {
-                Messages.Message("Problem while loading Color Presets for " + type + ".", MessageSound.Silent);
+                Messages.Message("ChangeDresser.ProblemLoadingPreset".Translate() + " " + type + ".", MessageSound.Silent);
                 Log.Warning(e.GetType() + " " + e.Message);
                 presetsDto = CreateDefaultColorPresets();
             }
@@ -120,7 +120,7 @@ namespace ChangeDresser.Util
             }
             catch (Exception e)
             {
-                Messages.Message("Problem while saving Color Presets for " + type + ".", MessageSound.Silent);
+                Messages.Message("ChangeDresser.ProblemSavingPreset".Translate() + " " + type + ".", MessageSound.Silent);
                 Log.Error(e.GetType() + " " + e.Message);
             }
         }

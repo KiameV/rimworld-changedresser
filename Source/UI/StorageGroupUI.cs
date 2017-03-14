@@ -78,11 +78,11 @@ namespace ChangeDresser.UI
             {
                 Text.Font = GameFont.Medium;
                 Text.Anchor = TextAnchor.MiddleCenter;
-                Widgets.Label(new Rect(0, 0, 200, 50), "Apparel Group");
+                Widgets.Label(new Rect(0, 0, 200, 50), "ChangeDresser.ApparelGroupLabel".Translate());
 
                 if (this.StorageGroupDto.IsRestricted)
                 {
-                    Widgets.Label(new Rect(250, 0, 200, 50), "Owner: " + this.StorageGroupDto.RestrictToPawnName);
+                    Widgets.Label(new Rect(250, 0, 200, 50), "ChangeDresser.ApparelGroupOwner".Translate() + ": " + this.StorageGroupDto.RestrictToPawnName);
                 }
 
                 Text.Font = GameFont.Small;
@@ -90,10 +90,10 @@ namespace ChangeDresser.UI
                 Rect rect = new Rect(0, 50, inRect.width, 30);
                 Text.Font = GameFont.Small;
                 GUI.BeginGroup(rect);
-                GUI.Label(new Rect(0, 0, 100, rect.height), "Group Name:", WidgetUtil.MiddleCenter);
+                GUI.Label(new Rect(0, 0, 100, rect.height), "ChangeDresser.ApparelGroupName".Translate() + ":", WidgetUtil.MiddleCenter);
                 this.StorageGroupDto.Name = Widgets.TextField(new Rect(110, 0, 150, rect.height), this.StorageGroupDto.Name);
 
-                GUI.Label(new Rect(280, 0, 120, rect.height), "Restrict to Pawn:", WidgetUtil.MiddleCenter);
+                GUI.Label(new Rect(280, 0, 120, rect.height), "ChangeDresser.ApparelGroupRestrictToPawnCheckBox".Translate() + ":", WidgetUtil.MiddleCenter);
                 bool isRestricted = this.StorageGroupDto.IsRestricted;
                 isRestricted = GUI.Toggle(new Rect(410, 7, rect.height, rect.height), isRestricted, "");
                 if (isRestricted != this.StorageGroupDto.IsRestricted)
@@ -116,8 +116,8 @@ namespace ChangeDresser.UI
                 List<Apparel> groupApparel = this.StorageGroupDto.Apparel;
 
                 GUI.BeginGroup(new Rect(0, 90, inRect.width, 30));
-                GUI.Label(new Rect(0, 0, 100, 30), (string)((this.ApparelFrom == ApparelFromEnum.Pawn) ? "Worn" : "Storage"), WidgetUtil.MiddleCenter);
-                GUI.Label(new Rect(inRect.width * 0.5f, 0, 100, 30), "Apparel Group", WidgetUtil.MiddleCenter);
+                GUI.Label(new Rect(0, 0, 100, 30), ((string)((this.ApparelFrom == ApparelFromEnum.Pawn) ? "ChangeDresser.Worn" : "ChangeDresser.Storage")).Translate(), WidgetUtil.MiddleCenter);
+                GUI.Label(new Rect(inRect.width * 0.5f, 0, 100, 30), "ChangeDresser.ApparelGroup".Translate(), WidgetUtil.MiddleCenter);
                 GUI.EndGroup();
 
                 const float cellHeight = 40f;
@@ -200,13 +200,13 @@ namespace ChangeDresser.UI
                 Text.Font = GameFont.Small;
                 GUI.BeginGroup(new Rect(0, inRect.height - 35, inRect.width, 30));
                 float middle = inRect.width / 2;
-                if (Widgets.ButtonText(new Rect(middle - 110, 0, 100, 30), "Save", true, false, this.StorageGroupDto.HasName()))
+                if (Widgets.ButtonText(new Rect(middle - 110, 0, 100, 30), "ChangeDresser.Save".Translate(), true, false, this.StorageGroupDto.HasName()))
                 {
                     this.StorageGroupDto.ClearWornBy();
                     this.Close();
                 }
                 Rect rightButton = new Rect(middle + 10, 0, 100, 30);
-                if (IsNew && Widgets.ButtonText(rightButton, "Cancel"))
+                if (IsNew && Widgets.ButtonText(rightButton, "ChangeDresser.Cancel".Translate()))
                 {
                     foreach(Apparel apparel in this.StorageGroupDto.Apparel)
                     {
@@ -221,9 +221,9 @@ namespace ChangeDresser.UI
                     {
                         Text.Font = GameFont.Small;
                         rightButton.width = 300;
-                        GUI.Label(rightButton, "Remove All Apparel To Enable Delete", WidgetUtil.MiddleCenter);
+                        GUI.Label(rightButton, "ChangeDresser.RemoveToEnableDelete".Translate(), WidgetUtil.MiddleCenter);
                     }
-                    else if (Widgets.ButtonText(rightButton, "Delete", true, false, this.StorageGroupDto.Apparel.Count == 0))
+                    else if (Widgets.ButtonText(rightButton, "ChangeDresser.Delete".Translate(), true, false, this.StorageGroupDto.Apparel.Count == 0))
                     {
                         this.Dresser.Remove(this.StorageGroupDto);
                         this.Close();

@@ -24,6 +24,7 @@
 using ChangeDresser.UI.Enums;
 using System;
 using System.Collections.Generic;
+using Verse;
 
 namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
 {
@@ -56,7 +57,7 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
         {
             get
             {
-                return this.editors[base.index].ToString();
+                return this.editors[base.index].ToString().Translate();
             }
         }
 

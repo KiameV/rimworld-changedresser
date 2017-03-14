@@ -34,14 +34,25 @@ namespace ChangeDresser.UI.Util
     delegate void SelectionChangeListener(object sender);
     delegate void UpdatePawnListener(object sender, object value);
 
+    [StaticConstructorOnStartup]
     static class WidgetUtil
     {
-        public static readonly Texture2D nextTexture = ContentFinder<Texture2D>.Get("UI/next", true);
-        public static readonly Texture2D previousTexture = ContentFinder<Texture2D>.Get("UI/previous", true);
-        public static readonly Texture2D cantTexture = ContentFinder<Texture2D>.Get("UI/x", true);
-        public static readonly Texture2D colorPickerTexture = ContentFinder<Texture2D>.Get("UI/colorpicker", true);
-        public static readonly Texture2D copyIconTexture = ContentFinder<Texture2D>.Get("UI/copy", true);
-        public static readonly Texture2D pasteIconTexture = ContentFinder<Texture2D>.Get("UI/paste", true);
+        public static readonly Texture2D nextTexture;
+        public static readonly Texture2D previousTexture;
+        public static readonly Texture2D cantTexture;
+        public static readonly Texture2D colorPickerTexture;
+        public static readonly Texture2D copyIconTexture;
+        public static readonly Texture2D pasteIconTexture;
+
+        static WidgetUtil()
+        {
+            nextTexture = ContentFinder<Texture2D>.Get("UI/next", true);
+            previousTexture = ContentFinder<Texture2D>.Get("UI/previous", true);
+            cantTexture = ContentFinder<Texture2D>.Get("UI/x", true);
+            colorPickerTexture = ContentFinder<Texture2D>.Get("UI/colorpicker", true);
+            copyIconTexture = ContentFinder<Texture2D>.Get("UI/copy", true);
+            pasteIconTexture = ContentFinder<Texture2D>.Get("UI/paste", true);
+    }
 
         public static readonly Vector2 NavButtonSize = new Vector2(30f, 30f);
         public static readonly Vector2 ButtonSize = new Vector2(150f, 30f);
@@ -119,13 +130,13 @@ namespace ChangeDresser.UI.Util
             {
                 rgbColor = selectionDtos[0].SelectedColor;
             }
-            GUI.Label(new Rect(0f, 0f, 10f, 20f), "R", MiddleCenter);
+            GUI.Label(new Rect(0f, 0f, 10f, 20f), "ChangeDresser.R".Translate(), MiddleCenter);
             string rText = GUI.TextField(new Rect(12f, 0f, 30f, 20f), ColorConvert(rgbColor.r), 3);
 
-            GUI.Label(new Rect(52f, 0f, 10f, 20f), "G", MiddleCenter);
+            GUI.Label(new Rect(52f, 0f, 10f, 20f), "ChangeDresser.G".Translate(), MiddleCenter);
             string gText = GUI.TextField(new Rect(64f, 0f, 30f, 20f), ColorConvert(rgbColor.g), 3);
 
-            GUI.Label(new Rect(104f, 0f, 10f, 20f), "B", MiddleCenter);
+            GUI.Label(new Rect(104f, 0f, 10f, 20f), "ChangeDresser.B".Translate(), MiddleCenter);
             string bText = GUI.TextField(new Rect(116f, 0f, 30f, 20f), ColorConvert(rgbColor.b), 3);
 
             bool skipRGB = false;
@@ -136,8 +147,8 @@ namespace ChangeDresser.UI.Util
 
                 l += ColorPreset.width + 4;
                 Rect presetRect = new Rect(l, 0f, ColorPreset.width, ColorPreset.height);
-                GUI.Label(presetRect, new GUIContent(ColorPreset, 
-                    "Change: Hold shift and select a preset.\nUnselect: Hold shift and select the same preset."));
+                GUI.Label(presetRect, new GUIContent(ColorPreset,
+                    "ChangeDresser.ColorPresetHelp".Translate()));
                 if (Widgets.ButtonInvisible(presetRect, false))
                 {
                     if (Event.current.shift)
@@ -255,7 +266,7 @@ namespace ChangeDresser.UI.Util
             Text.Anchor = TextAnchor.MiddleCenter;
             if (apparelSelectionsContainer.Count == 0)
             {
-                GUI.Label(new Rect(left, top, width, SelectionRowHeight), "No clothing is being worn.", MiddleCenter);
+                GUI.Label(new Rect(left, top, width, SelectionRowHeight), "ChangeDresser.NoClothingIsWorn".Translate(), MiddleCenter);
             }
             else
             {
@@ -268,11 +279,11 @@ namespace ChangeDresser.UI.Util
 
                 GUI.color = Color.white;
                 Text.Font = GameFont.Small;
-                if (Widgets.ButtonText(new Rect(20, 0, 100, SelectionRowHeight), "Select All"))
+                if (Widgets.ButtonText(new Rect(20, 0, 100, SelectionRowHeight), "ChangeDresser.SelectAll".Translate()))
                 {
                     apparelSelectionsContainer.SelectAll();
                 }
-                if (Widgets.ButtonText(new Rect(apparelScrollRect.width - 120, 0, 100, SelectionRowHeight), "Deselect All"))
+                if (Widgets.ButtonText(new Rect(apparelScrollRect.width - 120, 0, 100, SelectionRowHeight), "ChangeDresser.DeselectAll".Translate()))
                 {
                     apparelSelectionsContainer.DeselectAll();
                 }
@@ -296,7 +307,7 @@ namespace ChangeDresser.UI.Util
                     {
                         GUI.color = Color.gray;
                     }
-                    Widgets.Label(textRect, new GUIContent(apparel.Label, "Hold Shift and click another\nitem to select multiple."));
+                    Widgets.Label(textRect, new GUIContent(apparel.Label, "ChangeDresser.SelectMultipleApparel".Translate()));
                     if (Widgets.ButtonInvisible(textRect, false))
                     {
                         apparelSelectionsContainer.Select(dto, Event.current.shift);

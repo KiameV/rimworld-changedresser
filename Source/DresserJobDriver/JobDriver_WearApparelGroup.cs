@@ -44,7 +44,7 @@ namespace ChangeDresser.DresserJobDriver
                     StorageGroupDTO dto;
                     if (!dresser.TryGetStorageGroup(pawn, apparelGroupName, out dto))
                     {
-                        Messages.Message(pawn.Name.ToStringShort + " was unable to find apparel group " + apparelGroupName + ".", MessageSound.Negative);
+                        Messages.Message(pawn.Name.ToStringShort + " " + "ChangeDresser.UnableToWearApparelGroup".Translate() + " " + apparelGroupName + ".", MessageSound.Negative);
                     }
                     else
                     {

@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	<!-- Window Labels -->
+	<ChangeDresser.DresserLabel>Dresser</ChangeDresser.DresserLabel>
+	<ChangeDresser.ApparelGroupLabel>Apparel Group</ChangeDresser.ApparelGroupLabel>
+	<ChangeDresser.ApparelStorageLabel>Apparel Storage</ChangeDresser.ApparelStorageLabel>
+	
+	<!-- Common Strings -->
+	<ChangeDresser.Worn>Worn</ChangeDresser.Worn>
+	<ChangeDresser.Storage>Storage</ChangeDresser.Storage>
+	<ChangeDresser.Save>Save</ChangeDresser.Save>
+	<ChangeDresser.Reset>Reset</ChangeDresser.Reset>
+	<ChangeDresser.Cancel>Cancel</ChangeDresser.Cancel>
+	<ChangeDresser.Delete>Delete</ChangeDresser.Delete>
+	<ChangeDresser.SelectAll>Select All</ChangeDresser.SelectAll>
+	<ChangeDresser.DeselectAll>Deselect All</ChangeDresser.DeselectAll>
+	
+	<!-- Editor Names (top selection bar in the Dresser window) -->
+	<ChangeDresserHair>Hair Style/Color</ChangeDresserHair>
+	<ChangeDresserApparelColor>Apparel Color</ChangeDresserApparelColor>
+	<ChangeDresserBody>Body</ChangeDresserBody>
+	
+	<!-- Dresser UI -->
+	<ChangeDresser.BodyType>Body Type</ChangeDresser.BodyType>
+	<ChangeDresser.HeadType>Head Type</ChangeDresser.HeadType>
+	<ChangeDresser.SkinColor>Skin Color</ChangeDresser.SkinColor>
+	<ChangeDresser.Gender>Gender</ChangeDresser.Gender>
+	<ChangeDresser.HairStyle>Hair Style</ChangeDresser.HairStyle>
+		
+	<!-- Apparel Group UI -->
+	<ChangeDresser.ApparelGroupOwner>Owner</ChangeDresser.ApparelGroupOwner>
+	<ChangeDresser.ApparelGroupName>Group Name</ChangeDresser.ApparelGroupName>
+	<ChangeDresser.ApparelGroup>Apparel Group</ChangeDresser.ApparelGroup>
+	<ChangeDresser.ApparelGroupRestrictToPawnCheckBox>Restring to Pawn</ChangeDresser.ApparelGroupRestrictToPawnCheckBox>
+	
+	<!-- Apparel Storage UI -->
+	<ChangeDresser.CreateFromWorn>Create From Worn</ChangeDresser.CreateFromWorn>
+	<ChangeDresser.CreateFromStorage>Create From Storage</ChangeDresser.CreateFromStorage>
+	<!-- Informs the user that the pawn is already wearing the apparel group. Appears as "<group name> (<BeingWorn>) -->
+	<ChangeDresser.BeingWorn>Being worn</ChangeDresser.BeingWorn>
+	<!-- Appears when there is an apparel group owned by another pawn. Appears as "<Claim> <group name>" -->
+	<ChangeDresser.ClaimApparelGroup>Claim</ChangeDresser.ClaimApparelGroup>
+	<!-- The following appear as "<Edit> <group name> <FromWorn>" and "<Edit> <group name> <FromStorage>" -->
+	<ChangeDresser.EditApparelGroup></ChangeDresser.EditApparelGroup>
+	<ChangeDresser.FromWorn>From Worn</ChangeDresser.FromWorn>
+	<ChangeDresser.FromStorage>From Storage</ChangeDresser.FromStorage>
+	
+	<!-- Color Selection -->
+	<!-- These refer to the Red (R), Green (G), and Blue (B) values for the selected color -->
+	<ChangeDresser.R>R</ChangeDresser.R>
+	<ChangeDresser.G>G</ChangeDresser.G>
+	<ChangeDresser.B>B</ChangeDresser.B>
+	
+	<!-- Help Text -->
+	<ChangeDresser.RemoveToEnableDelete>Remove All Apparel To Enable Delete</ChangeDresser.RemoveToEnableDelete>
+	<ChangeDresser.GenderChangeWarning>Changing Gender may have adverse effects.\nUse at own risk.</ChangeDresser.GenderChangeWarning>
+	<ChangeDresser.SelectMultipleApparel>Hold Shift and click another\nitem to select multiple.</ChangeDresser.SelectMultipleApparel>
+	<ChangeDresser.ColorPresetHelp>Change: Hold shift and select a preset.\nUnselect: Hold shift and select the same preset.</ChangeDresser.ColorPresetHelp>
+	<ChangeDresser.NoClothingIsWorn>No clothing is being worn.</ChangeDresser.NoClothingIsWorn>
+	
+	<!-- Job Toils -->
+	<ChangeDresser.ChangeApparelColors>Change apparel colors</ChangeDresser.ChangeApparelColors>
+	<ChangeDresser.ChangeHair>Change hair style/color</ChangeDresser.ChangeHair>
+	<ChangeDresser.ChangeBody>Change body attributes</ChangeDresser.ChangeBody>
+	<ChangeDresser.StoreApparel>Store apparel</ChangeDresser.StoreApparel>
+	<ChangeDresser.WearGroup>Wear Group</ChangeDresser.WearGroup>
+	<ChangeDresser.UnwearGroup>Unwear Group</ChangeDresser.UnwearGroup>
+	
+	<!-- Error Messages -->
+	<!-- The text after this string is either Hair Color or Apparel Color -->
+	<ChangeDresser.ProblemSavingPreset>Problem while saving Color Presets for</ChangeDresser.ProblemSavingPreset>
+	<!-- The text after this string is either Hair Color or Apparel Color -->
+	<ChangeDresser.ProblemLoadingPreset>Problem while loading Color Presets for</ChangeDresser.ProblemLoadingPreset>
+	<!-- The text before this string is the pawn's name. Text after this string is the apparel group's name -->
+	<ChangeDresser.UnableToWearApparelGroup>was unable to find apparel group</ChangeDresser.UnableToWearApparelGroup>
+</LanguageData>

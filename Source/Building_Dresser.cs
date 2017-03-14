@@ -49,9 +49,9 @@ namespace ChangeDresser
         {
             base.SpawnSetup(map);
 
-            SupportedEditors.Add(CurrentEditorEnum.ApparelColor);
-            SupportedEditors.Add(CurrentEditorEnum.Body);
-            SupportedEditors.Add(CurrentEditorEnum.Hair);
+            SupportedEditors.Add(CurrentEditorEnum.ChangeDresserApparelColor);
+            SupportedEditors.Add(CurrentEditorEnum.ChangeDresserBody);
+            SupportedEditors.Add(CurrentEditorEnum.ChangeDresserHair);
         }
 
         public override void ExposeData()
@@ -131,7 +131,7 @@ namespace ChangeDresser
             if (pawn.apparel.WornApparel.Count > 0)
             {
                 list.Add(new FloatMenuOption(
-                    "Change outfit's colors",
+                    "ChangeDresser.ChangeApparelColors".Translate(),
                     delegate
                     {
                         Job job = new Job(this.changeApparelColorJobDef, this);
@@ -140,7 +140,7 @@ namespace ChangeDresser
             }
 
             list.Add(new FloatMenuOption(
-                "Change hair style",
+                "ChangeDresser.ChangeHair".Translate(),
                 delegate
                 {
                     Job job = new Job(this.changeHairStyleJobDef, this);
@@ -148,7 +148,7 @@ namespace ChangeDresser
                 }));
 
             list.Add(new FloatMenuOption(
-                "Change body attributes",
+                "ChangeDresser.ChangeBody".Translate(),
                 delegate
                 {
                     Job job = new Job(this.changeBodyJobDef, this);
@@ -156,7 +156,7 @@ namespace ChangeDresser
                 }));
 
             list.Add(new FloatMenuOption(
-                "Store Apparel",
+                "ChangeDresser.StoreApparel".Translate(),
                 delegate
                 {
                     Job job = new Job(this.storeApparelJobDef, this);
@@ -170,7 +170,7 @@ namespace ChangeDresser
                 if (isWearingSet)
                 {
                     list.Add(new FloatMenuOption(
-                    "Unwear Group \"" + dto.Name + "\"",
+                    "ChangeDresser.UnwearGroup".Translate() + " \"" + dto.Name + "\"",
                     delegate
                     {
                         Job job = new SwapApparelJob(this.wearApparelGroupJobDef, this, dto.Name);
@@ -187,7 +187,7 @@ namespace ChangeDresser
                     if (dto.CanPawnAccess(pawn))
                     {
                         list.Add(new FloatMenuOption(
-                            "Wear Group \"" + dto.Name + "\"",
+                            "ChangeDresser.WearGroup".Translate() + " \"" + dto.Name + "\"",
                             delegate
                             {
                                 Job job = new SwapApparelJob(this.wearApparelGroupJobDef, this, dto.Name);
