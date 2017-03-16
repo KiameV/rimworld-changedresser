@@ -64,7 +64,7 @@ namespace ChangeDresser.UI
             {
                 Text.Font = GameFont.Medium;
                 Text.Anchor = TextAnchor.MiddleCenter;
-                Widgets.Label(new Rect(0, 0, 200, 50), "ChangeDresser.ApparelStorageApparelStorageLabel".Translate());
+                Widgets.Label(new Rect(0, 0, 200, 50), "ChangeDresser.ApparelStorageLabel".Translate());
 
                 Text.Font = GameFont.Small;
                 if (Widgets.ButtonText(new Rect(inRect.width * 0.5f, 10, 200, 30), "ChangeDresser.ApparelGroup".Translate()))

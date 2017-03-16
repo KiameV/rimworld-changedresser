@@ -41,7 +41,7 @@
 	<!-- Appears when there is an apparel group owned by another pawn. Appears as "<Claim> <group name>" -->
 	<ChangeDresser.ClaimApparelGroup>Claim</ChangeDresser.ClaimApparelGroup>
 	<!-- The following appear as "<Edit> <group name> <FromWorn>" and "<Edit> <group name> <FromStorage>" -->
-	<ChangeDresser.EditApparelGroup></ChangeDresser.EditApparelGroup>
+	<ChangeDresser.EditApparelGroup>Edit</ChangeDresser.EditApparelGroup>
 	<ChangeDresser.FromWorn>From Worn</ChangeDresser.FromWorn>
 	<ChangeDresser.FromStorage>From Storage</ChangeDresser.FromStorage>
 	
