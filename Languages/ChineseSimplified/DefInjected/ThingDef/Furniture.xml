@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <ChangeDresser.label>梳妆台</ChangeDresser.label>
+  <ChangeDresser.Description>改变你的服装颜色或存取服装。</ChangeDresser.Description>
+  <ChangeDresser_Blueprint.label>梳妆台（蓝图）</ChangeDresser_Blueprint.label>
+  <ChangeDresser_Blueprint_Install.label>梳妆台（蓝图）</ChangeDresser_Blueprint_Install.label>
+  <ChangeDresser_Frame.label>梳妆台（建造中）</ChangeDresser_Frame.label>
+  <ChangeMirror.label>穿衣镜</ChangeMirror.label>
+  <ChangeMirror.Description>化妆和染发。</ChangeMirror.Description>
+  <ChangeMirror_Blueprint.label>穿衣镜（蓝图）</ChangeMirror_Blueprint.label>
+  <ChangeMirror_Frame.label>穿衣镜（建造中）</ChangeMirror_Frame.label>
+</LanguageData>
