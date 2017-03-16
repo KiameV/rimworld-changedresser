@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- Window Labels -->
+  <ChangeDresser.DresserLabel>梳妝檯</ChangeDresser.DresserLabel>
+  <ChangeDresser.ApparelGroupLabel>服裝方案</ChangeDresser.ApparelGroupLabel>
+  <ChangeDresser.ApparelStorageLabel>服裝庫存</ChangeDresser.ApparelStorageLabel>
+  <!-- Common Strings -->
+  <ChangeDresser.Worn>已裝備</ChangeDresser.Worn>
+  <ChangeDresser.Storage>庫存</ChangeDresser.Storage>
+  <ChangeDresser.Save>保存</ChangeDresser.Save>
+  <ChangeDresser.Reset>重置</ChangeDresser.Reset>
+  <ChangeDresser.Cancel>取消</ChangeDresser.Cancel>
+  <ChangeDresser.Delete>刪除</ChangeDresser.Delete>
+  <ChangeDresser.SelectAll>全選</ChangeDresser.SelectAll>
+  <ChangeDresser.DeselectAll>取消全部</ChangeDresser.DeselectAll>
+  <!-- Editor Names (top selection bar in the Dresser window) -->
+  <ChangeDresserHair>髮型/發色</ChangeDresserHair>
+  <ChangeDresserApparelColor>裝備顏色</ChangeDresserApparelColor>
+  <ChangeDresserBody>身體特徵</ChangeDresserBody>
+  <!-- Dresser UI -->
+  <ChangeDresser.BodyType>體形</ChangeDresser.BodyType>
+  <ChangeDresser.HeadType>臉型</ChangeDresser.HeadType>
+  <ChangeDresser.SkinColor>膚色</ChangeDresser.SkinColor>
+  <ChangeDresser.Gender>性別</ChangeDresser.Gender>
+  <ChangeDresser.HairStyle>髮型</ChangeDresser.HairStyle>
+  <!-- Apparel Group UI -->
+  <ChangeDresser.ApparelGroupOwner>擁有者</ChangeDresser.ApparelGroupOwner>
+  <ChangeDresser.ApparelGroupName>方案名</ChangeDresser.ApparelGroupName>
+  <ChangeDresser.ApparelGroup>服裝方案</ChangeDresser.ApparelGroup>
+  <ChangeDresser.ApparelGroupRestrictToPawnCheckBox>與殖民者綁定</ChangeDresser.ApparelGroupRestrictToPawnCheckBox>
+  <!-- Apparel Storage UI -->
+  <ChangeDresser.CreateFromWorn>從當前著裝創建</ChangeDresser.CreateFromWorn>
+  <ChangeDresser.CreateFromStorage>從已有庫存創建</ChangeDresser.CreateFromStorage>
+  <!-- Informs the user that the pawn is already wearing the apparel group. Appears as "<group name> (<BeingWorn>) -->
+  <ChangeDresser.BeingWorn>已穿戴</ChangeDresser.BeingWorn>
+  <!-- Appears when there is an apparel group owned by another pawn. Appears as "<Claim> <group name>" -->
+  <ChangeDresser.ClaimApparelGroup>占有</ChangeDresser.ClaimApparelGroup>
+  <!-- The following appear as "<Edit> <group name> <FromWorn>" and "<Edit> <group name> <FromStorage>" -->
+  <ChangeDresser.EditApparelGroup>更改方案</ChangeDresser.EditApparelGroup>
+  <ChangeDresser.FromWorn>與當前著裝</ChangeDresser.FromWorn>
+  <ChangeDresser.FromStorage>與已有庫存</ChangeDresser.FromStorage>
+  <!-- Color Selection -->
+  <!-- These refer to the Red (R), Green (G), and Blue (B) values for the selected color -->
+  <ChangeDresser.R>R</ChangeDresser.R>
+  <ChangeDresser.G>G</ChangeDresser.G>
+  <ChangeDresser.B>B</ChangeDresser.B>
+  <!-- Help Text -->
+  <ChangeDresser.RemoveToEnableDelete>移除所有服裝後才可刪除方案。</ChangeDresser.RemoveToEnableDelete>
+  <ChangeDresser.GenderChangeWarning>改變性別可能有不利影響。\n請自行斟酌。</ChangeDresser.GenderChangeWarning>
+  <ChangeDresser.SelectMultipleApparel>按住Shift並單擊另一個\n道具來選擇多個。</ChangeDresser.SelectMultipleApparel>
+  <ChangeDresser.ColorPresetHelp>修改：按住Shift並選擇一個預設。\n取消選擇：按住Shift並選擇當前預設。</ChangeDresser.ColorPresetHelp>
+  <ChangeDresser.NoClothingIsWorn>沒有穿戴中的服裝。</ChangeDresser.NoClothingIsWorn>
+  <!-- Job Toils -->
+  <ChangeDresser.ChangeApparelColors>改變服裝顏色</ChangeDresser.ChangeApparelColors>
+  <ChangeDresser.ChangeHair>改變髮型或發色</ChangeDresser.ChangeHair>
+  <ChangeDresser.ChangeBody>改變身體特徵</ChangeDresser.ChangeBody>
+  <ChangeDresser.StoreApparel>存取服裝</ChangeDresser.StoreApparel>
+  <ChangeDresser.WearGroup>穿上服裝方案</ChangeDresser.WearGroup>
+  <ChangeDresser.UnwearGroup>脫下服裝方案</ChangeDresser.UnwearGroup>
+  <!-- Error Messages -->
+  <!-- The text after this string is either Hair Color or Apparel Color -->
+  <ChangeDresser.ProblemSavingPreset>存儲以下顏色預設方案時出錯：</ChangeDresser.ProblemSavingPreset>
+  <!-- The text after this string is either Hair Color or Apparel Color -->
+  <ChangeDresser.ProblemLoadingPreset>加載以下顏色預設方案時出錯：</ChangeDresser.ProblemLoadingPreset>
+  <!-- The text before this string is the pawn's name. Text after this string is the apparel group's name -->
+  <ChangeDresser.UnableToWearApparelGroup>無法找到服裝方案：</ChangeDresser.UnableToWearApparelGroup>
+</LanguageData>
