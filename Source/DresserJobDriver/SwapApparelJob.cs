@@ -24,7 +24,7 @@
 using Verse;
 using Verse.AI;
 
-namespace ChangeDresser.UI.DTO.StorageDTOs
+namespace ChangeDresser.DresserJobDriver
 {
     class SwapApparelJob : Job
     {

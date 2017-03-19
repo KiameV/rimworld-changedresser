@@ -23,12 +23,14 @@
  */
 using RimWorld;
 using System.Collections.Generic;
+using System.Text;
 using Verse;
 
 namespace ChangeDresser.UI.DTO.StorageDTOs
 {
     public class StorageGroupDTO : IExposable
     {
+
         private List<Apparel> apparelList = new List<Apparel>();
         private string name = "";
         private string restrictToPawnId = "";
@@ -36,6 +38,18 @@ namespace ChangeDresser.UI.DTO.StorageDTOs
         private bool forceSwitchBattle = false;
         private string isBeingWornById = "";
         private string isBeingWornByName = "";
+
+        private static int idCount = 0;
+        public readonly int Id;
+
+        public StorageGroupDTO()
+        {
+            this.Id = idCount;
+            ++idCount;
+#if (CHANGE_DRESSER_DEBUG)
+            Log.Message("StorageGroupDTO Id: " + this.Id);
+#endif
+        }
 
         public bool HasName()
         {
@@ -68,6 +82,33 @@ namespace ChangeDresser.UI.DTO.StorageDTOs
             Scribe_Values.LookValue<string>(ref this.isBeingWornById, "isBeingWornById", "", false);
             Scribe_Values.LookValue<string>(ref this.isBeingWornByName, "isBeingWornByName", "", false);
             Scribe_Collections.LookList(ref this.apparelList, "apparelList", LookMode.Deep, new object[0]);
+
+#if (CHANGE_DRESSER_DEBUG)
+            Log.Message(this.ToString());
+#endif
+            if (this.ForceSwitchBattle)
+            {
+                StorageGroupDTO dto;
+                if (!BattleApparelGroupDTO.TryGetBattleApparelGroupForPawn(this.restrictToPawnId, out dto))
+                {
+#if (CHANGE_DRESSER_DEBUG)
+                    Log.Message("StorageGroup.ExposeData: Add StorageGroupDTO to BattleApparelGroupDTO");
+#endif
+                    BattleApparelGroupDTO.AddBattleGroup(this);
+                }
+                else
+                {
+#if (CHANGE_DRESSER_DEBUG)
+                    Log.Message("StorageGroup.ExposeData: BattleApparelGroupDTO already has dto");
+#endif
+                }
+            }
+#if (CHANGE_DRESSER_DEBUG)
+            else
+            {
+                Log.Message("StorageGroup.ExposeData: NOT adding StorageGroupDTO to BattleApparelGroupDTO");
+            }
+#endif
         }
 
         public void SwapWith(Pawn pawn)
@@ -108,10 +149,24 @@ namespace ChangeDresser.UI.DTO.StorageDTOs
 
         public void RestrictToPawn(Pawn pawn)
         {
-            this.restrictToPawnId = pawn.ThingID;
             this.restrictToPawnName = pawn.Name.ToStringShort;
-            this.isBeingWornById = "";
-            this.isBeingWornByName = "";
+
+            if (!pawn.ThingID.Equals(this.restrictToPawnId))
+            {
+                if (this.IsRestricted && this.ForceSwitchBattle)
+                {
+                    BattleApparelGroupDTO.RemoveBattleGroup(this);
+                }
+
+                this.restrictToPawnId = pawn.ThingID;
+                this.isBeingWornById = "";
+                this.isBeingWornByName = "";
+
+                if (this.ForceSwitchBattle)
+                {
+                    BattleApparelGroupDTO.AddBattleGroup(this);
+                }
+            }
         }
 
         public List<Apparel> Apparel { get { return this.apparelList; } }
@@ -120,7 +175,7 @@ namespace ChangeDresser.UI.DTO.StorageDTOs
         {
             get
             {
-                if (this.restrictToPawnId == "")
+                if (this.restrictToPawnId == null)
                     return false;
                 if (this.restrictToPawnId.Length == 0)
                     return false;
@@ -131,19 +186,42 @@ namespace ChangeDresser.UI.DTO.StorageDTOs
         public string RestrictToPawnId
         {
             get { return this.restrictToPawnId; }
-            set { this.restrictToPawnId = value; }
         }
 
         public string RestrictToPawnName
         {
             get { return this.restrictToPawnName; }
-            set { this.restrictToPawnName = value; }
         }
 
         public bool ForceSwitchBattle
         {
             get { return this.forceSwitchBattle; }
-            set { this.forceSwitchBattle = value; }
+        }
+
+        public void SetForceSwitchBattle(bool forceSwitchBattle, Pawn pawn)
+        {
+            if (this.forceSwitchBattle != forceSwitchBattle)
+            {
+                this.forceSwitchBattle = forceSwitchBattle;
+                if (pawn != null && this.forceSwitchBattle)
+                {
+                    if (!this.CanPawnAccess(pawn))
+                    {
+                        this.Unrestrict();
+                    }
+                    this.RestrictToPawn(pawn);
+                }
+
+                if (this.IsRestricted && this.forceSwitchBattle)
+                {
+                    BattleApparelGroupDTO.AddBattleGroup(this);
+                }
+                else
+                {
+                    BattleApparelGroupDTO.RemoveBattleGroup(this);
+                    this.forceSwitchBattle = false;
+                }
+            }
         }
 
         public bool IsBeingWorn
@@ -171,8 +249,55 @@ namespace ChangeDresser.UI.DTO.StorageDTOs
 
         public void Unrestrict()
         {
+            if (this.IsRestricted && this.ForceSwitchBattle)
+            {
+                BattleApparelGroupDTO.RemoveBattleGroup(this);
+                this.forceSwitchBattle = false;
+            }
+
             this.restrictToPawnId = "";
             this.restrictToPawnName = "";
+        }
+
+        public void Delete()
+        {
+            BattleApparelGroupDTO.RemoveBattleGroup(this);
+            this.forceSwitchBattle = false;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj != null && obj is StorageGroupDTO)
+            {
+                return ((StorageGroupDTO)obj).Id == this.Id;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Id;
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder("StorageGroupDTO: ");
+            sb.Append("] Id: [");
+            sb.Append(this.Id);
+            sb.Append("name: [");
+            sb.Append(this.name);
+            sb.Append("] restrictToPawnId: [");
+            sb.Append(this.restrictToPawnId);
+            sb.Append("] restrictToPawnName: [");
+            sb.Append(this.restrictToPawnName);
+            sb.Append("] forceSwitchBattle: [");
+            sb.Append(this.forceSwitchBattle);
+            sb.Append("] isBeingWornById: [");
+            sb.Append(this.isBeingWornById);
+            sb.Append("] isBeingWornByName: [");
+            sb.Append(this.isBeingWornByName);
+            sb.Append("]");
+            return sb.ToString();
         }
     }
 }

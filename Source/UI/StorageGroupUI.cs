@@ -31,7 +31,7 @@ using System.Collections.Generic;
 
 namespace ChangeDresser.UI
 {
-    class StorageGroupUI : Window
+    public class StorageGroupUI : Window
     {
         public enum ApparelFromEnum { Pawn, Storage };
         private readonly Building_Dresser Dresser;
@@ -108,8 +108,14 @@ namespace ChangeDresser.UI
                     }
                 }
 
-                //GUI.Label(new Rect(440, 0, 150, rect.height), "Force Switch Combat:", WidgetUtil.MiddleCenter);
-                //this.storageGroupDto.ForceSwitchBattle = GUI.Toggle(new Rect(600, 7, rect.height, rect.height), this.storageGroupDto.ForceSwitchBattle, "");
+                // This is not shown by default. This is here to add support for another mod Change Dresser - Switch When Drafted
+                if (BattleApparelGroupDTO.ShowForceBattleSwitch)
+                {
+                    GUI.Label(new Rect(440, 0, 150, rect.height), "ChangeDresser.ForceSwitchCombat".Translate() + ":", WidgetUtil.MiddleCenter);
+                    this.StorageGroupDto.SetForceSwitchBattle(
+                        GUI.Toggle(new Rect(600, 7, rect.height, rect.height), this.StorageGroupDto.ForceSwitchBattle, ""), 
+                        this.Pawn);
+                }
                 GUI.EndGroup();
 
                 List<Apparel> possibleApparel = (this.ApparelFrom == ApparelFromEnum.Pawn) ? this.Pawn.apparel.WornApparel : this.Dresser.StoredApparel;
@@ -225,6 +231,7 @@ namespace ChangeDresser.UI
                     }
                     else if (Widgets.ButtonText(rightButton, "ChangeDresser.Delete".Translate(), true, false, this.StorageGroupDto.Apparel.Count == 0))
                     {
+                        this.StorageGroupDto.Delete();
                         this.Dresser.Remove(this.StorageGroupDto);
                         this.Close();
                     }

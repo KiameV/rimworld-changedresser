@@ -82,6 +82,7 @@ namespace ChangeDresser.UI
                         this.Dresser.StorageGroups.Add(dto);
                         Find.WindowStack.Add(new StorageGroupUI(dto, ApparelFromEnum.Storage, this.Dresser, this.Pawn, true));
                     }));
+
                     for (int i = 0; i < this.Dresser.StorageGroups.Count; ++i)
                     {
                         StorageGroupDTO dto = this.Dresser.StorageGroups[i];
@@ -90,10 +91,10 @@ namespace ChangeDresser.UI
                         {
                             label = label + " (" + "ChangeDresser.BeingWorn".Translate() + ")";
                         }
-
+                        
                         if (!dto.CanPawnAccess(this.Pawn))
                         {
-                            list.Add(new FloatMenuOption("ChangeDresser.ClaimApparelGroup".Translate() + " " + dto.Name + label, delegate
+                            list.Add(new FloatMenuOption("ChangeDresser.ClaimApparelGroup".Translate() + " " + dto.Name + " - " + dto.RestrictToPawnName + label, delegate
                             {
                                 dto.RestrictToPawn(this.Pawn);
                             }));

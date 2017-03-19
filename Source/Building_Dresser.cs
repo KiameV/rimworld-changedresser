@@ -21,9 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+using ChangeDresser.DresserJobDriver;
 using ChangeDresser.UI.DTO.StorageDTOs;
 using ChangeDresser.UI.Enums;
 using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -45,6 +47,8 @@ namespace ChangeDresser
         private List<Apparel> storedApparel = new List<Apparel>();
         private List<StorageGroupDTO> storageGroups = new List<StorageGroupDTO>();
 
+        private Map MapBackup { get; set; }
+
         public override void SpawnSetup(Map map)
         {
             base.SpawnSetup(map);
@@ -53,11 +57,89 @@ namespace ChangeDresser
             SupportedEditors.Add(CurrentEditorEnum.ChangeDresserBody);
             SupportedEditors.Add(CurrentEditorEnum.ChangeDresserHair);
         }
+        public override void PostMapInit()
+        {
+            base.PostMapInit();
+            this.MapBackup = base.MapHeld;
+        }
+
+        public override void Discard()
+        {
+            base.Discard();
+#if (CHANGE_DRESSER_DEBUG)
+            Log.Message("Building_Dresser.Discard()");
+#endif
+            this.Dispose();
+        }
+
+        public override void DeSpawn()
+        {
+            base.DeSpawn();
+#if (CHANGE_DRESSER_DEBUG)
+            Log.Message("Building_Dresser.DeSpawn()");
+#endif
+            this.Dispose();
+        }
+
+        private void Dispose()
+        {
+            if (this.storedApparel != null)
+            {
+                DropApparel(this.storedApparel);
+                this.storedApparel.Clear();
+            }
+
+            if (this.storageGroups != null)
+            {
+#if (CHANGE_DRESSER_DEBUG)
+                Log.Message("Building_Dresser.Dispose: Storage Group Count: " + this.storageGroups.Count);
+#endif
+                foreach (StorageGroupDTO dto in this.storageGroups)
+                {
+#if (CHANGE_DRESSER_DEBUG)
+                    Log.Message("Building_Dresser.Dispose: Delete Storage Group: " + dto.Name);
+#endif
+                    DropApparel(dto.Apparel);
+                    dto.Delete();
+                }
+                this.storageGroups.Clear();
+            }
+        }
+
+        private void DropApparel(List<Apparel> apparel)
+        {
+#if (CHANGE_DRESSER_DEBUG)
+            Log.Message("Building_Dresser.DropApparel: Count: " + apparel.Count);
+#endif
+            foreach (Apparel a in apparel)
+            {
+                try
+                {
+                    Thing thing = null;
+                    GenThing.TryDropAndSetForbidden(a, base.Position, this.MapBackup, ThingPlaceMode.Near, out thing, true);
+#if (CHANGE_DRESSER_DEBUG)
+                    Log.Message("Building_Dresser.DropApparel: Dropping: " + thing.def.defName);
+#endif
+                }
+                catch (Exception e)
+                {
+                    Log.Error("ChangeDresser:Building_Dresser.DropApparel error while dropping apparel. " + e.GetType() + " " + e.Message);
+                }
+            }
+        }
 
         public override void ExposeData()
         {
             base.ExposeData();
-            
+
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+            {
+#if (CHANGE_DRESSER_DEBUG)
+                Log.Message("Building_Dresser.ExposeData: Clearing BattleApparelStorageCache");
+#endif
+                BattleApparelGroupDTO.ClearBattleStorageCache();
+            }
+
             Scribe_Collections.LookList(ref this.storedApparel, "storedApparel", LookMode.Deep, new object[0]);
             Scribe_Collections.LookList(ref this.storageGroups, "storageGroups", LookMode.Deep, new object[0]);
         }
