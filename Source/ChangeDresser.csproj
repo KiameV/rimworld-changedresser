@@ -56,7 +56,6 @@
   <ItemGroup>
     <Compile Include="Building_ChangeMirror.cs" />
     <Compile Include="Building_Dresser.cs" />
-    <Compile Include="CDSlotGroup.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeBody.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeHairStyle.cs" />
     <Compile Include="DresserJobDriver\JobDriver_WearApparelGroup.cs" />
