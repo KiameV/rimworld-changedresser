@@ -21,7 +21,7 @@
     <DefineConstants>CHANGE_DRESSER_DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -32,6 +32,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
@@ -55,6 +56,7 @@
   <ItemGroup>
     <Compile Include="Building_ChangeMirror.cs" />
     <Compile Include="Building_Dresser.cs" />
+    <Compile Include="CDSlotGroup.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeBody.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeHairStyle.cs" />
     <Compile Include="DresserJobDriver\JobDriver_WearApparelGroup.cs" />
@@ -85,7 +87,19 @@
     <Compile Include="UI\Util\WidgetUtil.cs" />
     <Compile Include="Util\IOUtil.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\Defs\JobDefs\JobDef_ColourOutfit.xml">
+      <Link>Defs\JobDefs\JobDef_ColourOutfit.xml</Link>
+    </Content>
+    <Content Include="..\Defs\ThingDefs\Furniture.xml">
+      <Link>Defs\ThingDefs\Furniture.xml</Link>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

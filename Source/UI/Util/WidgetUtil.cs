@@ -43,6 +43,7 @@ namespace ChangeDresser.UI.Util
         public static readonly Texture2D colorPickerTexture;
         public static readonly Texture2D copyIconTexture;
         public static readonly Texture2D pasteIconTexture;
+        public static readonly Texture2D dropTexture;
 
         static WidgetUtil()
         {
@@ -52,7 +53,8 @@ namespace ChangeDresser.UI.Util
             colorPickerTexture = ContentFinder<Texture2D>.Get("UI/colorpicker", true);
             copyIconTexture = ContentFinder<Texture2D>.Get("UI/copy", true);
             pasteIconTexture = ContentFinder<Texture2D>.Get("UI/paste", true);
-    }
+            dropTexture = ContentFinder<Texture2D>.Get("UI/drop", true);
+        }
 
         public static readonly Vector2 NavButtonSize = new Vector2(30f, 30f);
         public static readonly Vector2 ButtonSize = new Vector2(150f, 30f);

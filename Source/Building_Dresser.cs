@@ -34,7 +34,7 @@ using Verse.AI;
 
 namespace ChangeDresser
 {
-    public class Building_Dresser : Building
+    public class Building_Dresser : Building_Storage, IStoreSettingsParent
     {
         private JobDef changeApparelColorJobDef = DefDatabase<JobDef>.GetNamed("ChangeApparelColor", true);
         private JobDef changeHairStyleJobDef = DefDatabase<JobDef>.GetNamed("ChangeHairStyle", true);
@@ -51,33 +51,42 @@ namespace ChangeDresser
 
         public override void SpawnSetup(Map map)
         {
+            if (settings == null)
+            {
+                this.settings = new StorageSettings(this);
+                this.settings.CopyFrom(this.def.building.defaultStorageSettings);
+                this.settings.filter.SetDisallowAll();
+            }
+
             base.SpawnSetup(map);
+
+            this.MapBackup = base.MapHeld;
 
             SupportedEditors.Add(CurrentEditorEnum.ChangeDresserApparelColor);
             SupportedEditors.Add(CurrentEditorEnum.ChangeDresserBody);
             SupportedEditors.Add(CurrentEditorEnum.ChangeDresserHair);
         }
-        public override void PostMapInit()
+
+        public override void Notify_ReceivedThing(Thing newItem)
         {
-            base.PostMapInit();
-            this.MapBackup = base.MapHeld;
+            base.Notify_ReceivedThing(newItem);
+            if (!this.StoredApparel.Contains((Apparel)newItem))
+            {
+                if (newItem.Spawned)
+                    newItem.DeSpawn();
+                this.storedApparel.Add((Apparel)newItem);
+            }
         }
 
         public override void Discard()
         {
             base.Discard();
-#if (CHANGE_DRESSER_DEBUG)
-            Log.Message("Building_Dresser.Discard()");
-#endif
             this.Dispose();
         }
 
         public override void DeSpawn()
         {
             base.DeSpawn();
-#if (CHANGE_DRESSER_DEBUG)
-            Log.Message("Building_Dresser.DeSpawn()");
-#endif
             this.Dispose();
         }
 
@@ -91,40 +100,44 @@ namespace ChangeDresser
 
             if (this.storageGroups != null)
             {
-#if (CHANGE_DRESSER_DEBUG)
-                Log.Message("Building_Dresser.Dispose: Storage Group Count: " + this.storageGroups.Count);
-#endif
                 foreach (StorageGroupDTO dto in this.storageGroups)
                 {
-#if (CHANGE_DRESSER_DEBUG)
-                    Log.Message("Building_Dresser.Dispose: Delete Storage Group: " + dto.Name);
-#endif
                     DropApparel(dto.Apparel);
                     dto.Delete();
                 }
                 this.storageGroups.Clear();
             }
+
+            this.MapBackup = null;
         }
 
         private void DropApparel(List<Apparel> apparel)
         {
-#if (CHANGE_DRESSER_DEBUG)
-            Log.Message("Building_Dresser.DropApparel: Count: " + apparel.Count);
-#endif
             foreach (Apparel a in apparel)
             {
-                try
+                this.DropApparel(a);
+            }
+        }
+
+        private void DropApparel(Apparel a, bool makeForbidden = true)
+        {
+            try
+            {
+                Thing t;
+                GenThing.TryDropAndSetForbidden(a, base.Position, base.MapHeld, ThingPlaceMode.Near, out t, makeForbidden);
+                //GenPlace.TryPlaceThing(a, base.Position, base.Map, ThingPlaceMode.Near);
+                if (!a.Spawned)
+                    a.SpawnSetup(base.Map);
+                if (a.Position.Equals(base.Position))
                 {
-                    Thing thing = null;
-                    GenThing.TryDropAndSetForbidden(a, base.Position, this.MapBackup, ThingPlaceMode.Near, out thing, true);
-#if (CHANGE_DRESSER_DEBUG)
-                    Log.Message("Building_Dresser.DropApparel: Dropping: " + thing.def.defName);
-#endif
+                    IntVec3 pos = a.Position;
+                    pos.z = pos.z - 1;
+                    a.Position = pos;
                 }
-                catch (Exception e)
-                {
-                    Log.Error("ChangeDresser:Building_Dresser.DropApparel error while dropping apparel. " + e.GetType() + " " + e.Message);
-                }
+            }
+            catch (Exception e)
+            {
+                Log.Error("ChangeDresser:Building_Dresser.DropApparel error while dropping apparel. " + e.GetType() + " " + e.Message);
             }
         }
 
@@ -134,9 +147,6 @@ namespace ChangeDresser
 
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
-#if (CHANGE_DRESSER_DEBUG)
-                Log.Message("Building_Dresser.ExposeData: Clearing BattleApparelStorageCache");
-#endif
                 BattleApparelGroupDTO.ClearBattleStorageCache();
             }
 
@@ -146,7 +156,16 @@ namespace ChangeDresser
 
         public override string GetInspectString()
         {
+            this.Tick();
             StringBuilder sb = new StringBuilder(base.GetInspectString());
+            sb.Append("Pieces of Apparel: ");
+            sb.Append(this.StoredApparel.Count);
+            sb.Append("\n");
+            sb.Append("Apparel Groups: ");
+            sb.Append(this.StorageGroups.Count);
+            sb.Append("\n");
+            sb.Append("Storage Priority: ");
+            sb.Append(base.settings.Priority);
             //sb.AppendLine("Stored Items: ".Translate() + ": " + -10f.ToStringTemperature("F0"));
             return sb.ToString();
         }
@@ -175,6 +194,12 @@ namespace ChangeDresser
                     this.storageGroups = new List<StorageGroupDTO>();
                 return this.storageGroups;
             }
+        }
+
+        public void Remove(Apparel a, bool forbidden = true)
+        {
+            this.DropApparel(a, forbidden);
+            this.StoredApparel.Remove(a);
         }
 
         public void Remove(StorageGroupDTO storageGroupDto)
@@ -206,7 +231,30 @@ namespace ChangeDresser
             return false;
         }
 
-        [DebuggerHidden]
+        private Stopwatch stopWatch = new Stopwatch();
+        public override void TickLong()
+        {
+            if (!this.stopWatch.IsRunning)
+                this.stopWatch.Start();
+            else
+            {
+                // Do this every minute
+                if (this.stopWatch.ElapsedMilliseconds > 60000)
+                {
+                    for (int i = this.StoredApparel.Count - 1; i >= 0; --i)
+                    {
+                        Apparel a = this.StoredApparel[i];
+                        if (!this.settings.filter.Allows(a))
+                        {
+                            this.DropApparel(a, false);
+                            this.StoredApparel.RemoveAt(i);
+                        }
+                    }
+                    this.stopWatch.Reset();
+                }
+            }
+        }
+        
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Pawn pawn)
         {
             List<FloatMenuOption> list = new List<FloatMenuOption>();

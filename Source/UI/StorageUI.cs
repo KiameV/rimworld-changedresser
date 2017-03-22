@@ -204,7 +204,14 @@ namespace ChangeDresser.UI
                     Widgets.ThingIcon(new Rect(35f, 0f, cellHeight, cellHeight), apparel);
                     Text.Font = GameFont.Small;
                     Text.Anchor = TextAnchor.MiddleCenter;
-                    Widgets.Label(new Rect(cellHeight + 45f, 0f, rowRect.width - cellHeight - 45f, cellHeight), apparel.Label);
+                    Widgets.Label(new Rect(cellHeight + 45f, 0f, rowRect.width - cellHeight - 90f, cellHeight), apparel.Label);
+
+                    if (Widgets.ButtonImage(new Rect(rowRect.width - 45f, 0f, cellHeight, cellHeight), WidgetUtil.dropTexture))
+                    {
+                        this.Dresser.Remove(apparel, false);
+                        GUI.EndGroup();
+                        break;
+                    }
 
                     GUI.EndGroup();
                 }
