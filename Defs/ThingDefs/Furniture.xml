@@ -43,7 +43,7 @@
         </filter>
       </fixedStorageSettings>
       <defaultStorageSettings>
-        <priority>Important</priority>
+        <priority>Low</priority>
         <filter>
           <categories>
             <li>Apparel</li>

@@ -31,7 +31,8 @@
 	<ChangeDresser.ApparelGroupOwner>Owner</ChangeDresser.ApparelGroupOwner>
 	<ChangeDresser.ApparelGroupName>Group Name</ChangeDresser.ApparelGroupName>
 	<ChangeDresser.ApparelGroup>Apparel Group</ChangeDresser.ApparelGroup>
-	<ChangeDresser.ApparelGroupRestrictToPawnCheckBox>Restring to Pawn</ChangeDresser.ApparelGroupRestrictToPawnCheckBox>
+	<ChangeDresser.ApparelGroupRestrictToPawnCheckBox>Restrict to Pawn</ChangeDresser.ApparelGroupRestrictToPawnCheckBox>
+	<ChangeDresser.ForceSwitchCombat>Change When Drafted</ChangeDresser.ForceSwitchCombat>
 	
 	<!-- Apparel Storage UI -->
 	<ChangeDresser.CreateFromWorn>Create From Worn</ChangeDresser.CreateFromWorn>

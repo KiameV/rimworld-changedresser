@@ -30,4 +30,9 @@
     <driverClass>ChangeDresser.DresserJobDriver.JobDriver_WearApparelGroup</driverClass>
     <reportString>Wear apparel group.</reportString>
   </JobDef>
+  <JobDef>
+    <defName>WearApparelFromStorage</defName>
+    <driverClass>ChangeDresser.DresserJobDriver.JobDriver_WearApparelFromStorage</driverClass>
+    <reportString>wearing TargetA.</reportString>
+  </JobDef>
 </JobDefs>

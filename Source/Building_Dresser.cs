@@ -36,13 +36,16 @@ namespace ChangeDresser
 {
     public class Building_Dresser : Building_Storage, IStoreSettingsParent
     {
-        private JobDef changeApparelColorJobDef = DefDatabase<JobDef>.GetNamed("ChangeApparelColor", true);
-        private JobDef changeHairStyleJobDef = DefDatabase<JobDef>.GetNamed("ChangeHairStyle", true);
-        private JobDef changeBodyJobDef = DefDatabase<JobDef>.GetNamed("ChangeBody", true);
-        private JobDef storeApparelJobDef = DefDatabase<JobDef>.GetNamed("StoreApparel", true);
-        private JobDef wearApparelGroupJobDef = DefDatabase<JobDef>.GetNamed("WearApparelGroup", true);
+        public readonly JobDef changeApparelColorJobDef = DefDatabase<JobDef>.GetNamed("ChangeApparelColor", true);
+        public readonly JobDef changeHairStyleJobDef = DefDatabase<JobDef>.GetNamed("ChangeHairStyle", true);
+        public readonly JobDef changeBodyJobDef = DefDatabase<JobDef>.GetNamed("ChangeBody", true);
+        public readonly JobDef storeApparelJobDef = DefDatabase<JobDef>.GetNamed("StoreApparel", true);
+        public readonly JobDef wearApparelGroupJobDef = DefDatabase<JobDef>.GetNamed("WearApparelGroup", true);
+        public readonly JobDef wearApparelFromStorageJobDef = DefDatabase<JobDef>.GetNamed("WearApparelFromStorage", true);
 
         public readonly List<CurrentEditorEnum> SupportedEditors = new List<CurrentEditorEnum>();
+
+        public static StoragePriority DefaultStoragePriority = StoragePriority.Low;
 
         private List<Apparel> storedApparel = new List<Apparel>();
         private List<StorageGroupDTO> storageGroups = new List<StorageGroupDTO>();
@@ -53,9 +56,9 @@ namespace ChangeDresser
         {
             if (settings == null)
             {
-                this.settings = new StorageSettings(this);
-                this.settings.CopyFrom(this.def.building.defaultStorageSettings);
-                this.settings.filter.SetDisallowAll();
+                base.settings = new StorageSettings(this);
+                base.settings.CopyFrom(this.def.building.defaultStorageSettings);
+                base.settings.filter.SetDisallowAll();
             }
 
             base.SpawnSetup(map);
@@ -158,14 +161,14 @@ namespace ChangeDresser
         {
             this.Tick();
             StringBuilder sb = new StringBuilder(base.GetInspectString());
+            sb.Append("Storage Priority: ");
+            sb.Append(base.settings.Priority);
+            sb.Append("\n");
             sb.Append("Pieces of Apparel: ");
             sb.Append(this.StoredApparel.Count);
             sb.Append("\n");
             sb.Append("Apparel Groups: ");
             sb.Append(this.StorageGroups.Count);
-            sb.Append("\n");
-            sb.Append("Storage Priority: ");
-            sb.Append(base.settings.Priority);
             //sb.AppendLine("Stored Items: ".Translate() + ": " + -10f.ToStringTemperature("F0"));
             return sb.ToString();
         }

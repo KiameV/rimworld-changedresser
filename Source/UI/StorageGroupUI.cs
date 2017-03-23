@@ -40,7 +40,8 @@ namespace ChangeDresser.UI
         private readonly ApparelFromEnum ApparelFrom;
         private readonly bool IsNew;
 
-        private Vector2 scrollPos = new Vector2(0, 0);
+        private Vector2 scrollPosLeft = new Vector2(0, 0);
+        private Vector2 scrollPosRight = new Vector2(0, 0);
 
         public StorageGroupUI(StorageGroupDTO storageGroupDTO, ApparelFromEnum apparelFrom, Building_Dresser dresser, Pawn pawn, bool isNew)
         {
@@ -132,7 +133,7 @@ namespace ChangeDresser.UI
                 Rect apparelScrollRect = new Rect(0f, 0f, apparelListRect.width - 16f, possibleApparel.Count * cellHeight);
 
                 GUI.BeginGroup(apparelListRect);
-                this.scrollPos = GUI.BeginScrollView(new Rect(GenUI.AtZero(apparelListRect)), this.scrollPos, apparelScrollRect);
+                this.scrollPosLeft = GUI.BeginScrollView(new Rect(GenUI.AtZero(apparelListRect)), this.scrollPosLeft, apparelScrollRect);
 
                 GUI.color = Color.white;
                 Text.Font = GameFont.Medium;
@@ -175,7 +176,7 @@ namespace ChangeDresser.UI
                 apparelScrollRect = new Rect(0f, 0f, apparelListRect.width - 16f, groupApparel.Count * cellHeight);
 
                 GUI.BeginGroup(apparelListRect);
-                this.scrollPos = GUI.BeginScrollView(new Rect(GenUI.AtZero(apparelListRect)), this.scrollPos, apparelScrollRect);
+                this.scrollPosRight = GUI.BeginScrollView(new Rect(GenUI.AtZero(apparelListRect)), this.scrollPosRight, apparelScrollRect);
 
                 GUI.color = Color.white;
                 Text.Font = GameFont.Medium;

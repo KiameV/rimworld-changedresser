@@ -28,6 +28,7 @@
   <ChangeDresser.ApparelGroupName>方案名</ChangeDresser.ApparelGroupName>
   <ChangeDresser.ApparelGroup>服裝方案</ChangeDresser.ApparelGroup>
   <ChangeDresser.ApparelGroupRestrictToPawnCheckBox>與殖民者綁定</ChangeDresser.ApparelGroupRestrictToPawnCheckBox>
+  <ChangeDresser.ForceSwitchCombat>徵召時著裝</ChangeDresser.ForceSwitchCombat>
   <!-- Apparel Storage UI -->
   <ChangeDresser.CreateFromWorn>從當前著裝創建</ChangeDresser.CreateFromWorn>
   <ChangeDresser.CreateFromStorage>從已有庫存創建</ChangeDresser.CreateFromStorage>

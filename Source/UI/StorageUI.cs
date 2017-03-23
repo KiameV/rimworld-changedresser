@@ -36,7 +36,8 @@ namespace ChangeDresser.UI
     {
         private readonly Building_Dresser Dresser;
         private readonly Pawn Pawn;
-        private Vector2 scrollPos = new Vector2(0, 0);
+        private Vector2 scrollPosLeft = new Vector2(0, 0);
+        private Vector2 scrollPosRight = new Vector2(0, 0);
 
         public StorageUI(Building_Dresser dresser, Pawn pawn)
         {
@@ -137,11 +138,11 @@ namespace ChangeDresser.UI
 
                 const float cellHeight = 40f;
                 float apparelListWidth = inRect.width * 0.5f - 10f;
-                Rect apparelListRect = new Rect(0, 90, apparelListWidth, inRect.height - 90);
+                Rect apparelListRect = new Rect(0, 90, apparelListWidth, inRect.height - 130);
                 Rect apparelScrollRect = new Rect(0f, 0f, apparelListWidth - 16f, wornApparel.Count * cellHeight);
 
                 GUI.BeginGroup(apparelListRect);
-                this.scrollPos = GUI.BeginScrollView(new Rect(GenUI.AtZero(apparelListRect)), this.scrollPos, apparelScrollRect);
+                this.scrollPosLeft = GUI.BeginScrollView(new Rect(GenUI.AtZero(apparelListRect)), this.scrollPosLeft, apparelScrollRect);
 
                 GUI.color = Color.white;
                 Text.Font = GameFont.Medium;
@@ -169,19 +170,18 @@ namespace ChangeDresser.UI
                 GUI.EndScrollView();
                 GUI.EndGroup();
 
-
-                apparelListRect = new Rect(inRect.width - apparelListWidth, 90, apparelListWidth, inRect.height - 90);
+                apparelListRect = new Rect(inRect.width - apparelListWidth, 90, apparelListWidth, inRect.height - 130);
                 apparelScrollRect = new Rect(0f, 0f, apparelListWidth - 16f, storedApparel.Count * cellHeight);
 
                 GUI.BeginGroup(apparelListRect);
-                this.scrollPos = GUI.BeginScrollView(new Rect(GenUI.AtZero(apparelListRect)), this.scrollPos, apparelScrollRect);
+                this.scrollPosRight = GUI.BeginScrollView(new Rect(GenUI.AtZero(apparelListRect)), this.scrollPosRight, apparelScrollRect);
 
                 GUI.color = Color.white;
                 Text.Font = GameFont.Medium;
                 for (int i = 0; i < storedApparel.Count; ++i)
                 {
                     Apparel apparel = storedApparel[i];
-                    Rect rowRect = new Rect(0, 2f + i * cellHeight, apparelListRect.width, cellHeight);
+                    Rect rowRect = new Rect(0, 2f + i * cellHeight, apparelScrollRect.width, cellHeight);
                     GUI.BeginGroup(rowRect);
 
                     Rect buttonRect = new Rect(5, 10, 20, 20);

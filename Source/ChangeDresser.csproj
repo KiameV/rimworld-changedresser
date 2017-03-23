@@ -32,12 +32,15 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>.\0Harmony.dll</HintPath>
+    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\RimWorldWin_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
@@ -58,8 +61,10 @@
     <Compile Include="Building_Dresser.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeBody.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeHairStyle.cs" />
+    <Compile Include="DresserJobDriver\JobDriver_WearApparelFromStorage.cs" />
     <Compile Include="DresserJobDriver\JobDriver_WearApparelGroup.cs" />
     <Compile Include="DresserJobDriver\JobDriver_StoreApparel.cs" />
+    <Compile Include="Main.cs" />
     <Compile Include="UI\DTO\StorageDTOs\BattleApparelGroupDTO.cs" />
     <Compile Include="UI\DTO\StorageDTOs\StorageGroupDTO.cs" />
     <Compile Include="UI\DresserUI.cs" />
@@ -89,6 +94,7 @@
   <ItemGroup>
     <Content Include="..\Defs\JobDefs\JobDef_ColourOutfit.xml">
       <Link>Defs\JobDefs\JobDef_ColourOutfit.xml</Link>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="..\Defs\ThingDefs\Furniture.xml">
       <Link>Defs\ThingDefs\Furniture.xml</Link>
