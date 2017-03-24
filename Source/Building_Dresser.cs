@@ -161,13 +161,16 @@ namespace ChangeDresser
         {
             this.Tick();
             StringBuilder sb = new StringBuilder(base.GetInspectString());
-            sb.Append("Storage Priority: ");
-            sb.Append(base.settings.Priority);
+            sb.Append("ChangeDresser.StoragePriority".Translate());
+            sb.Append(": ");
+            sb.Append(("StoragePriority" + base.settings.Priority).Translate());
             sb.Append("\n");
-            sb.Append("Pieces of Apparel: ");
+            sb.Append("ChangeDresser.ApparelCount".Translate());
+            sb.Append(": ");
             sb.Append(this.StoredApparel.Count);
             sb.Append("\n");
-            sb.Append("Apparel Groups: ");
+            sb.Append("ChangeDresser.ApparelGroupCount".Translate());
+            sb.Append(": ");
             sb.Append(this.StorageGroups.Count);
             //sb.AppendLine("Stored Items: ".Translate() + ": " + -10f.ToStringTemperature("F0"));
             return sb.ToString();

@@ -108,8 +108,7 @@ namespace ChangeDresser.UI
                         this.StorageGroupDto.Unrestrict();
                     }
                 }
-
-                // This is not shown by default. This is here to add support for another mod Change Dresser - Switch When Drafted
+                
                 if (BattleApparelGroupDTO.ShowForceBattleSwitch)
                 {
                     GUI.Label(new Rect(440, 0, 150, rect.height), "ChangeDresser.ForceSwitchCombat".Translate() + ":", WidgetUtil.MiddleCenter);

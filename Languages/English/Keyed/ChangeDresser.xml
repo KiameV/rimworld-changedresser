@@ -34,6 +34,11 @@
 	<ChangeDresser.ApparelGroupRestrictToPawnCheckBox>Restrict to Pawn</ChangeDresser.ApparelGroupRestrictToPawnCheckBox>
 	<ChangeDresser.ForceSwitchCombat>Change When Drafted</ChangeDresser.ForceSwitchCombat>
 	
+	<!-- Game UI -->
+	<ChangeDresser.StoragePriority>Storage Priority</ChangeDresser.StoragePriority>
+	<ChangeDresser.ApparelCount>Pieces of Apparel</ChangeDresser.ApparelCount>
+	<ChangeDresser.ApparelGroupCount>Apparel Groups</ChangeDresser.ApparelGroupCount>
+	
 	<!-- Apparel Storage UI -->
 	<ChangeDresser.CreateFromWorn>Create From Worn</ChangeDresser.CreateFromWorn>
 	<ChangeDresser.CreateFromStorage>Create From Storage</ChangeDresser.CreateFromStorage>
