@@ -29,13 +29,13 @@
   <ChangeDresser.ApparelGroup>服裝方案</ChangeDresser.ApparelGroup>
   <ChangeDresser.ApparelGroupRestrictToPawnCheckBox>與殖民者綁定</ChangeDresser.ApparelGroupRestrictToPawnCheckBox>
   <ChangeDresser.ForceSwitchCombat>徵召時著裝</ChangeDresser.ForceSwitchCombat>
+  <!-- Game UI -->
+  <ChangeDresser.StoragePriority>存儲優先級</ChangeDresser.StoragePriority>
+  <ChangeDresser.ApparelCount>服裝庫存數</ChangeDresser.ApparelCount>
+  <ChangeDresser.ApparelGroupCount>服裝方案數</ChangeDresser.ApparelGroupCount>
   <!-- Apparel Storage UI -->
   <ChangeDresser.CreateFromWorn>從當前著裝創建</ChangeDresser.CreateFromWorn>
   <ChangeDresser.CreateFromStorage>從已有庫存創建</ChangeDresser.CreateFromStorage>
-  <!-- Game UI -->
-  <ChangeDresser.StoragePriority>Storage Priority</ChangeDresser.StoragePriority>
-  <ChangeDresser.ApparelCount>Pieces of Apparel</ChangeDresser.ApparelCount>
-  <ChangeDresser.ApparelGroupCount>Apparel Groups</ChangeDresser.ApparelGroupCount>
   <!-- Informs the user that the pawn is already wearing the apparel group. Appears as "<group name> (<BeingWorn>) -->
   <ChangeDresser.BeingWorn>已穿戴</ChangeDresser.BeingWorn>
   <!-- Appears when there is an apparel group owned by another pawn. Appears as "<Claim> <group name>" -->
