@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Verse;
 using System;
+using System.Text.RegularExpressions;
 
 namespace ChangeDresser.UI.Util
 {
@@ -212,6 +213,24 @@ namespace ChangeDresser.UI.Util
             }
         }
 
+        public static string AddNumberTextInput(float labelLeft, float top, float inputLeft, float inputWidth, string label, string value)
+        {
+            GUI.color = Color.white;
+            GUI.BeginGroup(new Rect(labelLeft, top, inputLeft + inputWidth, SelectionRowHeight));
+            GUI.Label(new Rect(0, 0, inputLeft - 5, SelectionRowHeight), label, MiddleCenter);
+            Rect inputRect = new Rect(inputLeft, 0, inputWidth, SelectionRowHeight);
+            string result = GUI.TextField(inputRect, value, MiddleCenter).Trim();
+            GUI.color = Color.grey;
+            Widgets.DrawBox(inputRect, 1);
+            GUI.EndGroup();
+
+            if (result.Length > 0 && !Regex.IsMatch(result, "^[0-9]*$"))
+            {
+                result = value;
+            }
+            return result;
+        }
+
         public static void AddSliderWidget(float left, float top, float width, string label, SliderWidgetDTO sliderWidgetDto)
         {
             Rect rect = new Rect(left, top + 5f, width, SelectionRowHeight);
@@ -229,7 +248,6 @@ namespace ChangeDresser.UI.Util
         public static void AddSelectorWidget(float left, float top, float width, string label, ASelectionWidgetDTO selectionWidgetDto)
         {
             const float buffer = 5f;
-            Text.Anchor = TextAnchor.MiddleCenter;
 
             Rect rect = new Rect(left, top, width, SelectionRowHeight);
             GUI.BeginGroup(rect);
@@ -238,9 +256,11 @@ namespace ChangeDresser.UI.Util
             left = 0;
             if (label != null)
             {
+                //Text.Anchor = TextAnchor.MiddleLeft;
                 GUI.Label(new Rect(0, 0, 75, SelectionRowHeight), label, MiddleCenter);
                 left = 80;
             }
+            Text.Anchor = TextAnchor.MiddleCenter;
 
             Rect previousButtonRect = new Rect(left, 0, NavButtonSize.x, NavButtonSize.y);
             if (GUI.Button(previousButtonRect, previousTexture))

@@ -128,7 +128,6 @@ namespace ChangeDresser
             {
                 Thing t;
                 GenThing.TryDropAndSetForbidden(a, base.Position, base.MapHeld, ThingPlaceMode.Near, out t, makeForbidden);
-                //GenPlace.TryPlaceThing(a, base.Position, base.Map, ThingPlaceMode.Near);
                 if (!a.Spawned)
                     a.SpawnSetup(base.Map);
                 if (a.Position.Equals(base.Position))
@@ -172,7 +171,6 @@ namespace ChangeDresser
             sb.Append("ChangeDresser.ApparelGroupCount".Translate());
             sb.Append(": ");
             sb.Append(this.StorageGroups.Count);
-            //sb.AppendLine("Stored Items: ".Translate() + ": " + -10f.ToStringTemperature("F0"));
             return sb.ToString();
         }
 

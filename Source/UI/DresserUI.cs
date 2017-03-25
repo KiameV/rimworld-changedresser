@@ -36,6 +36,8 @@ namespace ChangeDresser.UI
 {
     internal class DresserUI : Window
     {
+        private static readonly long TICKS_PER_YEAR = 3600000L;
+        private static readonly long MAX_AGE = 1000000000 * TICKS_PER_YEAR;
         private DresserDTO dresserDto;
 
         private bool rerenderPawn = false;
@@ -92,11 +94,35 @@ namespace ChangeDresser.UI
                         WidgetUtil.AddAppararelColorSelectionWidget(editorLeft, editorTop, editorWidth, this.dresserDto.ApparelSelectionsContainer);
                         break;
                     case CurrentEditorEnum.ChangeDresserBody:
-                        WidgetUtil.AddSelectorWidget(editorLeft, editorTop, editorWidth, "ChangeDresser.BodyType".Translate() + ":", this.dresserDto.BodyTypeSelectionDto);
-                        WidgetUtil.AddSelectorWidget(editorLeft, editorTop + WidgetUtil.SelectionRowHeight + 20f, editorWidth, "ChangeDresser.HeadType".Translate() + ":", this.dresserDto.HeadTypeSelectionDto);
-                        WidgetUtil.AddSliderWidget(editorLeft, editorTop + ((WidgetUtil.SelectionRowHeight + 20f) * 2f), editorWidth, "ChangeDresser.SkinColor".Translate() + ":", this.dresserDto.SkinColorSliderDto);
+                        float top = editorTop;
+                        WidgetUtil.AddSelectorWidget(editorLeft, top, editorWidth, "ChangeDresser.BodyType".Translate() + ":", this.dresserDto.BodyTypeSelectionDto);
+                        top += WidgetUtil.SelectionRowHeight + 20f;
+                        WidgetUtil.AddSelectorWidget(editorLeft, top, editorWidth, "ChangeDresser.HeadType".Translate() + ":", this.dresserDto.HeadTypeSelectionDto);
+                        top += WidgetUtil.SelectionRowHeight + 20f;
+                        WidgetUtil.AddSliderWidget(editorLeft, top, editorWidth, "ChangeDresser.SkinColor".Translate() + ":", this.dresserDto.SkinColorSliderDto);
+
                         GUI.Label(new Rect(editorLeft, 300f, editorWidth, 40f), "ChangeDresser.GenderChangeWarning".Translate(), WidgetUtil.MiddleCenter);
-                        WidgetUtil.AddSelectorWidget(editorLeft, 340f, editorWidth, "ChangeDresser.Gender".Translate() + ":", this.dresserDto.GenderSelectionDto);
+                        top = 340f;
+                        WidgetUtil.AddSelectorWidget(editorLeft, top, editorWidth, "ChangeDresser.Gender".Translate() + ":", this.dresserDto.GenderSelectionDto);
+
+                        top += WidgetUtil.SelectionRowHeight + 5;
+                        long ageBio = this.dresserDto.Pawn.ageTracker.AgeBiologicalTicks;
+                        if (AddLongInput(editorLeft, top, 120, 80, "ChangeDresser.AgeBiological".Translate() + ":", ref ageBio, MAX_AGE, TICKS_PER_YEAR))
+                        {
+                            this.dresserDto.Pawn.ageTracker.AgeBiologicalTicks = ageBio;
+                            rerenderPawn = true;
+                            if (ageBio > this.dresserDto.Pawn.ageTracker.AgeChronologicalTicks)
+                            {
+                                this.dresserDto.Pawn.ageTracker.AgeChronologicalTicks = ageBio;
+                            }
+                        }
+
+                        top += WidgetUtil.SelectionRowHeight + 5;
+                        long ageChron = this.dresserDto.Pawn.ageTracker.AgeChronologicalTicks;
+                        if (AddLongInput(editorLeft, top, 120, 80, "ChangeDresser.AgeChronological".Translate() + ":", ref ageChron, MAX_AGE, TICKS_PER_YEAR))
+                        {
+                            this.dresserDto.Pawn.ageTracker.AgeChronologicalTicks = ageChron;
+                        }
                         break;
                     case CurrentEditorEnum.ChangeDresserHair:
                         WidgetUtil.AddSelectorWidget(editorLeft, editorTop, editorWidth, "ChangeDresser.HairStyle".Translate() + ":", this.dresserDto.HairStyleSelectionDto);
@@ -139,6 +165,45 @@ namespace ChangeDresser.UI
                 Text.Anchor = TextAnchor.UpperLeft;
                 GUI.color = Color.white;
             }
+        }
+
+        private bool AddLongInput(float labelLeft, float top, float inputLeft, float inputWidth, string label, ref long value, long maxValue, long factor = 1)
+        {
+            string stringValue;
+            if (value == -1)
+            {
+                stringValue = "";
+            }
+            else
+            {
+                stringValue = (value / factor).ToString();
+            }
+            string result = WidgetUtil.AddNumberTextInput(labelLeft, top, inputLeft, inputWidth, label, stringValue);
+            try
+            {
+                if (result.Length == 0)
+                {
+                    value = -1;
+                    return true;
+                }
+                else if (result.Length > 0 && !result.Equals(stringValue))
+                {
+                    value = long.Parse(result);
+                    if (value < 0)
+                    {
+                        value = 0;
+                    }
+                    else
+                    {
+                        value *= factor;
+                        if (value > maxValue || value < 0)
+                            value = maxValue;
+                    }
+                    return true;
+                }
+            }
+            catch { }
+            return false;
         }
 
         private void ResetToDefault()

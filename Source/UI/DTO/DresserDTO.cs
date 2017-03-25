@@ -32,6 +32,9 @@ namespace ChangeDresser.UI.DTO
 {
     class DresserDTO
     {
+        private long originalAgeBioTicks;
+        private long originalAgeChronTicks;
+
         public Pawn Pawn { get; private set; }
         public CurrentEditorEnum CurrentEditorEnum { get; set; }
 
@@ -47,6 +50,9 @@ namespace ChangeDresser.UI.DTO
         public DresserDTO(Pawn pawn, CurrentEditorEnum currentEditorEnum, List<CurrentEditorEnum> editors)
         {
             this.Pawn = pawn;
+            this.originalAgeBioTicks = pawn.ageTracker.AgeBiologicalTicks;
+            this.originalAgeChronTicks = pawn.ageTracker.AgeChronologicalTicks;
+
             this.CurrentEditorEnum = currentEditorEnum;
 
             this.EditorTypeSelectionDto = new EditorTypeSelectionDTO(this.CurrentEditorEnum, editors);
@@ -98,6 +104,8 @@ namespace ChangeDresser.UI.DTO
             this.ApparelSelectionsContainer.ResetToDefault();
             this.SkinColorSliderDto.ResetToDefault();
             this.HeadTypeSelectionDto.ResetToDefault();
+            this.Pawn.ageTracker.AgeBiologicalTicks = this.originalAgeBioTicks;
+            this.Pawn.ageTracker.AgeChronologicalTicks = this.originalAgeChronTicks;
         }
     }
 }
