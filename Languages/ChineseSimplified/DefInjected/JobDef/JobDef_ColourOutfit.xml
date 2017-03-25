@@ -6,4 +6,5 @@
   <ChangeBody.reportString>改变身体特征。</ChangeBody.reportString>
   <StoreApparel.reportString>存取服装。</StoreApparel.reportString>
   <WearApparelGroup.reportString>穿上服装。</WearApparelGroup.reportString>
+  <WearApparelFromStorage.reportString>正在穿上TargetA。</WearApparelFromStorage.reportString>
 </LanguageData>
