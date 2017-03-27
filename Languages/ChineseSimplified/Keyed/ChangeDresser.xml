@@ -23,6 +23,10 @@
   <ChangeDresser.SkinColor>肤色</ChangeDresser.SkinColor>
   <ChangeDresser.Gender>性别</ChangeDresser.Gender>
   <ChangeDresser.HairStyle>发型</ChangeDresser.HairStyle>
+  <ChangeDresser.AgeBiological>生理年龄</ChangeDresser.AgeBiological>
+  <ChangeDresser.AgeChronological>物理年龄</ChangeDresser.AgeChronological>
+  <!--Race-->
+  <ChangeDresser.Race>种族</ChangeDresser.Race>
   <!-- Apparel Group UI -->
   <ChangeDresser.ApparelGroupOwner>拥有者</ChangeDresser.ApparelGroupOwner>
   <ChangeDresser.ApparelGroupName>方案名</ChangeDresser.ApparelGroupName>
@@ -51,7 +55,7 @@
   <ChangeDresser.B>B</ChangeDresser.B>
   <!-- Help Text -->
   <ChangeDresser.RemoveToEnableDelete>移除所有服装后才可删除方案。</ChangeDresser.RemoveToEnableDelete>
-  <ChangeDresser.GenderChangeWarning>改变性别可能有不利影响。\n请自行斟酌。</ChangeDresser.GenderChangeWarning>
+  <ChangeDresser.GenderChangeWarning>改变性别和年龄可能有不利影响。\n请自行斟酌。</ChangeDresser.GenderChangeWarning>
   <ChangeDresser.SelectMultipleApparel>按住Shift并单击另一个\n道具来选择多个。</ChangeDresser.SelectMultipleApparel>
   <ChangeDresser.ColorPresetHelp>修改：按住Shift并选择一个预设。\n取消选择：按住Shift并选择当前预设。</ChangeDresser.ColorPresetHelp>
   <ChangeDresser.NoClothingIsWorn>没有穿戴中的服装。</ChangeDresser.NoClothingIsWorn>
