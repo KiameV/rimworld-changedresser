@@ -32,6 +32,7 @@ namespace ChangeDresser.UI.DTO.StorageDTOs
     {
 
         private List<Apparel> apparelList = new List<Apparel>();
+        private List<bool> forcedApparel = new List<bool>();
         private string name = "";
         private string restrictToPawnId = "";
         private string restrictToPawnName = "";
@@ -83,49 +84,68 @@ namespace ChangeDresser.UI.DTO.StorageDTOs
             Scribe_Values.LookValue<string>(ref this.isBeingWornByName, "isBeingWornByName", "", false);
             Scribe_Collections.LookList(ref this.apparelList, "apparelList", LookMode.Deep, new object[0]);
 
-#if (CHANGE_DRESSER_DEBUG)
-            Log.Message(this.ToString());
-#endif
+            List<bool> l = new List<bool>();
+            Scribe_Collections.LookList(ref l, "forcedApparel", LookMode.Value, new object[0]);
+
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+            {
+                if (l == null || l.Count < this.apparelList.Count)
+                {
+                    this.forcedApparel = new List<bool>(this.apparelList.Count);
+                    for (int i = 0; i < this.apparelList.Count; ++i)
+                    {
+                        this.forcedApparel.Add(false);
+                    }
+                }
+                else
+                {
+                    this.forcedApparel = new List<bool>(l);
+                }
+            }
+
             if (this.ForceSwitchBattle)
             {
                 StorageGroupDTO dto;
                 if (!BattleApparelGroupDTO.TryGetBattleApparelGroupForPawn(this.restrictToPawnId, out dto))
                 {
-#if (CHANGE_DRESSER_DEBUG)
-                    Log.Message("StorageGroup.ExposeData: Add StorageGroupDTO to BattleApparelGroupDTO");
-#endif
                     BattleApparelGroupDTO.AddBattleGroup(this);
                 }
-                else
-                {
-#if (CHANGE_DRESSER_DEBUG)
-                    Log.Message("StorageGroup.ExposeData: BattleApparelGroupDTO already has dto");
-#endif
-                }
             }
-#if (CHANGE_DRESSER_DEBUG)
-            else
-            {
-                Log.Message("StorageGroup.ExposeData: NOT adding StorageGroupDTO to BattleApparelGroupDTO");
-            }
-#endif
         }
 
         public void SwapWith(Pawn pawn)
         {
             List<Apparel> wasWearing = new List<Apparel>(pawn.apparel.WornApparel);
+            List<Apparel> wasForced = new List<Apparel>(pawn.outfits.forcedHandler.ForcedApparel);
             foreach (Apparel a in wasWearing)
             {
                 pawn.apparel.Remove(a);
             }
 
-            foreach (Apparel a in this.apparelList)
+            for (int i = 0; i < this.apparelList.Count; ++i)
             {
+                Apparel a = this.apparelList[i];
                 pawn.apparel.Wear(a);
+                if (this.ForcedApparel[i])
+                {
+                    pawn.outfits.forcedHandler.ForcedApparel.Add(a);
+                }
             }
 
             this.apparelList.Clear();
             this.apparelList = wasWearing;
+
+            this.forcedApparel.Clear();
+            for (int i = 0; i < wasWearing.Count; ++i)
+            {
+                bool forced = false;
+                if (wasForced.Contains(wasWearing[i]))
+                {
+                    forced = true;
+                }
+                this.ForcedApparel.Add(forced);
+            }
+
             if (this.IsBeingWorn)
             {
                 this.isBeingWornById = "";
@@ -170,6 +190,8 @@ namespace ChangeDresser.UI.DTO.StorageDTOs
         }
 
         public List<Apparel> Apparel { get { return this.apparelList; } }
+
+        public List<bool> ForcedApparel { get { return this.forcedApparel; } }
 
         public bool IsRestricted
         {

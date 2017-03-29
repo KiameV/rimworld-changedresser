@@ -120,6 +120,7 @@ namespace ChangeDresser.UI
 
                 List<Apparel> possibleApparel = (this.ApparelFrom == ApparelFromEnum.Pawn) ? this.Pawn.apparel.WornApparel : this.Dresser.StoredApparel;
                 List<Apparel> groupApparel = this.StorageGroupDto.Apparel;
+                List<bool> forcedApparel = this.StorageGroupDto.ForcedApparel;
 
                 GUI.BeginGroup(new Rect(0, 90, inRect.width, 30));
                 GUI.Label(new Rect(0, 0, 100, 30), ((string)((this.ApparelFrom == ApparelFromEnum.Pawn) ? "ChangeDresser.Worn" : "ChangeDresser.Storage")).Translate(), WidgetUtil.MiddleCenter);
@@ -157,6 +158,7 @@ namespace ChangeDresser.UI
                             this.RemoveApparelFromSender(apparel);
                             apparel.wearer = null;
                             groupApparel.Add(apparel);
+                            forcedApparel.Add(false);
                             GUI.EndGroup();
                             break;
                         }
@@ -187,8 +189,9 @@ namespace ChangeDresser.UI
 
                     if (Widgets.ButtonImage(new Rect(5, 10, 20, 20), WidgetUtil.previousTexture))
                     {
-                        groupApparel.Remove(apparel);
-                        this.AddApparelToSender(apparel);
+                        this.AddApparelToSender(apparel, forcedApparel[i]);
+                        groupApparel.RemoveAt(i);
+                        forcedApparel.RemoveAt(i);
                         GUI.EndGroup();
                         break;
                     }
@@ -196,7 +199,12 @@ namespace ChangeDresser.UI
                     Widgets.ThingIcon(new Rect(35f, 0f, cellHeight, cellHeight), apparel);
                     Text.Font = GameFont.Small;
                     Text.Anchor = TextAnchor.MiddleCenter;
-                    Widgets.Label(new Rect(cellHeight + 45f, 0f, rowRect.width - cellHeight - 45f, cellHeight), apparel.Label);
+                    string label = apparel.Label;
+                    if (forcedApparel[i])
+                    {
+                        label += "(" + "ApparelForcedLower".Translate() + ")";
+                    }
+                    Widgets.Label(new Rect(cellHeight + 45f, 0f, rowRect.width - cellHeight - 45f, cellHeight), label);
 
                     GUI.EndGroup();
                 }
@@ -214,9 +222,10 @@ namespace ChangeDresser.UI
                 Rect rightButton = new Rect(middle + 10, 0, 100, 30);
                 if (IsNew && Widgets.ButtonText(rightButton, "ChangeDresser.Cancel".Translate()))
                 {
-                    foreach(Apparel apparel in this.StorageGroupDto.Apparel)
+                    for (int i = 0; i < this.StorageGroupDto.Apparel.Count; ++i)
                     {
-                        this.AddApparelToSender(apparel);
+                        Apparel apparel = this.StorageGroupDto.Apparel[i];
+                        this.AddApparelToSender(apparel, this.StorageGroupDto.ForcedApparel[i]);
                     }
                     this.Dresser.Remove(this.StorageGroupDto);
                     this.Close();
@@ -251,11 +260,13 @@ namespace ChangeDresser.UI
             }
         }
 
-        private void AddApparelToSender(Apparel apparel)
+        private void AddApparelToSender(Apparel apparel, bool forced)
         {
             if (this.ApparelFrom == ApparelFromEnum.Pawn)
             {
                 this.Pawn.apparel.Wear(apparel);
+                if (forced)
+                    this.Pawn.outfits.forcedHandler.ForcedApparel.Add(apparel);
             }
             else
             {
