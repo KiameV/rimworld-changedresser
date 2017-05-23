@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- Window Labels -->
+  <ChangeDresser.DresserLabel>ドレッサー</ChangeDresser.DresserLabel>
+  <ChangeDresser.ApparelGroupLabel>服装グループ</ChangeDresser.ApparelGroupLabel>
+  <ChangeDresser.ApparelStorageLabel>服装の在庫</ChangeDresser.ApparelStorageLabel>
+  <!-- Common Strings -->
+  <ChangeDresser.Worn>装備中</ChangeDresser.Worn>
+  <ChangeDresser.Storage>在庫</ChangeDresser.Storage>
+  <ChangeDresser.Save>保存</ChangeDresser.Save>
+  <ChangeDresser.Reset>初期化</ChangeDresser.Reset>
+  <ChangeDresser.Cancel>中止</ChangeDresser.Cancel>
+  <ChangeDresser.Delete>削除</ChangeDresser.Delete>
+  <ChangeDresser.SelectAll>全て選択</ChangeDresser.SelectAll>
+  <ChangeDresser.DeselectAll>全て取り消す</ChangeDresser.DeselectAll>
+  <!-- Editor Names (top selection bar in the Dresser window) -->
+  <ChangeDresserHair>髪型/髪の色</ChangeDresserHair>
+  <ChangeDresserApparelColor>服装の色</ChangeDresserApparelColor>
+  <ChangeDresserBody>身体特徴</ChangeDresserBody>
+  <!-- Dresser UI -->
+  <ChangeDresser.BodyType>体型</ChangeDresser.BodyType>
+  <ChangeDresser.HeadType>顔型</ChangeDresser.HeadType>
+  <ChangeDresser.SkinColor>肌色</ChangeDresser.SkinColor>
+  <ChangeDresser.Gender>性別</ChangeDresser.Gender>
+  <ChangeDresser.HairStyle>髪型</ChangeDresser.HairStyle>
+  <ChangeDresser.AgeBiological>肉体年齢</ChangeDresser.AgeBiological>
+  <ChangeDresser.AgeChronological>暦上年齢</ChangeDresser.AgeChronological>
+  <!-- Apparel Group UI -->
+  <ChangeDresser.ApparelGroupOwner>所有者</ChangeDresser.ApparelGroupOwner>
+  <ChangeDresser.ApparelGroupName>グループ名</ChangeDresser.ApparelGroupName>
+  <ChangeDresser.ApparelGroup>服装グループ</ChangeDresser.ApparelGroup>
+  <ChangeDresser.ApparelGroupRestrictToPawnCheckBox>この入植者専用</ChangeDresser.ApparelGroupRestrictToPawnCheckBox>
+  <ChangeDresser.ForceSwitchCombat>徴兵時に変更</ChangeDresser.ForceSwitchCombat>
+  <!-- Game UI -->
+  <ChangeDresser.StoragePriority>在庫の優先順位</ChangeDresser.StoragePriority>
+  <ChangeDresser.ApparelCount>服装の在庫数</ChangeDresser.ApparelCount>
+  <ChangeDresser.ApparelGroupCount>服装グループ数</ChangeDresser.ApparelGroupCount>
+  <!-- Apparel Storage UI -->
+  <ChangeDresser.CreateFromWorn>現在の服装から新規作成</ChangeDresser.CreateFromWorn>
+  <ChangeDresser.CreateFromStorage>既存の在庫から作成</ChangeDresser.CreateFromStorage>
+  <!-- Informs the user that the pawn is already wearing the apparel group. Appears as "<group name> (<BeingWorn>) -->
+  <ChangeDresser.BeingWorn>着装済</ChangeDresser.BeingWorn>
+  <!-- Appears when there is an apparel group owned by another pawn. Appears as "<Claim> <group name>" -->
+  <ChangeDresser.ClaimApparelGroup>他の服装グループに必要</ChangeDresser.ClaimApparelGroup>
+  <!-- The following appear as "<Edit> <group name> <FromWorn>" and "<Edit> <group name> <FromStorage>" -->
+  <ChangeDresser.EditApparelGroup>編集</ChangeDresser.EditApparelGroup>
+  <ChangeDresser.FromWorn>現在の服装から</ChangeDresser.FromWorn>
+  <ChangeDresser.FromStorage>既存の在庫から</ChangeDresser.FromStorage>
+  <!-- Color Selection -->
+  <!-- These refer to the Red (R), Green (G), and Blue (B) values for the selected color -->
+  <ChangeDresser.R>R</ChangeDresser.R>
+  <ChangeDresser.G>G</ChangeDresser.G>
+  <ChangeDresser.B>B</ChangeDresser.B>
+  <!-- Help Text -->
+  <ChangeDresser.RemoveToEnableDelete>全ての衣服を外し削除を有効</ChangeDresser.RemoveToEnableDelete>
+  <ChangeDresser.GenderChangeWarning>これらの数値を変更すると悪影響を受ける可能性があります。\n自己責任で使用して下さい。</ChangeDresser.GenderChangeWarning>
+  <ChangeDresser.SelectMultipleApparel>Shiftキーを押して別の物をクリックすると\nアイテムを複数選択できます。</ChangeDresser.SelectMultipleApparel>
+  <ChangeDresser.ColorPresetHelp>変更：Shiftキーを押してプリセット選択\n取消：Shiftキーを押してプリセット選択</ChangeDresser.ColorPresetHelp>
+  <ChangeDresser.NoClothingIsWorn>服装は着用されていません。</ChangeDresser.NoClothingIsWorn>
+  <!-- Job Toils -->
+  <ChangeDresser.ChangeApparelColors>服の色を変更</ChangeDresser.ChangeApparelColors>
+  <ChangeDresser.ChangeHair>髪型や髪色を変更</ChangeDresser.ChangeHair>
+  <ChangeDresser.ChangeBody>体型を変更</ChangeDresser.ChangeBody>
+  <ChangeDresser.StoreApparel>服装の在庫</ChangeDresser.StoreApparel>
+  <ChangeDresser.WearGroup>服装グループを着用</ChangeDresser.WearGroup>
+  <ChangeDresser.UnwearGroup>服装グループを脱ぐ</ChangeDresser.UnwearGroup>
+  <!-- Error Messages -->
+  <!-- The text after this string is either Hair Color or Apparel Color -->
+  <ChangeDresser.ProblemSavingPreset>色の設定を保存中にエラーが発生：</ChangeDresser.ProblemSavingPreset>
+  <!-- The text after this string is either Hair Color or Apparel Color -->
+  <ChangeDresser.ProblemLoadingPreset>色の設定を読み込む際にエラーが発生：</ChangeDresser.ProblemLoadingPreset>
+  <!-- The text before this string is the pawn's name. Text after this string is the apparel group's name -->
+  <ChangeDresser.UnableToWearApparelGroup>服装グループを見つけることができません：</ChangeDresser.UnableToWearApparelGroup>
+</LanguageData>
