@@ -63,7 +63,7 @@ namespace ChangeDresser
 
             base.SpawnSetup(map);
 
-            this.MapBackup = base.MapHeld;
+            this.MapBackup = map;
 
             SupportedEditors.Add(CurrentEditorEnum.ChangeDresserApparelColor);
             SupportedEditors.Add(CurrentEditorEnum.ChangeDresserBody);
@@ -127,9 +127,9 @@ namespace ChangeDresser
             try
             {
                 Thing t;
-                GenThing.TryDropAndSetForbidden(a, base.Position, base.MapHeld, ThingPlaceMode.Near, out t, makeForbidden);
+                GenThing.TryDropAndSetForbidden(a, base.Position, this.MapBackup, ThingPlaceMode.Near, out t, makeForbidden);
                 if (!a.Spawned)
-                    a.SpawnSetup(base.Map);
+                    a.SpawnSetup(this.MapBackup);
                 if (a.Position.Equals(base.Position))
                 {
                     IntVec3 pos = a.Position;
