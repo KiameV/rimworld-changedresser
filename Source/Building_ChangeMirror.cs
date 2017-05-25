@@ -45,6 +45,7 @@ namespace ChangeDresser
         public override void PostMake()
         {
             base.PostMake();
+            AddEditors();
         }
 
         public override void PostMapInit()
