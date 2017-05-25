@@ -29,6 +29,7 @@ using UnityEngine;
 using Verse;
 using System;
 using System.Text.RegularExpressions;
+using System.IO;
 
 namespace ChangeDresser.UI.Util
 {
@@ -45,6 +46,7 @@ namespace ChangeDresser.UI.Util
         public static readonly Texture2D copyIconTexture;
         public static readonly Texture2D pasteIconTexture;
         public static readonly Texture2D dropTexture;
+        public static readonly Texture2D colorFinder;
 
         static WidgetUtil()
         {
@@ -55,6 +57,17 @@ namespace ChangeDresser.UI.Util
             copyIconTexture = ContentFinder<Texture2D>.Get("UI/copy", true);
             pasteIconTexture = ContentFinder<Texture2D>.Get("UI/paste", true);
             dropTexture = ContentFinder<Texture2D>.Get("UI/drop", true);
+
+            foreach (ModContentPack current in LoadedModManager.RunningMods)
+            {
+                if (current.GetContentHolder<Texture2D>().Get("UI/colorpicker"))
+                {
+                    byte[] data = File.ReadAllBytes(current.RootDir + "/Textures/UI/colorpicker.png");
+                    colorFinder = new Texture2D(2, 2, TextureFormat.Alpha8, true);
+                    colorFinder.LoadImage(data, false);
+                    break;
+                }
+            }
         }
 
         public static readonly Vector2 NavButtonSize = new Vector2(30f, 30f);
@@ -120,7 +133,7 @@ namespace ChangeDresser.UI.Util
             GUI.color = Color.white;
             if (GUI.RepeatButton(colorPickerRect, colorPickerTexture, GUI.skin.label))
             {
-                SetColorToSelected(selectionDtos, presetsDto, GetColorFromTexture(Event.current.mousePosition, colorPickerRect, colorPickerTexture));
+                SetColorToSelected(selectionDtos, presetsDto, GetColorFromTexture(Event.current.mousePosition, colorPickerRect, colorFinder));
             }
 
             GUI.BeginGroup(new Rect(0, colorPickerRect.height + 30f, width, 20f));

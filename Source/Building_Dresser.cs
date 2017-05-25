@@ -49,11 +49,13 @@ namespace ChangeDresser
 
         private List<Apparel> storedApparel = new List<Apparel>();
         private List<StorageGroupDTO> storageGroups = new List<StorageGroupDTO>();
-
-        private Map MapBackup { get; set; }
-
-        public override void SpawnSetup(Map map)
+        private Map CurrentMap { get; set; }
+        
+        public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
+            base.SpawnSetup(map, respawningAfterLoad);
+            this.CurrentMap = map;
+
             if (settings == null)
             {
                 base.settings = new StorageSettings(this);
@@ -61,24 +63,18 @@ namespace ChangeDresser
                 base.settings.filter.SetDisallowAll();
             }
 
-            base.SpawnSetup(map);
-
-            this.MapBackup = map;
-
-            SupportedEditors.Add(CurrentEditorEnum.ChangeDresserApparelColor);
-            SupportedEditors.Add(CurrentEditorEnum.ChangeDresserBody);
-            SupportedEditors.Add(CurrentEditorEnum.ChangeDresserHair);
+            if (SupportedEditors.Count == 0)
+            {
+                SupportedEditors.Add(CurrentEditorEnum.ChangeDresserApparelColor);
+                SupportedEditors.Add(CurrentEditorEnum.ChangeDresserBody);
+                SupportedEditors.Add(CurrentEditorEnum.ChangeDresserHair);
+            }
         }
 
-        public override void Notify_ReceivedThing(Thing newItem)
+        public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
         {
-            base.Notify_ReceivedThing(newItem);
-            if (!this.StoredApparel.Contains((Apparel)newItem))
-            {
-                if (newItem.Spawned)
-                    newItem.DeSpawn();
-                this.storedApparel.Add((Apparel)newItem);
-            }
+            base.Destroy(mode);
+            this.Dispose();
         }
 
         public override void Discard()
@@ -91,6 +87,17 @@ namespace ChangeDresser
         {
             base.DeSpawn();
             this.Dispose();
+        }
+
+        public override void Notify_ReceivedThing(Thing newItem)
+        {
+            base.Notify_ReceivedThing(newItem);
+            if (!this.StoredApparel.Contains((Apparel)newItem))
+            {
+                if (newItem.Spawned)
+                    newItem.DeSpawn();
+                this.storedApparel.Add((Apparel)newItem);
+            }
         }
 
         private void Dispose()
@@ -110,8 +117,6 @@ namespace ChangeDresser
                 }
                 this.storageGroups.Clear();
             }
-
-            this.MapBackup = null;
         }
 
         private void DropApparel(List<Apparel> apparel)
@@ -127,9 +132,11 @@ namespace ChangeDresser
             try
             {
                 Thing t;
-                GenThing.TryDropAndSetForbidden(a, base.Position, this.MapBackup, ThingPlaceMode.Near, out t, makeForbidden);
+                GenThing.TryDropAndSetForbidden(a, base.Position, this.CurrentMap, ThingPlaceMode.Near, out t, makeForbidden);
                 if (!a.Spawned)
-                    a.SpawnSetup(this.MapBackup);
+                {
+                    GenPlace.TryPlaceThing(a, base.Position, this.CurrentMap, ThingPlaceMode.Near);
+                }
                 if (a.Position.Equals(base.Position))
                 {
                     IntVec3 pos = a.Position;
@@ -152,8 +159,8 @@ namespace ChangeDresser
                 BattleApparelGroupDTO.ClearBattleStorageCache();
             }
 
-            Scribe_Collections.LookList(ref this.storedApparel, "storedApparel", LookMode.Deep, new object[0]);
-            Scribe_Collections.LookList(ref this.storageGroups, "storageGroups", LookMode.Deep, new object[0]);
+            Scribe_Collections.Look(ref this.storedApparel, "storedApparel", LookMode.Deep, new object[0]);
+            Scribe_Collections.Look(ref this.storageGroups, "storageGroups", LookMode.Deep, new object[0]);
         }
 
         public override string GetInspectString()

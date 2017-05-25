@@ -76,16 +76,16 @@ namespace ChangeDresser.UI.DTO.StorageDTOs
 
         public void ExposeData()
         {
-            Scribe_Values.LookValue<string>(ref this.name, "name", "", false);
-            Scribe_Values.LookValue<string>(ref this.restrictToPawnId, "restrictToPawnId", "", false);
-            Scribe_Values.LookValue<string>(ref this.restrictToPawnName, "restrictToPawnName", "", false);
-            Scribe_Values.LookValue<bool>(ref this.forceSwitchBattle, "forceSwitchBattle", false, false);
-            Scribe_Values.LookValue<string>(ref this.isBeingWornById, "isBeingWornById", "", false);
-            Scribe_Values.LookValue<string>(ref this.isBeingWornByName, "isBeingWornByName", "", false);
-            Scribe_Collections.LookList(ref this.apparelList, "apparelList", LookMode.Deep, new object[0]);
+            Scribe_Values.Look<string>(ref this.name, "name", "", false);
+            Scribe_Values.Look<string>(ref this.restrictToPawnId, "restrictToPawnId", "", false);
+            Scribe_Values.Look<string>(ref this.restrictToPawnName, "restrictToPawnName", "", false);
+            Scribe_Values.Look<bool>(ref this.forceSwitchBattle, "forceSwitchBattle", false, false);
+            Scribe_Values.Look<string>(ref this.isBeingWornById, "isBeingWornById", "", false);
+            Scribe_Values.Look<string>(ref this.isBeingWornByName, "isBeingWornByName", "", false);
+            Scribe_Collections.Look(ref this.apparelList, "apparelList", LookMode.Deep, new object[0]);
 
             List<bool> l = new List<bool>();
-            Scribe_Collections.LookList(ref l, "forcedApparel", LookMode.Value, new object[0]);
+            Scribe_Collections.Look(ref l, "forcedApparel", LookMode.Value, new object[0]);
 
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {

@@ -156,7 +156,7 @@ namespace ChangeDresser.UI
                         if (Widgets.ButtonImage(buttonRect, WidgetUtil.nextTexture))
                         {
                             this.RemoveApparelFromSender(apparel);
-                            apparel.wearer = null;
+                            Pawn.apparel.Remove(apparel);
                             groupApparel.Add(apparel);
                             forcedApparel.Add(false);
                             GUI.EndGroup();

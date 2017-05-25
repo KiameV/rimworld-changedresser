@@ -37,13 +37,30 @@ namespace ChangeDresser
 
         public readonly List<CurrentEditorEnum> SupportedEditors = new List<CurrentEditorEnum>();
 
-        public override void SpawnSetup(Map map)
+        public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
-            base.SpawnSetup(map);
+            base.SpawnSetup(map, respawningAfterLoad);
+        }
 
-            SupportedEditors.Add(CurrentEditorEnum.ChangeDresserApparelColor);
-            SupportedEditors.Add(CurrentEditorEnum.ChangeDresserBody);
-            SupportedEditors.Add(CurrentEditorEnum.ChangeDresserHair);
+        public override void PostMake()
+        {
+            base.PostMake();
+        }
+
+        public override void PostMapInit()
+        {
+            base.PostMapInit();
+            AddEditors();
+        }
+
+        private void AddEditors()
+        {
+            if (SupportedEditors.Count == 0)
+            {
+                SupportedEditors.Add(CurrentEditorEnum.ChangeDresserApparelColor);
+                SupportedEditors.Add(CurrentEditorEnum.ChangeDresserBody);
+                SupportedEditors.Add(CurrentEditorEnum.ChangeDresserHair);
+            }
         }
 
         [DebuggerHidden]
