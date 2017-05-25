@@ -81,4 +81,8 @@
 	<ChangeDresser.ProblemLoadingPreset>Problem while loading Color Presets for</ChangeDresser.ProblemLoadingPreset>
 	<!-- The text before this string is the pawn's name. Text after this string is the apparel group's name -->
 	<ChangeDresser.UnableToWearApparelGroup>was unable to find apparel group</ChangeDresser.UnableToWearApparelGroup>
+	
+	<!-- Mod Settings -->
+	<ChangeDresser>Change Dresser</ChangeDresser>
+	<ChangeDresser.ShowGenderAgeChange>Allow Gender and Age Change</ChangeDresser.ShowGenderAgeChange>
 </LanguageData>

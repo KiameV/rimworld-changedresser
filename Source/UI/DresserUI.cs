@@ -100,28 +100,30 @@ namespace ChangeDresser.UI
                         WidgetUtil.AddSelectorWidget(editorLeft, top, editorWidth, "ChangeDresser.HeadType".Translate() + ":", this.dresserDto.HeadTypeSelectionDto);
                         top += WidgetUtil.SelectionRowHeight + 20f;
                         WidgetUtil.AddSliderWidget(editorLeft, top, editorWidth, "ChangeDresser.SkinColor".Translate() + ":", this.dresserDto.SkinColorSliderDto);
-
-                        GUI.Label(new Rect(editorLeft, 300f, editorWidth, 40f), "ChangeDresser.GenderChangeWarning".Translate(), WidgetUtil.MiddleCenter);
-                        top = 340f;
-                        WidgetUtil.AddSelectorWidget(editorLeft, top, editorWidth, "ChangeDresser.Gender".Translate() + ":", this.dresserDto.GenderSelectionDto);
-
-                        top += WidgetUtil.SelectionRowHeight + 5;
-                        long ageBio = this.dresserDto.Pawn.ageTracker.AgeBiologicalTicks;
-                        if (AddLongInput(editorLeft, top, 120, 80, "ChangeDresser.AgeBiological".Translate() + ":", ref ageBio, MAX_AGE, TICKS_PER_YEAR))
+                        if (Settings.ShowGenderAgeChange)
                         {
-                            this.dresserDto.Pawn.ageTracker.AgeBiologicalTicks = ageBio;
-                            rerenderPawn = true;
-                            if (ageBio > this.dresserDto.Pawn.ageTracker.AgeChronologicalTicks)
+                            GUI.Label(new Rect(editorLeft, 300f, editorWidth, 40f), "ChangeDresser.GenderChangeWarning".Translate(), WidgetUtil.MiddleCenter);
+                            top = 340f;
+                            WidgetUtil.AddSelectorWidget(editorLeft, top, editorWidth, "ChangeDresser.Gender".Translate() + ":", this.dresserDto.GenderSelectionDto);
+
+                            top += WidgetUtil.SelectionRowHeight + 5;
+                            long ageBio = this.dresserDto.Pawn.ageTracker.AgeBiologicalTicks;
+                            if (AddLongInput(editorLeft, top, 120, 80, "ChangeDresser.AgeBiological".Translate() + ":", ref ageBio, MAX_AGE, TICKS_PER_YEAR))
                             {
-                                this.dresserDto.Pawn.ageTracker.AgeChronologicalTicks = ageBio;
+                                this.dresserDto.Pawn.ageTracker.AgeBiologicalTicks = ageBio;
+                                rerenderPawn = true;
+                                if (ageBio > this.dresserDto.Pawn.ageTracker.AgeChronologicalTicks)
+                                {
+                                    this.dresserDto.Pawn.ageTracker.AgeChronologicalTicks = ageBio;
+                                }
                             }
-                        }
 
-                        top += WidgetUtil.SelectionRowHeight + 5;
-                        long ageChron = this.dresserDto.Pawn.ageTracker.AgeChronologicalTicks;
-                        if (AddLongInput(editorLeft, top, 120, 80, "ChangeDresser.AgeChronological".Translate() + ":", ref ageChron, MAX_AGE, TICKS_PER_YEAR))
-                        {
-                            this.dresserDto.Pawn.ageTracker.AgeChronologicalTicks = ageChron;
+                            top += WidgetUtil.SelectionRowHeight + 5;
+                            long ageChron = this.dresserDto.Pawn.ageTracker.AgeChronologicalTicks;
+                            if (AddLongInput(editorLeft, top, 120, 80, "ChangeDresser.AgeChronological".Translate() + ":", ref ageChron, MAX_AGE, TICKS_PER_YEAR))
+                            {
+                                this.dresserDto.Pawn.ageTracker.AgeChronologicalTicks = ageChron;
+                            }
                         }
                         break;
                     case CurrentEditorEnum.ChangeDresserHair:

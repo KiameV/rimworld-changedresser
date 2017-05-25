@@ -65,6 +65,7 @@
     <Compile Include="DresserJobDriver\JobDriver_WearApparelGroup.cs" />
     <Compile Include="DresserJobDriver\JobDriver_StoreApparel.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="UI\DTO\StorageDTOs\BattleApparelGroupDTO.cs" />
     <Compile Include="UI\DTO\StorageDTOs\StorageGroupDTO.cs" />
     <Compile Include="UI\DresserUI.cs" />
