@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
-<name>Change Dresser</name>
-<author>Kiame</author>
-<targetVersion>0.17.1546</targetVersion>
-<description>Adds a dresser and mirror which allow a pawn to change their apparal colors, hair color, skin color, hair style, body type, head type, and gender.
+    <name>Change Dresser</name>
+    <author>Kiame</author>
+    <targetVersion>0.17.1546</targetVersion>
+    <description>Adds a dresser and mirror which allow a pawn to change their apparal colors, hair color, skin color, hair style, body type, head type, and gender.
 
 Thank you translators!
 Vaniat - Chinese Simplified and Traditional
