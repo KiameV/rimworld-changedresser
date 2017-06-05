@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
     <name>Change Dresser</name>
-    <author>Kiame</author>
-    <targetVersion>0.17.1546</targetVersion>
+    <author>Kiame Vivacity</author>
+    <targetVersion>0.17.1557</targetVersion>
+	<url>http://steamcommunity.com/sharedfiles/filedetails/?id=878965937</url>
     <description>Adds a dresser and mirror which allow a pawn to change their apparal colors, hair color, skin color, hair style, body type, head type, and gender.
 
 Thank you translators!
