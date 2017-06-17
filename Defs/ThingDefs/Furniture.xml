@@ -60,7 +60,7 @@
     <tickerType>Long</tickerType>
   </ThingDef>
 
-  <ThingDef ParentName="BuildingBase">
+  <ThingDef ParentName="ArtableFurnitureBase">
     <defName>ChangeMirror</defName>
     <label>change mirror</label>
     <Description>Apply makeup and cut and dye hair.</Description>
