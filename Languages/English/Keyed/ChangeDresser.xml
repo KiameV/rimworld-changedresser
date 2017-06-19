@@ -5,6 +5,10 @@
 	<ChangeDresser.ApparelGroupLabel>Apparel Group</ChangeDresser.ApparelGroupLabel>
 	<ChangeDresser.ApparelStorageLabel>Apparel Storage</ChangeDresser.ApparelStorageLabel>
 	
+	<!-- Gizmo (Command Button) -->
+	<ChangeDresser.ManageApparel>Manage Apparel</ChangeDresser.ManageApparel>
+	<ChangeDresser.ManageApparelDesc>Manage the apparel in the dresser.</ChangeDresser.ManageApparelDesc>
+	
 	<!-- Common Strings -->
 	<ChangeDresser.Worn>Worn</ChangeDresser.Worn>
 	<ChangeDresser.Storage>Storage</ChangeDresser.Storage>
@@ -81,6 +85,8 @@
 	<ChangeDresser.ProblemLoadingPreset>Problem while loading Color Presets for</ChangeDresser.ProblemLoadingPreset>
 	<!-- The text before this string is the pawn's name. Text after this string is the apparel group's name -->
 	<ChangeDresser.UnableToWearApparelGroup>was unable to find apparel group</ChangeDresser.UnableToWearApparelGroup>
+	<!-- The text before this string is the pawn's name. -->
+	<ChangeDresser.AlreadyHasCombatApparel>already has combat apparel.</ChangeDresser.AlreadyHasCombatApparel>
 	
 	<!-- Mod Settings -->
 	<ChangeDresser>Change Dresser</ChangeDresser>

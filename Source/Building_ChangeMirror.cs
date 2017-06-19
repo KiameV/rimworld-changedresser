@@ -35,33 +35,13 @@ namespace ChangeDresser
         private JobDef changeHairStyleJobDef = DefDatabase<JobDef>.GetNamed("ChangeHairStyle", true);
         private JobDef changeBodyJobDef = DefDatabase<JobDef>.GetNamed("ChangeBody", true);
 
-        public readonly List<CurrentEditorEnum> SupportedEditors = new List<CurrentEditorEnum>();
+        public static readonly List<CurrentEditorEnum> SupportedEditors = new List<CurrentEditorEnum>(3);
 
-        public override void SpawnSetup(Map map, bool respawningAfterLoad)
+        static Building_ChangeMirror()
         {
-            base.SpawnSetup(map, respawningAfterLoad);
-        }
-
-        public override void PostMake()
-        {
-            base.PostMake();
-            AddEditors();
-        }
-
-        public override void PostMapInit()
-        {
-            base.PostMapInit();
-            AddEditors();
-        }
-
-        private void AddEditors()
-        {
-            if (SupportedEditors.Count == 0)
-            {
-                SupportedEditors.Add(CurrentEditorEnum.ChangeDresserApparelColor);
-                SupportedEditors.Add(CurrentEditorEnum.ChangeDresserBody);
-                SupportedEditors.Add(CurrentEditorEnum.ChangeDresserHair);
-            }
+            SupportedEditors.Add(CurrentEditorEnum.ChangeDresserApparelColor);
+            SupportedEditors.Add(CurrentEditorEnum.ChangeDresserBody);
+            SupportedEditors.Add(CurrentEditorEnum.ChangeDresserHair);
         }
 
         [DebuggerHidden]

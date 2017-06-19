@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using Verse;
 
 namespace ChangeDresser
@@ -26,10 +27,11 @@ namespace ChangeDresser
         private static bool showGenderAgeChange = true;
 
         public static bool ShowGenderAgeChange { get { return showGenderAgeChange; } }
-        
+
         public override void ExposeData()
         {
             base.ExposeData();
+
             Scribe_Values.Look<bool>(ref showGenderAgeChange, "ChangeDresser.ShowGenderAgeChange", true, false);
         }
 

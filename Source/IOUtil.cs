@@ -28,7 +28,7 @@ using System.Reflection;
 using UnityEngine;
 using Verse;
 
-namespace ChangeDresser.Util
+namespace ChangeDresser
 {
     public enum ColorPresetType { Apparel, Hair };
     static class IOUtil

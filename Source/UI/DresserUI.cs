@@ -29,7 +29,6 @@ using Verse;
 using ChangeDresser.UI.Enums;
 using ChangeDresser.UI.DTO.SelectionWidgetDTOs;
 using System.Reflection;
-using ChangeDresser.Util;
 using System;
 
 namespace ChangeDresser.UI

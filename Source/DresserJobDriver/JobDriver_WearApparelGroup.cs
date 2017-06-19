@@ -24,7 +24,7 @@
 using System.Collections.Generic;
 using Verse;
 using Verse.AI;
-using ChangeDresser.UI.DTO.StorageDTOs;
+using ChangeDresser.StoredApparel;
 
 namespace ChangeDresser.DresserJobDriver
 {
@@ -41,15 +41,19 @@ namespace ChangeDresser.DresserJobDriver
                     string apparelGroupName = ((SwapApparelJob)base.CurJob).ApparelGroupName;
                     Pawn pawn = this.GetActor();
 
-                    StorageGroupDTO dto;
-                    if (!dresser.TryGetStorageGroup(pawn, apparelGroupName, out dto))
+                    StoredApparelSet setToGet = null;
+                    foreach (StoredApparelSet set in StoredApparelContainer.GetApparelSets(dresser))
                     {
+                        if (set.IsOwnedBy(pawn) && set.Name.Equals(apparelGroupName))
+                        {
+                            setToGet = set;
+                            break;
+                        }
+                    }
+                    if (setToGet == null)
                         Messages.Message(pawn.Name.ToStringShort + " " + "ChangeDresser.UnableToWearApparelGroup".Translate() + " " + apparelGroupName + ".", MessageSound.Negative);
-                    }
                     else
-                    {
-                        dto.SwapWith(pawn);
-                    }
+                        setToGet.SwapApparel(pawn);
                 }
             };
             yield break;

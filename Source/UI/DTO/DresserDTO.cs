@@ -25,7 +25,6 @@ using ChangeDresser.UI.DTO.SelectionWidgetDTOs;
 using ChangeDresser.UI.Enums;
 using Verse;
 using ChangeDresser.UI.Util;
-using ChangeDresser.Util;
 using System.Collections.Generic;
 
 namespace ChangeDresser.UI.DTO

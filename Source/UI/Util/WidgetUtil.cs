@@ -39,16 +39,16 @@ namespace ChangeDresser.UI.Util
     [StaticConstructorOnStartup]
     static class WidgetUtil
     {
-        public static readonly Texture2D nextTexture;
-        public static readonly Texture2D previousTexture;
-        public static readonly Texture2D cantTexture;
-        public static readonly Texture2D colorPickerTexture;
-        public static readonly Texture2D copyIconTexture;
-        public static readonly Texture2D pasteIconTexture;
-        public static readonly Texture2D dropTexture;
-        public static readonly Texture2D colorFinder;
+        public static Texture2D nextTexture;
+        public static Texture2D previousTexture;
+        public static Texture2D cantTexture;
+        public static Texture2D colorPickerTexture;
+        public static Texture2D copyIconTexture;
+        public static Texture2D pasteIconTexture;
+        public static Texture2D dropTexture;
+        public static Texture2D colorFinder;
 
-        static WidgetUtil()
+        public static void Initialize()
         {
             nextTexture = ContentFinder<Texture2D>.Get("UI/next", true);
             previousTexture = ContentFinder<Texture2D>.Get("UI/previous", true);
