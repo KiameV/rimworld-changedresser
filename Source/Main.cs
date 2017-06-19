@@ -1,4 +1,5 @@
-﻿using ChangeDresser.UI.DTO.StorageDTOs;
+﻿using ChangeDresser.StoredApparel;
+using ChangeDresser.UI.Util;
 using Harmony;
 using RimWorld;
 using System;
@@ -17,10 +18,9 @@ namespace ChangeDresser
             var harmony = HarmonyInstance.Create("com.changedresser.rimworld.mod");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
 
-            BattleApparelGroupDTO.ShowForceBattleSwitch = true;
+            WidgetUtil.Initialize();
+            
             Log.Message("ChangeDresser: Adding Harmony Postfix to Pawn_DraftController.Drafted { set }");
-
-            Building_Dresser.DefaultStoragePriority = StoragePriority.Important;
             Log.Message("ChangeDresser: Adding Harmony Postfix to JobGiver_OptimizeApparel.TryGiveJob(Pawn)");
         }
     }
@@ -30,13 +30,13 @@ namespace ChangeDresser
     {
         static void Postfix(Pawn_DraftController __instance)
         {
-            StorageGroupDTO storageGroupDto;
-            if (BattleApparelGroupDTO.TryGetBattleApparelGroupForPawn(__instance.pawn, out storageGroupDto))
+            StoredApparelSet set;
+            if (StoredApparelContainer.TryGetBattleApparelSet(__instance.pawn, out set))
             {
-                if ((__instance.Drafted && !storageGroupDto.IsBeingWorn) ||
-                    (!__instance.Drafted && storageGroupDto.IsBeingWorn))
+                if ((__instance.Drafted && !set.IsBeingWorn) ||
+                    (!__instance.Drafted && set.IsBeingWorn))
                 {
-                    storageGroupDto.SwapWith(__instance.pawn);
+                    set.SwapApparel(__instance.pawn);
                 }
             }
         }

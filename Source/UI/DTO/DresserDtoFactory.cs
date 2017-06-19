@@ -35,11 +35,11 @@ namespace ChangeDresser.UI.DTO
             List<CurrentEditorEnum> editors;
             if (job.targetA.Thing is Building_Dresser)
             {
-                editors = ((Building_Dresser)job.targetA.Thing).SupportedEditors;
+                editors = Building_Dresser.SupportedEditors;
             }
             else
             {
-                editors = ((Building_ChangeMirror)job.targetA.Thing).SupportedEditors;
+                editors = Building_ChangeMirror.SupportedEditors;
             }
             return new DresserDTO(pawn, selectedEditor, editors);
         }

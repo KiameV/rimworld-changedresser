@@ -25,24 +25,27 @@ using ChangeDresser.UI.Util;
 using RimWorld;
 using UnityEngine;
 using Verse;
-using ChangeDresser.UI.DTO.StorageDTOs;
 using System;
 using System.Collections.Generic;
 using static ChangeDresser.UI.StorageGroupUI;
+using ChangeDresser.StoredApparel;
+using System.Text;
 
 namespace ChangeDresser.UI
 {
     class StorageUI : Window
     {
         private readonly Building_Dresser Dresser;
-        private readonly Pawn Pawn;
+        private readonly bool FromGizmo;
+        private Pawn Pawn;
         private Vector2 scrollPosLeft = new Vector2(0, 0);
         private Vector2 scrollPosRight = new Vector2(0, 0);
 
-        public StorageUI(Building_Dresser dresser, Pawn pawn)
+        public StorageUI(Building_Dresser dresser, Pawn pawn, bool fromGizmo = false)
         {
             this.Dresser = dresser;
             this.Pawn = pawn;
+            this.FromGizmo = fromGizmo;
 
             this.closeOnEscapeKey = true;
             this.doCloseButton = true;
@@ -71,46 +74,27 @@ namespace ChangeDresser.UI
                 if (Widgets.ButtonText(new Rect(inRect.width * 0.5f, 10, 200, 30), "ChangeDresser.ApparelGroup".Translate()))
                 {
                     List<FloatMenuOption> list = new List<FloatMenuOption>();
-                    list.Add(new FloatMenuOption("ChangeDresser.CreateFromWorn".Translate(), delegate
+                    if (!this.FromGizmo)
                     {
-                        StorageGroupDTO dto = new StorageGroupDTO();
-                        this.Dresser.StorageGroups.Add(dto);
-                        Find.WindowStack.Add(new StorageGroupUI(dto, ApparelFromEnum.Pawn, this.Dresser, this.Pawn, true));
-                    }));
+                        list.Add(new FloatMenuOption("ChangeDresser.CreateFromWorn".Translate(), delegate
+                        {
+                            StoredApparelSet set = new StoredApparelSet(this.Dresser);
+                            Find.WindowStack.Add(new StorageGroupUI(set, ApparelFromEnum.Pawn, this.Dresser, this.Pawn, true, this.FromGizmo));
+                        }));
+                    }
                     list.Add(new FloatMenuOption("ChangeDresser.CreateFromStorage".Translate(), delegate
                     {
-                        StorageGroupDTO dto = new StorageGroupDTO();
-                        this.Dresser.StorageGroups.Add(dto);
-                        Find.WindowStack.Add(new StorageGroupUI(dto, ApparelFromEnum.Storage, this.Dresser, this.Pawn, true));
+                        StoredApparelSet set = new StoredApparelSet(this.Dresser);
+                        Find.WindowStack.Add(new StorageGroupUI(set, ApparelFromEnum.Storage, this.Dresser, this.Pawn, true, this.FromGizmo));
                     }));
-
-                    for (int i = 0; i < this.Dresser.StorageGroups.Count; ++i)
+                
+                    if (this.FromGizmo)
                     {
-                        StorageGroupDTO dto = this.Dresser.StorageGroups[i];
-                        string label = "";
-                        if (dto.IsBeingWorn)
-                        {
-                            label = label + " (" + "ChangeDresser.BeingWorn".Translate() + ")";
-                        }
-                        
-                        if (!dto.CanPawnAccess(this.Pawn))
-                        {
-                            list.Add(new FloatMenuOption("ChangeDresser.ClaimApparelGroup".Translate() + " " + dto.Name + " - " + dto.RestrictToPawnName + label, delegate
-                            {
-                                dto.RestrictToPawn(this.Pawn);
-                            }));
-                        }
-                        else
-                        {
-                            list.Add(new FloatMenuOption("ChangeDresser.EditApparelGroup".Translate() + " " + dto.Name + " " + "ChangeDresser.FromWorn".Translate() + label, delegate
-                            {
-                                Find.WindowStack.Add(new StorageGroupUI(dto, ApparelFromEnum.Pawn, this.Dresser, this.Pawn, false));
-                            }));
-                            list.Add(new FloatMenuOption("ChangeDresser.EditApparelGroup".Translate() + " " + dto.Name + " " + "ChangeDresser.FromStorage".Translate() + label, delegate
-                            {
-                                Find.WindowStack.Add(new StorageGroupUI(dto, ApparelFromEnum.Storage, this.Dresser, this.Pawn, false));
-                            }));
-                        }
+                        this.CreateOptionsForUser(list);
+                    }
+                    else
+                    {
+                        this.CreateOptionsForPawn(list);
                     }
                     Find.WindowStack.Add(new FloatMenu(list, null, false));
                 }
@@ -132,50 +116,56 @@ namespace ChangeDresser.UI
                 GUI.Label(new Rect(440, 0, 150, rect.height), "Force Switch Combat:", WidgetUtil.MiddleCenter);
                 this.storageGroupDto.ForceSwitchBattle = GUI.Toggle(new Rect(600, 7, rect.height, rect.height), this.storageGroupDto.ForceSwitchBattle, "");
                 GUI.EndGroup();*/
-
-                List<Apparel> wornApparel = this.Pawn.apparel.WornApparel;
+                
+                List<Apparel> wornApparel = (!this.FromGizmo) ? this.Pawn.apparel.WornApparel : null;
                 List<Apparel> storedApparel = this.Dresser.StoredApparel;
 
                 const float cellHeight = 40f;
                 float apparelListWidth = inRect.width * 0.5f - 10f;
-                Rect apparelListRect = new Rect(0, 90, apparelListWidth, inRect.height - 130);
-                Rect apparelScrollRect = new Rect(0f, 0f, apparelListWidth - 16f, wornApparel.Count * cellHeight);
+                Rect apparelListRect;
+                Rect apparelScrollRect;
 
-                GUI.BeginGroup(apparelListRect);
-                this.scrollPosLeft = GUI.BeginScrollView(new Rect(GenUI.AtZero(apparelListRect)), this.scrollPosLeft, apparelScrollRect);
-
-                GUI.color = Color.white;
-                Text.Font = GameFont.Medium;
-                for (int i = 0; i < wornApparel.Count; ++i)
+                if (!this.FromGizmo)
                 {
-                    Apparel apparel = wornApparel[i];
-                    Rect rowRect = new Rect(0, 2f + i * cellHeight, apparelListRect.width, cellHeight);
-                    GUI.BeginGroup(rowRect);
+                    apparelListRect = new Rect(0, 90, apparelListWidth, inRect.height - 130);
+                    apparelScrollRect = new Rect(0f, 0f, apparelListWidth - 16f, wornApparel.Count * cellHeight);
 
-                    Widgets.ThingIcon(new Rect(0f, 0f, cellHeight, cellHeight), apparel);
-
-                    Text.Font = GameFont.Small;
-                    Widgets.Label(new Rect(cellHeight + 5f, 0f, rowRect.width - 40f - cellHeight, cellHeight), apparel.Label);
-
+                    GUI.BeginGroup(apparelListRect);
+                    this.scrollPosLeft = GUI.BeginScrollView(new Rect(GenUI.AtZero(apparelListRect)), this.scrollPosLeft, apparelScrollRect);
+                    
                     GUI.color = Color.white;
-                    if (Widgets.ButtonImage(new Rect(rowRect.width - 35f, 10, 20, 20), WidgetUtil.nextTexture))
+                    Text.Font = GameFont.Medium;
+                    for (int i = 0; i < wornApparel.Count; ++i)
                     {
-                        this.Pawn.apparel.Remove(apparel);
-                        storedApparel.Add(apparel);
+                        Apparel apparel = wornApparel[i];
+                        Rect rowRect = new Rect(0, 2f + i * cellHeight, apparelListRect.width, cellHeight);
+                        GUI.BeginGroup(rowRect);
+
+                        Widgets.ThingIcon(new Rect(0f, 0f, cellHeight, cellHeight), apparel);
+
+                        Text.Font = GameFont.Small;
+                        Widgets.Label(new Rect(cellHeight + 5f, 0f, rowRect.width - 40f - cellHeight, cellHeight), apparel.Label);
+
+                        GUI.color = Color.white;
+                        if (Widgets.ButtonImage(new Rect(rowRect.width - 35f, 10, 20, 20), WidgetUtil.nextTexture))
+                        {
+                            this.Pawn.apparel.Remove(apparel);
+                            storedApparel.Add(apparel);
+                            GUI.EndGroup();
+                            break;
+                        }
                         GUI.EndGroup();
-                        break;
                     }
+                    GUI.EndScrollView();
                     GUI.EndGroup();
                 }
-                GUI.EndScrollView();
-                GUI.EndGroup();
-
+                
                 apparelListRect = new Rect(inRect.width - apparelListWidth, 90, apparelListWidth, inRect.height - 130);
                 apparelScrollRect = new Rect(0f, 0f, apparelListWidth - 16f, storedApparel.Count * cellHeight);
 
                 GUI.BeginGroup(apparelListRect);
                 this.scrollPosRight = GUI.BeginScrollView(new Rect(GenUI.AtZero(apparelListRect)), this.scrollPosRight, apparelScrollRect);
-
+                
                 GUI.color = Color.white;
                 Text.Font = GameFont.Medium;
                 for (int i = 0; i < storedApparel.Count; ++i)
@@ -184,28 +174,31 @@ namespace ChangeDresser.UI
                     Rect rowRect = new Rect(0, 2f + i * cellHeight, apparelScrollRect.width, cellHeight);
                     GUI.BeginGroup(rowRect);
 
-                    Rect buttonRect = new Rect(5, 10, 20, 20);
-                    bool canWear = this.Pawn.apparel.CanWearWithoutDroppingAnything(apparel.def);
-                    if (canWear)
+                    if (!this.FromGizmo)
                     {
-                        if (Widgets.ButtonImage(buttonRect, WidgetUtil.previousTexture))
+                        Rect buttonRect = new Rect(5, 10, 20, 20);
+                        bool canWear = this.Pawn.apparel.CanWearWithoutDroppingAnything(apparel.def);
+                        if (canWear)
                         {
-                            storedApparel.Remove(apparel);
-                            this.Pawn.apparel.Wear(apparel);
-                            GUI.EndGroup();
-                            break;
+                            if (Widgets.ButtonImage(buttonRect, WidgetUtil.previousTexture))
+                            {
+                                storedApparel.Remove(apparel);
+                                this.Pawn.apparel.Wear(apparel);
+                                GUI.EndGroup();
+                                break;
+                            }
                         }
-                    }
-                    else
-                    {
-                        Widgets.ButtonImage(buttonRect, WidgetUtil.cantTexture);
+                        else
+                        {
+                            Widgets.ButtonImage(buttonRect, WidgetUtil.cantTexture);
+                        }
                     }
 
                     Widgets.ThingIcon(new Rect(35f, 0f, cellHeight, cellHeight), apparel);
                     Text.Font = GameFont.Small;
                     Text.Anchor = TextAnchor.MiddleCenter;
                     Widgets.Label(new Rect(cellHeight + 45f, 0f, rowRect.width - cellHeight - 90f, cellHeight), apparel.Label);
-
+                    
                     if (Widgets.ButtonImage(new Rect(rowRect.width - 45f, 0f, cellHeight, cellHeight), WidgetUtil.dropTexture))
                     {
                         this.Dresser.Remove(apparel, false);
@@ -216,7 +209,7 @@ namespace ChangeDresser.UI
                     GUI.EndGroup();
                 }
                 GUI.EndScrollView();
-
+                
                 GUI.EndGroup();
             }
             catch (Exception e)
@@ -229,6 +222,68 @@ namespace ChangeDresser.UI
             {
                 Text.Anchor = TextAnchor.UpperLeft;
                 GUI.color = Color.white;
+            }
+        }
+
+        private void CreateOptionsForPawn(List<FloatMenuOption> list)
+        {
+            foreach (StoredApparelSet set in StoredApparelContainer.GetApparelSets(this.Dresser))
+            {
+                string label = "";
+                if (set.IsBeingWorn)
+                {
+                    label = label + " (" + "ChangeDresser.BeingWorn".Translate() + ")";
+                }
+
+                if (!set.IsOwnedBy(this.Pawn))
+                {
+                    string ownerName = "";
+                    if (set.HasOwner)
+                        ownerName = " - " + set.OwnerName;
+                    list.Add(new FloatMenuOption("ChangeDresser.ClaimApparelGroup".Translate() + " " + set.Name + ownerName + label, delegate
+                    {
+                        set.SetOwner(this.Pawn);
+                    }));
+                }
+                else
+                {
+                    list.Add(new FloatMenuOption("ChangeDresser.EditApparelGroup".Translate() + " " + set.Name + " " + "ChangeDresser.FromWorn".Translate() + label, delegate
+                    {
+                        Find.WindowStack.Add(new StorageGroupUI(set, ApparelFromEnum.Pawn, this.Dresser, this.Pawn, false, false));
+                    }));
+                    list.Add(new FloatMenuOption("ChangeDresser.EditApparelGroup".Translate() + " " + set.Name + " " + "ChangeDresser.FromStorage".Translate() + label, delegate
+                    {
+                        Find.WindowStack.Add(new StorageGroupUI(set, ApparelFromEnum.Storage, this.Dresser, this.Pawn, false, false));
+                    }));
+                }
+            }
+        }
+
+        private void CreateOptionsForUser(List<FloatMenuOption> list)
+        {
+            foreach (KeyValuePair<string, List<StoredApparelSet>> kv in StoredApparelContainer.GetAllApparelSets())
+            {
+                foreach (StoredApparelSet set in kv.Value)
+                {
+                    StringBuilder sb = new StringBuilder("ChangeDresser.EditApparelGroup".Translate());
+                    sb.Append(" ");
+                    sb.Append(set.Name);
+                    if (set.HasOwner)
+                    {
+                        sb.Append(" - ");
+                        sb.Append(set.OwnerName);
+                    }
+                    if (set.IsBeingWorn)
+                    {
+                        sb.Append(" (");
+                        sb.Append("ChangeDresser.BeingWorn".Translate());
+                        sb.Append(")");
+                    }
+                    list.Add(new FloatMenuOption(sb.ToString(), delegate
+                    {
+                        Find.WindowStack.Add(new StorageGroupUI(set, ApparelFromEnum.Storage, this.Dresser, null, false, true));
+                    }));
+                }
             }
         }
     }
