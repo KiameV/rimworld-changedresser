@@ -109,7 +109,7 @@ namespace ChangeDresser
                 this.DropApparel(a);
             }
         }
-
+        
         private Random random = null;
         private void DropApparel(Thing a, bool makeForbidden = true)
         {
