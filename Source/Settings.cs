@@ -25,23 +25,58 @@ namespace ChangeDresser
     public class Settings : ModSettings
     {
         private static bool showGenderAgeChange = true;
+        private static bool showBodyChange = true;
+        private static bool linkGroupsToDresser = true;
 
         public static bool ShowGenderAgeChange { get { return showGenderAgeChange; } }
+        public static bool ShowBodyChange { get { return showBodyChange; } }
+        public static bool LinkGroupsToDresser { get { return linkGroupsToDresser; } }
 
         public override void ExposeData()
         {
             base.ExposeData();
 
-            Scribe_Values.Look<bool>(ref showGenderAgeChange, "ChangeDresser.ShowGenderAgeChange", true, false);
+            Scribe_Values.Look<bool>(ref showGenderAgeChange, "ChangeDresser.ShowGenderAgeChange", true, true);
+            Scribe_Values.Look<bool>(ref showBodyChange, "ChangeDresser.ShowBodyChange", true, true);
+            Scribe_Values.Look<bool>(ref linkGroupsToDresser, "ChangeDresser.LinkGroupsToDresser", true, true);
+
+            VerifySupportedEditors(showBodyChange);
         }
 
         public static void DoSettingsWindowContents(Rect rect)
         {
-            Listing_Standard expr_06 = new Listing_Standard(GameFont.Small);
-            expr_06.ColumnWidth = rect.width;
-            expr_06.Begin(rect);
-            expr_06.CheckboxLabeled("ChangeDresser.ShowGenderAgeChange".Translate(), ref showGenderAgeChange);
-            expr_06.End();
+            Listing_Standard l = new Listing_Standard(GameFont.Small);
+            l.ColumnWidth = System.Math.Min(400, rect.width / 2);
+            l.Begin(rect);
+            l.CheckboxLabeled("ChangeDresser.ShowBodyChange".Translate(), ref showBodyChange);
+            if (showBodyChange)
+            {
+                l.Gap(4);
+                l.CheckboxLabeled("ChangeDresser.ShowGenderAgeChange".Translate(), ref showGenderAgeChange);
+                l.Gap(20);
+            }
+            else
+                l.Gap(48);
+            l.CheckboxLabeled("ChangeDresser.LinkStorageGroupWithDresser".Translate(), ref linkGroupsToDresser);
+            l.Gap(4);
+            l.Label("ChangeDresser.LinkStorageGroupWithDresserDesc".Translate());
+            l.End();
+
+            VerifySupportedEditors(showBodyChange);
+        }
+
+        private static void VerifySupportedEditors(bool showBodyChange)
+        {
+            if (showBodyChange && Building_Dresser.SupportedEditors.Count == 2)
+            {
+                Building_Dresser.SupportedEditors.Add(UI.Enums.CurrentEditorEnum.ChangeDresserBody);
+                Building_ChangeMirror.SupportedEditors.Add(UI.Enums.CurrentEditorEnum.ChangeDresserBody);
+            }
+            else if (!showBodyChange && Building_Dresser.SupportedEditors.Count == 3)
+            {
+                Building_Dresser.SupportedEditors.Remove(UI.Enums.CurrentEditorEnum.ChangeDresserBody);
+                Building_ChangeMirror.SupportedEditors.Remove(UI.Enums.CurrentEditorEnum.ChangeDresserBody);
+            }
         }
     }
 }

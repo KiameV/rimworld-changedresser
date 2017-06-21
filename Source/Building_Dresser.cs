@@ -48,8 +48,8 @@ namespace ChangeDresser
         static Building_Dresser()
         {
             SupportedEditors.Add(CurrentEditorEnum.ChangeDresserApparelColor);
-            SupportedEditors.Add(CurrentEditorEnum.ChangeDresserBody);
             SupportedEditors.Add(CurrentEditorEnum.ChangeDresserHair);
+            SupportedEditors.Add(CurrentEditorEnum.ChangeDresserBody);
         }
 
         public const StoragePriority DefaultStoragePriority = StoragePriority.Low;
@@ -96,10 +96,9 @@ namespace ChangeDresser
                 this.storedApparel.Clear();
             }
 
-            foreach (StoredApparelSet set in StoredApparelContainer.RemoveApparelSets(this))
-            {
-                DropApparel(set.Apparel);
-            }
+            if (Settings.LinkGroupsToDresser)
+                foreach (StoredApparelSet set in StoredApparelContainer.RemoveApparelSets(this))
+                    DropApparel(set.Apparel);
         }
 
         private void DropApparel(List<Apparel> apparel)
@@ -109,7 +108,7 @@ namespace ChangeDresser
                 this.DropApparel(a);
             }
         }
-        
+
         private Random random = null;
         private void DropApparel(Thing a, bool makeForbidden = true)
         {
@@ -168,7 +167,8 @@ namespace ChangeDresser
             base.ExposeData();
 
             List<StoredApparelSet> sets = null;
-            if (Scribe.mode == LoadSaveMode.Saving)
+
+            if (Settings.LinkGroupsToDresser && Scribe.mode == LoadSaveMode.Saving)
             {
                 sets = StoredApparelContainer.GetApparelSets(this);
             }
@@ -186,7 +186,6 @@ namespace ChangeDresser
 
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
-                Scribe_Collections.Look(ref groups, "storageGroups", LookMode.Deep, new object[0]);
                 if (groups != null && groups.Count > 0)
                 {
                     sets = this.GetStoredApparelSetsFromStorageGroupDTOs();
@@ -209,10 +208,13 @@ namespace ChangeDresser
             sb.Append("ChangeDresser.ApparelCount".Translate());
             sb.Append(": ");
             sb.Append(this.StoredApparel.Count);
-            sb.Append("\n");
-            sb.Append("ChangeDresser.ApparelGroupCount".Translate());
-            sb.Append(": ");
-            sb.Append(this.StoredApparelSets.Count);
+            if (Settings.LinkGroupsToDresser)
+            {
+                sb.Append("\n");
+                sb.Append("ChangeDresser.ApparelGroupCount".Translate());
+                sb.Append(": ");
+                sb.Append(StoredApparelContainer.GetApparelSets(this).Count);
+            }
             return sb.ToString();
         }
 
@@ -229,14 +231,6 @@ namespace ChangeDresser
                 this.storedApparel = value;
                 if (this.storedApparel == null)
                     this.storedApparel = new List<Apparel>();
-            }
-        }
-
-        public List<StoredApparelSet> StoredApparelSets
-        {
-            get
-            {
-                return StoredApparelContainer.GetApparelSets(this);
             }
         }
 
@@ -296,15 +290,16 @@ namespace ChangeDresser
                     Job job = new Job(this.changeHairStyleJobDef, this);
                     pawn.jobs.TryTakeOrderedJob(job);
                 }));
-
-            list.Add(new FloatMenuOption(
-                "ChangeDresser.ChangeBody".Translate(),
-                delegate
-                {
-                    Job job = new Job(this.changeBodyJobDef, this);
-                    pawn.jobs.TryTakeOrderedJob(job);
-                }));
-
+            if (Settings.ShowBodyChange)
+            {
+                list.Add(new FloatMenuOption(
+                    "ChangeDresser.ChangeBody".Translate(),
+                    delegate
+                    {
+                        Job job = new Job(this.changeBodyJobDef, this);
+                        pawn.jobs.TryTakeOrderedJob(job);
+                    }));
+            }
             list.Add(new FloatMenuOption(
                 "ChangeDresser.StoreApparel".Translate(),
                 delegate
@@ -326,7 +321,13 @@ namespace ChangeDresser
             }
             else
             {
-                foreach (StoredApparelSet set in StoredApparelContainer.GetApparelSets(this))
+                IEnumerable<StoredApparelSet> sets;
+                if (Settings.LinkGroupsToDresser)
+                    sets = StoredApparelContainer.GetApparelSets(this);
+                else
+                    sets = StoredApparelContainer.GetAllApparelSets();
+
+                foreach (StoredApparelSet set in sets)
                 {
                     if (set.IsOwnedBy(pawn))
                     {

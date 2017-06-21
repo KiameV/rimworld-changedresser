@@ -40,8 +40,8 @@ namespace ChangeDresser
         static Building_ChangeMirror()
         {
             SupportedEditors.Add(CurrentEditorEnum.ChangeDresserApparelColor);
-            SupportedEditors.Add(CurrentEditorEnum.ChangeDresserBody);
             SupportedEditors.Add(CurrentEditorEnum.ChangeDresserHair);
+            SupportedEditors.Add(CurrentEditorEnum.ChangeDresserBody);
         }
 
         [DebuggerHidden]
@@ -67,13 +67,16 @@ namespace ChangeDresser
                     pawn.jobs.TryTakeOrderedJob(job);
                 }));
 
-            list.Add(new FloatMenuOption(
+            if (Settings.ShowBodyChange)
+            {
+                list.Add(new FloatMenuOption(
                 "ChangeDresser.ChangeBody".Translate(),
                 delegate
                 {
                     Job job = new Job(this.changeBodyJobDef, this);
                     pawn.jobs.TryTakeOrderedJob(job);
                 }));
+            }
             return list;
         }
     }

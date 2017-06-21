@@ -90,5 +90,8 @@
 	
 	<!-- Mod Settings -->
 	<ChangeDresser>Change Dresser</ChangeDresser>
+	<ChangeDresser.ShowBodyChange>Allow Body Change</ChangeDresser.ShowBodyChange>
 	<ChangeDresser.ShowGenderAgeChange>Allow Gender and Age Change</ChangeDresser.ShowGenderAgeChange>
+	<ChangeDresser.LinkStorageGroupWithDresser>Link Storage Groups to Dresser</ChangeDresser.LinkStorageGroupWithDresser>
+	<ChangeDresser.LinkStorageGroupWithDresserDesc>  Caution: Going from unlinked (unchecked) to linked (checked) mid-game can cause apparel to become lost if the storage group's parent dresser no longer exists.</ChangeDresser.LinkStorageGroupWithDresserDesc>
 </LanguageData>

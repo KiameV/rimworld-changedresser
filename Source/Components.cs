@@ -8,14 +8,33 @@ namespace ChangeDresser
 {
     class WorldComp : WorldComponent
     {
-        public WorldComp(World world) : base(world)
+        public WorldComp(World world) : base(world) { }
+        
+        public override void ExposeData()
         {
-        }
+            base.ExposeData();
 
-        public override void FinalizeInit()
-        {
-            base.FinalizeInit();
-            StoredApparelContainer.Clear();
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+            {
+                StoredApparelContainer.Clear();
+            }
+
+            List<StoredApparelSet> sets = null;
+            
+            if (!Settings.LinkGroupsToDresser && Scribe.mode == LoadSaveMode.Saving)
+            {
+                sets = new List<StoredApparelSet>(StoredApparelContainer.GetAllApparelSets());
+            }
+
+            Scribe_Collections.Look(ref sets, "storedApparelSet", LookMode.Deep, new object[0]);
+
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+            {
+                if (sets != null && sets.Count > 0)
+                {
+                    StoredApparelContainer.AddApparelSets(sets);
+                }
+            }
         }
     }
 

@@ -42,7 +42,14 @@ namespace ChangeDresser.DresserJobDriver
                     Pawn pawn = this.GetActor();
 
                     StoredApparelSet setToGet = null;
-                    foreach (StoredApparelSet set in StoredApparelContainer.GetApparelSets(dresser))
+
+                    IEnumerable<StoredApparelSet> sets;
+                    if (Settings.LinkGroupsToDresser)
+                        sets = StoredApparelContainer.GetApparelSets(dresser);
+                    else
+                        sets = StoredApparelContainer.GetAllApparelSets();
+
+                    foreach (StoredApparelSet set in sets)
                     {
                         if (set.IsOwnedBy(pawn) && set.Name.Equals(apparelGroupName))
                         {

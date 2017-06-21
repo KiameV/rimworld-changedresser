@@ -6,89 +6,47 @@ namespace ChangeDresser.StoredApparel
 {
     class StoredApparelContainer
     {
-        private static Dictionary<string, List<StoredApparelSet>> storedApparelSets = new Dictionary<string, List<StoredApparelSet>>();
+        private static LinkedList<StoredApparelSet> storedApparelSets = new LinkedList<StoredApparelSet>();
 
         public static void AddApparelSet(StoredApparelSet set)
         {
             if (set != null)
             {
-                lock (storedApparelSets)
-                {
-                    List<StoredApparelSet> l;
-                    if (!storedApparelSets.TryGetValue(set.ParentDresserId, out l))
-                    {
-                        l = new List<StoredApparelSet>();
-                        storedApparelSets.Add(set.ParentDresserId, l);
-                    }
-                    l.Add(set);
-                }
+                storedApparelSets.AddLast(set);
             }
         }
 
-        public static void AddApparelSets(List<StoredApparelSet> sets)
+        public static void AddApparelSets(IEnumerable<StoredApparelSet> sets)
         {
-            if (sets != null && sets.Count > 0)
-            {
-                lock (storedApparelSets)
-                {
-                    List<StoredApparelSet> l;
-                    if (!storedApparelSets.TryGetValue(sets[0].ParentDresserId, out l))
-                    {
-                        l = new List<StoredApparelSet>();
-                        storedApparelSets.Add(sets[0].ParentDresserId, l);
-                    }
-                    l.AddRange(sets);
-                }
-            }
-        }
-
-        public static string Count
-        {
-            get
-            {
-                int c = 0;
-                foreach (List<StoredApparelSet> s in storedApparelSets.Values)
-                    c += s.Count;
-                return storedApparelSets.Count + " " + c;
-            }
+            if (sets != null)
+                foreach (StoredApparelSet set in sets)
+                    if (set != null)
+                        storedApparelSets.AddLast(set);
         }
 
         internal static void Clear()
         {
-            lock (storedApparelSets)
-            {
-                foreach (List<StoredApparelSet> sets in storedApparelSets.Values)
-                    sets.Clear();
-                storedApparelSets.Clear();
-            }
+            storedApparelSets.Clear();
         }
 
         internal static void Initialize(Dictionary<string, Pawn> pawnIdToPawn)
         {
-            lock (storedApparelSets)
-            {
-                foreach (List<StoredApparelSet> sets in storedApparelSets.Values)
-                    foreach (StoredApparelSet s in sets)
-                        s.Initialize(pawnIdToPawn);
-            }
+            foreach (StoredApparelSet set in storedApparelSets)
+                set.Initialize(pawnIdToPawn);
         }
 
         public static bool DoesPawnHaveApparelSets(Pawn pawn)
         {
             if (pawn != null)
             {
-                lock (storedApparelSets)
-                {
-                    foreach (List<StoredApparelSet> sets in storedApparelSets.Values)
-                        foreach (StoredApparelSet s in sets)
-                            if (s.IsOwnedBy(pawn))
-                                return true;
-                }
+                foreach (StoredApparelSet set in storedApparelSets)
+                    if (set.IsOwnedBy(pawn))
+                        return true;
             }
             return false;
         }
 
-        public static IEnumerable<KeyValuePair<string, List<StoredApparelSet>>> GetAllApparelSets()
+        public static IEnumerable<StoredApparelSet> GetAllApparelSets()
         {
             return storedApparelSets;
         }
@@ -104,37 +62,31 @@ namespace ChangeDresser.StoredApparel
         {
             if (dresserId != null)
             {
-                lock (storedApparelSets)
-                {
-                    List<StoredApparelSet> l;
-                    if (storedApparelSets.TryGetValue(dresserId, out l))
-                        return l;
-                }
+                List<StoredApparelSet> l = new List<StoredApparelSet>();
+                foreach (StoredApparelSet set in storedApparelSets)
+                    if (set.ParentDresserId.Equals(dresserId))
+                        l.Add(set);
+                return l;
             }
             return new List<StoredApparelSet>(0);
         }
 
         public static void RemoveApparelSet(StoredApparelSet set)
         {
-            lock (storedApparelSets)
-            {
-                List<StoredApparelSet> sets = GetApparelSets(set.ParentDresserId);
-                if (sets != null)
-                    sets.Remove(set);
-            }
+            storedApparelSets.Remove(set);
         }
 
         public static List<StoredApparelSet> RemoveApparelSets(Building_Dresser dresser)
         {
             if (dresser != null)
             {
-                lock (storedApparelSets)
+                List<StoredApparelSet> l = new List<StoredApparelSet>();
+                for (LinkedListNode<StoredApparelSet> n = storedApparelSets.First; n.Next != null; n = n.Next)
                 {
-                    List<StoredApparelSet> l;
-                    if (storedApparelSets.TryGetValue(dresser.ThingID, out l))
+                    if (n.Value.ParentDresserId.Equals(dresser.ThingID))
                     {
-                        if (storedApparelSets.Remove(dresser.ThingID))
-                            return l;
+                        l.Add(n.Value);
+                        storedApparelSets.Remove(n);
                     }
                 }
             }
@@ -145,16 +97,12 @@ namespace ChangeDresser.StoredApparel
         {
             if (pawn != null)
             {
-                lock (storedApparelSets)
-                {
-                    foreach (List<StoredApparelSet> sets in storedApparelSets.Values)
-                        foreach (StoredApparelSet s in sets)
-                            if (s.IsBeingWornBy(pawn))
-                            {
-                                set = s;
-                                return true;
-                            }
-                }
+                foreach (StoredApparelSet s in storedApparelSets)
+                    if (s.IsBeingWornBy(pawn))
+                    {
+                        set = s;
+                        return true;
+                    }
             }
             set = null;
             return false;
@@ -164,18 +112,12 @@ namespace ChangeDresser.StoredApparel
         {
             if (pawn != null)
             {
-                lock (storedApparelSets)
-                {
-                    foreach (List<StoredApparelSet> sets in storedApparelSets.Values)
-                        foreach (StoredApparelSet s in sets)
-                        {
-                            if (s.IsOwnedBy(pawn) && s.SwitchForBattle)
-                            {
-                                set = s;
-                                return true;
-                            }
-                        }
-                }
+                foreach (StoredApparelSet s in storedApparelSets)
+                    if (s.IsOwnedBy(pawn) && s.SwitchForBattle)
+                    {
+                        set = s;
+                        return true;
+                    }
             }
             set = null;
             return false;
