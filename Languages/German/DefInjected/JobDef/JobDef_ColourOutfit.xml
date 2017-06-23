@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <ChangeApparelColor.reportString>Wird gerade geändert.</ChangeApparelColor.reportString>
+  <ChangeHairColor.reportString>Ändere Haarstil und/oder -farbe.</ChangeHairColor.reportString>
+  <ChangeHairStyle.reportString>Ändere Haarstil und/oder -farbe.</ChangeHairStyle.reportString>
+  <ChangeBody.reportString>Ändere Körperattribute.</ChangeBody.reportString>
+  <StoreApparel.reportString>Lagere Kleidung.</StoreApparel.reportString>
+  <WearApparelGroup.reportString>Trage Kleidungsgruppe.</WearApparelGroup.reportString>
+  <WearApparelFromStorage.reportString>Trage TargetA.</WearApparelFromStorage.reportString>
+
+</LanguageData>

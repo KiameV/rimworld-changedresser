@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- Window Labels -->
+  <ChangeDresser.DresserLabel>Kommode</ChangeDresser.DresserLabel>
+  <ChangeDresser.ApparelGroupLabel>Bekleidungsgruppe</ChangeDresser.ApparelGroupLabel>
+  <ChangeDresser.ApparelStorageLabel>Bekleidungslager</ChangeDresser.ApparelStorageLabel>
+
+  <!-- Common Strings -->
+  <ChangeDresser.Worn>Getragen</ChangeDresser.Worn>
+  <ChangeDresser.Storage>Lager</ChangeDresser.Storage>
+  <ChangeDresser.Save>Speichern</ChangeDresser.Save>
+  <ChangeDresser.Reset>Zurücksetzen</ChangeDresser.Reset>
+  <ChangeDresser.Cancel>Abbrechen</ChangeDresser.Cancel>
+  <ChangeDresser.Delete>Löschen</ChangeDresser.Delete>
+  <ChangeDresser.SelectAll>Alles auswählen</ChangeDresser.SelectAll>
+  <ChangeDresser.DeselectAll>Alles abwählen</ChangeDresser.DeselectAll>
+
+  <!-- Editor Names (top selection bar in the Dresser window) -->
+  <ChangeDresserHair>Haarstil/farbe</ChangeDresserHair>
+  <ChangeDresserApparelColor>Kleidungsfarbe</ChangeDresserApparelColor>
+  <ChangeDresserBody>Körper</ChangeDresserBody>
+
+  <!-- Dresser UI -->
+  <ChangeDresser.BodyType>Körpertyp</ChangeDresser.BodyType>
+  <ChangeDresser.HeadType>Kopftyp</ChangeDresser.HeadType>
+  <ChangeDresser.SkinColor>Hautfarbe</ChangeDresser.SkinColor>
+  <ChangeDresser.Gender>Geschlecht</ChangeDresser.Gender>
+  <ChangeDresser.HairStyle>Haarstil</ChangeDresser.HairStyle>
+  <ChangeDresser.AgeBiological>Biologisches Alter</ChangeDresser.AgeBiological>
+  <ChangeDresser.AgeChronological>Chronologisches Alter</ChangeDresser.AgeChronological>
+
+  <!-- Apparel Group UI -->
+  <ChangeDresser.ApparelGroupOwner>Besitzer</ChangeDresser.ApparelGroupOwner>
+  <ChangeDresser.ApparelGroupName>Gruppenname</ChangeDresser.ApparelGroupName>
+  <ChangeDresser.ApparelGroup>Bekleidungsgruppe</ChangeDresser.ApparelGroup>
+  <ChangeDresser.ApparelGroupRestrictToPawnCheckBox>Auf Kolonisten beschränken</ChangeDresser.ApparelGroupRestrictToPawnCheckBox>
+  <ChangeDresser.ForceSwitchCombat>Ändern im Angriffsmodus</ChangeDresser.ForceSwitchCombat>
+
+  <!-- Game UI -->
+  <ChangeDresser.StoragePriority>Lagerpriorität</ChangeDresser.StoragePriority>
+  <ChangeDresser.ApparelCount>Kleidungsstücke</ChangeDresser.ApparelCount>
+  <ChangeDresser.ApparelGroupCount>Bekleidungsgruppe</ChangeDresser.ApparelGroupCount>
+
+  <!-- Apparel Storage UI -->
+  <ChangeDresser.CreateFromWorn>Vom Getragenen erstellen</ChangeDresser.CreateFromWorn>
+  <ChangeDresser.CreateFromStorage>Vom Lager erstellen</ChangeDresser.CreateFromStorage>
+  <!-- Informs the user that the pawn is already wearing the apparel group. Appears as "<group name> (<BeingWorn>) -->
+  <ChangeDresser.BeingWorn>Trägt bereits</ChangeDresser.BeingWorn>
+  <!-- Appears when there is an apparel group owned by another pawn. Appears as "<Claim> <group name>" -->
+  <ChangeDresser.ClaimApparelGroup>Beanspruche</ChangeDresser.ClaimApparelGroup>
+  <!-- The following appear as "<Edit> <group name> <FromWorn>" and "<Edit> <group name> <FromStorage>" -->
+  <ChangeDresser.EditApparelGroup>Bearbeite</ChangeDresser.EditApparelGroup>
+  <ChangeDresser.FromWorn>vom Getragenen</ChangeDresser.FromWorn>
+  <ChangeDresser.FromStorage>vom Lager</ChangeDresser.FromStorage>
+
+  <!-- Color Selection -->
+  <!-- These refer to the Red (R), Green (G), and Blue (B) values for the selected color -->
+  <ChangeDresser.R>R</ChangeDresser.R>
+  <ChangeDresser.G>G</ChangeDresser.G>
+  <ChangeDresser.B>B</ChangeDresser.B>
+
+  <!-- Help Text -->
+  <ChangeDresser.RemoveToEnableDelete>Entferne alle Kleider, um "Löschen" zu aktivieren</ChangeDresser.RemoveToEnableDelete>
+  <ChangeDresser.GenderChangeWarning>Diese Werte zu ändern, könnte negative Auswirkungen auf das Spiel haben.\nBenutzung auf eigene Gefahr.</ChangeDresser.GenderChangeWarning>
+  <ChangeDresser.SelectMultipleApparel>Halte Shift und klicke auf einen \nGegenstand um mehrere auszuwählen.</ChangeDresser.SelectMultipleApparel>
+  <ChangeDresser.ColorPresetHelp>Ändern: Halte Shift und wähle eine Voreinstellung aus.\nAbwählen: Halte Shift und wähle dieselbe Voreinstellung aus.</ChangeDresser.ColorPresetHelp>
+  <ChangeDresser.NoClothingIsWorn>No clothing is being worn.</ChangeDresser.NoClothingIsWorn>
+
+  <!-- Job Toils -->
+  <ChangeDresser.ChangeApparelColors>Ändere Kleidungsfarbe</ChangeDresser.ChangeApparelColors>
+  <ChangeDresser.ChangeHair>Ändere Haarstil/farbe</ChangeDresser.ChangeHair>
+  <ChangeDresser.ChangeBody>Ändere Körperattribute</ChangeDresser.ChangeBody>
+  <ChangeDresser.StoreApparel>Lagere die Kleidung</ChangeDresser.StoreApparel>
+  <ChangeDresser.WearGroup>Trage Gruppe</ChangeDresser.WearGroup>
+  <ChangeDresser.UnwearGroup>Trage nicht Gruppe</ChangeDresser.UnwearGroup>
+
+  <!-- Error Messages -->
+  <!-- The text after this string is either Hair Color or Apparel Color -->
+  <ChangeDresser.ProblemSavingPreset>Während des speicherns ist für die folgende Farbvoreinstellung ein Problem aufgetreten: </ChangeDresser.ProblemSavingPreset>
+  <!-- The text after this string is either Hair Color or Apparel Color -->
+  <ChangeDresser.ProblemLoadingPreset>Während des ladens ist für die folgende Farbvoreinstellung ein Problem aufgetreten: </ChangeDresser.ProblemLoadingPreset>
+  <!-- The text before this string is the pawn's name. Text after this string is the apparel group's name -->
+  <ChangeDresser.UnableToWearApparelGroup>war nicht in der Lage diese Kleidungsgruppe zu finden: </ChangeDresser.UnableToWearApparelGroup>
+
+  <!-- Mod Settings -->
+  <ChangeDresser>Ändere Kommode</ChangeDresser>
+  <ChangeDresser.ShowGenderAgeChange>Erlaube die Änderung von Alter und Geschlecht</ChangeDresser.ShowGenderAgeChange>
+
+</LanguageData>
