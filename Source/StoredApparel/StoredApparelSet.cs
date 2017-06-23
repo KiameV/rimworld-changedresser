@@ -162,12 +162,23 @@ namespace ChangeDresser.StoredApparel
 
         public void ExposeData()
         {
+            bool isOldSave = false;
+
             Scribe_Values.Look<string>(ref this.parentDresserId, "parentDresser", "", false);
             Scribe_Values.Look<string>(ref this.Name, "name", "", false);
             
             if (Scribe.mode == LoadSaveMode.Saving && this.HasOwner)
                 this.isOwnedByPawnId = this.owner.ThingID;
             Scribe_Values.Look<string>(ref this.isOwnedByPawnId, "ownerId", null, false);
+            if (Scribe.mode == LoadSaveMode.LoadingVars && this.isOwnedByPawnId == null)
+            {
+                // Old value
+                Scribe_Values.Look<string>(ref this.isOwnedByPawnId, "restrictToPawnId", null, false);
+                if (this.isOwnedByPawnId != null)
+                {
+                    isOldSave = true;
+                }
+            }
             
             if (Scribe.mode == LoadSaveMode.Saving && this.IsBeingWorn)
                 this.isBeingWornByPawnId = this.isBeingWornBy.ThingID;
@@ -179,9 +190,16 @@ namespace ChangeDresser.StoredApparel
                 this.isBeingWornByPawnId = "";
             }
 
-            Scribe_Values.Look<bool>(ref this.SwitchForBattle, "switchForBattle", false, false);
+            if (isOldSave)
+            {
+                Scribe_Values.Look<bool>(ref this.SwitchForBattle, "forceSwitchBattle", false, false);
+            }
+            else
+            {
+                Scribe_Values.Look<bool>(ref this.SwitchForBattle, "switchForBattle", false, false);
+            }
             Scribe_Collections.Look(ref this.assignedApparel, "apparelList", LookMode.Deep, new object[0]);
-            Scribe_Collections.Look(ref this.forcedApparelIds, "forcedApparelIds", LookMode.Value, new object[0]);
+            Scribe_Collections.Look(ref this.forcedApparelIds, "forcedApparel", LookMode.Value, new object[0]);
         }
 
         public void ClearWornBy()
@@ -204,12 +222,24 @@ namespace ChangeDresser.StoredApparel
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder(this.Name);
+            sb.Append(" Has Owner: ");
             if (this.HasOwner)
                 sb.Append(this.owner.Name.ToStringShort);
             else
-                sb.Append("no owner");
+                sb.Append("no");
+
+            sb.Append(" BeingWorn: ");
+            if (this.IsBeingWorn)
+                sb.Append(this.isBeingWornBy.Name.ToStringShort);
+            else
+                sb.Append("no");
+
+            sb.Append(" Apparel:");
             foreach (Apparel a in this.Apparel)
+            {
+                sb.Append(" ");
                 sb.Append(a.ThingID);
+            }
             return sb.ToString();
         }
     }

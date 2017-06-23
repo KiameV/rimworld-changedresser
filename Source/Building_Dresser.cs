@@ -174,7 +174,7 @@ namespace ChangeDresser
             }
 
             Scribe_Collections.Look(ref this.storedApparel, "storedApparel", LookMode.Deep, new object[0]);
-            Scribe_Collections.Look(ref sets, "storedApparelSet", LookMode.Deep, new object[0]);
+            Scribe_Collections.Look(ref sets, "storageGroups", LookMode.Deep, new object[0]);
 
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
