@@ -1,5 +1,6 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
+
   <ChangeApparelColor.reportString>変更する。</ChangeApparelColor.reportString>
   <ChangeHairColor.reportString>髪の色を変更する。(髪型も)</ChangeHairColor.reportString>
   <ChangeHairStyle.reportString>髪型を変更する。(色も)</ChangeHairStyle.reportString>
@@ -7,4 +8,6 @@
   <StoreApparel.reportString>衣服を保存</StoreApparel.reportString>
   <WearApparelGroup.reportString>着用する衣服グループ。</WearApparelGroup.reportString>
   <WearApparelFromStorage.reportString>TargetAを着用する。</WearApparelFromStorage.reportString>
+
+
 </LanguageData>

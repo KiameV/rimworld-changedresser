@@ -1,14 +1,19 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
+
   <ChangeDresser.label>ドレッサー(服変更)</ChangeDresser.label>
   <ChangeDresser.description>服装の色を変更します。</ChangeDresser.description>
   <ChangeDresser_Blueprint.label>ドレッサー(設計)</ChangeDresser_Blueprint.label>
   <ChangeDresser_Blueprint_Install.label>ドレッサー(設計)</ChangeDresser_Blueprint_Install.label>
   <ChangeDresser_Frame.label>ドレッサー(施工)</ChangeDresser_Frame.label>
   <ChangeDresser_Frame.description>服装の色を変更します。</ChangeDresser_Frame.description>
+
   <ChangeMirror.label>鏡台(髪型と色)</ChangeMirror.label>
   <ChangeMirror.description>化粧を施して、髪を切ったり染めます。</ChangeMirror.description>
   <ChangeMirror_Blueprint.label>鏡台(設計)</ChangeMirror_Blueprint.label>
+  <ChangeMirror_Blueprint_Install.label>鏡台(移動先)</ChangeMirror_Blueprint_Install.label>
   <ChangeMirror_Frame.label>鏡台(施工)</ChangeMirror_Frame.label>
   <ChangeMirror_Frame.description>化粧を施して、髪を切ったり染めます。</ChangeMirror_Frame.description>
+
+
 </LanguageData>

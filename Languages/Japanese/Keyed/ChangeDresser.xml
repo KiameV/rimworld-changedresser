@@ -1,10 +1,14 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
 
   <!-- Window Labels -->
   <ChangeDresser.DresserLabel>ドレッサー</ChangeDresser.DresserLabel>
   <ChangeDresser.ApparelGroupLabel>服装グループ</ChangeDresser.ApparelGroupLabel>
   <ChangeDresser.ApparelStorageLabel>服装の在庫</ChangeDresser.ApparelStorageLabel>
+
+  <!-- Gizmo (Command Button) -->
+  <ChangeDresser.ManageApparel>衣服管理</ChangeDresser.ManageApparel>
+  <ChangeDresser.ManageApparelDesc>ドレッサーに収納されている衣服を管理します。</ChangeDresser.ManageApparelDesc>
 
   <!-- Common Strings -->
   <ChangeDresser.Worn>装備中</ChangeDresser.Worn>
@@ -50,7 +54,7 @@
   <ChangeDresser.BeingWorn>着装済</ChangeDresser.BeingWorn>
 
   <!-- Appears when there is an apparel group owned by another pawn. Appears as "<Claim> <group name>" -->
-  <ChangeDresser.ClaimApparelGroup>他の服装グループに必要</ChangeDresser.ClaimApparelGroup>
+  <ChangeDresser.ClaimApparelGroup>別の服装に必要</ChangeDresser.ClaimApparelGroup>
 
   <!-- The following appear as "<Edit> <group name> <FromWorn>" and "<Edit> <group name> <FromStorage>" -->
   <ChangeDresser.EditApparelGroup>編集</ChangeDresser.EditApparelGroup>
@@ -87,9 +91,15 @@
 
   <!-- The text before this string is the pawn's name. Text after this string is the apparel group's name -->
   <ChangeDresser.UnableToWearApparelGroup>服装グループを見つけることができません：</ChangeDresser.UnableToWearApparelGroup>
+  <!-- The text before this string is the pawn's name. -->
+  <ChangeDresser.AlreadyHasCombatApparel>すでに戦闘服に着替えています。</ChangeDresser.AlreadyHasCombatApparel>
 
   <!-- Mod Settings -->
   <ChangeDresser>Change Dresser</ChangeDresser>
+  <ChangeDresser.ShowBodyChange>体型の変更を許可</ChangeDresser.ShowBodyChange>
   <ChangeDresser.ShowGenderAgeChange>性別と年齢の変更を許可</ChangeDresser.ShowGenderAgeChange>
+  <ChangeDresser.LinkStorageGroupWithDresser>ストレージグループをドレッサーにリンク</ChangeDresser.LinkStorageGroupWithDresser>
+  <ChangeDresser.LinkStorageGroupWithDresserDesc>  注意：ゲーム中に、ドレッサーにリンクされてない（チェックなし）状態からリンクされた（チェックあり）状態に変更すると、ストレージグループの中心になっていたドレッサーがなくなった場合、収納されていた衣服が失われる可能性があります。</ChangeDresser.LinkStorageGroupWithDresserDesc>
+
 
 </LanguageData>
