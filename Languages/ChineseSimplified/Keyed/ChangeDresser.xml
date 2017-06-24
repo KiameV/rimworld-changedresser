@@ -4,6 +4,9 @@
   <ChangeDresser.DresserLabel>梳妆台</ChangeDresser.DresserLabel>
   <ChangeDresser.ApparelGroupLabel>服装方案</ChangeDresser.ApparelGroupLabel>
   <ChangeDresser.ApparelStorageLabel>服装库存</ChangeDresser.ApparelStorageLabel>
+  <!-- Gizmo (Command Button) -->
+  <ChangeDresser.ManageApparel>服装管理</ChangeDresser.ManageApparel>
+  <ChangeDresser.ManageApparelDesc>打开服装库存来进行管理。</ChangeDresser.ManageApparelDesc>
   <!-- Common Strings -->
   <ChangeDresser.Worn>已装备</ChangeDresser.Worn>
   <ChangeDresser.Storage>库存</ChangeDresser.Storage>
@@ -25,8 +28,6 @@
   <ChangeDresser.HairStyle>发型</ChangeDresser.HairStyle>
   <ChangeDresser.AgeBiological>生理年龄</ChangeDresser.AgeBiological>
   <ChangeDresser.AgeChronological>物理年龄</ChangeDresser.AgeChronological>
-  <!--Race-->
-  <ChangeDresser.Race>种族</ChangeDresser.Race>
   <!-- Apparel Group UI -->
   <ChangeDresser.ApparelGroupOwner>拥有者</ChangeDresser.ApparelGroupOwner>
   <ChangeDresser.ApparelGroupName>方案名</ChangeDresser.ApparelGroupName>
@@ -73,4 +74,12 @@
   <ChangeDresser.ProblemLoadingPreset>加载以下颜色预设方案时出错：</ChangeDresser.ProblemLoadingPreset>
   <!-- The text before this string is the pawn's name. Text after this string is the apparel group's name -->
   <ChangeDresser.UnableToWearApparelGroup>无法找到服装方案：</ChangeDresser.UnableToWearApparelGroup>
+  <!-- The text before this string is the pawn's name. -->
+  <ChangeDresser.AlreadyHasCombatApparel>已经拥有战斗服装。</ChangeDresser.AlreadyHasCombatApparel>
+  <!-- Mod Settings -->
+  <ChangeDresser>Change Dresser 梳妆台</ChangeDresser>
+  <ChangeDresser.ShowBodyChange>允许改变身体特征</ChangeDresser.ShowBodyChange>
+  <ChangeDresser.ShowGenderAgeChange>允许改变性别和年龄</ChangeDresser.ShowGenderAgeChange>
+  <ChangeDresser.LinkStorageGroupWithDresser>将服装方案与梳妆台绑定</ChangeDresser.LinkStorageGroupWithDresser>
+  <ChangeDresser.LinkStorageGroupWithDresserDesc>注意：如果记录服装方案的梳妆台不存在，在游戏中途从不绑定更改至绑定会造成服装方案丢失。</ChangeDresser.LinkStorageGroupWithDresserDesc>
 </LanguageData>
