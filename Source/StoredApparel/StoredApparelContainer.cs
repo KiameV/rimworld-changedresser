@@ -97,12 +97,15 @@ namespace ChangeDresser.StoredApparel
         {
             if (pawn != null)
             {
+                int i = 0;
                 foreach (StoredApparelSet s in storedApparelSets)
+                {
                     if (s.IsBeingWornBy(pawn))
                     {
                         set = s;
                         return true;
                     }
+                }
             }
             set = null;
             return false;

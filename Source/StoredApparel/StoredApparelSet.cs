@@ -36,6 +36,8 @@ namespace ChangeDresser.StoredApparel
         public bool HasName { get { return this.Name != null && this.Name.Trim().Length > 0; } }
         public Pawn Owner { get { return this.owner; } }
         public string ParentDresserId { get { return this.parentDresserId; } }
+        public bool HasParentDresser() { return this.parentDresserId != null && this.parentDresserId.Trim().Length > 0; }
+        public void SetParentDresser(Building_Dresser dresser) { this.parentDresserId = dresser.ThingID; }
 
         public StoredApparelSet()
         {
@@ -44,7 +46,7 @@ namespace ChangeDresser.StoredApparel
 
         public StoredApparelSet(Building_Dresser parentDresser)
         {
-            this.parentDresserId = parentDresser.ThingID;
+            this.SetParentDresser(parentDresser);
         }
 
         /// <summary>
@@ -52,7 +54,7 @@ namespace ChangeDresser.StoredApparel
         /// </summary>
         public StoredApparelSet(Building_Dresser parentDresser, string isOwnedByPawnId, string isBeingWornByPawnId)
         {
-            this.parentDresserId = parentDresser.ThingID;
+            this.SetParentDresser(parentDresser);
             this.isOwnedByPawnId = isOwnedByPawnId;
             this.isBeingWornByPawnId = isBeingWornByPawnId;
         }
@@ -82,12 +84,8 @@ namespace ChangeDresser.StoredApparel
 
         public bool IsBeingWornBy(Pawn pawn)
         {
-            if (pawn != null && this.isBeingWornBy != null &&
-                pawn.ThingID.Equals(this.isBeingWornBy))
-            {
-                this.isBeingWornBy.Name = pawn.Name;
-                return true;
-            }
+            if (pawn != null && this.isBeingWornBy != null)
+                return pawn.ThingID.Equals(this.isBeingWornBy.ThingID);
             return false;
         }
 
@@ -162,44 +160,28 @@ namespace ChangeDresser.StoredApparel
 
         public void ExposeData()
         {
-            bool isOldSave = false;
-
             Scribe_Values.Look<string>(ref this.parentDresserId, "parentDresser", "", false);
             Scribe_Values.Look<string>(ref this.Name, "name", "", false);
             
             if (Scribe.mode == LoadSaveMode.Saving && this.HasOwner)
                 this.isOwnedByPawnId = this.owner.ThingID;
             Scribe_Values.Look<string>(ref this.isOwnedByPawnId, "ownerId", null, false);
-            if (Scribe.mode == LoadSaveMode.LoadingVars && this.isOwnedByPawnId == null)
-            {
-                // Old value
-                Scribe_Values.Look<string>(ref this.isOwnedByPawnId, "restrictToPawnId", null, false);
-                if (this.isOwnedByPawnId != null)
-                {
-                    isOldSave = true;
-                }
-            }
             
             if (Scribe.mode == LoadSaveMode.Saving && this.IsBeingWorn)
                 this.isBeingWornByPawnId = this.isBeingWornBy.ThingID;
             Scribe_Values.Look<string>(ref this.isBeingWornByPawnId, "isBeingWornById", null, false);
-
             if (Scribe.mode == LoadSaveMode.Saving)
             {
                 this.isOwnedByPawnId = "";
                 this.isBeingWornByPawnId = "";
             }
 
-            if (isOldSave)
-            {
-                Scribe_Values.Look<bool>(ref this.SwitchForBattle, "forceSwitchBattle", false, false);
-            }
-            else
-            {
-                Scribe_Values.Look<bool>(ref this.SwitchForBattle, "switchForBattle", false, false);
-            }
+            Scribe_Values.Look<bool>(ref this.SwitchForBattle, "switchForBattle", false, false);
             Scribe_Collections.Look(ref this.assignedApparel, "apparelList", LookMode.Deep, new object[0]);
             Scribe_Collections.Look(ref this.forcedApparelIds, "forcedApparel", LookMode.Value, new object[0]);
+
+            if (this.forcedApparelIds == null)
+                this.forcedApparelIds = new List<string>(0);
         }
 
         public void ClearWornBy()

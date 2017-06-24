@@ -241,7 +241,7 @@ namespace ChangeDresser.UI
                     label = label + " (" + "ChangeDresser.BeingWorn".Translate() + ")";
                 }
 
-                if (!set.IsOwnedBy(this.Pawn))
+                if (set.HasOwner && !set.IsOwnedBy(this.Pawn))
                 {
                     string ownerName = "";
                     if (set.HasOwner)

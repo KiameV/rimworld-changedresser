@@ -72,40 +72,78 @@ namespace ChangeDresser
 
         public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
         {
-            this.Dispose();
-            base.Destroy(mode);
+            try
+            {
+                this.Dispose();
+                base.Destroy(mode);
+            }
+            catch (Exception e)
+            {
+                Log.Error("ChangeDresser:Building_Dresser.Destroy " + e.GetType() + " " + e.Message);
+            }
         }
 
         public override void Discard()
         {
-            this.Dispose();
-            base.Discard();
+            try
+            {
+                this.Dispose();
+                base.Discard();
+            }
+            catch (Exception e)
+            {
+                Log.Error("ChangeDresser:Building_Dresser.Discard " + e.GetType() + " " + e.Message);
+            }
         }
 
         public override void DeSpawn()
         {
-            this.Dispose();
-            base.DeSpawn();
+            try
+            {
+                this.Dispose();
+                base.DeSpawn();
+            }
+            catch (Exception e)
+            {
+                Log.Error("ChangeDresser:Building_Dresser.DeSpawn " + e.GetType() + " " + e.Message);
+            }
         }
 
         private void Dispose()
         {
-            if (this.storedApparel != null)
+            try
             {
-                DropApparel(this.storedApparel);
-                this.storedApparel.Clear();
-            }
+                if (this.storedApparel != null)
+                {
+                    DropApparel(this.storedApparel);
+                    this.storedApparel.Clear();
+                }
 
-            if (Settings.LinkGroupsToDresser)
-                foreach (StoredApparelSet set in StoredApparelContainer.RemoveApparelSets(this))
-                    DropApparel(set.Apparel);
-        }
+                if (Settings.LinkGroupsToDresser)
+                {
+                    List<StoredApparelSet> sets = StoredApparelContainer.RemoveApparelSets(this);
+                    if (sets != null)
+                        foreach (StoredApparelSet set in sets)
+                            DropApparel(set.Apparel);
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error("ChangeDresser:Building_Dresser.Dispose " + e.GetType() + " " + e.Message);
+            }
+}
 
         private void DropApparel(List<Apparel> apparel)
         {
-            foreach (Apparel a in apparel)
+            try
             {
-                this.DropApparel(a);
+                if (apparel != null)
+                foreach (Apparel a in apparel)
+                    this.DropApparel(a);
+            }
+            catch (Exception e)
+            {
+                Log.Error("ChangeDresser:Building_Dresser.DropApparel " + e.GetType() + " " + e.Message);
             }
         }
 
@@ -174,25 +212,36 @@ namespace ChangeDresser
             }
 
             Scribe_Collections.Look(ref this.storedApparel, "storedApparel", LookMode.Deep, new object[0]);
-            Scribe_Collections.Look(ref sets, "storageGroups", LookMode.Deep, new object[0]);
+            Scribe_Collections.Look(ref sets, "storedApparelGroups", LookMode.Deep, new object[0]);
 
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
                 if (sets != null && sets.Count > 0)
                 {
-                    StoredApparelContainer.AddApparelSets(sets);
+                    foreach (StoredApparelSet set in sets)
+                    {
+                        set.SetParentDresser(this);
+                        StoredApparelContainer.AddApparelSet(set);
+                    }
                 }
             }
 
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
+                Scribe_Collections.Look(ref groups, "storageGroups", LookMode.Deep, new object[0]);
                 if (groups != null && groups.Count > 0)
                 {
                     sets = this.GetStoredApparelSetsFromStorageGroupDTOs();
                     groups.Clear();
                     groups = null;
                     if (sets != null && sets.Count > 0)
-                        StoredApparelContainer.AddApparelSets(sets);
+                    {
+                        foreach (StoredApparelSet set in sets)
+                        {
+                            set.SetParentDresser(this);
+                            StoredApparelContainer.AddApparelSet(set);
+                        }
+                    }
                 }
             }
         }
@@ -236,38 +285,59 @@ namespace ChangeDresser
 
         public void Remove(Apparel a, bool forbidden = true)
         {
-            this.DropApparel(a, forbidden);
-            this.StoredApparel.Remove(a);
+            try
+            {
+                this.DropApparel(a, forbidden);
+                this.StoredApparel.Remove(a);
+            }
+            catch (Exception e)
+            {
+                Log.Error("ChangeDresser:Building_Dresser.Remove " + e.GetType() + " " + e.Message);
+            }
         }
 
         public void Remove(StoredApparelSet set)
         {
-            StoredApparelContainer.RemoveApparelSet(set);
+            try
+            {
+                StoredApparelContainer.RemoveApparelSet(set);
+            }
+            catch (Exception e)
+            {
+                Log.Error("ChangeDresser:Building_Dresser.Remove " + e.GetType() + " " + e.Message);
+            }
         }
 
         private readonly Stopwatch stopWatch = new Stopwatch();
         public override void TickLong()
         {
-            if (!this.stopWatch.IsRunning)
-                this.stopWatch.Start();
-            else
+            try
             {
-                // Do this every minute
-                if (this.stopWatch.ElapsedMilliseconds > 60000)
+                if (!this.stopWatch.IsRunning)
+                    this.stopWatch.Start();
+                else
                 {
-                    for (int i = this.StoredApparel.Count - 1; i >= 0; --i)
+                    // Do this every minute
+                    if (this.stopWatch.ElapsedMilliseconds > 60000)
                     {
-                        Apparel a = this.StoredApparel[i];
-                        if (!this.settings.filter.Allows(a))
+                        for (int i = this.StoredApparel.Count - 1; i >= 0; --i)
                         {
-                            this.DropApparel(a, false);
-                            this.StoredApparel.RemoveAt(i);
+                            Apparel a = this.StoredApparel[i];
+                            if (!this.settings.filter.Allows(a))
+                            {
+                                this.DropApparel(a, false);
+                                this.StoredApparel.RemoveAt(i);
+                            }
                         }
+                        this.stopWatch.Reset();
                     }
-                    this.stopWatch.Reset();
                 }
             }
-        }
+            catch (Exception e)
+            {
+                Log.Error("ChangeDresser:Building_Dresser.TickLong " + e.GetType() + " " + e.Message);
+            }
+}
 
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Pawn pawn)
         {
@@ -326,10 +396,11 @@ namespace ChangeDresser
                     sets = StoredApparelContainer.GetApparelSets(this);
                 else
                     sets = StoredApparelContainer.GetAllApparelSets();
-
+                int i = 0;
                 foreach (StoredApparelSet set in sets)
                 {
-                    if (set.IsOwnedBy(pawn))
+                    if (!set.IsBeingWorn &&
+                        (set.IsOwnedBy(pawn) || !set.HasOwner))
                     {
                         list.Add(new FloatMenuOption(
                             "ChangeDresser.WearGroup".Translate() + " \"" + set.Name + "\"",
@@ -339,6 +410,7 @@ namespace ChangeDresser
                                 pawn.jobs.TryTakeOrderedJob(job);
                             }));
                     }
+                    ++i;
                 }
             }
             return list;

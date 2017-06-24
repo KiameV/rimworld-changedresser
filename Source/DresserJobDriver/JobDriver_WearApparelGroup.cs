@@ -51,10 +51,14 @@ namespace ChangeDresser.DresserJobDriver
 
                     foreach (StoredApparelSet set in sets)
                     {
-                        if (set.IsOwnedBy(pawn) && set.Name.Equals(apparelGroupName))
+                        if (set.Name.Equals(apparelGroupName))
                         {
-                            setToGet = set;
-                            break;
+                            bool hasOwner = set.HasOwner;
+                            if (!hasOwner || (hasOwner && set.IsOwnedBy(pawn)))
+                            {
+                                setToGet = set;
+                                break;
+                            }
                         }
                     }
                     if (setToGet == null)

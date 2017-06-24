@@ -37,7 +37,7 @@ namespace ChangeDresser
             return storedApparelSets;
         }
 
-        class StorageGroupDTO : IExposable
+        private class StorageGroupDTO : IExposable
         {
             public List<Apparel> apparelList = new List<Apparel>();
             public List<bool> forcedApparel = new List<bool>();
