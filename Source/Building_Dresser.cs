@@ -28,7 +28,9 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 using System.Text;
+using UnityEngine;
 using Verse;
 using Verse.AI;
 
@@ -170,7 +172,7 @@ namespace ChangeDresser
             }
         }
 
-        private Random random = null;
+        private System.Random random = null;
         private void DropApparel(Thing a, bool makeForbidden = true)
         {
             try
@@ -188,7 +190,7 @@ namespace ChangeDresser
                 {
                     IntVec3 pos = a.Position;
                     if (this.random == null)
-                        this.random = new Random();
+                        this.random = new System.Random();
                     int dir = this.random.Next(2);
                     int amount = this.random.Next(2);
                     if (amount == 0)
@@ -451,6 +453,8 @@ namespace ChangeDresser
             return list;
         }
 
+
+
         public override IEnumerable<Gizmo> GetGizmos()
         {
             IEnumerable<Gizmo> enumerables = base.GetGizmos();
@@ -461,14 +465,18 @@ namespace ChangeDresser
             else
                 l = new List<Gizmo>(1);
 
+            int groupKey = 987767542;
+
             Command_Action a = new Command_Action();
             a.icon = ContentFinder<UnityEngine.Texture2D>.Get("UI/manageapparel", true);
             a.defaultDesc = "ChangeDresser.ManageApparelDesc".Translate();
             a.defaultLabel = "ChangeDresser.ManageApparel".Translate();
             a.activateSound = SoundDef.Named("Click");
             a.action = delegate { Find.WindowStack.Add(new UI.StorageUI(this, null, true)); };
-            a.groupKey = 887767542;
+            a.groupKey = groupKey;
             l.Add(a);
+            
+            l = SaveStorageSettingsUtil.SaveStorageSettingsGizmoUtil.AddSaveLoadGizmos(l, SaveStorageSettingsUtil.SaveTypeEnum.Apparel_Management, this.settings.filter);
 
             return l;
         }

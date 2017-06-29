@@ -105,7 +105,7 @@ namespace ChangeDresser
                 }
 
                 // Write Data
-                using (FileStream fileStream = File.Open(fileName, FileMode.OpenOrCreate, FileAccess.Write))
+                using (FileStream fileStream = File.Open(fileName, FileMode.Create, FileAccess.Write))
                 {
                     using (StreamWriter sw = new StreamWriter(fileStream))
                     {
