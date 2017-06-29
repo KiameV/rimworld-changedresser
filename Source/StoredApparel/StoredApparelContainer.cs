@@ -81,14 +81,15 @@ namespace ChangeDresser.StoredApparel
             if (dresser != null)
             {
                 List<StoredApparelSet> l = new List<StoredApparelSet>();
-                for (LinkedListNode<StoredApparelSet> n = storedApparelSets.First; n.Next != null; n = n.Next)
+                for (LinkedListNode<StoredApparelSet> n = storedApparelSets.First; n != null; n = n.Next)
                 {
-                    if (n.Value.ParentDresserId.Equals(dresser.ThingID))
+                    if (n.Value != null && dresser.ThingID.Equals(n.Value.ParentDresserId))
                     {
                         l.Add(n.Value);
                         storedApparelSets.Remove(n);
                     }
                 }
+                return l;
             }
             return new List<StoredApparelSet>(0);
         }

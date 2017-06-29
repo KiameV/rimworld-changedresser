@@ -79,7 +79,10 @@ namespace ChangeDresser
             }
             catch (Exception e)
             {
-                Log.Error("ChangeDresser:Building_Dresser.Destroy " + e.GetType() + " " + e.Message);
+                Log.Error(
+                    "ChangeDresser:Building_Dresser.Destroy\n" +
+                    e.GetType().Name + " " + e.Message + "\n" +
+                    e.StackTrace);
             }
         }
 
@@ -92,7 +95,10 @@ namespace ChangeDresser
             }
             catch (Exception e)
             {
-                Log.Error("ChangeDresser:Building_Dresser.Discard " + e.GetType() + " " + e.Message);
+                Log.Error(
+                    "ChangeDresser:Building_Dresser.Discard\n" +
+                    e.GetType().Name + " " + e.Message + "\n" +
+                    e.StackTrace);
             }
         }
 
@@ -105,7 +111,10 @@ namespace ChangeDresser
             }
             catch (Exception e)
             {
-                Log.Error("ChangeDresser:Building_Dresser.DeSpawn " + e.GetType() + " " + e.Message);
+                Log.Error(
+                    "ChangeDresser:Building_Dresser.DeSpawn\n" +
+                    e.GetType().Name + " " + e.Message + "\n" +
+                    e.StackTrace);
             }
         }
 
@@ -123,13 +132,20 @@ namespace ChangeDresser
                 {
                     List<StoredApparelSet> sets = StoredApparelContainer.RemoveApparelSets(this);
                     if (sets != null)
+                    {
                         foreach (StoredApparelSet set in sets)
+                        {
                             DropApparel(set.Apparel);
+                        }
+                    }
                 }
             }
             catch (Exception e)
             {
-                Log.Error("ChangeDresser:Building_Dresser.Dispose " + e.GetType() + " " + e.Message);
+                Log.Error(
+                    "ChangeDresser:Building_Dresser.Dispose\n" + 
+                    e.GetType().Name + " " + e.Message + "\n" + 
+                    e.StackTrace);
             }
 }
 
@@ -138,12 +154,19 @@ namespace ChangeDresser
             try
             {
                 if (apparel != null)
-                foreach (Apparel a in apparel)
-                    this.DropApparel(a);
+                {
+                    foreach (Apparel a in apparel)
+                    {
+                        this.DropApparel(a);
+                    }
+                }
             }
             catch (Exception e)
             {
-                Log.Error("ChangeDresser:Building_Dresser.DropApparel " + e.GetType() + " " + e.Message);
+                Log.Error(
+                    "ChangeDresser:Building_Dresser.DropApparel\n" +
+                    e.GetType().Name + " " + e.Message + "\n" +
+                    e.StackTrace);
             }
         }
 
@@ -179,7 +202,10 @@ namespace ChangeDresser
             }
             catch (Exception e)
             {
-                Log.Error("ChangeDresser:Building_Dresser.DropApparel error while dropping apparel. " + e.GetType() + " " + e.Message);
+                Log.Error(
+                    "ChangeDresser:Building_Dresser.DropApparel\n" +
+                    e.GetType().Name + " " + e.Message + "\n" +
+                    e.StackTrace);
             }
         }
 
@@ -292,7 +318,10 @@ namespace ChangeDresser
             }
             catch (Exception e)
             {
-                Log.Error("ChangeDresser:Building_Dresser.Remove " + e.GetType() + " " + e.Message);
+                Log.Error(
+                    "ChangeDresser:Building_Dresser.Remove\n" +
+                    e.GetType().Name + " " + e.Message + "\n" +
+                    e.StackTrace);
             }
         }
 
@@ -304,7 +333,10 @@ namespace ChangeDresser
             }
             catch (Exception e)
             {
-                Log.Error("ChangeDresser:Building_Dresser.Remove " + e.GetType() + " " + e.Message);
+                Log.Error(
+                    "ChangeDresser:Building_Dresser.Remove\n" +
+                    e.GetType().Name + " " + e.Message + "\n" +
+                    e.StackTrace);
             }
         }
 
@@ -335,7 +367,10 @@ namespace ChangeDresser
             }
             catch (Exception e)
             {
-                Log.Error("ChangeDresser:Building_Dresser.TickLong " + e.GetType() + " " + e.Message);
+                Log.Error(
+                    "ChangeDresser:Building_Dresser.TickLong\n" +
+                    e.GetType().Name + " " + e.Message + "\n" +
+                    e.StackTrace);
             }
 }
 
