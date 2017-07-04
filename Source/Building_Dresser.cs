@@ -28,9 +28,7 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Reflection;
 using System.Text;
-using UnityEngine;
 using Verse;
 using Verse.AI;
 
@@ -151,7 +149,7 @@ namespace ChangeDresser
             }
 }
 
-        private void DropApparel(List<Apparel> apparel)
+        private void DropApparel(List<Apparel> apparel, bool makeForbidden = true)
         {
             try
             {
@@ -159,7 +157,7 @@ namespace ChangeDresser
                 {
                     foreach (Apparel a in apparel)
                     {
-                        this.DropApparel(a);
+                        this.DropThing(a, makeForbidden);
                     }
                 }
             }
@@ -173,7 +171,7 @@ namespace ChangeDresser
         }
 
         private System.Random random = null;
-        private void DropApparel(Thing a, bool makeForbidden = true)
+        private void DropThing(Thing a, bool makeForbidden = true)
         {
             try
             {
@@ -215,7 +213,7 @@ namespace ChangeDresser
         {
             if (!(newItem is Apparel))
             {
-                DropApparel(newItem);
+                DropThing(newItem);
                 return;
             }
 
@@ -315,7 +313,7 @@ namespace ChangeDresser
         {
             try
             {
-                this.DropApparel(a, forbidden);
+                this.DropThing(a, forbidden);
                 this.StoredApparel.Remove(a);
             }
             catch (Exception e)
@@ -359,7 +357,7 @@ namespace ChangeDresser
                             Apparel a = this.StoredApparel[i];
                             if (!this.settings.filter.Allows(a))
                             {
-                                this.DropApparel(a, false);
+                                this.DropThing(a, false);
                                 this.StoredApparel.RemoveAt(i);
                             }
                         }
@@ -475,10 +473,22 @@ namespace ChangeDresser
             a.action = delegate { Find.WindowStack.Add(new UI.StorageUI(this, null, true)); };
             a.groupKey = groupKey;
             l.Add(a);
-            
-            l = SaveStorageSettingsUtil.SaveStorageSettingsGizmoUtil.AddSaveLoadGizmos(l, SaveStorageSettingsUtil.SaveTypeEnum.Apparel_Management, this.settings.filter);
 
-            return l;
+            a = new Command_Action();
+            a.icon = ContentFinder<UnityEngine.Texture2D>.Get("UI/empty", true);
+            a.defaultDesc = "ChangeDresser.EmptyDesc".Translate();
+            a.defaultLabel = "ChangeDresser.Empty".Translate();
+            a.activateSound = SoundDef.Named("Click");
+            a.action = 
+                delegate
+                {
+                    this.DropApparel(this.storedApparel, false);
+                    this.storedApparel.Clear();
+                };
+            a.groupKey = groupKey + 1;
+            l.Add(a);
+
+            return SaveStorageSettingsUtil.SaveStorageSettingsGizmoUtil.AddSaveLoadGizmos(l, SaveStorageSettingsUtil.SaveTypeEnum.Apparel_Management, this.settings.filter);
         }
     }
 }

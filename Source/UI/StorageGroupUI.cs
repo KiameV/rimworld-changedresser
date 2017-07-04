@@ -44,22 +44,27 @@ namespace ChangeDresser.UI
 
         private Vector2 scrollPosLeft = new Vector2(0, 0);
         private Vector2 scrollPosRight = new Vector2(0, 0);
-        
-        private List<Pawn> PlayerPawns
+
+        private static List<Pawn> selectablePawns = new List<Pawn>();
+        private static List<Pawn> PlayerPawns
         {
             get
             {
-                if (this.selectablePawns == null || this.selectablePawns.Count == 0)
+                if (selectablePawns.Count == 0)
                 {
-                    this.selectablePawns = new List<Pawn>();
-                    foreach (Pawn p in PawnsFinder.AllMaps_SpawnedPawnsInFaction(Faction.OfPlayer))
-                        if (p.def.defName.Equals("Human"))
-                            this.selectablePawns.Add(p);
+                    selectablePawns = new List<Pawn>();
+                    foreach (Pawn p in PawnsFinder.AllMapsAndWorld_Alive)
+                    {
+                        if (p.Faction == Faction.OfPlayer && p.def.defName.Equals("Human"))
+                        {
+                            selectablePawns.Add(p);
+                        }
+                    }
                 }
-                return this.selectablePawns;
+                return selectablePawns;
             }
         }
-        private List<Pawn> selectablePawns = null;
+        internal static void ClearPlayerPawns() { selectablePawns.Clear();  }
 
         public StorageGroupUI(StoredApparelSet set, ApparelFromEnum apparelFrom, Building_Dresser dresser, Pawn pawn, bool isNew, bool fromGizmo = false)
         {
@@ -114,7 +119,7 @@ namespace ChangeDresser.UI
                     if (Widgets.ButtonText(new Rect(275, 10, 150, 30), label))
                     {
                         List<FloatMenuOption> options = new List<FloatMenuOption>();
-                        foreach (Pawn p in this.PlayerPawns)
+                        foreach (Pawn p in PlayerPawns)
                         {
                             options.Add(new FloatMenuOption(p.Name.ToStringShort, delegate
                             {

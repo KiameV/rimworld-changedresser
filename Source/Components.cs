@@ -48,8 +48,13 @@ namespace ChangeDresser
         {
             base.FinalizeInit();
             Dictionary<string, Pawn> pawnIdToPawn = new Dictionary<string, Pawn>();
-            foreach (Pawn p in PawnsFinder.AllMaps_SpawnedPawnsInFaction(Faction.OfPlayer))
-                pawnIdToPawn.Add(p.ThingID, p);
+            foreach (Pawn p in PawnsFinder.AllMapsAndWorld_Alive)
+            {
+                if (p.Faction == Faction.OfPlayer && p.def.defName.Equals("Human"))
+                {
+                    pawnIdToPawn.Add(p.ThingID, p);
+                }
+            }
             StoredApparelContainer.Initialize(pawnIdToPawn);
         }
     }

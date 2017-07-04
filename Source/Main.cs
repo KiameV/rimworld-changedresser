@@ -2,6 +2,7 @@
 using ChangeDresser.UI.Util;
 using Harmony;
 using RimWorld;
+using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -22,6 +23,7 @@ namespace ChangeDresser
             
             Log.Message("ChangeDresser: Adding Harmony Postfix to Pawn_DraftController.Drafted { set }");
             Log.Message("ChangeDresser: Adding Harmony Postfix to JobGiver_OptimizeApparel.TryGiveJob(Pawn)");
+            //Log.Message("ChangeDresser: Adding Harmony Postfix to Settlement_TraderTracker.RegenerateStock()");
         }
     }
 
@@ -106,4 +108,23 @@ namespace ChangeDresser
             return false;
         }
     }
+    /*
+    [HarmonyPatch(typeof(Settlement_TraderTracker), "RegenerateStock")]
+    static class Patch_Settlement_TraderTracker_RegenerateStock
+    {
+        static void Postfix(Settlement_TraderTracker __instance)
+        {
+            ThingOwner<Thing> l = (ThingOwner<Thing>)typeof(Settlement_TraderTracker).GetField("stock", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(__instance);
+            foreach (Thing t in Current.Game.VisibleMap.spawnedThings)
+            {
+                if (t is Building_Dresser)
+                {
+                    foreach (Thing apparel in ((Building_Dresser)t).StoredApparel)
+                    {
+                        l.TryAdd(apparel, false);
+                    }
+                }
+            }
+        }
+    }*/
 }

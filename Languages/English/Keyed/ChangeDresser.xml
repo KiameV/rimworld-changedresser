@@ -8,6 +8,8 @@
 	<!-- Gizmo (Command Button) -->
 	<ChangeDresser.ManageApparel>Manage Apparel</ChangeDresser.ManageApparel>
 	<ChangeDresser.ManageApparelDesc>Manage the apparel in the dresser.</ChangeDresser.ManageApparelDesc>
+	<ChangeDresser.Empty>Empty</ChangeDresser.Empty>
+	<ChangeDresser.EmptyDesc>Empty the dresser's contents. Does not include storage group apparel.</ChangeDresser.EmptyDesc>
 	
 	<!-- Common Strings -->
 	<ChangeDresser.Worn>Worn</ChangeDresser.Worn>
