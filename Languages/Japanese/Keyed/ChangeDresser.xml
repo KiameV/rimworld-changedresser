@@ -9,6 +9,8 @@
   <!-- Gizmo (Command Button) -->
   <ChangeDresser.ManageApparel>衣服管理</ChangeDresser.ManageApparel>
   <ChangeDresser.ManageApparelDesc>ドレッサーに収納されている衣服を管理します。</ChangeDresser.ManageApparelDesc>
+  <ChangeDresser.Empty>空にする</ChangeDresser.Empty>
+  <ChangeDresser.EmptyDesc>ドレッサーの内容を空にします。服装グループは含まれません。</ChangeDresser.EmptyDesc>
 
   <!-- Common Strings -->
   <ChangeDresser.Worn>装備中</ChangeDresser.Worn>
