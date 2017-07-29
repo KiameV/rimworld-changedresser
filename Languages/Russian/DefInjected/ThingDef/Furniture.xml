@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <ChangeDresser.label>Комод</ChangeDresser.label>
+  <ChangeDresser.description>Изменение цвета одежды</ChangeDresser.description>
+
+  <ChangeMirror.label>Зеркало</ChangeMirror.label>
+  <ChangeMirror.description>Изменение внешнего вида</ChangeMirror.description>
+
+</LanguageData>

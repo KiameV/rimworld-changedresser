@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <ChangeApparelColor.reportString>Изменяет цвет одежды</ChangeApparelColor.reportString>
+  <ChangeHairColor.reportString>Изменяет Прическу/Цвет волос</ChangeHairColor.reportString>
+  <ChangeHairStyle.reportString>Изменить Прическу/Цвет волос</ChangeHairStyle.reportString>
+  <ChangeBody.reportString>Изменяет тело</ChangeBody.reportString>
+  <StoreApparel.reportString>Изменяет одежду</StoreApparel.reportString>
+  <WearApparelGroup.reportString>Одевает группу одежды</WearApparelGroup.reportString>
+  <WearApparelFromStorage.reportString>Одевает одежду с хранилища</WearApparelFromStorage.reportString>
+
+</LanguageData>

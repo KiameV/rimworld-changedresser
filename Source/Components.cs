@@ -50,7 +50,9 @@ namespace ChangeDresser
             Dictionary<string, Pawn> pawnIdToPawn = new Dictionary<string, Pawn>();
             foreach (Pawn p in PawnsFinder.AllMapsAndWorld_Alive)
             {
-                if (p.Faction == Faction.OfPlayer && p.def.defName.Equals("Human"))
+                if (p.Faction == Faction.OfPlayer &&
+                    p.def.defName.Equals("Human") &&
+                    !pawnIdToPawn.ContainsKey(p.ThingID))
                 {
                     pawnIdToPawn.Add(p.ThingID, p);
                 }

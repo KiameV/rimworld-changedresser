@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+	<!-- Window Labels -->
+	<ChangeDresser.DresserLabel>Комод</ChangeDresser.DresserLabel>
+	<ChangeDresser.ApparelGroupLabel>Группа одежды</ChangeDresser.ApparelGroupLabel>
+	<ChangeDresser.ApparelStorageLabel>Хранилище одежды</ChangeDresser.ApparelStorageLabel>
+	
+	<!-- Gizmo (Command Button) -->
+	<ChangeDresser.ManageApparel>Изменить одежду</ChangeDresser.ManageApparel>
+	<ChangeDresser.ManageApparelDesc>Изменить одежду комода.</ChangeDresser.ManageApparelDesc>
+	<ChangeDresser.Empty>Пусто</ChangeDresser.Empty>
+	<ChangeDresser.EmptyDesc>Пусто. Не включает в себя хранилище.</ChangeDresser.EmptyDesc>
+	
+	<!-- Common Strings -->
+	<ChangeDresser.Worn>Изношенно</ChangeDresser.Worn>
+	<ChangeDresser.Storage>Хранилище</ChangeDresser.Storage>
+	<ChangeDresser.Save>Сохранить</ChangeDresser.Save>
+	<ChangeDresser.Reset>Очистить</ChangeDresser.Reset>
+	<ChangeDresser.Cancel>Отменить</ChangeDresser.Cancel>
+	<ChangeDresser.Delete>Удалить</ChangeDresser.Delete>
+	<ChangeDresser.SelectAll>Выбрать все</ChangeDresser.SelectAll>
+	<ChangeDresser.DeselectAll>Отменить выбор</ChangeDresser.DeselectAll>
+	
+	<!-- Editor Names (top selection bar in the Dresser window) -->
+	<ChangeDresserHair>Прическа/цвет</ChangeDresserHair>
+	<ChangeDresserApparelColor>Цвет одежды</ChangeDresserApparelColor>
+	<ChangeDresserBody>Тело</ChangeDresserBody>
+	
+	<!-- Dresser UI -->
+	<ChangeDresser.BodyType>Тип тела</ChangeDresser.BodyType>
+	<ChangeDresser.HeadType>Тип головы</ChangeDresser.HeadType>
+	<ChangeDresser.SkinColor>Цвет кожи</ChangeDresser.SkinColor>
+	<ChangeDresser.Gender>Пол</ChangeDresser.Gender>
+	<ChangeDresser.HairStyle>Прическа</ChangeDresser.HairStyle>
+	<ChangeDresser.AgeBiological>Возраст</ChangeDresser.AgeBiological>
+	<ChangeDresser.AgeChronological>Псих. возраст</ChangeDresser.AgeChronological>
+		
+	<!-- Apparel Group UI -->
+	<ChangeDresser.ApparelGroupOwner>Хозяин</ChangeDresser.ApparelGroupOwner>
+	<ChangeDresser.ApparelGroupName>Имя группы</ChangeDresser.ApparelGroupName>
+	<ChangeDresser.ApparelGroup>Группа одежды</ChangeDresser.ApparelGroup>
+	<ChangeDresser.ApparelGroupRestrictToPawnCheckBox>Restrict to Pawn</ChangeDresser.ApparelGroupRestrictToPawnCheckBox>
+	<ChangeDresser.ForceSwitchCombat>Изменить в бою</ChangeDresser.ForceSwitchCombat>
+	
+	<!-- Game UI -->
+	<ChangeDresser.StoragePriority>Приоритет хранилища</ChangeDresser.StoragePriority>
+	<ChangeDresser.ApparelCount>Части одежды</ChangeDresser.ApparelCount>
+	<ChangeDresser.ApparelGroupCount>Группы одежды</ChangeDresser.ApparelGroupCount>
+	
+	<!-- Apparel Storage UI -->
+	<ChangeDresser.CreateFromWorn>Создать из изношенного</ChangeDresser.CreateFromWorn>
+	<ChangeDresser.CreateFromStorage>Создать из хранилища</ChangeDresser.CreateFromStorage>
+	<!-- Informs the user that the pawn is already wearing the apparel group. Appears as "<group name> (<BeingWorn>) -->
+	<ChangeDresser.BeingWorn>Изнашивается</ChangeDresser.BeingWorn>
+	<!-- Appears when there is an apparel group owned by another pawn. Appears as "<Claim> <group name>" -->
+	<ChangeDresser.ClaimApparelGroup>Принять</ChangeDresser.ClaimApparelGroup>
+	<!-- The following appear as "<Edit> <group name> <FromWorn>" and "<Edit> <group name> <FromStorage>" -->
+	<ChangeDresser.EditApparelGroup>Изменить</ChangeDresser.EditApparelGroup>
+	<ChangeDresser.FromWorn>Из изношенного</ChangeDresser.FromWorn>
+	<ChangeDresser.FromStorage>Из хранилища</ChangeDresser.FromStorage>
+	
+	<!-- Color Selection -->
+	<!-- These refer to the Red (R), Green (G), and Blue (B) values for the selected color -->
+	<ChangeDresser.R>R</ChangeDresser.R>
+	<ChangeDresser.G>G</ChangeDresser.G>
+	<ChangeDresser.B>B</ChangeDresser.B>
+	
+	<!-- Help Text -->
+	<ChangeDresser.RemoveToEnableDelete>Убрать одежду для удаления</ChangeDresser.RemoveToEnableDelete>
+	<ChangeDresser.GenderChangeWarning>Изменение этих значений может иметь последствия.\на ваш риск.</ChangeDresser.GenderChangeWarning>
+	<ChangeDresser.SelectMultipleApparel>Зажмите SHIFT и нажмите ЛКМ для выделения нескольких видов одежды.</ChangeDresser.SelectMultipleApparel>
+	<ChangeDresser.ColorPresetHelp>Изменить: Зажмите SHIFT и ПКМ.\Отменить выбор: Зажать SHIFT и выбрать тот же пресет.</ChangeDresser.ColorPresetHelp>
+	<ChangeDresser.NoClothingIsWorn>Одежда не изнашивается.</ChangeDresser.NoClothingIsWorn>
+	
+	<!-- Job Toils -->
+	<ChangeDresser.ChangeApparelColors>Изменить цвет одежды</ChangeDresser.ChangeApparelColors>
+	<ChangeDresser.ChangeHair>Изменить прическу/цвет</ChangeDresser.ChangeHair>
+	<ChangeDresser.ChangeBody>Изменить тело</ChangeDresser.ChangeBody>
+	<ChangeDresser.StoreApparel>Изменить одежду</ChangeDresser.StoreApparel>
+	<ChangeDresser.WearGroup>Одеть группу</ChangeDresser.WearGroup>
+	<ChangeDresser.UnwearGroup>Снять группу одежду</ChangeDresser.UnwearGroup>
+	
+	<!-- Error Messages -->
+	<!-- The text after this string is either Hair Color or Apparel Color -->
+	<ChangeDresser.ProblemSavingPreset>Ошибка сохранения пресета</ChangeDresser.ProblemSavingPreset>
+	<!-- The text after this string is either Hair Color or Apparel Color -->
+	<ChangeDresser.ProblemLoadingPreset>Ошибка загрузки пресета</ChangeDresser.ProblemLoadingPreset>
+	<!-- The text before this string is the pawn's name. Text after this string is the apparel group's name -->
+	<ChangeDresser.UnableToWearApparelGroup>Невозможно носить одежду</ChangeDresser.UnableToWearApparelGroup>
+	<!-- The text before this string is the pawn's name. -->
+	<ChangeDresser.AlreadyHasCombatApparel>Уже есть боевая одежда.</ChangeDresser.AlreadyHasCombatApparel>
+	
+	<!-- Mod Settings -->
+	<ChangeDresser>Change Dresser</ChangeDresser>
+	<ChangeDresser.ShowBodyChange>Разрешить изменение тела</ChangeDresser.ShowBodyChange>
+	<ChangeDresser.ShowGenderAgeChange>Разрешить изменить возраст и пол</ChangeDresser.ShowGenderAgeChange>
+	<ChangeDresser.LinkStorageGroupWithDresser>Связать хранилища с комодом</ChangeDresser.LinkStorageGroupWithDresser>
+	<ChangeDresser.LinkStorageGroupWithDresserDesc>  Внимание: переход от несвязанной (непроверенной) к связанной (проверенной) средней игры может привести к утере одежды, если родительский комод группы хранения больше не существует.</ChangeDresser.LinkStorageGroupWithDresserDesc>
+</LanguageData>
