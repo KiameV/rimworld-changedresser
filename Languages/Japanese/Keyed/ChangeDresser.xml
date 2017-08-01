@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-
   <!-- Window Labels -->
   <ChangeDresser.DresserLabel>ドレッサー</ChangeDresser.DresserLabel>
   <ChangeDresser.ApparelGroupLabel>服装グループ</ChangeDresser.ApparelGroupLabel>
@@ -9,6 +8,8 @@
   <!-- Gizmo (Command Button) -->
   <ChangeDresser.ManageApparel>衣服管理</ChangeDresser.ManageApparel>
   <ChangeDresser.ManageApparelDesc>ドレッサーに収納されている衣服を管理します。</ChangeDresser.ManageApparelDesc>
+  <ChangeDresser.Empty>空にする</ChangeDresser.Empty>
+  <ChangeDresser.EmptyDesc>ドレッサーの中身を空にします。服装グループの在庫は含まれません。</ChangeDresser.EmptyDesc>
 
   <!-- Common Strings -->
   <ChangeDresser.Worn>装備中</ChangeDresser.Worn>
@@ -100,6 +101,4 @@
   <ChangeDresser.ShowGenderAgeChange>性別と年齢の変更を許可</ChangeDresser.ShowGenderAgeChange>
   <ChangeDresser.LinkStorageGroupWithDresser>ストレージグループをドレッサーにリンク</ChangeDresser.LinkStorageGroupWithDresser>
   <ChangeDresser.LinkStorageGroupWithDresserDesc>  注意：ゲーム中に、ドレッサーにリンクされてない（チェックなし）状態からリンクされた（チェックあり）状態に変更すると、ストレージグループの中心になっていたドレッサーがなくなった場合、収納されていた衣服が失われる可能性があります。</ChangeDresser.LinkStorageGroupWithDresserDesc>
-
-
 </LanguageData>
