@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	<!-- Window Labels -->
+	<ChangeDresser.DresserLabel>Commode</ChangeDresser.DresserLabel>
+	<ChangeDresser.ApparelGroupLabel>Groupe de vêtements</ChangeDresser.ApparelGroupLabel>
+	<ChangeDresser.ApparelStorageLabel>Rangement vêtements</ChangeDresser.ApparelStorageLabel>
+	
+	<!-- Gizmo (Command Button) -->
+	<ChangeDresser.ManageApparel>Gérer vêtements</ChangeDresser.ManageApparel>
+	<ChangeDresser.ManageApparelDesc>Geter les vêtements dans la commode.</ChangeDresser.ManageApparelDesc>
+	<ChangeDresser.Empty>Vide</ChangeDresser.Empty>
+	<ChangeDresser.EmptyDesc>Vider le contenu de la commode. Le groupe de vêtement n'est pas inclus.</ChangeDresser.EmptyDesc>
+	
+	<!-- Common Strings -->
+	<ChangeDresser.Worn>Usé</ChangeDresser.Worn>
+	<ChangeDresser.Storage>Rangement</ChangeDresser.Storage>
+	<ChangeDresser.Save>Sauvegarder</ChangeDresser.Save>
+	<ChangeDresser.Reset>Réinitialiser</ChangeDresser.Reset>
+	<ChangeDresser.Cancel>Annuler</ChangeDresser.Cancel>
+	<ChangeDresser.Delete>Supprimer</ChangeDresser.Delete>
+	<ChangeDresser.SelectAll>Sélectionner tout</ChangeDresser.SelectAll>
+	<ChangeDresser.DeselectAll>Désélectionner tout</ChangeDresser.DeselectAll>
+	
+	<!-- Editor Names (top selection bar in the Dresser window) -->
+	<ChangeDresserHair>Cheveux Style/Couleur</ChangeDresserHair>
+	<ChangeDresserApparelColor>Vêtements Couleur</ChangeDresserApparelColor>
+	<ChangeDresserBody>Corps</ChangeDresserBody>
+	
+	<!-- Dresser UI -->
+	<ChangeDresser.BodyType>Type de Corps</ChangeDresser.BodyType>
+	<ChangeDresser.HeadType>Type de Tête</ChangeDresser.HeadType>
+	<ChangeDresser.SkinColor>Couleur de peau</ChangeDresser.SkinColor>
+	<ChangeDresser.Gender>Sexe</ChangeDresser.Gender>
+	<ChangeDresser.HairStyle>Coupeu de cheveux</ChangeDresser.HairStyle>
+	<ChangeDresser.AgeBiological>Age biologique</ChangeDresser.AgeBiological>
+	<ChangeDresser.AgeChronological>Age chronologique</ChangeDresser.AgeChronological>
+		
+	<!-- Apparel Group UI -->
+	<ChangeDresser.ApparelGroupOwner>Propriétaire</ChangeDresser.ApparelGroupOwner>
+	<ChangeDresser.ApparelGroupName>Nom du groupe</ChangeDresser.ApparelGroupName>
+	<ChangeDresser.ApparelGroup>Groupe de vêtements</ChangeDresser.ApparelGroup>
+	<ChangeDresser.ApparelGroupRestrictToPawnCheckBox>Restreindre à un Pion</ChangeDresser.ApparelGroupRestrictToPawnCheckBox>
+	<ChangeDresser.ForceSwitchCombat>Changer une fois appelé</ChangeDresser.ForceSwitchCombat>
+	
+	<!-- Game UI -->
+	<ChangeDresser.StoragePriority>Priorité du rangement</ChangeDresser.StoragePriority>
+	<ChangeDresser.ApparelCount>Habillement</ChangeDresser.ApparelCount>
+	<ChangeDresser.ApparelGroupCount>Groupe de vêtements</ChangeDresser.ApparelGroupCount>
+	
+	<!-- Apparel Storage UI -->
+	<ChangeDresser.CreateFromWorn>Créer depuis usé</ChangeDresser.CreateFromWorn>
+	<ChangeDresser.CreateFromStorage>Créer depuis rangement</ChangeDresser.CreateFromStorage>
+	<!-- Informs the user that the pawn is already wearing the apparel group. Appears as "<group name> (<BeingWorn>) -->
+	<ChangeDresser.BeingWorn>Est usé</ChangeDresser.BeingWorn>
+	<!-- Appears when there is an apparel group owned by another pawn. Appears as "<Claim> <group name>" -->
+	<ChangeDresser.ClaimApparelGroup>Réclamer</ChangeDresser.ClaimApparelGroup>
+	<!-- The following appear as "<Edit> <group name> <FromWorn>" and "<Edit> <group name> <FromStorage>" -->
+	<ChangeDresser.EditApparelGroup>Editer</ChangeDresser.EditApparelGroup>
+	<ChangeDresser.FromWorn>Depuis usé</ChangeDresser.FromWorn>
+	<ChangeDresser.FromStorage>Depuis rangement</ChangeDresser.FromStorage>
+	
+	<!-- Color Selection -->
+	<!-- These refer to the Red (R), Green (G), and Blue (B) values for the selected color -->
+	<ChangeDresser.R>R</ChangeDresser.R>
+	<ChangeDresser.G>G</ChangeDresser.G>
+	<ChangeDresser.B>B</ChangeDresser.B>
+	
+	<!-- Help Text -->
+	<ChangeDresser.RemoveToEnableDelete>Retirer tout vêtement pour activer la suppression</ChangeDresser.RemoveToEnableDelete>
+	<ChangeDresser.GenderChangeWarning>Changer ces valeurs peut avoir des effets négatifs.\nA utiliser avec précaution.</ChangeDresser.GenderChangeWarning>
+	<ChangeDresser.SelectMultipleApparel>Garder Shift enfoncé et cliquer sur un autre\nobjet pour en sélectionner plusieurs.</ChangeDresser.SelectMultipleApparel>
+	<ChangeDresser.ColorPresetHelp>Change: Garder Shift enfoncé et sélectionner un ensemble.\nDéselectionner: Garder Shift enfoncé et sélectionner le même ensemble.</ChangeDresser.ColorPresetHelp>
+	<ChangeDresser.NoClothingIsWorn>Aucun vêtement n'est usé.</ChangeDresser.NoClothingIsWorn>
+	
+	<!-- Job Toils -->
+	<ChangeDresser.ChangeApparelColors>Changer la couleur des vêtements</ChangeDresser.ChangeApparelColors>
+	<ChangeDresser.ChangeHair>Changer Cheveux style/couleur</ChangeDresser.ChangeHair>
+	<ChangeDresser.ChangeBody>Changer le corps</ChangeDresser.ChangeBody>
+	<ChangeDresser.StoreApparel>Stocker vêtements</ChangeDresser.StoreApparel>
+	<ChangeDresser.WearGroup>Equiper le groupe</ChangeDresser.WearGroup>
+	<ChangeDresser.UnwearGroup>Déséquiper le groupe</ChangeDresser.UnwearGroup>
+	
+	<!-- Error Messages -->
+	<!-- The text after this string is either Hair Color or Apparel Color -->
+	<ChangeDresser.ProblemSavingPreset>Problème lors de la sauvegarde des ensembles de couleurs pour</ChangeDresser.ProblemSavingPreset>
+	<!-- The text after this string is either Hair Color or Apparel Color -->
+	<ChangeDresser.ProblemLoadingPreset>Problème lors du chargement des ensembles de couleur pour</ChangeDresser.ProblemLoadingPreset>
+	<!-- The text before this string is the pawn's name. Text after this string is the apparel group's name -->
+	<ChangeDresser.UnableToWearApparelGroup>incapable de trouver le groupe de vêtements</ChangeDresser.UnableToWearApparelGroup>
+	<!-- The text before this string is the pawn's name. -->
+	<ChangeDresser.AlreadyHasCombatApparel>déjà équipé des vêtements de combat.</ChangeDresser.AlreadyHasCombatApparel>
+	
+	<!-- Mod Settings -->
+	<ChangeDresser>Change Dresser</ChangeDresser>
+	<ChangeDresser.ShowBodyChange>Autoriser les modifications du corps</ChangeDresser.ShowBodyChange>
+	<ChangeDresser.ShowGenderAgeChange>Autoriser les modifications du sexe et de l'âge</ChangeDresser.ShowGenderAgeChange>
+	<ChangeDresser.LinkStorageGroupWithDresser>Associer les groupes de rangement à la commode</ChangeDresser.LinkStorageGroupWithDresser>
+	<ChangeDresser.LinkStorageGroupWithDresserDesc>  Attention: Aller de dissocier (non sélectionné) à associer (sélectionné) sur une partie en cours peut résulter à la perte des vêtements si le groupe de rangement parent n'existe plus.</ChangeDresser.LinkStorageGroupWithDresserDesc>
+</LanguageData>

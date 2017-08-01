@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <ChangeDresser.label>Commode</ChangeDresser.label>
+  <ChangeDresser.description>Modifie la couleur d'un vêtement.</ChangeDresser.description>
+
+  <ChangeMirror.label>Miroir</ChangeMirror.label>
+  <ChangeMirror.description>Maquillage, coupe de cheveux et teinture.</ChangeMirror.description>
+
+</LanguageData>
