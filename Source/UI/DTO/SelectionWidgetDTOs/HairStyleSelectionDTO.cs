@@ -33,6 +33,7 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
         private List<HairDef> hairDefs;
         private List<HairDef> maleHairDefs = new List<HairDef>();
         private List<HairDef> femaleHairDefs = new List<HairDef>();
+        private HairDef mouseOverHairDef = null;
         private int savedFemaleIndex = 0;
         private int savedMaleIndex = 0;
 
@@ -42,11 +43,16 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
 
             foreach (HairDef def in DefDatabase<HairDef>.AllDefs)
             {
-                if (def.hairGender == HairGender.Male)
+                if (def.hairGender == HairGender.Male ||
+                    def.hairGender == HairGender.MaleUsually ||
+                    def.hairGender == HairGender.Any)
                 {
                     this.maleHairDefs.Add(def);
                 }
-                else // female
+
+                if (def.hairGender == HairGender.Female ||
+                    def.hairGender == HairGender.FemaleUsually ||
+                    def.hairGender == HairGender.Any)
                 {
                     this.femaleHairDefs.Add(def);
                 }
@@ -65,6 +71,14 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
                     base.index = i;
                     break;
                 }
+            }
+        }
+
+        public int Index
+        {
+            set
+            {
+                this.index = value;
             }
         }
 
@@ -109,6 +123,35 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
             get
             {
                 return this.hairDefs[base.index];
+            }
+        }
+
+        public HairDef MouseOverSelection
+        {
+            get
+            {
+                return this.mouseOverHairDef;
+            }
+            set
+            {
+                if (value == null && this.mouseOverHairDef != null)
+                {
+                    this.mouseOverHairDef = null;
+                    base.IndexChanged();
+                }
+                if (this.mouseOverHairDef != value)
+                {
+                    this.mouseOverHairDef = value;
+                    base.UpdatePawn(value);
+                }
+            }
+        }
+
+        public HairDef this[int i]
+        {
+            get
+            {
+                return this.hairDefs[i];
             }
         }
 

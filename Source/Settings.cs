@@ -27,10 +27,12 @@ namespace ChangeDresser
         private static bool showGenderAgeChange = true;
         private static bool showBodyChange = true;
         private static bool linkGroupsToDresser = true;
+        private static bool useLeftRightHairSelect = false;
 
         public static bool ShowGenderAgeChange { get { return showGenderAgeChange; } }
         public static bool ShowBodyChange { get { return showBodyChange; } }
         public static bool LinkGroupsToDresser { get { return linkGroupsToDresser; } }
+        public static bool UseLeftRightHairSelect { get { return useLeftRightHairSelect; } }
 
         public override void ExposeData()
         {
@@ -39,6 +41,7 @@ namespace ChangeDresser
             Scribe_Values.Look<bool>(ref showGenderAgeChange, "ChangeDresser.ShowGenderAgeChange", true, true);
             Scribe_Values.Look<bool>(ref showBodyChange, "ChangeDresser.ShowBodyChange", true, true);
             Scribe_Values.Look<bool>(ref linkGroupsToDresser, "ChangeDresser.LinkGroupsToDresser", true, true);
+            Scribe_Values.Look<bool>(ref useLeftRightHairSelect, "ChangeDresser.UseLeftRightHairSelect", false, true);
 
             VerifySupportedEditors(showBodyChange);
         }
@@ -49,6 +52,8 @@ namespace ChangeDresser
             l.ColumnWidth = System.Math.Min(400, rect.width / 2);
             l.Begin(rect);
             l.CheckboxLabeled("ChangeDresser.ShowBodyChange".Translate(), ref showBodyChange);
+            l.Gap(4);
+            l.CheckboxLabeled("ChangeDresser.UseLeftRightHairSelect".Translate(), ref useLeftRightHairSelect);
             if (showBodyChange)
             {
                 l.Gap(4);

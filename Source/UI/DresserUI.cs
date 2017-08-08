@@ -126,8 +126,16 @@ namespace ChangeDresser.UI
                         }
                         break;
                     case CurrentEditorEnum.ChangeDresserHair:
-                        WidgetUtil.AddSelectorWidget(editorLeft, editorTop, editorWidth, "ChangeDresser.HairStyle".Translate() + ":", this.dresserDto.HairStyleSelectionDto);
-                        WidgetUtil.AddColorSelectorWidget(editorLeft, editorTop + WidgetUtil.SelectionRowHeight + 10f, editorWidth, this.dresserDto.HairColorSelectionDto, this.dresserDto.HairColorSelectionDto.ColorPresetsDTO);
+                        if (Settings.UseLeftRightHairSelect)
+                        {
+                            WidgetUtil.AddSelectorWidget(editorLeft, editorTop, editorWidth, "ChangeDresser.HairStyle".Translate() + ":", this.dresserDto.HairStyleSelectionDto);
+                            WidgetUtil.AddColorSelectorWidget(editorLeft, editorTop + WidgetUtil.SelectionRowHeight + 10f, editorWidth, this.dresserDto.HairColorSelectionDto, this.dresserDto.HairColorSelectionDto.ColorPresetsDTO);
+                        }
+                        else
+                        {
+                            WidgetUtil.AddListBoxWidget(editorLeft, editorTop, editorWidth, 150f, "ChangeDresser.HairStyle".Translate() + ":", this.dresserDto.HairStyleSelectionDto);
+                            WidgetUtil.AddColorSelectorWidget(editorLeft, editorTop + 150f + 10f, editorWidth, this.dresserDto.HairColorSelectionDto, this.dresserDto.HairColorSelectionDto.ColorPresetsDTO);
+                        }
                         break;
                 }
 

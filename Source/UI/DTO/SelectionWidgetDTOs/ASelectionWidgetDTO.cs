@@ -57,7 +57,12 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
         protected void IndexChanged()
         {
             this.SelectionChangeListener?.Invoke(this);
-            this.UpdatePawnListener?.Invoke(this, this.SelectedItem);
+            this.UpdatePawn(this.SelectedItem);
+        }
+
+        protected void UpdatePawn(object item)
+        {
+            this.UpdatePawnListener?.Invoke(this, item);
         }
 
         public abstract void ResetToDefault();

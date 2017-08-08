@@ -74,6 +74,7 @@ namespace ChangeDresser.UI.Util
         public static readonly Vector2 ButtonSize = new Vector2(150f, 30f);
         public static readonly Vector2 PortraitSize = new Vector2(192f, 192f);
         private static Vector2 scrollPos = new Vector2(0, 0);
+        private static Vector2 hairScrollPos = new Vector2(0, 0);
         private static readonly Texture2D ColorPreset = new Texture2D(20, 20);
 
         public static float SelectionRowHeight { get { return NavButtonSize.y; } }
@@ -209,6 +210,68 @@ namespace ChangeDresser.UI.Util
                 SetColorToSelected(selectionDtos, presetsDto, c);
             }
             Text.Anchor = TextAnchor.UpperLeft;
+        }
+
+        public static void AddListBoxWidget(float left, float top, float width, float height, string label, HairStyleSelectionDTO hairStyleSelectionDto)
+        {
+            Rect rect = new Rect(left, top, width, height);
+            GUI.BeginGroup(rect);
+            GUI.color = Color.white;
+            Text.Font = GameFont.Medium;
+            left = 0;
+            if (label != null)
+            {
+                //Text.Anchor = TextAnchor.MiddleLeft;
+                GUI.Label(new Rect(left, 0, 75, SelectionRowHeight), label, MiddleCenter);
+                left = 80;
+            }
+
+            const float cellHeight = 30f;
+            Rect listRect = new Rect(left, 0f, width - 100f, height);
+            Rect scrollRect = new Rect(0f, 0f, width - 116f, hairStyleSelectionDto.Count * cellHeight);
+
+            GUI.BeginGroup(listRect);
+            hairScrollPos = GUI.BeginScrollView(new Rect(GenUI.AtZero(listRect)), hairScrollPos, scrollRect);
+            
+            GUI.color = Color.white;
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.MiddleCenter;
+
+            bool isMouseOverAnything = false;
+            for (int i = 0; i < hairStyleSelectionDto.Count; ++i)
+            {
+                HairDef hairDef = hairStyleSelectionDto[i];
+
+                Rect textRect = new Rect(45f, cellHeight * i, scrollRect.width - 90f, cellHeight);
+                Widgets.Label(textRect, new GUIContent(hairDef.label));
+                if (Widgets.ButtonInvisible(textRect, false))
+                {
+                    isMouseOverAnything = true;
+                    hairStyleSelectionDto.Index = i;
+                }
+                else if (Mouse.IsOver(textRect))
+                {
+                    Vector3 pos = GUIUtility.ScreenToGUIPoint(Input.mousePosition);
+                    pos.y = pos.y - hairScrollPos.y;
+                    if (pos.y > 300 && pos.y < 440)
+                    {
+                        isMouseOverAnything = true;
+                        hairStyleSelectionDto.MouseOverSelection = hairDef;
+                    }
+                }
+            }
+
+            if (!isMouseOverAnything)
+            {
+                hairStyleSelectionDto.MouseOverSelection = null;
+            }
+
+            GUI.EndScrollView();
+            GUI.EndGroup();
+            GUI.EndGroup();
+
+            GUI.color = Color.white;
+            Text.Font = GameFont.Small;
         }
 
         private static void SetColorToSelected(List<SelectionColorWidgetDTO> dtos, ColorPresetsDTO presetsDto, Color color)
