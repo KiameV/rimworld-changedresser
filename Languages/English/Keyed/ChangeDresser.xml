@@ -64,6 +64,10 @@
 	<ChangeDresser.R>R</ChangeDresser.R>
 	<ChangeDresser.G>G</ChangeDresser.G>
 	<ChangeDresser.B>B</ChangeDresser.B>
+	<!-- These refer to the Hue (H), Saturation (S), and Lightness (L) values for the selected color -->
+	<ChangeDresser.H>Hue</ChangeDresser.H>
+	<ChangeDresser.S>Saturation</ChangeDresser.S>
+	<ChangeDresser.L>Lightness</ChangeDresser.L>
 	
 	<!-- Help Text -->
 	<ChangeDresser.RemoveToEnableDelete>Remove All Apparel To Enable Delete</ChangeDresser.RemoveToEnableDelete>
@@ -97,4 +101,5 @@
 	<ChangeDresser.LinkStorageGroupWithDresser>Link Storage Groups to Dresser</ChangeDresser.LinkStorageGroupWithDresser>
 	<ChangeDresser.LinkStorageGroupWithDresserDesc>  Caution: Going from unlinked (unchecked) to linked (checked) mid-game can cause apparel to become lost if the storage group's parent dresser no longer exists.</ChangeDresser.LinkStorageGroupWithDresserDesc>
 	<ChangeDresser.UseLeftRightHairSelect>Use Left &lt;-&gt; Right Selection for Hair Styles</ChangeDresser.UseLeftRightHairSelect>
+	<ChangeDresser.UseRGBAndHSLSliders>Use RGB + HSL Sliders</ChangeDresser.UseRGBAndHSLSliders>
 </LanguageData>

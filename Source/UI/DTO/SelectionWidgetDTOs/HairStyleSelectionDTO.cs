@@ -76,6 +76,10 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
 
         public int Index
         {
+            get
+            {
+                return this.index;
+            }
             set
             {
                 this.index = value;

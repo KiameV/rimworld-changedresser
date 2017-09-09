@@ -121,7 +121,14 @@ namespace ChangeDresser.UI.Util
         {
             List<SelectionColorWidgetDTO> l = new List<SelectionColorWidgetDTO>(1);
             l.Add(selectionDto);
-            AddColorSelectorWidget(left, top, width, l, presetsDto);
+            if (Settings.UseColorPickerV2)
+            {
+                AddColorSelectorV2Widget(left, top, width, l, presetsDto);
+            }
+            else
+            {
+                AddColorSelectorWidget(left, top, width, l, presetsDto);
+            }
         }
 
         public static void AddColorSelectorWidget(float left, float top, float width, List<SelectionColorWidgetDTO> selectionDtos, ColorPresetsDTO presetsDto)
@@ -212,6 +219,101 @@ namespace ChangeDresser.UI.Util
             Text.Anchor = TextAnchor.UpperLeft;
         }
 
+        private static void Copy (Color from, Color to)
+        {
+            to.r = from.r;
+            to.g = from.g;
+            to.b = from.b;
+            to.a = from.a;
+        }
+
+        public static void AddColorSelectorV2Widget(float left, float top, float width, List<SelectionColorWidgetDTO> selectionDtos, ColorPresetsDTO presetsDto)
+        {
+            Text.Font = GameFont.Medium;
+            
+            GUI.BeginGroup(new Rect(left, top, width, 225));
+
+            GUI.color = Color.white;
+            
+            Color originalRgb = Color.white;
+            Color rgb = Color.white;
+            if (presetsDto.HasSelected())
+            {
+                rgb = presetsDto.GetSelectedColor();
+            }
+            else if (selectionDtos.Count > 0)
+            {
+                rgb = selectionDtos[0].SelectedColor;
+            }
+            HSL hsl = new HSL();
+            Color.RGBToHSV(rgb, out hsl.h, out hsl.s, out hsl.l);
+            Copy(rgb, originalRgb);
+            HSL originalHsl = new HSL(hsl);
+            
+            rgb.r = Widgets.HorizontalSlider(new Rect(0f, 20f, 125f, 20f), rgb.r, 0, 1, false, null, "ChangeDresser.R".Translate(), rgb.r.ToString("N2"));
+            rgb.g = Widgets.HorizontalSlider(new Rect(0f, 55f, 125f, 20f), rgb.g, 0, 1, false, null, "ChangeDresser.G".Translate(), rgb.g.ToString("N2"));
+            rgb.b = Widgets.HorizontalSlider(new Rect(0f, 90f, 125f, 20f), rgb.b, 0, 1, false, null, "ChangeDresser.B".Translate(), rgb.b.ToString("N2"));
+            hsl.h = Widgets.HorizontalSlider(new Rect(0f, 125f, 125f, 20f), hsl.h, 0, 1, false, null, "ChangeDresser.H".Translate(), hsl.h.ToString("N2"));
+            hsl.s = Widgets.HorizontalSlider(new Rect(0f, 160f, 125f, 20f), hsl.s, 0, 1, false, null, "ChangeDresser.S".Translate(), hsl.s.ToString("N2"));
+            hsl.l = Widgets.HorizontalSlider(new Rect(0f, 195f, 125f, 20f), hsl.l, 0, 1, false, null, "ChangeDresser.L".Translate(), hsl.l.ToString("N2"));
+
+            bool skipRGB = false;
+            float l = 150f;
+            for (int i = 0; i < presetsDto.Count; ++i)
+            {
+                GUI.color = presetsDto[i];
+
+                l += ColorPreset.width + 4;
+                Rect presetRect = new Rect(l, 90f, ColorPreset.width, ColorPreset.height);
+                GUI.Label(presetRect, new GUIContent(ColorPreset,
+                    "ChangeDresser.ColorPresetHelp".Translate()));
+                if (Widgets.ButtonInvisible(presetRect, false))
+                {
+                    if (Event.current.shift)
+                    {
+                        if (presetsDto.IsSelected(i))
+                        {
+                            presetsDto.Deselect();
+                        }
+                        else
+                        {
+                            if (selectionDtos.Count > 0 &&
+                                !presetsDto.HasSelected())
+                            {
+                                presetsDto.SetColor(i, selectionDtos[0].SelectedColor);
+                            }
+                            presetsDto.SetSelected(i);
+                        }
+                    }
+                    else
+                    {
+                        SetColorToSelected(selectionDtos, null, presetsDto[i]);
+                    }
+                    skipRGB = true;
+                }
+                GUI.color = Color.white;
+                if (presetsDto.IsSelected(i))
+                {
+                    Widgets.DrawBox(presetRect, 1);
+                }
+            }
+            GUI.EndGroup();
+
+            if (!skipRGB &&
+                (selectionDtos.Count > 0 || presetsDto.HasSelected()))
+            {
+                if (hsl != originalHsl)
+                {
+                    rgb = Color.HSVToRGB(hsl.h, hsl.s, hsl.l);
+                }
+                if (rgb != originalRgb)
+                {
+                    SetColorToSelected(selectionDtos, presetsDto, rgb);
+                }
+            }
+            Text.Anchor = TextAnchor.UpperLeft;
+        }
+
         public static void AddListBoxWidget(float left, float top, float width, float height, string label, HairStyleSelectionDTO hairStyleSelectionDto)
         {
             Rect rect = new Rect(left, top, width, height);
@@ -241,8 +343,9 @@ namespace ChangeDresser.UI.Util
             for (int i = 0; i < hairStyleSelectionDto.Count; ++i)
             {
                 HairDef hairDef = hairStyleSelectionDto[i];
-
+                
                 Rect textRect = new Rect(45f, cellHeight * i, scrollRect.width - 90f, cellHeight);
+                bool drawMouseOver = false;
                 Widgets.Label(textRect, new GUIContent(hairDef.label));
                 if (Widgets.ButtonInvisible(textRect, false))
                 {
@@ -251,6 +354,7 @@ namespace ChangeDresser.UI.Util
                 }
                 else if (Mouse.IsOver(textRect))
                 {
+                    drawMouseOver = true;
                     Vector3 pos = GUIUtility.ScreenToGUIPoint(Input.mousePosition);
                     pos.y = pos.y - hairScrollPos.y;
                     if (pos.y > 300 && pos.y < 440)
@@ -258,6 +362,15 @@ namespace ChangeDresser.UI.Util
                         isMouseOverAnything = true;
                         hairStyleSelectionDto.MouseOverSelection = hairDef;
                     }
+                }
+
+                if (hairStyleSelectionDto.Index == i)
+                {
+                    Widgets.DrawHighlight(textRect);
+                }
+                else if (drawMouseOver)
+                {
+                    Widgets.DrawHighlightIfMouseover(textRect);
                 }
             }
 
@@ -426,8 +539,15 @@ namespace ChangeDresser.UI.Util
                 }
                 GUI.EndScrollView();
                 GUI.EndGroup();
-                
-                AddColorSelectorWidget(left, top + apparelListRect.height + 10f, width, apparelSelectionsContainer.SelectedApparel, apparelSelectionsContainer.ColorPresetsDTO);
+
+                if (Settings.UseColorPickerV2)
+                {
+                    AddColorSelectorV2Widget(left, top + apparelListRect.height + 10f, width, apparelSelectionsContainer.SelectedApparel, apparelSelectionsContainer.ColorPresetsDTO);
+                }
+                else
+                {
+                    AddColorSelectorWidget(left, top + apparelListRect.height + 10f, width, apparelSelectionsContainer.SelectedApparel, apparelSelectionsContainer.ColorPresetsDTO);
+                }
             }
             Text.Anchor = TextAnchor.UpperLeft;
         }

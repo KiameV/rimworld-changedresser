@@ -43,6 +43,8 @@ namespace ChangeDresser.UI
 
         private bool saveChangedOnExit = false;
 
+        private bool originalHatsHideSetting;
+
         public DresserUI(DresserDTO dresserDto)
         {
             this.closeOnEscapeKey = true;
@@ -52,6 +54,10 @@ namespace ChangeDresser.UI
             this.forcePause = true;
             this.dresserDto = dresserDto;
             this.dresserDto.SetUpdatePawnListeners(this.UpdatePawn);
+            this.dresserDto.EditorTypeSelectionDto.SelectionChangeListener += delegate (object sender)
+            {
+                this.rerenderPawn = true;
+            };
         }
 
         public override Vector2 InitialSize
@@ -60,6 +66,20 @@ namespace ChangeDresser.UI
             {
                 return new Vector2(650f, 600f);
             }
+        }
+
+        public override void PostOpen()
+        {
+            base.PostOpen();
+            this.originalHatsHideSetting = Prefs.HatsOnlyOnMap;
+        }
+
+        public override void PostClose()
+        {
+            base.PostClose();
+            Prefs.HatsOnlyOnMap = this.originalHatsHideSetting;
+            this.dresserDto.Pawn.Drawer.renderer.graphics.ResolveAllGraphics();
+            PortraitsCache.SetDirty(this.dresserDto.Pawn);
         }
 
         public override void DoWindowContents(Rect inRect)

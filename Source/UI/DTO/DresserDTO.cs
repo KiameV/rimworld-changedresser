@@ -58,6 +58,14 @@ namespace ChangeDresser.UI.DTO
             this.EditorTypeSelectionDto.SelectionChangeListener += delegate (object sender)
             {
                 this.CurrentEditorEnum = (CurrentEditorEnum)this.EditorTypeSelectionDto.SelectedItem;
+                if (this.CurrentEditorEnum == CurrentEditorEnum.ChangeDresserHair)
+                {
+                    Prefs.HatsOnlyOnMap = true;
+                }
+                else
+                {
+                    Prefs.HatsOnlyOnMap = false;
+                }
             };
 
             this.BodyTypeSelectionDto = new BodyTypeSelectionDTO(this.Pawn.story.bodyType, this.Pawn.gender);

@@ -84,6 +84,7 @@
     <Compile Include="UI\StorageGroupUI.cs" />
     <Compile Include="UI\StorageUI.cs" />
     <Compile Include="IOUtil.cs" />
+    <Compile Include="UI\Util\HSL.cs" />
     <Compile Include="UI\Util\WidgetUtil.cs" />
   </ItemGroup>
   <ItemGroup />

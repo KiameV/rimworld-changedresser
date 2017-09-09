@@ -28,11 +28,13 @@ namespace ChangeDresser
         private static bool showBodyChange = true;
         private static bool linkGroupsToDresser = true;
         private static bool useLeftRightHairSelect = false;
+        private static bool useColorPickerV2 = false;
 
         public static bool ShowGenderAgeChange { get { return showGenderAgeChange; } }
         public static bool ShowBodyChange { get { return showBodyChange; } }
         public static bool LinkGroupsToDresser { get { return linkGroupsToDresser; } }
         public static bool UseLeftRightHairSelect { get { return useLeftRightHairSelect; } }
+        public static bool UseColorPickerV2 { get { return useColorPickerV2; } }
 
         public override void ExposeData()
         {
@@ -42,6 +44,7 @@ namespace ChangeDresser
             Scribe_Values.Look<bool>(ref showBodyChange, "ChangeDresser.ShowBodyChange", true, true);
             Scribe_Values.Look<bool>(ref linkGroupsToDresser, "ChangeDresser.LinkGroupsToDresser", true, true);
             Scribe_Values.Look<bool>(ref useLeftRightHairSelect, "ChangeDresser.UseLeftRightHairSelect", false, true);
+            Scribe_Values.Look<bool>(ref useColorPickerV2, "ChangeDresser.UseColorPickerV2", false, true);
 
             VerifySupportedEditors(showBodyChange);
         }
@@ -51,9 +54,11 @@ namespace ChangeDresser
             Listing_Standard l = new Listing_Standard(GameFont.Small);
             l.ColumnWidth = System.Math.Min(400, rect.width / 2);
             l.Begin(rect);
-            l.CheckboxLabeled("ChangeDresser.ShowBodyChange".Translate(), ref showBodyChange);
-            l.Gap(4);
             l.CheckboxLabeled("ChangeDresser.UseLeftRightHairSelect".Translate(), ref useLeftRightHairSelect);
+            l.Gap(4);
+            l.CheckboxLabeled("ChangeDresser.UseRGBAndHSLSliders".Translate(), ref useColorPickerV2);
+            l.Gap(4);
+            l.CheckboxLabeled("ChangeDresser.ShowBodyChange".Translate(), ref showBodyChange);
             if (showBodyChange)
             {
                 l.Gap(4);
@@ -61,7 +66,9 @@ namespace ChangeDresser
                 l.Gap(20);
             }
             else
+            {
                 l.Gap(48);
+            }
             l.CheckboxLabeled("ChangeDresser.LinkStorageGroupWithDresser".Translate(), ref linkGroupsToDresser);
             l.Gap(4);
             l.Label("ChangeDresser.LinkStorageGroupWithDresserDesc".Translate());
