@@ -1,29 +1,4 @@
-﻿/*
- * MIT License
- * 
- * Copyright (c) [2017] [Travis Offtermatt]
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
-using ChangeDresser.DresserJobDriver;
-using ChangeDresser.StoredApparel;
-using ChangeDresser.UI.Enums;
+﻿using ChangeDresser.UI.Enums;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -34,13 +9,12 @@ using Verse.AI;
 
 namespace ChangeDresser
 {
-    public partial class Building_Dresser : Building_Storage, IStoreSettingsParent
+    public class Building_Dresser : Building_Storage, IStoreSettingsParent
     {
         public readonly JobDef changeApparelColorJobDef = DefDatabase<JobDef>.GetNamed("ChangeApparelColor", true);
         public readonly JobDef changeHairStyleJobDef = DefDatabase<JobDef>.GetNamed("ChangeHairStyle", true);
         public readonly JobDef changeBodyJobDef = DefDatabase<JobDef>.GetNamed("ChangeBody", true);
         public readonly JobDef storeApparelJobDef = DefDatabase<JobDef>.GetNamed("StoreApparel", true);
-        public readonly JobDef wearApparelGroupJobDef = DefDatabase<JobDef>.GetNamed("WearApparelGroup", true);
         public readonly JobDef wearApparelFromStorageJobDef = DefDatabase<JobDef>.GetNamed("WearApparelFromStorage", true);
 
         public static readonly List<CurrentEditorEnum> SupportedEditors = new List<CurrentEditorEnum>(3);
@@ -54,14 +28,14 @@ namespace ChangeDresser
 
         public const StoragePriority DefaultStoragePriority = StoragePriority.Low;
 
-        private List<Apparel> storedApparel = new List<Apparel>();
+        private List<Apparel> toredApparel = new List<Apparel>();
         private Map CurrentMap { get; set; }
 
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
             base.SpawnSetup(map, respawningAfterLoad);
             this.CurrentMap = map;
-
+            
             if (settings == null)
             {
                 base.settings = new StorageSettings(this);
@@ -122,22 +96,10 @@ namespace ChangeDresser
         {
             try
             {
-                if (this.storedApparel != null)
+                if (this.toredApparel != null)
                 {
-                    DropApparel(this.storedApparel);
-                    this.storedApparel.Clear();
-                }
-
-                if (Settings.LinkGroupsToDresser)
-                {
-                    List<StoredApparelSet> sets = StoredApparelContainer.RemoveApparelSets(this);
-                    if (sets != null)
-                    {
-                        foreach (StoredApparelSet set in sets)
-                        {
-                            DropApparel(set.Apparel);
-                        }
-                    }
+                    DropApparel(this.toredApparel);
+                    this.toredApparel.Clear();
                 }
             }
             catch (Exception e)
@@ -217,30 +179,26 @@ namespace ChangeDresser
                 return;
             }
 
-            base.Notify_ReceivedThing(newItem);
-            if (!this.StoredApparel.Contains((Apparel)newItem))
-            {
-                if (newItem.Spawned)
-                    newItem.DeSpawn();
-                this.storedApparel.Add((Apparel)newItem);
-            }
+            Apparel a = (Apparel)newItem;
+            //if (!WorldComp.IsAssignedApparel(a))
+            //{
+                base.Notify_ReceivedThing(newItem);
+                if (!this.StoredApparel.Contains(a))
+                {
+                    if (newItem.Spawned)
+                        newItem.DeSpawn();
+                    this.StoredApparel.Add((Apparel)newItem);
+                }
+            //}
         }
 
         public override void ExposeData()
         {
             base.ExposeData();
 
-            List<StoredApparelSet> sets = null;
+            Scribe_Collections.Look(ref this.toredApparel, "storedApparel", LookMode.Deep, new object[0]);
 
-            if (Settings.LinkGroupsToDresser && Scribe.mode == LoadSaveMode.Saving)
-            {
-                sets = StoredApparelContainer.GetApparelSets(this);
-            }
-
-            Scribe_Collections.Look(ref this.storedApparel, "storedApparel", LookMode.Deep, new object[0]);
-            Scribe_Collections.Look(ref sets, "storedApparelGroups", LookMode.Deep, new object[0]);
-
-            if (Scribe.mode == LoadSaveMode.LoadingVars)
+            /*if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
                 if (sets != null && sets.Count > 0)
                 {
@@ -269,13 +227,14 @@ namespace ChangeDresser
                         }
                     }
                 }
-            }
+            }*/
         }
 
         public override string GetInspectString()
         {
             this.Tick();
             StringBuilder sb = new StringBuilder(base.GetInspectString());
+            sb.Append("\n");
             sb.Append("ChangeDresser.StoragePriority".Translate());
             sb.Append(": ");
             sb.Append(("StoragePriority" + base.settings.Priority).Translate());
@@ -283,13 +242,6 @@ namespace ChangeDresser
             sb.Append("ChangeDresser.ApparelCount".Translate());
             sb.Append(": ");
             sb.Append(this.StoredApparel.Count);
-            if (Settings.LinkGroupsToDresser)
-            {
-                sb.Append("\n");
-                sb.Append("ChangeDresser.ApparelGroupCount".Translate());
-                sb.Append(": ");
-                sb.Append(StoredApparelContainer.GetApparelSets(this).Count);
-            }
             return sb.ToString();
         }
 
@@ -297,15 +249,15 @@ namespace ChangeDresser
         {
             get
             {
-                if (this.storedApparel == null)
-                    this.storedApparel = new List<Apparel>();
-                return this.storedApparel;
+                if (this.toredApparel == null)
+                    this.toredApparel = new List<Apparel>();
+                return this.toredApparel;
             }
             set
             {
-                this.storedApparel = value;
-                if (this.storedApparel == null)
-                    this.storedApparel = new List<Apparel>();
+                this.toredApparel = value;
+                if (this.toredApparel == null)
+                    this.toredApparel = new List<Apparel>();
             }
         }
 
@@ -325,19 +277,9 @@ namespace ChangeDresser
             }
         }
 
-        public void Remove(StoredApparelSet set)
+        public void RemoveNoDrop(Apparel a)
         {
-            try
-            {
-                StoredApparelContainer.RemoveApparelSet(set);
-            }
-            catch (Exception e)
-            {
-                Log.Error(
-                    "ChangeDresser:Building_Dresser.Remove\n" +
-                    e.GetType().Name + " " + e.Message + "\n" +
-                    e.StackTrace);
-            }
+            this.StoredApparel.Remove(a);
         }
 
         private readonly Stopwatch stopWatch = new Stopwatch();
@@ -412,46 +354,8 @@ namespace ChangeDresser
                     Job job = new Job(this.storeApparelJobDef, this);
                     pawn.jobs.TryTakeOrderedJob(job);
                 }));
-
-            StoredApparelSet wornSet;
-            if (StoredApparelContainer.TryGetWornApparelSet(pawn, out wornSet))
-            {
-                list.Add(new FloatMenuOption(
-                "ChangeDresser.UnwearGroup".Translate() + " \"" + wornSet.Name + "\"",
-                delegate
-                {
-                    Job job = new SwapApparelJob(this.wearApparelGroupJobDef, this, wornSet.Name);
-                    pawn.jobs.TryTakeOrderedJob(job);
-                }));
-            }
-            else
-            {
-                IEnumerable<StoredApparelSet> sets;
-                if (Settings.LinkGroupsToDresser)
-                    sets = StoredApparelContainer.GetApparelSets(this);
-                else
-                    sets = StoredApparelContainer.GetAllApparelSets();
-                int i = 0;
-                foreach (StoredApparelSet set in sets)
-                {
-                    if (!set.IsBeingWorn &&
-                        (set.IsOwnedBy(pawn) || !set.HasOwner))
-                    {
-                        list.Add(new FloatMenuOption(
-                            "ChangeDresser.WearGroup".Translate() + " \"" + set.Name + "\"",
-                            delegate
-                            {
-                                Job job = new SwapApparelJob(this.wearApparelGroupJobDef, this, set.Name);
-                                pawn.jobs.TryTakeOrderedJob(job);
-                            }));
-                    }
-                    ++i;
-                }
-            }
             return list;
         }
-
-
 
         public override IEnumerable<Gizmo> GetGizmos()
         {
@@ -467,10 +371,10 @@ namespace ChangeDresser
 
             Command_Action a = new Command_Action();
             a.icon = ContentFinder<UnityEngine.Texture2D>.Get("UI/manageapparel", true);
-            a.defaultDesc = "ChangeDresser.ManageApparelDesc".Translate();
-            a.defaultLabel = "ChangeDresser.ManageApparel".Translate();
+            a.defaultDesc = "ChangeDresser.AssignApparelDesc".Translate();
+            a.defaultLabel = "ChangeDresser.AssignApparel".Translate();
             a.activateSound = SoundDef.Named("Click");
-            a.action = delegate { Find.WindowStack.Add(new UI.StorageUI(this, null, true)); };
+            a.action = delegate { Find.WindowStack.Add(new UI.StorageGroupUI(this)); };
             a.groupKey = groupKey;
             l.Add(a);
 
@@ -482,8 +386,8 @@ namespace ChangeDresser
             a.action = 
                 delegate
                 {
-                    this.DropApparel(this.storedApparel, false);
-                    this.storedApparel.Clear();
+                    this.DropApparel(this.StoredApparel, false);
+                    this.StoredApparel.Clear();
                 };
             a.groupKey = groupKey + 1;
             l.Add(a);

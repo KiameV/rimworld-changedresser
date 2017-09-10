@@ -32,7 +32,6 @@ namespace ChangeDresser
 
         public static bool ShowGenderAgeChange { get { return showGenderAgeChange; } }
         public static bool ShowBodyChange { get { return showBodyChange; } }
-        public static bool LinkGroupsToDresser { get { return linkGroupsToDresser; } }
         public static bool UseLeftRightHairSelect { get { return useLeftRightHairSelect; } }
         public static bool UseColorPickerV2 { get { return useColorPickerV2; } }
 

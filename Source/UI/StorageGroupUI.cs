@@ -1,27 +1,4 @@
-﻿/*
- * MIT License
- * 
- * Copyright (c) [2017] [Travis Offtermatt]
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
-using ChangeDresser.UI.Util;
+﻿using ChangeDresser.UI.Util;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -33,18 +10,29 @@ namespace ChangeDresser.UI
 {
     public class StorageGroupUI : Window
     {
-        public enum ApparelFromEnum { Pawn, Storage };
         private readonly Building_Dresser Dresser;
-        private readonly StoredApparelSet set;
-        private Pawn Pawn;
-        private readonly ApparelFromEnum ApparelFrom;
-        private readonly bool IsNew;
-        private readonly bool FromGizmo;
-        private bool isRestricted = false;
+        private Pawn SelectedPawn = null;
+        private List<StoredApparelSet> ApparelSets = null;
+        private StoredApparelSet SelectedApparelSet;
+        private List<Apparel> SelectedApparel = null;
 
         private Vector2 scrollPosLeft = new Vector2(0, 0);
         private Vector2 scrollPosRight = new Vector2(0, 0);
 
+        private List<Apparel> possibleApparel;
+        private List<Apparel> PossibleApparel
+        {
+            get
+            {
+                if (this.SelectedApparelSet == null)
+                {
+                    return this.Dresser.StoredApparel;
+                }
+                return this.possibleApparel;
+            }
+        }
+
+        public static void ClearPlayerPawns() { selectablePawns.Clear(); }
         private static List<Pawn> selectablePawns = new List<Pawn>();
         private static List<Pawn> PlayerPawns
         {
@@ -55,7 +43,7 @@ namespace ChangeDresser.UI
                     selectablePawns = new List<Pawn>();
                     foreach (Pawn p in PawnsFinder.AllMapsAndWorld_Alive)
                     {
-                        if (p.Faction == Faction.OfPlayer && p.def.defName.Equals("Human"))
+                        if (p.Faction == Faction.OfPlayer && p.def.race.Humanlike)
                         {
                             selectablePawns.Add(p);
                         }
@@ -64,27 +52,22 @@ namespace ChangeDresser.UI
                 return selectablePawns;
             }
         }
-        internal static void ClearPlayerPawns() { selectablePawns.Clear();  }
 
-        public StorageGroupUI(StoredApparelSet set, ApparelFromEnum apparelFrom, Building_Dresser dresser, Pawn pawn, bool isNew, bool fromGizmo = false)
+        public StorageGroupUI(Building_Dresser dresser)
         {
-            this.set = set;
-            this.ApparelFrom = apparelFrom;
             this.Dresser = dresser;
-            this.Pawn = pawn;
-            this.IsNew = isNew;
-            this.FromGizmo = fromGizmo;
-            if (this.FromGizmo)
-            {
-                if (this.set.HasOwner)
-                    this.isRestricted = true;
-            }
             
-            this.closeOnEscapeKey = false;
+            this.closeOnEscapeKey = true;
             this.doCloseButton = false;
-            this.doCloseX = false;
+            this.doCloseX = true;
             this.absorbInputAroundWindow = true;
             this.forcePause = true;
+        }
+
+        public override void PostClose()
+        {
+            base.PostClose();
+            ClearPlayerPawns();
         }
 
         public override Vector2 InitialSize
@@ -99,221 +82,156 @@ namespace ChangeDresser.UI
         {
             try
             {
-                Text.Font = GameFont.Medium;
+                //Text.Font = GameFont.Medium;
                 Text.Anchor = TextAnchor.MiddleCenter;
-                Widgets.Label(new Rect(0, 0, 200, 50), "ChangeDresser.ApparelGroupLabel".Translate());
-                
+                //Widgets.Label(new Rect(0, 0, 200, 50), "ChangeDresser.ApparelGroupLabel".Translate());
                 Text.Font = GameFont.Small;
-                if (!this.FromGizmo)
-                {
-                    Widgets.Label(new Rect(250, 0, 200, 50), "ChangeDresser.ApparelGroupOwner".Translate() + ": " + this.Pawn.Name.ToStringShort);
-                }
-                else if (this.FromGizmo && this.isRestricted)
-                {
-                    string label;
-                    if (this.set.HasOwner)
-                        label = this.set.OwnerName;
-                    else
-                        label = "ChangeDresser.ApparelGroupOwner".Translate();
+                string label = (this.SelectedPawn != null) ? this.SelectedPawn.NameStringShort : "ChangeDresser.SelectPawn".Translate();
 
-                    if (Widgets.ButtonText(new Rect(275, 10, 150, 30), label))
+                if (Widgets.ButtonText(new Rect(0, 0, 150, 30), label))
+                {
+                    List<FloatMenuOption> options = new List<FloatMenuOption>();
+                    foreach (Pawn p in PlayerPawns)
+                    {
+                        options.Add(new FloatMenuOption(p.Name.ToStringShort, delegate
+                        {
+                            this.PawnSelected(p);
+                        }, MenuOptionPriority.Default, null, null, 0f, null, null));
+                    }
+                    Find.WindowStack.Add(new FloatMenu(options));
+                }
+
+                if (this.SelectedPawn != null)
+                {
+                    label = (this.SelectedApparelSet != null) ? this.SelectedApparelSet.Name : "ChangeDresser.ApparelGroupLabel".Translate();
+                    if (Widgets.ButtonText(new Rect(175, 0, 150, 30), label))
                     {
                         List<FloatMenuOption> options = new List<FloatMenuOption>();
-                        foreach (Pawn p in PlayerPawns)
+                        options.Add(new FloatMenuOption("ChangeDresser.CreateNew".Translate(), delegate
                         {
-                            options.Add(new FloatMenuOption(p.Name.ToStringShort, delegate
+                            this.NewApparelSet();
+                        }, MenuOptionPriority.Default, null, null, 0f, null, null));
+                        
+                        foreach (StoredApparelSet s in this.ApparelSets)
+                        {
+                            options.Add(new FloatMenuOption(s.Name, delegate
                             {
-                                StoredApparelSet tempSet;
-                                if (this.set.SwitchForBattle && p != this.set.Owner &&
-                                    StoredApparelContainer.TryGetBattleApparelSet(p, out tempSet))
-                                {
-                                    Messages.Message(p.Name.ToStringShort + " " + "ChangeDresser.AlreadyHasCombatApparel".Translate(), MessageSound.Negative);
-                                }
-                                else
-                                    this.set.SetOwner(p);
+                                this.ApparelSetSelected(s);
                             }, MenuOptionPriority.Default, null, null, 0f, null, null));
                         }
                         Find.WindowStack.Add(new FloatMenu(options));
                     }
                 }
 
-                Rect rect = new Rect(0, 50, inRect.width, 30);
-                Text.Font = GameFont.Small;
-                GUI.BeginGroup(rect);
-                GUI.Label(new Rect(0, 0, 100, rect.height), "ChangeDresser.ApparelGroupName".Translate() + ":", WidgetUtil.MiddleCenter);
-                this.set.Name = Widgets.TextField(new Rect(110, 0, 150, rect.height), this.set.Name);
-
-                GUI.Label(new Rect(280, 0, 120, rect.height), "ChangeDresser.ApparelGroupRestrictToPawnCheckBox".Translate() + ":", WidgetUtil.MiddleCenter);
-                bool temp = this.set.HasOwner || (this.FromGizmo && this.isRestricted);
-                temp = GUI.Toggle(new Rect(410, 7, rect.height, rect.height), temp, "");
-                if (this.isRestricted != temp)
+                if (this.SelectedApparelSet != null)
                 {
-                    this.isRestricted = temp;
-                    if (this.isRestricted && !this.FromGizmo)
-                    {
-                        this.set.SetOwner(this.Pawn);
-                    }
-                    else
-                    {
-                        this.set.SetOwner(null);
-                        this.set.SwitchForBattle = false;
-                    }
+                    Rect rect = new Rect(0, 40, inRect.width, 30);
+                    GUI.BeginGroup(rect);
+                    GUI.Label(new Rect(0, 0, 100, rect.height), "ChangeDresser.ApparelGroupName".Translate() + ":", WidgetUtil.MiddleCenter);
+                    this.SelectedApparelSet.Name = Widgets.TextField(new Rect(110, 0, 150, rect.height), this.SelectedApparelSet.Name);
+
+                    GUI.Label(new Rect(290, 0, 100, rect.height), "ChangeDresser.ForCombat".Translate() + ":", WidgetUtil.MiddleCenter);
+                    this.SelectedApparelSet.ForBattle = GUI.Toggle(new Rect(400, 7, rect.height, rect.height), this.SelectedApparelSet.ForBattle, "");
+                    GUI.EndGroup();
                 }
                 
-                if (!this.FromGizmo || (this.FromGizmo && this.set.HasOwner))
-                {
-                    GUI.Label(new Rect(440, 0, 150, rect.height), "ChangeDresser.ForceSwitchCombat".Translate() + ":", WidgetUtil.MiddleCenter);
-                    bool forceSwitch = GUI.Toggle(new Rect(600, 7, rect.height, rect.height), this.set.SwitchForBattle, "");
-                    if (forceSwitch != this.set.SwitchForBattle)
-                    {
-                        if (forceSwitch)
-                        {
-                            StoredApparelSet tempSet;
-                            if (this.Pawn != null && StoredApparelContainer.TryGetBattleApparelSet(this.Pawn, out tempSet))
-                            {
-                                Messages.Message(this.Pawn.Name.ToStringShort + " " + "ChangeDresser.AlreadyHasCombatApparel".Translate(), MessageSound.Negative);
-                            }
-                            else
-                            {
-                                this.set.SwitchForBattle = forceSwitch;
-                                if (!this.set.HasOwner)
-                                {
-                                    this.set.SetOwner(this.Pawn);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                GUI.EndGroup();
-
-                List<Apparel> possibleApparel = (this.ApparelFrom == ApparelFromEnum.Pawn && this.Pawn != null) ? this.Pawn.apparel.WornApparel : this.Dresser.StoredApparel;
-                List<Apparel> groupApparel = this.set.Apparel;
-                List<string> forcedApparelIds = this.set.ForcedApparelIds;
-
-                GUI.BeginGroup(new Rect(0, 90, inRect.width, 30));
-                GUI.Label(new Rect(0, 0, 100, 30), ((string)((this.ApparelFrom == ApparelFromEnum.Pawn) ? "ChangeDresser.Worn" : "ChangeDresser.Storage")).Translate(), WidgetUtil.MiddleCenter);
-                GUI.Label(new Rect(inRect.width * 0.5f, 0, 100, 30), "ChangeDresser.ApparelGroup".Translate(), WidgetUtil.MiddleCenter);
-                GUI.EndGroup();
-
                 const float cellHeight = 40f;
                 float apparelListWidth = inRect.width * 0.5f - 10f;
-                Rect apparelListRect = new Rect(0, 120, apparelListWidth, inRect.height - 150);
-                Rect apparelScrollRect = new Rect(0f, 0f, apparelListRect.width - 16f, possibleApparel.Count * cellHeight);
+                Rect apparelListRect;
+                Rect apparelScrollRect;
 
-                GUI.BeginGroup(apparelListRect);
-                this.scrollPosLeft = GUI.BeginScrollView(new Rect(GenUI.AtZero(apparelListRect)), this.scrollPosLeft, apparelScrollRect);
-
-                GUI.color = Color.white;
-                Text.Font = GameFont.Medium;
-                Pawn pawnToUse = this.Pawn;
-                if (pawnToUse == null && this.FromGizmo && this.set.HasOwner)
+                if (this.SelectedApparel != null)
                 {
-                    pawnToUse = set.Owner;
-                }
-                for (int i = 0; i < possibleApparel.Count; ++i)
-                {
-                    Apparel apparel = possibleApparel[i];
-                    Rect rowRect = new Rect(0, 2f + i * cellHeight, apparelListRect.width, cellHeight);
-                    GUI.BeginGroup(rowRect);
+                    apparelListRect = new Rect(0, 110, apparelListWidth, inRect.height - 150);
+                    apparelScrollRect = new Rect(0f, 0f, apparelListRect.width - 16f, this.SelectedApparel.Count * cellHeight);
 
-                    Widgets.ThingIcon(new Rect(0f, 0f, cellHeight, cellHeight), apparel);
+                    GUI.Label(new Rect(0, 80, 150, 30), ("ChangeDresser.AssignedApparel").Translate(), WidgetUtil.MiddleCenter);
 
-                    Text.Font = GameFont.Small;
-                    Widgets.Label(new Rect(cellHeight + 5f, 0f, rowRect.width - 40f - cellHeight, cellHeight), apparel.Label);
-
-                    GUI.color = Color.white;
-
-                    Rect buttonRect = new Rect(rowRect.width - 35f, 10, 20, 20);
+                    GUI.BeginGroup(apparelListRect);
+                    this.scrollPosLeft = GUI.BeginScrollView(new Rect(GenUI.AtZero(apparelListRect)), this.scrollPosLeft, apparelScrollRect);
                     
-                    if (pawnToUse != null && this.CanWear(groupApparel, apparel))
+                    for (int i = 0; i < this.SelectedApparel.Count; ++i)
                     {
+                        Apparel assigned = this.SelectedApparel[i];
+                        Rect rowRect = new Rect(0, 2f + i * cellHeight, apparelListRect.width, cellHeight);
+                        GUI.BeginGroup(rowRect);
+
+                        Widgets.ThingIcon(new Rect(0f, 0f, cellHeight, cellHeight), assigned);
+
+                        Text.Font = GameFont.Small;
+                        Widgets.Label(new Rect(cellHeight + 5f, 0f, rowRect.width - 40f - cellHeight, cellHeight), assigned.Label);
+
+                        GUI.color = Color.white;
+
+                        Rect buttonRect = new Rect(rowRect.width - 35f, 10, 20, 20);
+
                         if (Widgets.ButtonImage(buttonRect, WidgetUtil.nextTexture))
                         {
-                            this.RemoveApparelFromSender(apparel);
-                            pawnToUse.apparel.Remove(apparel);
-                            groupApparel.Add(apparel);
+                            this.MoveRight(assigned);
                             GUI.EndGroup();
                             break;
                         }
+
+                        GUI.EndGroup();
                     }
-                    else
-                    {
-                        Widgets.ButtonImage(buttonRect, WidgetUtil.cantTexture);
-                    }
+                    GUI.EndScrollView();
                     GUI.EndGroup();
                 }
-                GUI.EndScrollView();
-                GUI.EndGroup();
                 
+                GUI.Label(new Rect(inRect.width * 0.5f, 80, 150, 30), "ChangeDresser.Storage".Translate(), WidgetUtil.MiddleCenter);
                 apparelListRect = new Rect(inRect.width * 0.5f + 10f, 120, apparelListWidth, inRect.height - 150);
-                apparelScrollRect = new Rect(0f, 0f, apparelListRect.width - 16f, groupApparel.Count * cellHeight);
-                
+                apparelScrollRect = new Rect(0f, 0f, apparelListRect.width - 16f, this.PossibleApparel.Count * cellHeight);
+
                 GUI.BeginGroup(apparelListRect);
                 this.scrollPosRight = GUI.BeginScrollView(new Rect(GenUI.AtZero(apparelListRect)), this.scrollPosRight, apparelScrollRect);
-                
-                GUI.color = Color.white;
-                Text.Font = GameFont.Medium;
-                for (int i = 0; i < groupApparel.Count; ++i)
+
+                for (int i = 0; i < this.PossibleApparel.Count; ++i)
                 {
-                    Apparel apparel = groupApparel[i];
+                    Apparel possible = this.PossibleApparel[i];
                     Rect rowRect = new Rect(0, 2f + i * cellHeight, apparelListRect.width, cellHeight);
                     GUI.BeginGroup(rowRect);
-                    
-                    if (Widgets.ButtonImage(new Rect(5, 10, 20, 20), WidgetUtil.previousTexture))
+
+                    if (this.SelectedPawn != null && this.SelectedApparelSet != null && 
+                        this.CanWear(this.SelectedApparel, possible) && 
+                        Widgets.ButtonImage(new Rect(5, 10, 20, 20), WidgetUtil.previousTexture))
                     {
-                        this.AddApparelToSender(apparel, forcedApparelIds.Contains(apparel.ThingID));
-                        groupApparel.RemoveAt(i);
+                        this.MoveLeft(possible);
                         GUI.EndGroup();
                         break;
                     }
                     
-                    Widgets.ThingIcon(new Rect(35f, 0f, cellHeight, cellHeight), apparel);
+                    Widgets.ThingIcon(new Rect(35f, 0f, cellHeight, cellHeight), possible);
                     Text.Font = GameFont.Small;
                     Text.Anchor = TextAnchor.MiddleCenter;
-                    string label = apparel.Label;
-                    if (forcedApparelIds != null && forcedApparelIds.Contains(apparel.ThingID))
-                    {
-                        label += "(" + "ApparelForcedLower".Translate() + ")";
-                    }
-                    Widgets.Label(new Rect(cellHeight + 45f, 0f, rowRect.width - cellHeight - 45f, cellHeight), label);
+                    Widgets.Label(new Rect(cellHeight + 45f, 0f, rowRect.width - cellHeight - 45f, cellHeight), possible.Label);
 
                     GUI.EndGroup();
                 }
                 GUI.EndScrollView();
                 GUI.EndGroup();
                 
-                Text.Font = GameFont.Small;
                 GUI.BeginGroup(new Rect(0, inRect.height - 35, inRect.width, 30));
                 float middle = inRect.width / 2;
-                if (Widgets.ButtonText(new Rect(middle - 110, 0, 100, 30), "ChangeDresser.Save".Translate(), true, false, this.set.HasName))
+                float halfMiddle = middle / 2;
+                if (Widgets.ButtonText(new Rect(halfMiddle - 50, 0, 100, 30), "ChangeDresser.Save".Translate(), true, false, this.SelectedApparelSet != null && this.SelectedApparelSet.Name != null && this.SelectedApparelSet.Name.Trim().Length != 0))
                 {
-                    this.set.ClearWornBy();
-                    if (IsNew)
-                        StoredApparelContainer.AddApparelSet(this.set);
-                    this.Close();
-                }
-                Rect rightButton = new Rect(middle + 10, 0, 100, 30);
-                if (IsNew && this.Pawn != null && Widgets.ButtonText(rightButton, "ChangeDresser.Cancel".Translate()))
-                {
-                    for (int i = 0; i < this.set.Apparel.Count; ++i)
+                    this.Save();
+#if DEBUG
+                    Log.Warning("SGUI.DoWindowContents->Save: Set Count: " + this.ApparelSets.Count);
+                    foreach (StoredApparelSet s in this.ApparelSets)
                     {
-                        Apparel apparel = this.set.Apparel[i];
-                        this.AddApparelToSender(apparel, this.set.ForcedApparelIds.Contains(apparel.ThingID));
+                        Log.Warning(s.ToString());
                     }
+#endif
+                }
+                if (Widgets.ButtonText(new Rect(middle - 50, 0, 100, 30), "CloseButton".Translate()))
+                {
                     this.Close();
                 }
-                if (this.set.Apparel.Count > 0)
+                if (Widgets.ButtonText(new Rect(middle + halfMiddle - 50, 0, 100, 30), "ChangeDresser.Delete".Translate(), true, false, this.SelectedApparelSet != null))
                 {
-                    Text.Font = GameFont.Small;
-                    rightButton.width = 300;
-                    GUI.Label(rightButton, "ChangeDresser.RemoveToEnableDelete".Translate(), WidgetUtil.MiddleCenter);
-                }
-                else if (Widgets.ButtonText(rightButton, "ChangeDresser.Delete".Translate(), true, false, this.set.Apparel.Count == 0))
-                {
-                    if (!IsNew)
-                        StoredApparelContainer.RemoveApparelSet(this.set);
-                    this.Close();
+                    StoredApparelContainer.RemoveApparelSet(this.SelectedPawn, this.SelectedApparelSet, this.Dresser);
+                    this.PawnSelected(this.SelectedPawn);
                 }
                 GUI.EndGroup();
             }
@@ -330,30 +248,215 @@ namespace ChangeDresser.UI
             }
         }
 
-        private void AddApparelToSender(Apparel apparel, bool forced)
+        private void Save()
         {
-            if (this.ApparelFrom == ApparelFromEnum.Pawn)
+#if DEBUG
+            Log.Warning("SGUI.Save: Apparel Set Added " + StoredApparelContainer.StoredApparelSets.Count);
+#endif
+
+            List<Apparel> removedApparel = new List<Apparel>();
+            foreach (Apparel previouslyAssigned in this.SelectedApparelSet.AssignedApparel)
             {
-                this.Pawn.apparel.Wear(apparel);
-                if (forced)
-                    this.Pawn.outfits.forcedHandler.ForcedApparel.Add(apparel);
+                if (!this.SelectedApparel.Contains(previouslyAssigned))
+                {
+#if DEBUG
+                    Log.Warning("SGUI.Save: Remove " + previouslyAssigned.Label);
+#endif
+                    removedApparel.Add(previouslyAssigned);
+
+                    if (this.SelectedApparelSet.IsBeingWorn)
+                    {
+#if DEBUG
+                        Log.Warning("SGUI.Save: Is being worn, remove!");
+#endif
+                        this.SelectedPawn.apparel.Remove(previouslyAssigned);
+                    }
+                }
             }
-            else
+
+            foreach (Apparel selected in this.SelectedApparel)
             {
-                this.Dresser.StoredApparel.Add(apparel);
+                if (!this.SelectedApparelSet.IsApparelUsed(selected))
+                {
+#if DEBUG
+                    Log.Warning("SGUI.Save: New " + selected.Label);
+#endif
+                    this.Dresser.RemoveNoDrop(selected);
+
+                    if (this.SelectedApparelSet.IsBeingWorn)
+                    {
+#if DEBUG
+                        Log.Warning("SGUI.Save: Not being worn, wear it!");
+#endif
+                        this.SelectedPawn.apparel.Wear(selected);
+                    }
+                }
+            }
+
+            this.SelectedApparelSet.AssignedApparel = new List<Apparel> (this.SelectedApparel);
+            StoredApparelContainer.AddApparelSet(this.SelectedApparelSet);
+
+            foreach (Apparel removed in removedApparel)
+            {
+                if (!StoredApparelContainer.IsApparelUsedInSets(this.SelectedPawn, removed))
+                {
+#if DEBUG
+                    Log.Message("Removed apparel [" + removed.Label + "] is not being used in any other apparel set. Will be put into the dresser.");
+#endif
+                    this.Dresser.StoredApparel.Add(removed);
+                }
+#if DEBUG
+                else
+                {
+                    //Log.Message("SGUI.Save: Removed apparel [" + removed.Label + "] is still being used in other apparel groups.");
+                }
+#endif
+            }
+
+            Messages.Message(this.SelectedApparelSet.Name + " saved.", MessageSound.Benefit);
+
+            bool found = false;
+            foreach (StoredApparelSet s in this.ApparelSets)
+            {
+                if (s.Equals(this.SelectedApparelSet))
+                {
+#if DEBUG
+                    Log.Warning("SGUI.Save: " + s.Name + " == " + this.SelectedApparelSet.Name);
+#endif
+                    found = true;
+                    break;
+                }
+#if DEBUG
+                else
+                {
+                    Log.Warning("SGUI.Save: " + s.Name + " != " + this.SelectedApparelSet.Name);
+                }
+#endif
+            }
+            if (!found)
+            {
+#if DEBUG
+                Log.Warning("SGUI.Save: Adding " + this.SelectedApparelSet.Name + " to sets");
+#endif
+                this.ApparelSets.Add(this.SelectedApparelSet);
+            }
+#if DEBUG
+            Log.Warning("SGUI.Save Done: Set Count: " + this.ApparelSets.Count);
+            Log.Warning(this.SelectedApparelSet.ToString());
+#endif
+            bool allWorn = true;
+            foreach (Apparel a in this.SelectedApparelSet.AssignedApparel)
+            {
+                found = false;
+                foreach (Apparel w in this.SelectedPawn.apparel.WornApparel)
+                {
+                    if (a.thingIDNumber == w.thingIDNumber)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    allWorn = false;
+                    break;
+                }
+            }
+            if (allWorn)
+            {
+                this.SelectedApparelSet.IsBeingWorn = true;
             }
         }
 
-        private void RemoveApparelFromSender(Apparel apparel)
+        private void MoveRight(Apparel apparel)
         {
-            if (this.ApparelFrom == ApparelFromEnum.Pawn)
+            this.SelectedApparel.Remove(apparel);
+            this.PossibleApparel.Add(apparel);
+        }
+
+        private void MoveLeft(Apparel apparel)
+        {
+            this.PossibleApparel.Remove(apparel);
+            this.SelectedApparel.Add(apparel);
+        }
+
+        private void NewApparelSet()
+        {
+            this.SelectedApparelSet = new StoredApparelSet();
+            this.SelectedApparelSet.IsBeingWorn = false;
+            this.SelectedApparelSet.ForBattle = false;
+            this.SelectedApparelSet.IsTemp = false;
+            this.SelectedApparelSet.SwitchedFrom = false;
+            this.SelectedApparelSet.Pawn = this.SelectedPawn;
+            this.SelectedApparel = new List<Apparel>();
+
+            this.UpdatePossibleApparel();
+        }
+
+        private void ApparelSetSelected(StoredApparelSet s)
+        {
+            this.SelectedApparelSet = s;
+
+            this.SelectedApparel = new List<Apparel>(s.AssignedApparel);
+
+            this.UpdatePossibleApparel();
+        }
+
+        private void UpdatePossibleApparel()
+        {
+            if (this.possibleApparel != null)
+                this.possibleApparel.Clear();
+
+            IEnumerable<Apparel> tmp;
+            List<Apparel> assignedApparel;
+            if (StoredApparelContainer.TryGetAssignedApparel(this.SelectedPawn, out tmp))
             {
-                this.Pawn.apparel.Remove(apparel);
+                assignedApparel = new List<Apparel>(tmp);
             }
             else
             {
-                this.Dresser.StoredApparel.Remove(apparel);
+                assignedApparel = new List<Apparel>(0);
             }
+
+            this.possibleApparel = new List<Apparel>(
+                this.SelectedPawn.apparel.WornApparelCount + this.Dresser.StoredApparel.Count + assignedApparel.Count);
+            this.possibleApparel.AddRange(this.SelectedPawn.apparel.WornApparel);
+            foreach (Apparel a in assignedApparel)
+            {
+                bool found = false;
+                foreach(Apparel p in this.possibleApparel)
+                {
+                    if (a.thingIDNumber == p.thingIDNumber)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    this.possibleApparel.Add(a);
+                }
+            }
+            this.possibleApparel.AddRange(this.Dresser.StoredApparel);
+        }
+
+        private void PawnSelected(Pawn pawn)
+        {
+            this.SelectedPawn = pawn;
+            IEnumerable<StoredApparelSet> sets;
+            if (StoredApparelContainer.TryGetApparelSets(pawn, out sets))
+            {
+                this.ApparelSets = new List<StoredApparelSet>(sets);
+            }
+            else
+            {
+                this.ApparelSets = new List<StoredApparelSet>();
+            }
+#if DEBUG
+            Log.Warning("SGUI.PawnSelected: Found Set Count: " + this.ApparelSets.Count);
+#endif
+            this.SelectedApparelSet = null;
+            this.SelectedApparel = null;
         }
 
         private bool CanWear(List<Apparel> worn, Apparel newApparel)
