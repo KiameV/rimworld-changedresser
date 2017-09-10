@@ -1,227 +1,193 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using RimWorld;
 using Verse;
 using System.Text;
+using System;
 
 namespace ChangeDresser.StoredApparel
 {
     public class StoredApparelSet : IExposable
     {
-        /// <summary>
-        /// Used as a temp value until the Pawns are loaded and Initialize is called
-        /// </summary>
-        private string isBeingWornByPawnId = "";
-        /// <summary>
-        /// Used as a temp value until the Pawns are loaded and Initialize is called
-        /// </summary>
-        private string isOwnedByPawnId = "";
+        private static int ID = 0;
 
-        private string parentDresserId;
-        private Pawn owner = null;
-        private Pawn isBeingWornBy = null;
-        private List<Apparel> assignedApparel = new List<Apparel>();
-        private List<string> forcedApparelIds = new List<string>();
+        private readonly int uniqueId;
 
-        public string Name = "";
-        public bool SwitchForBattle = false;
+        public bool IsTemp = false;
 
-        public List<Apparel> Apparel { get { return this.assignedApparel; } }
-        public List<string> ForcedApparelIds { get { return this.forcedApparelIds; } }
-        public void ClearRestriction() { this.owner = null; }
-        public bool IsBeingWorn { get { return this.isBeingWornBy != null; } }
-        public bool IsRestricted { get { return HasOwner; } }
-        public string OwnerName { get { return this.owner.Name.ToStringShort; } }
-        public bool HasOwner { get { return this.owner != null; } }
-        public bool HasName { get { return this.Name != null && this.Name.Trim().Length > 0; } }
-        public Pawn Owner { get { return this.owner; } }
-        public string ParentDresserId { get { return this.parentDresserId; } }
-        public bool HasParentDresser() { return this.parentDresserId != null && this.parentDresserId.Trim().Length > 0; }
-        public void SetParentDresser(Building_Dresser dresser) { this.parentDresserId = dresser.ThingID; }
+        public string Name;
+
+        public bool ForBattle = false;
+        public bool SwitchedFrom = false;
+        public bool IsBeingWorn = false;
+
+        public Pawn Pawn;
+        
+        private List<Apparel> Apparel = new List<Apparel>();
+
+        private List<int> ForcedApparel = null;
+
+        public void SetForcedApparel(List<Apparel> forcedApparel)
+        {
+            this.ForcedApparel = new List<int>(forcedApparel.Count);
+            foreach (Apparel a in forcedApparel)
+            {
+                this.ForcedApparel.Add(a.thingIDNumber);
+            }
+        }
+        public bool WasForced(Apparel apparel)
+        {
+            if (this.ForcedApparel != null && this.ForcedApparel.Count > 0)
+                return this.ForcedApparel.Contains(apparel.thingIDNumber);
+            return false;
+        }
+
+        public IEnumerable<Apparel> AssignedApparel
+        {
+            get { return this.Apparel; }
+            set
+            {
+                if (this.Apparel != null)
+                    this.Apparel.Clear();
+                this.Apparel = new List<Apparel>(value);
+            }
+        }
+
+        public string TexPath
+        {
+            get
+            {
+                if (this.Apparel != null && this.Apparel.Count > 0)
+                {
+                    return this.Apparel[0].def.graphicData.texPath;
+                }
+                return null;
+            }
+        }
 
         public StoredApparelSet()
         {
-
+            uniqueId = ID;
+            ++ID;
         }
 
-        public StoredApparelSet(Building_Dresser parentDresser)
+        public void Notify_ApparelChange(Apparel apparel)
         {
-            this.SetParentDresser(parentDresser);
+            this.Apparel.Clear();
+            this.Apparel = new List<Apparel>(this.Pawn.apparel.WornApparel);
         }
 
-        /// <summary>
-        /// For use by depricated code only
-        /// </summary>
-        public StoredApparelSet(Building_Dresser parentDresser, string isOwnedByPawnId, string isBeingWornByPawnId)
+        public bool IsApparelUsed(Apparel apparel)
         {
-            this.SetParentDresser(parentDresser);
-            this.isOwnedByPawnId = isOwnedByPawnId;
-            this.isBeingWornByPawnId = isBeingWornByPawnId;
-        }
-
-        internal void Initialize(Dictionary<string, Pawn> pawnIdToPawn)
-        {
-            if (this.isOwnedByPawnId != null && this.isOwnedByPawnId.Trim().Length > 0)
+            if (apparel != null)
             {
-                if (!pawnIdToPawn.TryGetValue(this.isOwnedByPawnId, out this.owner))
+                foreach (Apparel a in this.Apparel)
                 {
-                    Log.Warning("Unable to find owner [" + this.isOwnedByPawnId + "] for Storage Group [" + this.Name + "]");
-                    this.owner = null;
+                    if (a.thingIDNumber == apparel.thingIDNumber)
+                    {
+                        return true;
+                    }
                 }
             }
-            this.isOwnedByPawnId = null;
-
-            if (this.isBeingWornByPawnId != null && this.isBeingWornByPawnId.Trim().Length > 0)
-            {
-                if (!pawnIdToPawn.TryGetValue(this.isBeingWornByPawnId, out this.isBeingWornBy))
-                {
-                    Log.Warning("Unable to find owner [" + this.isBeingWornByPawnId + "] for Storage Group [" + this.Name + "]");
-                    this.isBeingWornBy = null;
-                }
-            }
-            this.isBeingWornByPawnId = null;
-        }
-
-        public bool IsBeingWornBy(Pawn pawn)
-        {
-            if (pawn != null && this.isBeingWornBy != null)
-                return pawn.ThingID.Equals(this.isBeingWornBy.ThingID);
             return false;
         }
-
-        public bool IsOwnedBy(Pawn pawn)
-        {
-            if (this.owner != null && pawn != null)
-                return this.owner.ThingID.Equals(pawn.ThingID);
-            return false;
-        }
-
-        public void SetOwner(Pawn pawn)
-        {
-            this.owner = pawn;
-        }
-
-        public void SetApparel(List<Apparel> apparel)
-        {
-            this.assignedApparel = apparel;
-        }
-
-        public void SetForcedApparel(List<string> forcedApparelIds)
-        {
-            this.forcedApparelIds = forcedApparelIds;
-        }
-
-        public void SetBeingWornBy(Pawn pawn)
-        {
-            this.isBeingWornBy = pawn;
-        }
-
-        public void SwapApparel(Pawn pawn)
-        {
-            if (pawn == null)
-            {
-                Log.Warning("ChangeDresser.StoredApparelSet.SwapApparel: Pawn should never be null here");
-                return;
-            }
-
-            // Remove apparel from pawn
-            List<Apparel> wasWearing = new List<Apparel>(pawn.apparel.WornApparel);
-            List<Apparel> wasForced = new List<Apparel>(pawn.outfits.forcedHandler.ForcedApparel);
-            foreach (Apparel a in wasWearing)
-            {
-                pawn.apparel.Remove(a);
-            }
-
-            // Dress the pawn
-            foreach (Apparel a in this.assignedApparel)
-            {
-                pawn.apparel.Wear(a);
-                if (this.forcedApparelIds.Contains(a.ThingID))
-                {
-                    pawn.outfits.forcedHandler.ForcedApparel.Add(a);
-                }
-            }
-
-            // Replace what this StoredApparelSet holds - now holds what the pawn was wearing
-            this.assignedApparel.Clear();
-            this.assignedApparel = wasWearing;
-            this.forcedApparelIds.Clear();
-            foreach (Apparel a in wasForced)
-            {
-                this.forcedApparelIds.Add(a.ThingID);
-            }
-
-            // Switch the IsBeingWornBy state
-            if (this.isBeingWornBy == null)
-                this.isBeingWornBy = pawn;
-            else
-                this.isBeingWornBy = null;
-        }
-
+        
         public void ExposeData()
         {
-            Scribe_Values.Look<string>(ref this.parentDresserId, "parentDresser", "", false);
             Scribe_Values.Look<string>(ref this.Name, "name", "", false);
+
+            Scribe_References.Look(ref this.Pawn, "pawn");
+            Scribe_Values.Look<bool>(ref this.ForBattle, "forBattle", false, false);
+            Scribe_Values.Look<bool>(ref this.IsBeingWorn, "isBeingWorn", false, false);
+            Scribe_Values.Look<bool>(ref this.SwitchedFrom, "switchedFrom", false, false);
+            Scribe_Values.Look<bool>(ref this.IsTemp, "isTemp", false, false);
             
-            if (Scribe.mode == LoadSaveMode.Saving && this.HasOwner)
-                this.isOwnedByPawnId = this.owner.ThingID;
-            Scribe_Values.Look<string>(ref this.isOwnedByPawnId, "ownerId", null, false);
-            
-            if (Scribe.mode == LoadSaveMode.Saving && this.IsBeingWorn)
-                this.isBeingWornByPawnId = this.isBeingWornBy.ThingID;
-            Scribe_Values.Look<string>(ref this.isBeingWornByPawnId, "isBeingWornById", null, false);
-            if (Scribe.mode == LoadSaveMode.Saving)
-            {
-                this.isOwnedByPawnId = "";
-                this.isBeingWornByPawnId = "";
-            }
-
-            Scribe_Values.Look<bool>(ref this.SwitchForBattle, "switchForBattle", false, false);
-            Scribe_Collections.Look(ref this.assignedApparel, "apparelList", LookMode.Deep, new object[0]);
-            Scribe_Collections.Look(ref this.forcedApparelIds, "forcedApparel", LookMode.Value, new object[0]);
-
-            if (this.forcedApparelIds == null)
-                this.forcedApparelIds = new List<string>(0);
-        }
-
-        public void ClearWornBy()
-        {
-            this.isBeingWornBy = null;
-        }
-
-        public override int GetHashCode()
-        {
-            return this.ToString().GetHashCode();
+            Scribe_Collections.Look(ref this.Apparel, "apparel", LookMode.Reference, new object[0]);
+            Scribe_Collections.Look(ref this.ForcedApparel, "forcedApparel", LookMode.Deep, new object[0]);
         }
 
         public override bool Equals(object obj)
         {
-            if (obj != null)
-                return this.GetHashCode() == obj.GetHashCode();
+            if (obj is StoredApparelSet)
+            {
+                return this.uniqueId == ((StoredApparelSet)obj).uniqueId;
+            }
             return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.uniqueId;
+        }
+
+        public void Add(Apparel apparel)
+        {
+            this.Apparel.Add(apparel);
+        }
+
+        public void Remove(Apparel apparel)
+        {
+            this.Apparel.Remove(apparel);
         }
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder(this.Name);
-            sb.Append(" Has Owner: ");
-            if (this.HasOwner)
-                sb.Append(this.owner.Name.ToStringShort);
-            else
-                sb.Append("no");
+            StringBuilder sb = new StringBuilder(base.ToString());
+            sb.Append("uniqueId: ");
+            sb.Append(this.uniqueId.ToString());
+            sb.Append(" | ");
 
-            sb.Append(" BeingWorn: ");
-            if (this.IsBeingWorn)
-                sb.Append(this.isBeingWornBy.Name.ToStringShort);
-            else
-                sb.Append("no");
+            sb.Append("Name: ");
+            sb.Append(this.Name);
+            sb.Append(" | ");
 
-            sb.Append(" Apparel:");
-            foreach (Apparel a in this.Apparel)
+            sb.Append("IsTemp: ");
+            sb.Append(this.IsTemp.ToString());
+            sb.Append(" | ");
+
+            sb.Append("ForBattle: ");
+            sb.Append(this.ForBattle.ToString());
+            sb.Append(" | ");
+
+            sb.Append("SwitchedFrom: ");
+            sb.Append(this.SwitchedFrom.ToString());
+            sb.Append(" | ");
+
+            sb.Append("IsBeingWorn: ");
+            sb.Append(this.IsBeingWorn.ToString());
+            sb.Append(" | ");
+
+            sb.Append("Pawn: ");
+            if (this.Pawn == null)
+                sb.Append("null");
+            else
+                sb.Append(this.Pawn.NameStringShort);
+            sb.Append(" | ");
+
+            sb.Append("Apparel: ");
+            if (this.Apparel == null)
+                sb.Append("null");
+            else
             {
-                sb.Append(" ");
-                sb.Append(a.ThingID);
+                foreach (Apparel a in this.Apparel)
+                {
+                    sb.Append(a.LabelShort);
+                    sb.Append(", ");
+                }
             }
+            sb.Append(" | ");
+
+            sb.Append("ForcedApparel: ");
+            if (this.ForcedApparel == null)
+                sb.Append("null");
+            else
+            {
+                foreach (int i in this.ForcedApparel)
+                {
+                    sb.Append(i.ToString());
+                    sb.Append(", ");
+                }
+            }
+            sb.Append(" | ");
             return sb.ToString();
         }
     }

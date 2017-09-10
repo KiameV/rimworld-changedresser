@@ -6,10 +6,12 @@
 	<ChangeDresser.ApparelStorageLabel>Apparel Storage</ChangeDresser.ApparelStorageLabel>
 	
 	<!-- Gizmo (Command Button) -->
-	<ChangeDresser.ManageApparel>Manage Apparel</ChangeDresser.ManageApparel>
-	<ChangeDresser.ManageApparelDesc>Manage the apparel in the dresser.</ChangeDresser.ManageApparelDesc>
+	<ChangeDresser.AssignApparel>Assign Apparel</ChangeDresser.AssignApparel>
+	<ChangeDresser.AssignAppareDescl>Assign apparel groups to Pawns.</ChangeDresser.AssignAppareDescl>
 	<ChangeDresser.Empty>Empty</ChangeDresser.Empty>
 	<ChangeDresser.EmptyDesc>Empty the dresser's contents. Does not include storage group apparel.</ChangeDresser.EmptyDesc>
+	<ChangeDresser.ChangeTo>Change To</ChangeDresser.ChangeTo>
+	<ChangeDresser.ChangeToDesc>Change to this outfit.</ChangeDresser.ChangeToDesc>
 	
 	<!-- Common Strings -->
 	<ChangeDresser.Worn>Worn</ChangeDresser.Worn>
@@ -20,6 +22,7 @@
 	<ChangeDresser.Delete>Delete</ChangeDresser.Delete>
 	<ChangeDresser.SelectAll>Select All</ChangeDresser.SelectAll>
 	<ChangeDresser.DeselectAll>Deselect All</ChangeDresser.DeselectAll>
+	<ChangeDresser.SelectPawn>Select Pawn</ChangeDresser.SelectPawn>
 	
 	<!-- Editor Names (top selection bar in the Dresser window) -->
 	<ChangeDresserHair>Hair Style/Color</ChangeDresserHair>
@@ -38,9 +41,9 @@
 	<!-- Apparel Group UI -->
 	<ChangeDresser.ApparelGroupOwner>Owner</ChangeDresser.ApparelGroupOwner>
 	<ChangeDresser.ApparelGroupName>Group Name</ChangeDresser.ApparelGroupName>
-	<ChangeDresser.ApparelGroup>Apparel Group</ChangeDresser.ApparelGroup>
-	<ChangeDresser.ApparelGroupRestrictToPawnCheckBox>Restrict to Pawn</ChangeDresser.ApparelGroupRestrictToPawnCheckBox>
-	<ChangeDresser.ForceSwitchCombat>Change When Drafted</ChangeDresser.ForceSwitchCombat>
+	<ChangeDresser.AssignedApparel>Assigned Apparel</ChangeDresser.AssignedApparel>
+	<ChangeDresser.ForCombat>For Combat</ChangeDresser.ForCombat>
+	<ChangeDresser.CreateNew>New...</ChangeDresser.CreateNew>
 	
 	<!-- Game UI -->
 	<ChangeDresser.StoragePriority>Storage Priority</ChangeDresser.StoragePriority>

@@ -2,10 +2,10 @@
 using ChangeDresser.UI.Util;
 using Harmony;
 using RimWorld;
-using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 using Verse;
 using Verse.AI;
 
@@ -23,23 +23,215 @@ namespace ChangeDresser
             
             Log.Message("ChangeDresser: Adding Harmony Postfix to Pawn_DraftController.Drafted { set }");
             Log.Message("ChangeDresser: Adding Harmony Postfix to JobGiver_OptimizeApparel.TryGiveJob(Pawn)");
-            //Log.Message("ChangeDresser: Adding Harmony Postfix to Settlement_TraderTracker.RegenerateStock()");
+        }
+
+        public static void SwapApparel(StoredApparelSet toWear)
+        {
+            Pawn pawn = toWear.Pawn;
+            // Remove apparel from pawn
+            StoredApparelSet wornSet;
+            if (!StoredApparelContainer.TryGetWornApparelSet(pawn, out wornSet))
+            {
+#if DEBUG
+                Log.Warning("Main.SwapApparel: Creating set being worn as Temp");
+#endif
+                wornSet = new StoredApparelSet();
+                wornSet.Name = "TempSet";
+                wornSet.IsTemp = true;
+                wornSet.ForBattle = false;
+                wornSet.Pawn = pawn;
+                wornSet.AssignedApparel = new List<Apparel>(pawn.apparel.WornApparel);
+                wornSet.SetForcedApparel(pawn.outfits.forcedHandler.ForcedApparel);
+                StoredApparelContainer.AddApparelSet(wornSet);
+            }
+#if DEBUG
+            else
+            {
+                Log.Warning("Main.SwapApparel: Found Set being Worn " + wornSet.Name);
+            }
+#endif
+            
+            wornSet.SwitchedFrom = true;
+            wornSet.IsBeingWorn = false;
+            
+            toWear.SwitchedFrom = false;
+            toWear.IsBeingWorn = true;
+            
+            foreach (Apparel a in wornSet.AssignedApparel)
+            {
+                pawn.apparel.Remove(a);
+            }
+
+            // Dress the pawn
+            foreach (Apparel a in toWear.AssignedApparel)
+            {
+                pawn.apparel.Wear(a);
+            }
+
+            foreach (Apparel a in toWear.AssignedApparel)
+            {
+                if (toWear.WasForced(a))
+                {
+                    pawn.outfits.forcedHandler.ForcedApparel.Add(a);
+                }
+            }
         }
     }
+
+    [HarmonyPatch(typeof(Pawn), "GetGizmos")]
+    static class Pawn_GetGizmos
+    {
+        static void Postfix(Pawn __instance, ref IEnumerable<Gizmo> __result)
+        {
+            if (!__instance.Drafted)
+            {
+                IEnumerable<StoredApparelSet> sets;
+                if (StoredApparelContainer.TryGetApparelSets(__instance, out sets))
+                {
+                    List<Gizmo> l = new List<Gizmo>(__result);
+                    foreach (StoredApparelSet s in sets)
+                    {
+                        if (!s.ForBattle && !s.IsBeingWorn)
+                        {
+                            Command_Action a = new Command_Action();
+                            string texPath = s.TexPath;
+                            if (texPath != null)
+                            {
+                                a.icon = ContentFinder<UnityEngine.Texture2D>.Get(texPath, true);
+                            }
+                            StringBuilder sb = new StringBuilder("ChangeDresser.ChangeTo".Translate());
+                            sb.Append(" ");
+                            sb.Append(s.Name);
+                            a.defaultLabel = sb.ToString();
+                            a.defaultDesc = "ChangeDresser.ChangeToDesc";
+                            a.activateSound = SoundDef.Named("Click");
+                            a.action = delegate
+                            {
+                                Main.SwapApparel(s);
+                            };
+                            l.Add(a);
+                        }
+                    }
+                    __result = l;
+                }
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(Pawn_DraftController), "GetGizmos")]
+    static class Patch_Pawn_DraftController_GetGizmos
+    {
+#if DEBUG
+        private static int i = 0;
+        private static readonly int WAIT = 4000;
+#endif
+        static void Postfix(Pawn_DraftController __instance, ref IEnumerable<Gizmo> __result)
+        {
+            if (__instance.pawn.Drafted)
+            {
+#if DEBUG
+                ++i;
+                if (i == WAIT)
+                    Log.Warning("DraftController.Postfix: Pawn is Drafted");
+#endif
+                IEnumerable<StoredApparelSet> sets;
+                if (StoredApparelContainer.TryGetApparelSets(__instance.pawn, out sets))
+                {
+                    List<Gizmo> l = new List<Gizmo>(__result);
+#if DEBUG
+                    if (i == WAIT)
+                        Log.Warning("DraftController.Postfix: Sets found! Pre Gizmo Count: " + l.Count);
+#endif
+                    foreach (StoredApparelSet s in sets)
+                    {
+#if DEBUG
+                        if (i == WAIT)
+                            Log.Warning("DraftController.Postfix: Set: " + s.Name + ", forBattle: " + s.ForBattle + ", isBeingWorn: " + s.IsBeingWorn);
+#endif
+                        if (s.ForBattle && !s.IsBeingWorn)
+                        {
+                            Command_Action a = new Command_Action();
+                            string texPath = s.TexPath;
+                            if (texPath != null)
+                            {
+                                a.icon = ContentFinder<UnityEngine.Texture2D>.Get(texPath, true);
+                            }
+                            StringBuilder sb = new StringBuilder("ChangeDresser.ChangeTo".Translate());
+                            sb.Append(" ");
+                            sb.Append(s.Name);
+                            a.defaultLabel = sb.ToString();
+                            a.defaultDesc = "ChangeDresser.ChangeToDesc";
+                            a.activateSound = SoundDef.Named("Click");
+                            a.action = delegate
+                            {
+                                Main.SwapApparel(s);
+                            };
+                            l.Add(a);
+                        }
+                    }
+#if DEBUG
+                    if (i == WAIT)
+                        Log.Warning("Post Gizmo Count: " + l.Count);
+#endif
+                    __result = l;
+                }
+            }
+#if DEBUG
+            else
+            {
+                if (i == WAIT)
+                    Log.Warning("Pawn is not Drafted, could gizmo");
+            }
+#endif
+#if DEBUG
+            if (i == WAIT)
+                i = 0;
+#endif
+        }
+    }
+
+    /*[HarmonyPatch(typeof(Pawn_ApparelTracker), "Notify_ApparelAdded")]
+    static class Patch_Pawn_ApparelTracker_Notify_ApparelAdded
+    {
+        static void Postfix(Pawn_ApparelTracker __instance, Apparel apparel)
+        {
+            StoredApparelSet set;
+            if (StoredApparelContainer.TryGetWornApparelSet(__instance.pawn, out set))
+            {
+                set.Notify_ApparelChange(apparel);
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(Pawn_ApparelTracker), "Notify_ApparelRemoved")]
+    static class Patch_Pawn_ApparelTracker_Notify_ApparelRemoved
+    {
+        static void Postfix(Pawn_ApparelTracker __instance, Apparel apparel)
+        {
+            StoredApparelSet set;
+            if (StoredApparelContainer.TryGetWornApparelSet(__instance.pawn, out set))
+            {
+                set.Notify_ApparelChange(apparel);
+                StoredApparelContainer.Remove(__instance.pawn, apparel, null);
+            }
+        }
+    }*/
 
     [HarmonyPatch(typeof(Pawn_DraftController), "set_Drafted")]
     static class Patch_Pawn_DraftController
     {
         static void Postfix(Pawn_DraftController __instance)
         {
+#if DEBUG
+            Log.Warning("Pawn_DraftController.set_Drafted.Postfix: " + __instance.pawn.NameStringShort + " Drafted: " + __instance.pawn.Drafted);
+#endif
             StoredApparelSet set;
-            if (StoredApparelContainer.TryGetBattleApparelSet(__instance.pawn, out set))
+            if (StoredApparelContainer.TryGetBestApparelSet(__instance.pawn, __instance.pawn.Drafted, out set))
             {
-                if ((__instance.Drafted && !set.IsBeingWorn) ||
-                    (!__instance.Drafted && set.IsBeingWorn))
-                {
-                    set.SwapApparel(__instance.pawn);
-                }
+#if DEBUG
+                Log.Warning("Pawn_DraftController.set_Drafted.Postfix: Swap To " + set.Name);
+#endif
+                Main.SwapApparel(set);
             }
         }
     }

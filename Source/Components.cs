@@ -6,58 +6,88 @@ using Verse;
 
 namespace ChangeDresser
 {
+    // TODO add ticks for updating removed apparel ids
     class WorldComp : WorldComponent
     {
-        public WorldComp(World world) : base(world) { }
-        
+        public WorldComp(World world) : base(world)
+        {
+            StoredApparelContainer.Clear();
+        }
+
+        /*private static List<int> removedApparelIds = new List<int>();
+
+        public static void AssignedApparelRemoved(Pawn pawn, Apparel apparel, Building_Dresser dresser)
+        {
+            if (StoredApparelContainer.IsApparelUsedInSets(pawn, apparel, dresser))
+            {
+                removedApparelIds.Add(apparel.thingIDNumber);
+            }
+        }
+
+        public static bool IsAssignedApparel(Apparel a)
+        {
+            for (int i = 0; i < removedApparelIds.Count; ++i)
+            {
+                if (removedApparelIds[i] == a.thingIDNumber)
+                {
+                    removedApparelIds.RemoveAt(i);
+                    return true;
+                }
+            }
+            return false;
+        }*/
+        private List<StorageForPawn> stores;
+
         public override void ExposeData()
         {
             base.ExposeData();
+#if DEBUG
+            Log.Warning("WorldComp: " + Scribe.mode);
+#endif
 
-            if (Scribe.mode == LoadSaveMode.LoadingVars)
+            if (Scribe.mode == LoadSaveMode.Saving)
+            {
+                this.stores = new List<StorageForPawn>(StoredApparelContainer.StoredApparelSets.Count);
+
+                foreach (StorageForPawn l in StoredApparelContainer.StoredApparelSets.Values)
+                {
+                    if (l.HasSets())
+                    {
+                        this.stores.Add(l);
+                    }
+                }
+            }
+
+            Scribe_Collections.Look(ref this.stores, "apparelSets", LookMode.Deep, new object[0]);
+            //Scribe_Collections.Look(ref removedApparelIds, "removedApparelIds", LookMode.Deep, new object[0]);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 StoredApparelContainer.Clear();
-            }
-
-            List<StoredApparelSet> sets = null;
-            
-            if (!Settings.LinkGroupsToDresser && Scribe.mode == LoadSaveMode.Saving)
-            {
-                sets = new List<StoredApparelSet>(StoredApparelContainer.GetAllApparelSets());
-            }
-
-            Scribe_Collections.Look(ref sets, "storedApparelSet", LookMode.Deep, new object[0]);
-
-            if (Scribe.mode == LoadSaveMode.LoadingVars)
-            {
-                if (sets != null && sets.Count > 0)
+#if DEBUG
+                Log.Warning("WorldComp: stores count: " + this.stores.Count);
+#endif
+                if (stores != null)
                 {
-                    StoredApparelContainer.AddApparelSets(sets);
+#if DEBUG
+                    Log.Warning("WorldComp: Loading StorageForPawn: " + stores.Count);
+#endif
+                    foreach (StorageForPawn s in this.stores)
+                    {
+#if DEBUG
+                        Log.Warning("WorldComp: Loading StorageForPawn: " + s.ToString());
+#endif
+                        StoredApparelContainer.Add(s);
+                    }
                 }
-            }
-        }
-    }
-
-    class GameComp : GameComponent
-    {
-        public GameComp() { }
-
-        public GameComp(Game game) { }
-
-        public override void FinalizeInit()
-        {
-            base.FinalizeInit();
-            Dictionary<string, Pawn> pawnIdToPawn = new Dictionary<string, Pawn>();
-            foreach (Pawn p in PawnsFinder.AllMapsAndWorld_Alive)
-            {
-                if (p.Faction == Faction.OfPlayer &&
-                    p.def.defName.Equals("Human") &&
-                    !pawnIdToPawn.ContainsKey(p.ThingID))
+#if DEBUG
+                else
                 {
-                    pawnIdToPawn.Add(p.ThingID, p);
+                    Log.Warning("WorldComp: Loading StorageForPawn: null");
                 }
+#endif
+                this.stores.Clear();
+                this.stores = null;
             }
-            StoredApparelContainer.Initialize(pawnIdToPawn);
         }
     }
 }
