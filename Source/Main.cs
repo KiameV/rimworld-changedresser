@@ -20,60 +20,71 @@ namespace ChangeDresser
             harmony.PatchAll(Assembly.GetExecutingAssembly());
 
             WidgetUtil.Initialize();
+
+            IsSwapping = false;
             
             Log.Message("ChangeDresser: Adding Harmony Postfix to Pawn_DraftController.Drafted { set }");
             Log.Message("ChangeDresser: Adding Harmony Postfix to JobGiver_OptimizeApparel.TryGiveJob(Pawn)");
         }
 
+        public static bool IsSwapping { get; private set; }
         public static void SwapApparel(StoredApparelSet toWear)
         {
-            Pawn pawn = toWear.Pawn;
-            // Remove apparel from pawn
-            StoredApparelSet wornSet;
-            if (!StoredApparelContainer.TryGetWornApparelSet(pawn, out wornSet))
+            try
             {
+                IsSwapping = true;
+                Pawn pawn = toWear.Pawn;
+                // Remove apparel from pawn
+                StoredApparelSet wornSet;
+                if (!StoredApparelContainer.TryGetWornApparelSet(pawn, out wornSet))
+                {
 #if DEBUG
                 Log.Warning("Main.SwapApparel: Creating set being worn as Temp");
 #endif
-                wornSet = new StoredApparelSet();
-                wornSet.Name = "TempSet";
-                wornSet.IsTemp = true;
-                wornSet.ForBattle = false;
-                wornSet.Pawn = pawn;
-                wornSet.AssignedApparel = new List<Apparel>(pawn.apparel.WornApparel);
-                wornSet.SetForcedApparel(pawn.outfits.forcedHandler.ForcedApparel);
-                StoredApparelContainer.AddApparelSet(wornSet);
-            }
+                    wornSet = new StoredApparelSet();
+                    wornSet.Name = "TempSet";
+                    wornSet.IsTemp = true;
+                    wornSet.ForBattle = false;
+                    wornSet.Pawn = pawn;
+                    wornSet.AssignedApparel = new List<Apparel>(pawn.apparel.WornApparel);
+                    wornSet.SetForcedApparel(pawn.outfits.forcedHandler.ForcedApparel);
+                    StoredApparelContainer.AddApparelSet(wornSet);
+                }
 #if DEBUG
             else
             {
                 Log.Warning("Main.SwapApparel: Found Set being Worn " + wornSet.Name);
             }
 #endif
-            
-            wornSet.SwitchedFrom = true;
-            wornSet.IsBeingWorn = false;
-            
-            toWear.SwitchedFrom = false;
-            toWear.IsBeingWorn = true;
-            
-            foreach (Apparel a in wornSet.AssignedApparel)
-            {
-                pawn.apparel.Remove(a);
-            }
 
-            // Dress the pawn
-            foreach (Apparel a in toWear.AssignedApparel)
-            {
-                pawn.apparel.Wear(a);
-            }
+                wornSet.SwitchedFrom = true;
+                wornSet.IsBeingWorn = false;
 
-            foreach (Apparel a in toWear.AssignedApparel)
-            {
-                if (toWear.WasForced(a))
+                toWear.SwitchedFrom = false;
+                toWear.IsBeingWorn = true;
+
+                foreach (Apparel a in wornSet.AssignedApparel)
                 {
-                    pawn.outfits.forcedHandler.ForcedApparel.Add(a);
+                    pawn.apparel.Remove(a);
                 }
+
+                // Dress the pawn
+                foreach (Apparel a in toWear.AssignedApparel)
+                {
+                    pawn.apparel.Wear(a);
+                }
+
+                foreach (Apparel a in toWear.AssignedApparel)
+                {
+                    if (toWear.WasForced(a))
+                    {
+                        pawn.outfits.forcedHandler.ForcedApparel.Add(a);
+                    }
+                }
+            }
+            finally
+            {
+                IsSwapping = false;
             }
         }
     }
@@ -201,21 +212,19 @@ namespace ChangeDresser
                 set.Notify_ApparelChange(apparel);
             }
         }
-    }
+    }*/
 
     [HarmonyPatch(typeof(Pawn_ApparelTracker), "Notify_ApparelRemoved")]
     static class Patch_Pawn_ApparelTracker_Notify_ApparelRemoved
     {
         static void Postfix(Pawn_ApparelTracker __instance, Apparel apparel)
         {
-            StoredApparelSet set;
-            if (StoredApparelContainer.TryGetWornApparelSet(__instance.pawn, out set))
+            if (!Main.IsSwapping)
             {
-                set.Notify_ApparelChange(apparel);
-                StoredApparelContainer.Remove(__instance.pawn, apparel, null);
+                StoredApparelContainer.Notify_ApparelRemoved(__instance.pawn, apparel);
             }
         }
-    }*/
+    }
 
     [HarmonyPatch(typeof(Pawn_DraftController), "set_Drafted")]
     static class Patch_Pawn_DraftController
