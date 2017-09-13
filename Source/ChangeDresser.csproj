@@ -59,11 +59,11 @@
     <Compile Include="Components.cs" />
     <Compile Include="DresserJobDriver\JobDriver_WearApparelFromStorage.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="OutfitType.cs" />
+    <Compile Include="PawnOutfits.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="StoredApparel\StorageForPawn.cs" />
-    <Compile Include="StoredApparel\StoredApparelContainer.cs" />
-    <Compile Include="StoredApparel\StoredApparelSet.cs" />
+    <Compile Include="StoredApparel.cs" />
     <Compile Include="UI\DresserUI.cs" />
     <Compile Include="UI\DTO\ColorPresetsDTO.cs" />
     <Compile Include="UI\DTO\DresserDTO.cs" />
@@ -80,7 +80,6 @@
     <Compile Include="UI\DTO\SelectionWidgetDTOs\SelectionColorWidgetDTO.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\SliderWidgetDTO.cs" />
     <Compile Include="UI\Enums\CurrentEditorEnum.cs" />
-    <Compile Include="UI\StorageGroupUI.cs" />
     <Compile Include="UI\StorageUI.cs" />
     <Compile Include="IOUtil.cs" />
     <Compile Include="UI\Util\HSL.cs" />

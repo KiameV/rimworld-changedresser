@@ -1,92 +1,78 @@
-﻿using ChangeDresser.StoredApparel;
-using RimWorld;
-using RimWorld.Planet;
+﻿using RimWorld.Planet;
 using System.Collections.Generic;
 using Verse;
 
 namespace ChangeDresser
 {
-    // TODO add ticks for updating removed apparel ids
     class WorldComp : WorldComponent
     {
+        public static List<Building_Dresser> DressersToUse { get; private set; }
+        public static Dictionary<Pawn, PawnOutfits> PawnOutfits { get; private set; }
+
         public WorldComp(World world) : base(world)
         {
-            StoredApparelContainer.Clear();
-        }
-
-        /*private static List<int> removedApparelIds = new List<int>();
-
-        public static void AssignedApparelRemoved(Pawn pawn, Apparel apparel, Building_Dresser dresser)
-        {
-            if (StoredApparelContainer.IsApparelUsedInSets(pawn, apparel, dresser))
+            if (DressersToUse != null)
             {
-                removedApparelIds.Add(apparel.thingIDNumber);
+                DressersToUse.Clear();
             }
+            DressersToUse = new List<Building_Dresser>();
+
+            if (PawnOutfits != null)
+            {
+                PawnOutfits.Clear();
+            }
+            PawnOutfits = new Dictionary<Pawn, PawnOutfits>();
         }
 
-        public static bool IsAssignedApparel(Apparel a)
+        public static void AddDresser(Building_Dresser dresser)
         {
-            for (int i = 0; i < removedApparelIds.Count; ++i)
+            bool added = false;
+            for (int i = 0; i < DressersToUse.Count; ++i)
             {
-                if (removedApparelIds[i] == a.thingIDNumber)
+                if (dresser.settings.Priority > DressersToUse[i].settings.Priority)
                 {
-                    removedApparelIds.RemoveAt(i);
-                    return true;
+                    added = true;
+                    DressersToUse.Insert(i, dresser);
+#if DEBUG
+                    Log.Warning("Dresser inserted at index " + i + ". Number of Dressers to Use: " + DressersToUse.Count);
+#endif
+                }
+                if (!added)
+                {
+                    DressersToUse.Add(dresser);
                 }
             }
-            return false;
-        }*/
-        private List<StorageForPawn> stores;
+        }
 
+        private List<PawnOutfits> tempPawnOutfits = null;
         public override void ExposeData()
         {
-            base.ExposeData();
-#if DEBUG
-            Log.Warning("WorldComp: " + Scribe.mode);
-#endif
-
             if (Scribe.mode == LoadSaveMode.Saving)
             {
-                this.stores = new List<StorageForPawn>(StoredApparelContainer.StoredApparelSets.Count);
-
-                foreach (StorageForPawn l in StoredApparelContainer.StoredApparelSets.Values)
+                this.tempPawnOutfits = new List<PawnOutfits>(PawnOutfits.Count);
+                foreach (PawnOutfits po in PawnOutfits.Values)
                 {
-                    if (l.HasSets())
-                    {
-                        this.stores.Add(l);
-                    }
+                    this.tempPawnOutfits.Add(po);
                 }
             }
 
-            Scribe_Collections.Look(ref this.stores, "apparelSets", LookMode.Deep, new object[0]);
-            //Scribe_Collections.Look(ref removedApparelIds, "removedApparelIds", LookMode.Deep, new object[0]);
-            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            Scribe_Collections.Look(ref this.tempPawnOutfits, "pawnOutfits", LookMode.Deep, new object[0]);
+
+            if (Scribe.mode == LoadSaveMode.PostLoadInit &&
+                this.tempPawnOutfits != null)
             {
-                StoredApparelContainer.Clear();
-#if DEBUG
-                Log.Warning("WorldComp: stores count: " + this.stores.Count);
-#endif
-                if (stores != null)
+                foreach (PawnOutfits po in this.tempPawnOutfits)
                 {
-#if DEBUG
-                    Log.Warning("WorldComp: Loading StorageForPawn: " + stores.Count);
-#endif
-                    foreach (StorageForPawn s in this.stores)
-                    {
-#if DEBUG
-                        Log.Warning("WorldComp: Loading StorageForPawn: " + s.ToString());
-#endif
-                        StoredApparelContainer.Add(s);
-                    }
+                    PawnOutfits.Add(po.Pawn, po);
                 }
-#if DEBUG
-                else
-                {
-                    Log.Warning("WorldComp: Loading StorageForPawn: null");
-                }
-#endif
-                this.stores.Clear();
-                this.stores = null;
+            }
+
+            if (this.tempPawnOutfits != null &&
+                (Scribe.mode == LoadSaveMode.Saving ||
+                 Scribe.mode == LoadSaveMode.PostLoadInit))
+            {
+                this.tempPawnOutfits.Clear();
+                this.tempPawnOutfits = null;
             }
         }
     }

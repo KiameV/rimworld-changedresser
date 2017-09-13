@@ -19,6 +19,13 @@ namespace ChangeDresser
 
         public static readonly List<CurrentEditorEnum> SupportedEditors = new List<CurrentEditorEnum>(3);
 
+        public const StoragePriority DefaultStoragePriority = StoragePriority.Low;
+
+        private StoredApparel StoredApparel = new StoredApparel();
+        public bool UseInApparelLookup = false;
+
+        private Map CurrentMap { get; set; }
+
         static Building_Dresser()
         {
             SupportedEditors.Add(CurrentEditorEnum.ChangeDresserApparelColor);
@@ -26,10 +33,15 @@ namespace ChangeDresser
             SupportedEditors.Add(CurrentEditorEnum.ChangeDresserBody);
         }
 
-        public const StoragePriority DefaultStoragePriority = StoragePriority.Low;
+        public void AddApparel(Apparel a)
+        {
+            this.StoredApparel.AddApparel(a);
+        }
 
-        private List<Apparel> toredApparel = new List<Apparel>();
-        private Map CurrentMap { get; set; }
+        public bool TryRemoveBestApparel(ThingDef def, ThingFilter filter, out Apparel apparel)
+        {
+            return this.StoredApparel.TryRemoveBestApparel(def, filter, out apparel);
+        }
 
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
@@ -96,22 +108,22 @@ namespace ChangeDresser
         {
             try
             {
-                if (this.toredApparel != null)
+                if (this.StoredApparel != null)
                 {
-                    DropApparel(this.toredApparel);
-                    this.toredApparel.Clear();
+                    this.DropApparel(this.StoredApparel.Apparel);
+                    this.StoredApparel.Clear();
                 }
             }
             catch (Exception e)
             {
                 Log.Error(
-                    "ChangeDresser:Building_Dresser.Dispose\n" + 
-                    e.GetType().Name + " " + e.Message + "\n" + 
+                    "ChangeDresser:Building_Dresser.Dispose\n" +
+                    e.GetType().Name + " " + e.Message + "\n" +
                     e.StackTrace);
             }
-}
+        }
 
-        private void DropApparel(List<Apparel> apparel, bool makeForbidden = true)
+        private void DropApparel(IEnumerable<Apparel> apparel, bool makeForbidden = true)
         {
             try
             {
@@ -132,7 +144,7 @@ namespace ChangeDresser
             }
         }
 
-        private System.Random random = null;
+        private Random random = null;
         private void DropThing(Thing a, bool makeForbidden = true)
         {
             try
@@ -180,54 +192,29 @@ namespace ChangeDresser
             }
 
             Apparel a = (Apparel)newItem;
-            //if (!WorldComp.IsAssignedApparel(a))
-            //{
-                base.Notify_ReceivedThing(newItem);
-                if (!this.StoredApparel.Contains(a))
+            base.Notify_ReceivedThing(a);
+            if (!this.StoredApparel.Contains(a))
+            {
+                if (newItem.Spawned)
                 {
-                    if (newItem.Spawned)
-                        newItem.DeSpawn();
-                    this.StoredApparel.Add((Apparel)newItem);
+                    newItem.DeSpawn();
                 }
-            //}
+                this.StoredApparel.AddApparel(a);
+            }
         }
 
         public override void ExposeData()
         {
             base.ExposeData();
 
-            Scribe_Collections.Look(ref this.toredApparel, "storedApparel", LookMode.Deep, new object[0]);
+            Scribe_Deep.Look(ref this.StoredApparel, "storedApparel", new object[0]);
+            Scribe_Values.Look(ref this.UseInApparelLookup, "useInApparelLookup", false, false);
 
-            /*if (Scribe.mode == LoadSaveMode.LoadingVars)
+            if (Scribe.mode == LoadSaveMode.PostLoadInit && 
+                this.UseInApparelLookup)
             {
-                if (sets != null && sets.Count > 0)
-                {
-                    foreach (StoredApparelSet set in sets)
-                    {
-                        set.SetParentDresser(this);
-                        StoredApparelContainer.AddApparelSet(set);
-                    }
-                }
+                WorldComp.AddDresser(this);
             }
-
-            if (Scribe.mode == LoadSaveMode.LoadingVars)
-            {
-                Scribe_Collections.Look(ref groups, "storageGroups", LookMode.Deep, new object[0]);
-                if (groups != null && groups.Count > 0)
-                {
-                    sets = this.GetStoredApparelSetsFromStorageGroupDTOs();
-                    groups.Clear();
-                    groups = null;
-                    if (sets != null && sets.Count > 0)
-                    {
-                        foreach (StoredApparelSet set in sets)
-                        {
-                            set.SetParentDresser(this);
-                            StoredApparelContainer.AddApparelSet(set);
-                        }
-                    }
-                }
-            }*/
         }
 
         public override string GetInspectString()
@@ -241,32 +228,38 @@ namespace ChangeDresser
             sb.Append("\n");
             sb.Append("ChangeDresser.ApparelCount".Translate());
             sb.Append(": ");
-            sb.Append(this.StoredApparel.Count);
+            sb.Append(this.Count);
+            sb.Append("\n");
+            sb.Append("ChangeDresser.UseInApparelLookup".Translate());
+            sb.Append(": ");
+            sb.Append(this.UseInApparelLookup.ToString());
             return sb.ToString();
         }
 
-        public List<Apparel> StoredApparel
+        public IEnumerable<Apparel> Apparel
         {
             get
             {
-                if (this.toredApparel == null)
-                    this.toredApparel = new List<Apparel>();
-                return this.toredApparel;
-            }
-            set
-            {
-                this.toredApparel = value;
-                if (this.toredApparel == null)
-                    this.toredApparel = new List<Apparel>();
+                return this.StoredApparel.Apparel;
             }
         }
+
+        public int Count { get { return this.StoredApparel.Count; } }
 
         public void Remove(Apparel a, bool forbidden = true)
         {
             try
             {
-                this.DropThing(a, forbidden);
-                this.StoredApparel.Remove(a);
+                if (this.StoredApparel.RemoveApparel(a))
+                {
+                    this.DropThing(a, forbidden);
+                }
+#if DEBUG
+                else
+                {
+                    Log.Error("Request to Remove " + a.ThingId + " failed. " + this.ThingId + " did not contain that apparel.");
+                }
+#endif
             }
             catch (Exception e)
             {
@@ -277,9 +270,9 @@ namespace ChangeDresser
             }
         }
 
-        public void RemoveNoDrop(Apparel a)
+        public bool RemoveNoDrop(Apparel a)
         {
-            this.StoredApparel.Remove(a);
+            return this.StoredApparel.RemoveApparel(a);
         }
 
         private readonly Stopwatch stopWatch = new Stopwatch();
@@ -288,23 +281,18 @@ namespace ChangeDresser
             try
             {
                 if (!this.stopWatch.IsRunning)
-                    this.stopWatch.Start();
-                else
                 {
-                    // Do this every minute
-                    if (this.stopWatch.ElapsedMilliseconds > 60000)
+                    this.stopWatch.Start();
+                }
+                // Do this every minute
+                else if (this.stopWatch.ElapsedMilliseconds > 60000)
+                {
+                    List<Apparel> removed = this.StoredApparel.RemoveFilteredApparel(this.settings.filter);
+                    foreach(Apparel a in removed)
                     {
-                        for (int i = this.StoredApparel.Count - 1; i >= 0; --i)
-                        {
-                            Apparel a = this.StoredApparel[i];
-                            if (!this.settings.filter.Allows(a))
-                            {
-                                this.DropThing(a, false);
-                                this.StoredApparel.RemoveAt(i);
-                            }
-                        }
-                        this.stopWatch.Reset();
+                        this.DropThing(a, false);
                     }
+                    this.stopWatch.Reset();
                 }
             }
             catch (Exception e)
@@ -357,6 +345,11 @@ namespace ChangeDresser
             return list;
         }
 
+        public Apparel FindBetterApparel(ref float baseApparelScore, Pawn pawn, Outfit currentOutfit)
+        {
+            return this.StoredApparel.FindBetterApparel(ref baseApparelScore, pawn, currentOutfit, this);
+        }
+
         public override IEnumerable<Gizmo> GetGizmos()
         {
             IEnumerable<Gizmo> enumerables = base.GetGizmos();
@@ -386,7 +379,7 @@ namespace ChangeDresser
             a.action = 
                 delegate
                 {
-                    this.DropApparel(this.StoredApparel, false);
+                    this.DropApparel(this.StoredApparel.Apparel, false);
                     this.StoredApparel.Clear();
                 };
             a.groupKey = groupKey + 1;
