@@ -142,5 +142,14 @@ namespace ChangeDresser.StoredApparel
             apparel = null;
             return false;
         }
+
+        public static void Notify_ApparelRemoved(Pawn pawn, Apparel apparel)
+        {
+            StorageForPawn s;
+            if (StoredApparelSets.TryGetValue(pawn.thingIDNumber, out s))
+            {
+                s.Notify_ApparelRemoved(apparel);
+            }
+        }
     }
 }

@@ -101,7 +101,10 @@ namespace ChangeDresser.StoredApparel
             Scribe_Values.Look<bool>(ref this.SwitchedFrom, "switchedFrom", false, false);
             Scribe_Values.Look<bool>(ref this.IsTemp, "isTemp", false, false);
             
-            Scribe_Collections.Look(ref this.Apparel, "apparel", LookMode.Reference, new object[0]);
+            if (IsTemp)
+                Scribe_Collections.Look(ref this.Apparel, "apparel", LookMode.Deep, new object[0]);
+            else
+                Scribe_Collections.Look(ref this.Apparel, "apparel", LookMode.Reference, new object[0]);
             Scribe_Collections.Look(ref this.ForcedApparel, "forcedApparel", LookMode.Deep, new object[0]);
         }
 
@@ -189,6 +192,11 @@ namespace ChangeDresser.StoredApparel
             }
             sb.Append(" | ");
             return sb.ToString();
+        }
+
+        public void Notify_ApparelRemoved(Apparel apparel)
+        {
+            this.Apparel.Remove(apparel);
         }
     }
 }

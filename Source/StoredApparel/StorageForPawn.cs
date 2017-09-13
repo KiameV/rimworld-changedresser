@@ -161,6 +161,15 @@ namespace ChangeDresser.StoredApparel
             }
         }
 
+        public void Notify_ApparelRemoved(Apparel apparel)
+        {
+            ApparelForPawn.Remove(apparel.thingIDNumber);
+            foreach (StoredApparelSet s in ApparelSets)
+            {
+                s.Notify_ApparelRemoved(apparel);
+            }
+        }
+
         public bool Remove(StoredApparelSet set, Building_Dresser dresser)
         {
             if (ApparelSets.Remove(set))
