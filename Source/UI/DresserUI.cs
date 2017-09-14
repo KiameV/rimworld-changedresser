@@ -30,6 +30,7 @@ using ChangeDresser.UI.Enums;
 using ChangeDresser.UI.DTO.SelectionWidgetDTOs;
 using System.Reflection;
 using System;
+using System.Collections.Generic;
 
 namespace ChangeDresser.UI
 {
@@ -44,6 +45,8 @@ namespace ChangeDresser.UI
         private bool saveChangedOnExit = false;
 
         private bool originalHatsHideSetting;
+
+        private List<Apparel> ApparelWithColorChange = new List<Apparel>();
 
         public DresserUI(DresserDTO dresserDto)
         {
@@ -175,6 +178,7 @@ namespace ChangeDresser.UI
                 if (Widgets.ButtonText(new Rect(0, 0, 60, WidgetUtil.SelectionRowHeight), "ChangeDresser.Reset".Translate()))
                 {
                     this.ResetToDefault();
+                    this.ApparelWithColorChange.Clear();
                 }
                 if (Widgets.ButtonText(new Rect(90, 0, 60, WidgetUtil.SelectionRowHeight), "ChangeDresser.Save".Translate()))
                 {
@@ -243,6 +247,9 @@ namespace ChangeDresser.UI
 
         public override void PreClose()
         {
+#if DEBUG
+            Log.Message(Environment.NewLine + "Start DresserUI.PreClose");
+#endif
             try
             {
                 base.PreClose();
@@ -257,6 +264,33 @@ namespace ChangeDresser.UI
                     IOUtil.SaveColorPresets(ColorPresetType.Hair, this.dresserDto.HairColorSelectionDto.ColorPresetsDTO);
                 }
 
+                if (this.ApparelWithColorChange != null)
+                {
+#if DEBUG
+                    Log.Warning(" this.ApparelWithColorChange.Count: " + this.ApparelWithColorChange.Count);
+#endif
+                    foreach(Apparel a in this.ApparelWithColorChange)
+                    {
+                        PawnOutfits po;
+                        if (WorldComp.PawnOutfits.TryGetValue(this.dresserDto.Pawn, out po))
+                        {
+#if DEBUG
+                            Log.Warning("  po found ");
+#endif
+                            foreach (ApparelLayer l in a.def.apparel.layers)
+                            {
+#if DEBUG
+                                Log.Warning("  color change for " + a.Label);
+#endif
+                                po.SetColorFor(l, a.DrawColor);
+                            }
+                        }
+                    }
+
+                    this.ApparelWithColorChange.Clear();
+                    this.ApparelWithColorChange = null;
+                }
+
                 if (!this.saveChangedOnExit)
                 {
                     this.ResetToDefault();
@@ -266,6 +300,9 @@ namespace ChangeDresser.UI
             {
                 Log.Error("Error on DresserUI.PreClose: " + e.GetType().Name + " " + e.Message);
             }
+#if DEBUG
+            Log.Message("End DresserUI.PreClose" + Environment.NewLine);
+#endif
         }
 
         private void UpdatePawn(object sender, object value)
@@ -278,6 +315,11 @@ namespace ChangeDresser.UI
                 {
                     ApparelColorSelectionDTO dto = (ApparelColorSelectionDTO)sender;
                     CompColorableUtility.SetColor(dto.Apparel, dto.SelectedColor, true);
+
+                    if (!this.ApparelWithColorChange.Contains(dto.Apparel))
+                    {
+                        this.ApparelWithColorChange.Add(dto.Apparel);
+                    }
                 }
                 if (sender is BodyTypeSelectionDTO)
                 {
