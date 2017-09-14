@@ -26,24 +26,47 @@ namespace ChangeDresser
 
         public static void SwapApparel(Pawn pawn, Outfit toWear)
         {
+#if DEBUG
+            Log.Message(
+                Environment.NewLine + 
+                "Start Main.SwapApparel Pawn: " + pawn.Name.ToStringShort + " toWear: " + toWear.label);
+#endif
             // Remove apparel from pawn
             List<Apparel> worn = new List<Apparel>(pawn.apparel.WornApparel);
             foreach (Apparel a in worn)
             {
                 pawn.apparel.Remove(a);
+#if DEBUG
+                Log.Warning(" Apparel " + a.LabelShort + " removed");
+#endif
 
                 bool handled = false;
                 foreach (Building_Dresser d in WorldComp.DressersToUse)
                 {
+#if DEBUG
+                    Log.Warning("  Dresser " + d.Label);
+#endif
                     if (d.settings.filter.Allows(a))
                     {
+#if DEBUG
+                        Log.Warning("   Does Handle");
+#endif
                         d.AddApparel(a);
                         handled = true;
                         break;
                     }
+#if DEBUG
+                    else
+                    {
+                        Log.Warning("   Does Not Handle");
+                    }
+#endif
                 }
                 if (!handled)
                 {
+#if DEBUG
+                    Log.Warning("  Apparel " + a.LabelShort + " was not handled");
+#endif
                     Thing t;
                     if (!a.Spawned)
                     {
@@ -55,22 +78,45 @@ namespace ChangeDresser
                     }
                 }
             }
-
             foreach (ThingDef def in toWear.filter.AllowedThingDefs)
             {
+#if DEBUG
+                Log.Warning("  Try Find Def " + def.label);
+#endif
                 if (pawn.apparel.CanWearWithoutDroppingAnything(def))
                 {
+#if DEBUG
+                    Log.Warning("   Can wear");
+#endif
                     foreach (Building_Dresser d in WorldComp.DressersToUse)
                     {
+#if DEBUG
+                        Log.Warning("   Check dresser " + d.Label);
+#endif
                         Apparel apparel;
                         if (d.TryRemoveBestApparel(def, toWear.filter, out apparel))
                         {
+#if DEBUG
+                            Log.Warning("    Found " + apparel.LabelShort);
+#endif
                             pawn.apparel.Wear(apparel);
                             break;
                         }
+#if DEBUG
+                        else
+                            Log.Warning("    No matching apparel found");
+#endif
                     }
                 }
+#if DEBUG
+                else
+                    Log.Warning("  Can't wear");
+#endif
             }
+            pawn.outfits.CurrentOutfit = toWear;
+#if DEBUG
+            Log.Message("End Main.SwapApparel" + Environment.NewLine);
+#endif
         }
     }
 
@@ -79,12 +125,11 @@ namespace ChangeDresser
     {
 #if DEBUG
         private static int i = 0;
-        private static readonly int WAIT = 4000;
+        private static readonly int WAIT = 1000;
 #endif
-        static void Postfix(Pawn_DraftController __instance, ref IEnumerable<Gizmo> __result)
+        static void Postfix(Pawn __instance, ref IEnumerable<Gizmo> __result)
         {
-            Pawn pawn = __instance.pawn;
-            if (!pawn.Drafted)
+            if (!__instance.Drafted)
             {
 #if DEBUG
                 ++i;
@@ -92,20 +137,21 @@ namespace ChangeDresser
                     Log.Warning("DraftController.Postfix: Pawn is Drafted");
 #endif
                 PawnOutfits outfits;
-                if (WorldComp.PawnOutfits.TryGetValue(pawn, out outfits))
+                if (WorldComp.PawnOutfits.TryGetValue(__instance, out outfits))
                 {
                     List<Gizmo> l = new List<Gizmo>(__result);
 #if DEBUG
                     if (i == WAIT)
                         Log.Warning("DraftController.Postfix: Sets found! Pre Gizmo Count: " + l.Count);
 #endif
-                    foreach (OutfitType o in outfits.OutfitTypes)
+                    foreach (Outfit o in outfits.Outfits)
                     {
+                        bool forBattle = WorldComp.OutfitsForBattle.Contains(o);
 #if DEBUG
                         if (i == WAIT)
-                            Log.Warning("DraftController.Postfix: Set: " + s.Name + ", forBattle: " + s.ForBattle + ", isBeingWorn: " + s.IsBeingWorn);
+                            Log.Warning("DraftController.Postfix: Set: " + o.label + ", forBattle: " + forBattle + ", Cuurent Oufit: " + __instance.outfits.CurrentOutfit.label);
 #endif
-                        if (!o.ForBattle && !pawn.outfits.CurrentOutfit.Equals(o.Outfit))
+                        if (!forBattle && !__instance.outfits.CurrentOutfit.Equals(o))
                         {
                             Command_Action a = new Command_Action();
                             /*string texPath = "";
@@ -113,16 +159,16 @@ namespace ChangeDresser
                             {
                                 a.icon = ContentFinder<UnityEngine.Texture2D>.Get(texPath, true);
                             }*/
-                            a.icon = ContentFinder<UnityEngine.Texture2D>.Get(new List<ThingDef>(o.Outfit.filter.AllowedThingDefs)[0].graphicData.texPath, true);
+                            a.icon = ContentFinder<UnityEngine.Texture2D>.Get(new List<ThingDef>(o.filter.AllowedThingDefs)[0].graphicData.texPath, true);
                             StringBuilder sb = new StringBuilder("ChangeDresser.ChangeTo".Translate());
                             sb.Append(" ");
-                            sb.Append(o.Outfit.label);
+                            sb.Append(o.label);
                             a.defaultLabel = sb.ToString();
                             a.defaultDesc = "ChangeDresser.ChangeToDesc";
                             a.activateSound = SoundDef.Named("Click");
                             a.action = delegate
                             {
-                                Main.SwapApparel(pawn, o.Outfit);
+                                Main.SwapApparel(__instance, o);
                             };
                             l.Add(a);
                         }
@@ -153,7 +199,7 @@ namespace ChangeDresser
     {
 #if DEBUG
         private static int i = 0;
-        private static readonly int WAIT = 4000;
+        private static readonly int WAIT = 1000;
 #endif
         static void Postfix(Pawn_DraftController __instance, ref IEnumerable<Gizmo> __result)
         {
@@ -173,13 +219,14 @@ namespace ChangeDresser
                     if (i == WAIT)
                         Log.Warning("DraftController.Postfix: Sets found! Pre Gizmo Count: " + l.Count);
 #endif
-                    foreach (OutfitType o in outfits.OutfitTypes)
+                    foreach (Outfit o in outfits.Outfits)
                     {
+                        bool forBattle = WorldComp.OutfitsForBattle.Contains(o);
 #if DEBUG
                         if (i == WAIT)
-                            Log.Warning("DraftController.Postfix: Set: " + s.Name + ", forBattle: " + s.ForBattle + ", isBeingWorn: " + s.IsBeingWorn);
+                            Log.Warning("DraftController.Postfix: Set: " + o.label + ", forBattle: " + forBattle + ", Current Oufit: " + pawn.outfits.CurrentOutfit.label);
 #endif
-                        if (o.ForBattle && !pawn.outfits.CurrentOutfit.Equals(o.Outfit))
+                        if (forBattle && !pawn.outfits.CurrentOutfit.Equals(o))
                         {
                             Command_Action a = new Command_Action();
                             /*string texPath = "";
@@ -187,16 +234,16 @@ namespace ChangeDresser
                             {
                                 a.icon = ContentFinder<UnityEngine.Texture2D>.Get(texPath, true);
                             }*/
-                            a.icon = ContentFinder<UnityEngine.Texture2D>.Get(new List<ThingDef>(o.Outfit.filter.AllowedThingDefs)[0].graphicData.texPath, true);
+                            a.icon = ContentFinder<UnityEngine.Texture2D>.Get(new List<ThingDef>(o.filter.AllowedThingDefs)[0].graphicData.texPath, true);
                             StringBuilder sb = new StringBuilder("ChangeDresser.ChangeTo".Translate());
                             sb.Append(" ");
-                            sb.Append(o.Outfit.label);
+                            sb.Append(o.label);
                             a.defaultLabel = sb.ToString();
                             a.defaultDesc = "ChangeDresser.ChangeToDesc";
                             a.activateSound = SoundDef.Named("Click");
                             a.action = delegate
                             {
-                                Main.SwapApparel(pawn, o.Outfit);
+                                Main.SwapApparel(pawn, o);
                             };
                             l.Add(a);
                         }

@@ -22,7 +22,7 @@ namespace ChangeDresser
         public const StoragePriority DefaultStoragePriority = StoragePriority.Low;
 
         private StoredApparel StoredApparel = new StoredApparel();
-        public bool UseInApparelLookup = false;
+        private bool useInApparelLookup = false;
 
         private Map CurrentMap { get; set; }
 
@@ -38,9 +38,49 @@ namespace ChangeDresser
             this.StoredApparel.AddApparel(a);
         }
 
+        internal bool TryRemoveApparel(ThingDef def, out Apparel apparel)
+        {
+            return this.StoredApparel.TryRemoveApparel(def, out apparel);
+        }
+
         public bool TryRemoveBestApparel(ThingDef def, ThingFilter filter, out Apparel apparel)
         {
             return this.StoredApparel.TryRemoveBestApparel(def, filter, out apparel);
+        }
+
+        public bool UseInApparelLookup
+        {
+            get
+            {
+                return this.useInApparelLookup;
+            }
+            set
+            {
+#if DEBUG
+                Log.Warning("Building_Dresser.UseInApparelLookup.Set useInApparelLookup: " + value);
+#endif
+                if (this.useInApparelLookup != value)
+                {
+#if DEBUG
+                    Log.Warning(" useInApparelLookup changed");
+#endif
+                    this.useInApparelLookup = value;
+                    if (this.useInApparelLookup)
+                    {
+                        WorldComp.DressersToUse.Add(this);
+#if DEBUG
+                        Log.Warning(" added to WorldComp.DressersToUse. Count: " + WorldComp.DressersToUse.Count);
+#endif
+                    }
+                    else
+                    {
+                        WorldComp.DressersToUse.Remove(this);
+#if DEBUG
+                        Log.Warning(" removed from WorldComp.DressersToUse. Count: " + WorldComp.DressersToUse.Count);
+#endif
+                    }
+                }
+            }
         }
 
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
@@ -203,18 +243,68 @@ namespace ChangeDresser
             }
         }
 
+        private List<Apparel> tempApparelList = null;
         public override void ExposeData()
         {
+#if DEBUG
+            Log.Message("Start Building_Dresser.ExposeData mode: " + Scribe.mode);
+#endif
             base.ExposeData();
 
-            Scribe_Deep.Look(ref this.StoredApparel, "storedApparel", new object[0]);
-            Scribe_Values.Look(ref this.UseInApparelLookup, "useInApparelLookup", false, false);
+            bool useInLookup = this.UseInApparelLookup;
+            Scribe_Values.Look(ref useInLookup, "useInApparelLookup", false, false);
+            this.UseInApparelLookup = useInLookup;
 
-            if (Scribe.mode == LoadSaveMode.PostLoadInit && 
-                this.UseInApparelLookup)
+            if (Scribe.mode == LoadSaveMode.Saving)
             {
-                WorldComp.AddDresser(this);
+                this.tempApparelList = new List<Apparel>(this.StoredApparel.Apparel);
             }
+
+#if DEBUG
+            Log.Message(" Scribe_Collections.Look tempApparelList");
+#endif
+            Scribe_Collections.Look(ref this.tempApparelList, "apparel", LookMode.Deep, new object[0]);
+#if DEBUG
+            if (this.tempApparelList != null)
+                Log.Message(" tempApparelList Count: " + this.tempApparelList.Count);
+            else
+                Log.Message(" StempApparelList is null");
+#endif
+            if (this.tempApparelList != null &&
+                Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+#if DEBUG
+                Log.Message(" tempApparelList != null && PostLoadInit");
+#endif
+                foreach (Apparel apparel in this.tempApparelList)
+                {
+                    if (apparel != null)
+                    {
+                        this.StoredApparel.AddApparel(apparel);
+                    }
+                }
+            }
+
+            if (this.tempApparelList != null &&
+                (Scribe.mode == LoadSaveMode.Saving ||
+                 Scribe.mode == LoadSaveMode.PostLoadInit))
+            {
+#if DEBUG
+                StringBuilder sb = new StringBuilder(" Saving or PostLoadInit - Count: " + this.StoredApparel.Count);
+                foreach (Apparel a in this.StoredApparel.Apparel)
+                {
+                    sb.Append(", ");
+                    sb.Append(a.LabelShort);
+                }
+                Log.Warning(sb.ToString());
+#endif
+                this.tempApparelList.Clear();
+                this.tempApparelList = null;
+            }
+
+#if DEBUG
+            Log.Message("End Building_Dresser.ExposeData");
+#endif
         }
 
         public override string GetInspectString()
@@ -257,7 +347,7 @@ namespace ChangeDresser
 #if DEBUG
                 else
                 {
-                    Log.Error("Request to Remove " + a.ThingId + " failed. " + this.ThingId + " did not contain that apparel.");
+                    Log.Error("Request to Remove " + a.Label + " failed. " + this.Label + " did not contain that apparel.");
                 }
 #endif
             }
@@ -364,10 +454,10 @@ namespace ChangeDresser
 
             Command_Action a = new Command_Action();
             a.icon = ContentFinder<UnityEngine.Texture2D>.Get("UI/manageapparel", true);
-            a.defaultDesc = "ChangeDresser.AssignApparelDesc".Translate();
-            a.defaultLabel = "ChangeDresser.AssignApparel".Translate();
+            a.defaultDesc = "ChangeDresser.AssignOutfitsDesc".Translate();
+            a.defaultLabel = "ChangeDresser.AssignOutfits".Translate();
             a.activateSound = SoundDef.Named("Click");
-            a.action = delegate { Find.WindowStack.Add(new UI.StorageGroupUI(this)); };
+            a.action = delegate { Find.WindowStack.Add(new UI.AssignOutfitUI(this)); };
             a.groupKey = groupKey;
             l.Add(a);
 

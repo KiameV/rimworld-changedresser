@@ -26,8 +26,7 @@
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>D:\Steam\steamapps\common\RimWorld\Mods\ChangeDresser\Assemblies\</OutputPath>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -59,11 +58,11 @@
     <Compile Include="Components.cs" />
     <Compile Include="DresserJobDriver\JobDriver_WearApparelFromStorage.cs" />
     <Compile Include="Main.cs" />
-    <Compile Include="OutfitType.cs" />
     <Compile Include="PawnOutfits.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="StoredApparel.cs" />
+    <Compile Include="UI\AssignOutfitUI.cs" />
     <Compile Include="UI\DresserUI.cs" />
     <Compile Include="UI\DTO\ColorPresetsDTO.cs" />
     <Compile Include="UI\DTO\DresserDTO.cs" />
