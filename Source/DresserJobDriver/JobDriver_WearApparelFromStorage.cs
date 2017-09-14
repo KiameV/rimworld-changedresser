@@ -40,16 +40,11 @@ namespace ChangeDresser.DresserJobDriver
                     Building_Dresser dresser = (Building_Dresser)this.TargetA.Thing;
                     Pawn pawn = this.GetActor();
 
-                    string lookForId = this.TargetB.Thing.ThingID;
-                    for (int i = 0; i < dresser.StoredApparel.Count; ++i)
+                    Thing t = this.TargetB.Thing;
+                    Apparel a;
+                    if (dresser.TryRemoveApparel(t.def, out a))
                     {
-                        Apparel a = dresser.StoredApparel[i];
-                        if (lookForId.Equals(a.ThingID))
-                        {
-                            pawn.apparel.Wear(a, true);
-                            dresser.StoredApparel.RemoveAt(i);
-                            break;
-                        }
+                        pawn.apparel.Wear(a, true);
                     }
                 }
             };

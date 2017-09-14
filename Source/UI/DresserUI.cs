@@ -261,8 +261,6 @@ namespace ChangeDresser.UI
                 {
                     this.ResetToDefault();
                 }
-
-                StorageGroupUI.ClearPlayerPawns();
             }
             catch (Exception e)
             {

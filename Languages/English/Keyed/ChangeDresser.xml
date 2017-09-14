@@ -6,8 +6,8 @@
 	<ChangeDresser.ApparelStorageLabel>Apparel Storage</ChangeDresser.ApparelStorageLabel>
 	
 	<!-- Gizmo (Command Button) -->
-	<ChangeDresser.AssignApparel>Assign Apparel</ChangeDresser.AssignApparel>
-	<ChangeDresser.AssignAppareDescl>Assign apparel groups to Pawns.</ChangeDresser.AssignAppareDescl>
+	<ChangeDresser.AssignOutfits>Assign Outfits</ChangeDresser.AssignOutfits>
+	<ChangeDresser.AssignOutfitsDesc>Assign Outfits to Pawns for both battle and civilian needs.</ChangeDresser.AssignOutfitsDesc>
 	<ChangeDresser.Empty>Empty</ChangeDresser.Empty>
 	<ChangeDresser.EmptyDesc>Empty the dresser's contents. Does not include storage group apparel.</ChangeDresser.EmptyDesc>
 	<ChangeDresser.ChangeTo>Change To</ChangeDresser.ChangeTo>
@@ -38,12 +38,10 @@
 	<ChangeDresser.AgeBiological>Biological Age</ChangeDresser.AgeBiological>
 	<ChangeDresser.AgeChronological>Chronological Age</ChangeDresser.AgeChronological>
 		
-	<!-- Apparel Group UI -->
-	<ChangeDresser.ApparelGroupOwner>Owner</ChangeDresser.ApparelGroupOwner>
-	<ChangeDresser.ApparelGroupName>Group Name</ChangeDresser.ApparelGroupName>
-	<ChangeDresser.AssignedApparel>Assigned Apparel</ChangeDresser.AssignedApparel>
-	<ChangeDresser.ForCombat>For Combat</ChangeDresser.ForCombat>
-	<ChangeDresser.CreateNew>New...</ChangeDresser.CreateNew>
+	<!-- Assign Outfits UI -->
+	<ChangeDresser.UseAsApparelSource>Use Apparel From This Dresser</ChangeDresser.UseAsApparelSource>
+	<ChangeDresser.ManageOutfits>Manage Outfits</ChangeDresser.ManageOutfits>
+	<ChangeDresser.UseForBattle>Use In Battle</ChangeDresser.UseForBattle>
 	
 	<!-- Game UI -->
 	<ChangeDresser.StoragePriority>Storage Priority</ChangeDresser.StoragePriority>

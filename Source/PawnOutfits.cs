@@ -6,7 +6,7 @@ namespace ChangeDresser
 {
     class PawnOutfits : IExposable
     {
-        public List<OutfitType> OutfitTypes = new List<OutfitType>();
+        public List<Outfit> Outfits = new List<Outfit>();
         public Pawn Pawn = null;
 
         private Outfit lastBattleOutfit = null;
@@ -22,11 +22,11 @@ namespace ChangeDresser
                 outfit = this.lastBattleOutfit;
                 return true;
             }
-            foreach (OutfitType o in this.OutfitTypes)
+            foreach (Outfit o in this.Outfits)
             {
-                if (o.ForBattle)
+                if (WorldComp.OutfitsForBattle.Contains(o))
                 {
-                    outfit = o.Outfit;
+                    outfit = o;
                     return true;
                 }
             }
@@ -41,11 +41,11 @@ namespace ChangeDresser
                 outfit = this.lastCivilianOutfit;
                 return true;
             }
-            foreach (OutfitType o in this.OutfitTypes)
+            foreach (Outfit o in this.Outfits)
             {
-                if (o.ForBattle)
+                if (!WorldComp.OutfitsForBattle.Contains(o))
                 {
-                    outfit = o.Outfit;
+                    outfit = o;
                     return true;
                 }
             }
@@ -56,14 +56,14 @@ namespace ChangeDresser
         public void ExposeData()
         {
             Scribe_References.Look(ref this.Pawn, "pawn");
-            Scribe_Collections.Look(ref this.OutfitTypes, "outfitTypes", LookMode.Deep, new object[0]);
+            Scribe_Collections.Look(ref this.Outfits, "outfits", LookMode.Reference, new object[0]);
             Scribe_References.Look(ref this.lastBattleOutfit, "lastBattleOutfit");
             Scribe_References.Look(ref this.lastCivilianOutfit, "lastCivilianOutfit");
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit &&
-                this.OutfitTypes == null)
+                this.Outfits == null)
             {
-                this.OutfitTypes = new List<OutfitType>(0);
+                this.Outfits = new List<Outfit>(0);
             }
         }
     }

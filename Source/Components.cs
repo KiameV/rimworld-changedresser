@@ -1,4 +1,5 @@
-﻿using RimWorld.Planet;
+﻿using RimWorld;
+using RimWorld.Planet;
 using System.Collections.Generic;
 using Verse;
 
@@ -8,6 +9,7 @@ namespace ChangeDresser
     {
         public static List<Building_Dresser> DressersToUse { get; private set; }
         public static Dictionary<Pawn, PawnOutfits> PawnOutfits { get; private set; }
+        public static List<Outfit> OutfitsForBattle { get; private set; }
 
         public WorldComp(World world) : base(world)
         {
@@ -15,13 +17,28 @@ namespace ChangeDresser
             {
                 DressersToUse.Clear();
             }
-            DressersToUse = new List<Building_Dresser>();
+            else
+            {
+                DressersToUse = new List<Building_Dresser>();
+            }
 
             if (PawnOutfits != null)
             {
                 PawnOutfits.Clear();
             }
-            PawnOutfits = new Dictionary<Pawn, PawnOutfits>();
+            else
+            {
+                PawnOutfits = new Dictionary<Pawn, PawnOutfits>();
+            }
+
+            if (OutfitsForBattle != null)
+            {
+                OutfitsForBattle.Clear();
+            }
+            else
+            {
+                OutfitsForBattle = new List<Outfit>();
+            }
         }
 
         public static void AddDresser(Building_Dresser dresser)
@@ -58,12 +75,31 @@ namespace ChangeDresser
 
             Scribe_Collections.Look(ref this.tempPawnOutfits, "pawnOutfits", LookMode.Deep, new object[0]);
 
+            List<Outfit> ofb = OutfitsForBattle;
+            Scribe_Collections.Look(ref ofb, "outfitsForBattle", LookMode.Reference, new object[0]);
+            OutfitsForBattle = ofb;
+
             if (Scribe.mode == LoadSaveMode.PostLoadInit &&
                 this.tempPawnOutfits != null)
             {
                 foreach (PawnOutfits po in this.tempPawnOutfits)
                 {
-                    PawnOutfits.Add(po.Pawn, po);
+                    if (po != null)
+                    {
+                        PawnOutfits.Add(po.Pawn, po);
+                    }
+                }
+                for (int i = OutfitsForBattle.Count - 1; i >= 0; --i)
+                {
+                    if (OutfitsForBattle[i] == null)
+                    {
+                        OutfitsForBattle.RemoveAt(i);
+                    }
+                }
+
+                if (PawnOutfits == null)
+                {
+                    PawnOutfits = new Dictionary<Pawn, PawnOutfits>();
                 }
             }
 
