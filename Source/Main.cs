@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using UnityEngine;
 using Verse;
 using Verse.AI;
 
@@ -356,20 +357,44 @@ namespace ChangeDresser
         }
     }
 
-    /*[HarmonyPatch(typeof(Pawn_ApparelTracker), "Notify_ApparelAdded")]
+    [HarmonyPatch(typeof(Pawn_ApparelTracker), "Notify_ApparelAdded")]
     static class Patch_Pawn_ApparelTracker_Notify_ApparelAdded
     {
         static void Postfix(Pawn_ApparelTracker __instance, Apparel apparel)
         {
-            StoredApparelSet set;
-            if (StoredApparelContainer.TryGetWornApparelSet(__instance.pawn, out set))
+#if DEBUG
+            Log.Message(Environment.NewLine + "Start Pawn_ApparelTracker.Notify_ApparelAdded");
+#endif
+            PawnOutfits po;
+            if (WorldComp.PawnOutfits.TryGetValue(__instance.pawn, out po))
             {
-                set.Notify_ApparelChange(apparel);
+#if DEBUG
+                Log.Warning(" po found");
+#endif
+                Color c;
+                if (po.TryGetColorFor(apparel.def.apparel.LastLayer, out c))
+                {
+#if DEBUG
+                    Log.Warning(" assigned color for layer " + apparel.def.apparel.LastLayer);
+#endif
+                    CompColorableUtility.SetColor(apparel, c, true);
+                    __instance.pawn.Drawer.renderer.graphics.ResolveAllGraphics();
+                    PortraitsCache.SetDirty(__instance.pawn);
+                }
+#if DEBUG
+                else
+                {
+                    Log.Warning(" no assigned color for layer " + apparel.def.apparel.LastLayer);
+                }
+#endif
             }
+#if DEBUG
+            Log.Message("End Pawn_ApparelTracker.Notify_ApparelAdded" + Environment.NewLine);
+#endif
         }
     }
 
-    [HarmonyPatch(typeof(Pawn_ApparelTracker), "Notify_ApparelRemoved")]
+    /*[HarmonyPatch(typeof(Pawn_ApparelTracker), "Notify_ApparelRemoved")]
     static class Patch_Pawn_ApparelTracker_Notify_ApparelRemoved
     {
         static void Postfix(Pawn_ApparelTracker __instance, Apparel apparel)

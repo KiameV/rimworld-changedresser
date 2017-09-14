@@ -42,7 +42,6 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
             {
                 this.ApparelColorSelections.Add(new ApparelColorSelectionDTO(a));
             }
-
             this.SelectedApparel = new List<SelectionColorWidgetDTO>();
             this.ColorPresetsDTO = presetsDto;
             this.CopyColorSelected = false;

@@ -179,7 +179,7 @@ namespace ChangeDresser
                 for (LinkedListNode<Apparel> n = l.First; n != null; n = n.Next)
                 {
 #if DEBUG
-                    Log.Message("Apparel " + n.Value.Label);
+                    Log.Warning("Apparel " + n.Value.Label);
 #endif
                     try
                     {
@@ -195,7 +195,7 @@ namespace ChangeDresser
                         }
 #if DEBUG
                         else
-                            Log.Message("Filter rejected");
+                            Log.Warning("Filter rejected");
 #endif
                     }
                     catch

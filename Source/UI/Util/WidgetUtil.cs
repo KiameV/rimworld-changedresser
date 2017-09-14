@@ -154,6 +154,7 @@ namespace ChangeDresser.UI.Util
             {
                 rgbColor = selectionDtos[0].SelectedColor;
             }
+
             GUI.Label(new Rect(0f, 0f, 10f, 20f), "ChangeDresser.R".Translate(), MiddleCenter);
             string rText = GUI.TextField(new Rect(12f, 0f, 30f, 20f), ColorConvert(rgbColor.r), 3);
 

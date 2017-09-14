@@ -247,7 +247,7 @@ namespace ChangeDresser
         public override void ExposeData()
         {
 #if DEBUG
-            Log.Message("Start Building_Dresser.ExposeData mode: " + Scribe.mode);
+            Log.Warning(Environment.NewLine + "Start Building_Dresser.ExposeData mode: " + Scribe.mode);
 #endif
             base.ExposeData();
 
@@ -261,20 +261,20 @@ namespace ChangeDresser
             }
 
 #if DEBUG
-            Log.Message(" Scribe_Collections.Look tempApparelList");
+            Log.Warning(" Scribe_Collections.Look tempApparelList");
 #endif
             Scribe_Collections.Look(ref this.tempApparelList, "apparel", LookMode.Deep, new object[0]);
 #if DEBUG
             if (this.tempApparelList != null)
-                Log.Message(" tempApparelList Count: " + this.tempApparelList.Count);
+                Log.Warning(" tempApparelList Count: " + this.tempApparelList.Count);
             else
-                Log.Message(" StempApparelList is null");
+                Log.Warning(" StempApparelList is null");
 #endif
             if (this.tempApparelList != null &&
                 Scribe.mode == LoadSaveMode.PostLoadInit)
             {
 #if DEBUG
-                Log.Message(" tempApparelList != null && PostLoadInit");
+                Log.Warning(" tempApparelList != null && PostLoadInit");
 #endif
                 foreach (Apparel apparel in this.tempApparelList)
                 {
@@ -303,7 +303,7 @@ namespace ChangeDresser
             }
 
 #if DEBUG
-            Log.Message("End Building_Dresser.ExposeData");
+            Log.Message("End Building_Dresser.ExposeData" + Environment.NewLine);
 #endif
         }
 
