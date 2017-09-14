@@ -320,7 +320,7 @@ namespace ChangeDresser
             sb.Append(": ");
             sb.Append(this.Count);
             sb.Append("\n");
-            sb.Append("ChangeDresser.UseInApparelLookup".Translate());
+            sb.Append("ChangeDresser.UseAsApparelSource".Translate());
             sb.Append(": ");
             sb.Append(this.UseInApparelLookup.ToString());
             return sb.ToString();
