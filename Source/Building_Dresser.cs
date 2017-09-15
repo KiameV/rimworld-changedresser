@@ -454,11 +454,20 @@ namespace ChangeDresser
 
             Command_Action a = new Command_Action();
             a.icon = ContentFinder<UnityEngine.Texture2D>.Get("UI/manageapparel", true);
+            a.defaultDesc = "ChangeDresser.ManageApparelDesc".Translate();
+            a.defaultLabel = "ChangeDresser.ManageApparel".Translate();
+            a.activateSound = SoundDef.Named("Click");
+            a.action = delegate { Find.WindowStack.Add(new UI.StorageUI(this, null)); };
+            a.groupKey = groupKey;
+            l.Add(a);
+
+            a = new Command_Action();
+            a.icon = ContentFinder<UnityEngine.Texture2D>.Get("UI/assignweapons", true);
             a.defaultDesc = "ChangeDresser.AssignOutfitsDesc".Translate();
             a.defaultLabel = "ChangeDresser.AssignOutfits".Translate();
             a.activateSound = SoundDef.Named("Click");
             a.action = delegate { Find.WindowStack.Add(new UI.AssignOutfitUI(this)); };
-            a.groupKey = groupKey;
+            a.groupKey = groupKey + 1;
             l.Add(a);
 
             a = new Command_Action();
@@ -472,7 +481,7 @@ namespace ChangeDresser
                     this.DropApparel(this.StoredApparel.Apparel, false);
                     this.StoredApparel.Clear();
                 };
-            a.groupKey = groupKey + 1;
+            a.groupKey = groupKey + 2;
             l.Add(a);
 
             return SaveStorageSettingsUtil.SaveStorageSettingsGizmoUtil.AddSaveLoadGizmos(l, SaveStorageSettingsUtil.SaveTypeEnum.Apparel_Management, this.settings.filter);

@@ -111,7 +111,7 @@ namespace ChangeDresser.UI
                         }
                         else
                         {
-                            WorldComp.OutfitsForBattle.Remove(o);
+                            bool removed = WorldComp.OutfitsForBattle.Remove(o);
                         }
                     }
                 }
@@ -156,43 +156,39 @@ namespace ChangeDresser.UI
             }
         }
 
-        private void HandleOutfitAssign(bool assign, Outfit previousOutfit, PawnOutfits po)
+        private void HandleOutfitAssign(bool assign, Outfit outfit, PawnOutfits po)
         {
             Pawn pawn = po.Pawn;
             if (assign)
             {
-                po.Outfits.Add(previousOutfit);
+                po.Outfits.Add(outfit);
             }
             else
             {
-                if (pawn.outfits.CurrentOutfit.Equals(previousOutfit))
+                po.Outfits.Remove(outfit);
+                if (pawn.outfits.CurrentOutfit.Equals(outfit))
                 {
-                    po.Outfits.Remove(previousOutfit);
-
                     Outfit newOutfit = null;
+                    bool newOutfitFound;
                     if (pawn.Drafted)
                     {
-                        if (!po.TryGetBattleOutfit(out newOutfit))
-                        {
-                            Messages.Message(
-                                pawn.NameStringShort + " will no longer wear " +
-                                previousOutfit.label + ". Could not find another Outfit for them to wear. Please fix this manually.", MessageSound.Standard);
-                        }
+                        newOutfitFound = !po.TryGetBattleOutfit(out newOutfit);
                     }
-                    else if (pawn.outfits.CurrentOutfit.Equals(previousOutfit))
+                    else
                     {
-                        if (!po.TryGetBattleOutfit(out newOutfit))
-                        {
-                            Messages.Message(
-                                pawn.NameStringShort + " will no longer wear " + previousOutfit.label +
-                                ". Could not find another Outfit for them to wear. Please fix this manually.", MessageSound.Standard);
-                        }
+                        newOutfitFound = !po.TryGetCivilianOutfit(out newOutfit);
                     }
 
-                    if (newOutfit != null)
+                    if (!newOutfitFound)
                     {
                         Messages.Message(
-                                pawn.NameStringShort + " will no longer wear " + previousOutfit.label +
+                                pawn.NameStringShort + " will no longer wear " + outfit.label +
+                                ". Could not find another Outfit for them to wear. Please fix this manually.", MessageSound.Standard);
+                    }
+                    else
+                    {
+                        Messages.Message(
+                                pawn.NameStringShort + " will no longer wear " + outfit.label +
                                 " and will instead be assigned to wear " + newOutfit.label, MessageSound.Standard);
                     }
                 }

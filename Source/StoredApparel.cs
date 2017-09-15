@@ -13,13 +13,23 @@ namespace ChangeDresser
 
         private readonly int UniqueId;
         private Dictionary<Def, LinkedList<Apparel>> StoredApparelLookup = new Dictionary<Def, LinkedList<Apparel>>();
-        public int Count { get; private set; }
+        public int Count
+        {
+            get
+            {
+                int count = 0;
+                foreach (LinkedList<Apparel> ll in this.StoredApparelLookup.Values)
+                {
+                    count += ll.Count;
+                }
+                return count;
+            }
+        }
 
         public StoredApparel()
         {
             this.UniqueId = ID;
             ++ID;
-            this.Count = 0;
         }
 
         public IEnumerable<Apparel> Apparel
@@ -54,6 +64,24 @@ namespace ChangeDresser
 
         private void AddApparelToLinkedList(Apparel apparel, LinkedList<Apparel> l)
         {
+            float score = JobGiver_OptimizeApparel.ApparelScoreRaw(null, apparel);
+            for (LinkedListNode<Apparel> n = l.First; n != null; n = n.Next)
+            {
+                float nScore = JobGiver_OptimizeApparel.ApparelScoreRaw(null, apparel);
+                if (score >= nScore)
+                {
+                    l.AddBefore(n, apparel);
+                    return;
+                }
+                else if (score < nScore)
+                {
+                    l.AddAfter(n, apparel);
+                    return;
+                }
+            }
+            l.AddLast(apparel);
+
+            /*
 #if TRACE
             Log.Message("Start StoredApparel.AddApparelToLinkedList");
             Log.Warning("Apparel: " + apparel.Label);
@@ -92,10 +120,10 @@ namespace ChangeDresser
                 }
                 l.AddLast(apparel);
             }
-            ++this.Count;
 #if TRACE
             Log.Message("End StoredApparel.AddApparelToLinkedList");
 #endif
+            */
         }
 
         public bool Contains(Apparel apparel)
@@ -126,7 +154,6 @@ namespace ChangeDresser
                 {
                     apparel = l.First.Value;
                     l.RemoveFirst();
-                    --this.Count;
                     return true;
                 }
             }
@@ -143,7 +170,6 @@ namespace ChangeDresser
                 {
                     apparel = l.First.Value;
                     l.RemoveFirst();
-                    --this.Count;
                     return true;
                 }
             }
@@ -156,11 +182,7 @@ namespace ChangeDresser
             LinkedList<Apparel> l;
             if (this.StoredApparelLookup.TryGetValue(apparel.def, out l))
             {
-                if (l.Remove(apparel))
-                {
-                    --this.Count;
-                    return true;
-                }
+                return l.Remove(apparel);
             }
             return false;
         }
@@ -187,7 +209,6 @@ namespace ChangeDresser
                         {
                             l.Remove(n);
                             apparel = n.Value;
-                            --this.Count;
 #if DEBUG
                             Log.Warning("Start StoredApparel.TryRemoveBestApperal Return: True Apparel:" + apparel.LabelShort + Environment.NewLine);
 #endif
@@ -242,15 +263,15 @@ namespace ChangeDresser
                     {
                         if (!apparel.IsForbidden(pawn))
                         {
-                            float newApparelScore = JobGiver_OptimizeApparel.ApparelScoreGain(pawn, apparel);
-                            if (newApparelScore >= 0.05f && newApparelScore >= baseApparelScore)
+                            float gain = JobGiver_OptimizeApparel.ApparelScoreGain(pawn, apparel);
+                            if (gain >= 0.05f && gain > baseApparelScore)
                             {
                                 if (ApparelUtility.HasPartsToWear(pawn, apparel.def))
                                 {
                                     if (ReservationUtility.CanReserveAndReach(pawn, dresser, PathEndMode.OnCell, pawn.NormalMaxDanger(), 1))
                                     {
                                         betterApparel = apparel;
-                                        baseApparelScore = newApparelScore;
+                                        baseApparelScore = gain;
                                     }
                                 }
                             }
