@@ -114,6 +114,7 @@ namespace ChangeDresser
                     Log.Warning("  Can't wear");
 #endif
             }
+
             pawn.outfits.CurrentOutfit = toWear;
 #if DEBUG
             Log.Message("End Main.SwapApparel" + Environment.NewLine);
@@ -152,7 +153,7 @@ namespace ChangeDresser
                         if (i == WAIT)
                             Log.Warning("DraftController.Postfix: Set: " + o.label + ", forBattle: " + forBattle + ", Cuurent Oufit: " + __instance.outfits.CurrentOutfit.label);
 #endif
-                        if (!forBattle && !__instance.outfits.CurrentOutfit.Equals(o))
+                        if (!forBattle)
                         {
                             Command_Action a = new Command_Action();
                             /*string texPath = "";
@@ -161,11 +162,20 @@ namespace ChangeDresser
                                 a.icon = ContentFinder<UnityEngine.Texture2D>.Get(texPath, true);
                             }*/
                             a.icon = ContentFinder<UnityEngine.Texture2D>.Get(new List<ThingDef>(o.filter.AllowedThingDefs)[0].graphicData.texPath, true);
-                            StringBuilder sb = new StringBuilder("ChangeDresser.ChangeTo".Translate());
+                            StringBuilder sb = new StringBuilder();
+                            if (!__instance.outfits.CurrentOutfit.Equals(o))
+                            {
+                                sb.Append("ChangeDresser.ChangeTo".Translate());
+                                a.defaultDesc = "ChangeDresser.ChangeToDesc".Translate();
+                            }
+                            else
+                            {
+                                sb.Append("ChangeDresser.Wearing".Translate());
+                                a.defaultDesc = "ChangeDresser.WearingDesc".Translate();
+                            }
                             sb.Append(" ");
                             sb.Append(o.label);
                             a.defaultLabel = sb.ToString();
-                            a.defaultDesc = "ChangeDresser.ChangeToDesc";
                             a.activateSound = SoundDef.Named("Click");
                             a.action = delegate
                             {
@@ -227,7 +237,7 @@ namespace ChangeDresser
                         if (i == WAIT)
                             Log.Warning("DraftController.Postfix: Set: " + o.label + ", forBattle: " + forBattle + ", Current Oufit: " + pawn.outfits.CurrentOutfit.label);
 #endif
-                        if (forBattle && !pawn.outfits.CurrentOutfit.Equals(o))
+                        if (forBattle)
                         {
                             Command_Action a = new Command_Action();
                             /*string texPath = "";
@@ -236,11 +246,20 @@ namespace ChangeDresser
                                 a.icon = ContentFinder<UnityEngine.Texture2D>.Get(texPath, true);
                             }*/
                             a.icon = ContentFinder<UnityEngine.Texture2D>.Get(new List<ThingDef>(o.filter.AllowedThingDefs)[0].graphicData.texPath, true);
-                            StringBuilder sb = new StringBuilder("ChangeDresser.ChangeTo".Translate());
+                            StringBuilder sb = new StringBuilder();
+                            if (!pawn.outfits.CurrentOutfit.Equals(o))
+                            {
+                                sb.Append("ChangeDresser.ChangeTo".Translate());
+                                a.defaultDesc = "ChangeDresser.ChangeToDesc".Translate();
+                            }
+                            else
+                            {
+                                sb.Append("ChangeDresser.Wearing".Translate());
+                                a.defaultDesc = "ChangeDresser.WearingDesc".Translate();
+                            }
                             sb.Append(" ");
                             sb.Append(o.label);
                             a.defaultLabel = sb.ToString();
-                            a.defaultDesc = "ChangeDresser.ChangeToDesc";
                             a.activateSound = SoundDef.Named("Click");
                             a.action = delegate
                             {
@@ -330,7 +349,7 @@ namespace ChangeDresser
                 float score = baseApparelScore;
                 Apparel a = dresser.FindBetterApparel(ref score, pawn, pawn.outfits.CurrentOutfit);
 
-                if (score > baseApparelScore)
+                if (score > baseApparelScore && a != null)
                 {
                     thing = a;
                     baseApparelScore = score;
@@ -360,11 +379,58 @@ namespace ChangeDresser
     [HarmonyPatch(typeof(Pawn_ApparelTracker), "Notify_ApparelAdded")]
     static class Patch_Pawn_ApparelTracker_Notify_ApparelAdded
     {
+        struct LastTimeAndTries
+        {
+            public int Tries;
+            public long LastTime;
+            public LastTimeAndTries(int tries, long lastTime)
+            {
+                this.Tries = tries;
+                this.LastTime = lastTime;
+            }
+        }
+        static Dictionary<Pawn, LastTimeAndTries> lastTimeAndTries = new Dictionary<Pawn, LastTimeAndTries>();
         static void Postfix(Pawn_ApparelTracker __instance, Apparel apparel)
         {
-#if DEBUG
+#if DEBUG || DEBUG_TRACKER
             Log.Message(Environment.NewLine + "Start Pawn_ApparelTracker.Notify_ApparelAdded");
 #endif
+            long now = DateTime.Now.Ticks;
+            LastTimeAndTries i;
+            if (lastTimeAndTries.TryGetValue(__instance.pawn, out i))
+            {
+                long delta = now - i.LastTime;
+                if (delta < TimeSpan.TicksPerMinute)
+                {
+                    if (i.Tries >= 8)
+                    {
+#if DEBUG || DEBUG_TRACKER
+                        Log.Warning(__instance.pawn.Name.ToStringShort + " reached the maximum number of tried in a minute");
+#endif
+                        return;
+                    }
+                    else // i.Tries < 8
+                    {
+#if DEBUG || DEBUG_TRACKER
+                        Log.Warning(__instance.pawn.Name.ToStringShort + " try count: " + i);
+#endif
+                        ++i.Tries;
+                    }
+                }
+                else
+                {
+#if DEBUG || DEBUG_TRACKER
+                    Log.Warning(__instance.pawn.Name.ToStringShort + " try reset");
+#endif
+                    i.Tries = 1;
+                    i.LastTime = now;
+                }
+            }
+            else
+            {
+                i = new LastTimeAndTries(1, now);
+            }
+
             PawnOutfits po;
             if (WorldComp.PawnOutfits.TryGetValue(__instance.pawn, out po))
             {
@@ -388,7 +454,7 @@ namespace ChangeDresser
                 }
 #endif
             }
-#if DEBUG
+#if DEBUG || DEBUG_TRACKER
             Log.Message("End Pawn_ApparelTracker.Notify_ApparelAdded" + Environment.NewLine);
 #endif
         }

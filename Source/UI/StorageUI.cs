@@ -58,48 +58,51 @@ namespace ChangeDresser.UI
 
                 Text.Font = GameFont.Small;
 
-                List<Apparel> wornApparel = this.Pawn.apparel.WornApparel;
-
-                GUI.Label(new Rect(0, 60, 100, 30), ("ChangeDresser.Worn").Translate(), WidgetUtil.MiddleCenter);
+                List<Apparel> wornApparel = (this.Pawn != null) ? this.Pawn.apparel.WornApparel : null;
 
                 const float cellHeight = 40f;
                 float apparelListWidth = inRect.width * 0.5f - 10f;
                 Rect apparelListRect;
                 Rect apparelScrollRect;
-                
-                apparelListRect = new Rect(0, 90, apparelListWidth, inRect.height - 130);
-                apparelScrollRect = new Rect(0f, 0f, apparelListWidth - 16f, wornApparel.Count * cellHeight);
 
-                GUI.BeginGroup(apparelListRect);
-                this.scrollPosLeft = GUI.BeginScrollView(new Rect(GenUI.AtZero(apparelListRect)), this.scrollPosLeft, apparelScrollRect);
-
-                GUI.color = Color.white;
-                Text.Font = GameFont.Medium;
-                for (int i = 0; i < wornApparel.Count; ++i)
+                if (wornApparel != null)
                 {
-                    Apparel apparel = wornApparel[i];
-                    Rect rowRect = new Rect(0, 2f + i * cellHeight, apparelListRect.width, cellHeight);
-                    GUI.BeginGroup(rowRect);
+                    GUI.Label(new Rect(0, 60, 100, 30), ("ChangeDresser.Worn").Translate(), WidgetUtil.MiddleCenter);
 
-                    Widgets.ThingIcon(new Rect(0f, 0f, cellHeight, cellHeight), apparel);
+                    apparelListRect = new Rect(0, 90, apparelListWidth, inRect.height - 130);
+                    apparelScrollRect = new Rect(0f, 0f, apparelListWidth - 16f, wornApparel.Count * cellHeight);
 
-                    Text.Font = GameFont.Small;
-                    Widgets.Label(new Rect(cellHeight + 5f, 0f, rowRect.width - 40f - cellHeight, cellHeight), apparel.Label);
+                    GUI.BeginGroup(apparelListRect);
+                    this.scrollPosLeft = GUI.BeginScrollView(new Rect(GenUI.AtZero(apparelListRect)), this.scrollPosLeft, apparelScrollRect);
 
                     GUI.color = Color.white;
-                    if (Widgets.ButtonImage(new Rect(rowRect.width - 35f, 10, 20, 20), WidgetUtil.nextTexture))
+                    Text.Font = GameFont.Medium;
+                    for (int i = 0; i < wornApparel.Count; ++i)
                     {
-                        this.Pawn.apparel.Remove(apparel);
-                        this.Dresser.AddApparel(apparel);
-                        this.cachedApparel.Clear();
-                        this.cachedApparel = null;
+                        Apparel apparel = wornApparel[i];
+                        Rect rowRect = new Rect(0, 2f + i * cellHeight, apparelListRect.width, cellHeight);
+                        GUI.BeginGroup(rowRect);
+
+                        Widgets.ThingIcon(new Rect(0f, 0f, cellHeight, cellHeight), apparel);
+
+                        Text.Font = GameFont.Small;
+                        Widgets.Label(new Rect(cellHeight + 5f, 0f, rowRect.width - 40f - cellHeight, cellHeight), apparel.Label);
+
+                        GUI.color = Color.white;
+                        if (Widgets.ButtonImage(new Rect(rowRect.width - 35f, 10, 20, 20), WidgetUtil.nextTexture))
+                        {
+                            this.Pawn.apparel.Remove(apparel);
+                            this.Dresser.AddApparel(apparel);
+                            this.cachedApparel.Clear();
+                            this.cachedApparel = null;
+                            GUI.EndGroup();
+                            break;
+                        }
                         GUI.EndGroup();
-                        break;
                     }
+                    GUI.EndScrollView();
                     GUI.EndGroup();
                 }
-                GUI.EndScrollView();
-                GUI.EndGroup();
 
                 GUI.Label(new Rect(inRect.width * 0.5f, 60, 100, 30), ("ChangeDresser.Storage").Translate(), WidgetUtil.MiddleCenter);
 
@@ -116,24 +119,27 @@ namespace ChangeDresser.UI
                     Apparel apparel = this.CachedApparel[i];
                     Rect rowRect = new Rect(0, 2f + i * cellHeight, apparelScrollRect.width, cellHeight);
                     GUI.BeginGroup(rowRect);
-                    
-                    Rect buttonRect = new Rect(5, 10, 20, 20);
-                    bool canWear = this.Pawn.apparel.CanWearWithoutDroppingAnything(apparel.def);
-                    if (canWear)
+
+                    if (this.Pawn != null)
                     {
-                        if (Widgets.ButtonImage(buttonRect, WidgetUtil.previousTexture))
+                        Rect buttonRect = new Rect(5, 10, 20, 20);
+                        bool canWear = this.Pawn.apparel.CanWearWithoutDroppingAnything(apparel.def);
+                        if (canWear)
                         {
-                            this.Dresser.Remove(apparel);
-                            this.cachedApparel.Clear();
-                            this.cachedApparel = null;
-                            this.Pawn.apparel.Wear(apparel);
-                            GUI.EndGroup();
-                            break;
+                            if (Widgets.ButtonImage(buttonRect, WidgetUtil.previousTexture))
+                            {
+                                this.Dresser.Remove(apparel);
+                                this.cachedApparel.Clear();
+                                this.cachedApparel = null;
+                                this.Pawn.apparel.Wear(apparel);
+                                GUI.EndGroup();
+                                break;
+                            }
                         }
-                    }
-                    else
-                    {
-                        Widgets.ButtonImage(buttonRect, WidgetUtil.cantTexture);
+                        else
+                        {
+                            Widgets.ButtonImage(buttonRect, WidgetUtil.cantTexture);
+                        }
                     }
 
                     Widgets.ThingIcon(new Rect(35f, 0f, cellHeight, cellHeight), apparel);
@@ -144,6 +150,8 @@ namespace ChangeDresser.UI
                     if (Widgets.ButtonImage(new Rect(rowRect.width - 45f, 0f, cellHeight, cellHeight), WidgetUtil.dropTexture))
                     {
                         this.Dresser.Remove(apparel, false);
+                        this.cachedApparel.Clear();
+                        this.cachedApparel = null;
                         GUI.EndGroup();
                         break;
                     }
