@@ -365,7 +365,7 @@ namespace ChangeDresser.UI.Util
                     drawMouseOver = true;
                     Vector3 pos = GUIUtility.ScreenToGUIPoint(Input.mousePosition);
                     pos.y = pos.y - hairScrollPos.y;
-                    if (pos.y > 300 && pos.y < 440)
+                    if (pos.y > 200 && pos.y < 440)
                     {
                         isMouseOverAnything = true;
                         hairStyleSelectionDto.MouseOverSelection = hairDef;
