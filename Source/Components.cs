@@ -2,12 +2,17 @@
 using RimWorld.Planet;
 using System.Collections.Generic;
 using Verse;
+using System;
+using System.Diagnostics;
 
 namespace ChangeDresser
 {
     class WorldComp : WorldComponent
     {
+        private static Stopwatch stopWatch = null;
+
         public static List<Building_Dresser> DressersToUse { get; private set; }
+
         public static Dictionary<Pawn, PawnOutfits> PawnOutfits { get; private set; }
         public static List<Outfit> OutfitsForBattle { get; private set; }
 
@@ -50,15 +55,70 @@ namespace ChangeDresser
                 {
                     added = true;
                     DressersToUse.Insert(i, dresser);
-#if DEBUG
-                    Log.Warning("Dresser inserted at index " + i + ". Number of Dressers to Use: " + DressersToUse.Count);
-#endif
-                }
-                if (!added)
-                {
-                    DressersToUse.Add(dresser);
+                    break;
                 }
             }
+            if (!added)
+            {
+                DressersToUse.Add(dresser);
+            }
+
+            if (stopWatch == null)
+            {
+                stopWatch = new Stopwatch();
+                stopWatch.Start();
+            }
+        }
+
+        public static bool RemoveDesser(Building_Dresser dresser)
+        {
+            if (DressersToUse.Remove(dresser))
+            {
+                if (DressersToUse.Count == 0)
+                {
+                    stopWatch.Stop();
+                    stopWatch = null;
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public static void SortDressersToUse()
+        {
+            if (stopWatch == null)
+            {
+#if DEBUG || DRESSER_LIST_DEBUG
+                Log.Warning("WorldComp.SortDressersToUse: stopWatch null. RETURN");
+#endif
+                return;
+            }
+
+            if (stopWatch.ElapsedTicks < TimeSpan.TicksPerMinute)
+            {
+#if DEBUG || DRESSER_LIST_DEBUG
+                Log.Warning("WorldComp.SortDressersToUse: stopWatch.ElapsedTicks < TimeSpan.TicksPerMinute. RETURN");
+#endif
+                return;
+            }
+
+            for (int i = 0; i < DressersToUse.Count - 1; ++i)
+            {
+                if (DressersToUse[i].settings.Priority < DressersToUse[i + 1].settings.Priority)
+                {
+                    Building_Dresser tmp = DressersToUse[i];
+                    DressersToUse[i] = DressersToUse[i + 1];
+                    DressersToUse[i + 1] = tmp;
+                }
+            }
+            stopWatch.Reset();
+
+#if DEBUG || DRESSER_LIST_DEBUG
+            foreach (Building_Dresser d in DressersToUse)
+            {
+                Log.Warning(d.Label + " " + d.settings.Priority + ", ");
+            }
+#endif
         }
 
         private List<PawnOutfits> tempPawnOutfits = null;
