@@ -1,8 +1,8 @@
 ﻿using RimWorld;
 using System.Collections.Generic;
 using Verse;
-using System;
 using Verse.AI;
+using System;
 using System.Text;
 
 namespace ChangeDresser
@@ -10,9 +10,11 @@ namespace ChangeDresser
     class StoredApparel
     {
         private static int ID = 0;
-
         private readonly int UniqueId;
+
+        private readonly Building_Dresser Dresser;
         private Dictionary<Def, LinkedList<Apparel>> StoredApparelLookup = new Dictionary<Def, LinkedList<Apparel>>();
+        public bool ApparelAdded { get; set; }
         public int Count
         {
             get
@@ -26,10 +28,14 @@ namespace ChangeDresser
             }
         }
 
-        public StoredApparel()
+        public StoredApparel(Building_Dresser dresser)
         {
             this.UniqueId = ID;
             ++ID;
+
+            this.Dresser = dresser;
+
+            this.ApparelAdded = true;
         }
 
         public IEnumerable<Apparel> Apparel
@@ -59,27 +65,31 @@ namespace ChangeDresser
                     this.StoredApparelLookup.Add(apparel.def, l);
                 }
                 this.AddApparelToLinkedList(apparel, l);
+                this.ApparelAdded = true;
             }
         }
 
         private void AddApparelToLinkedList(Apparel apparel, LinkedList<Apparel> l)
         {
-            float score = JobGiver_OptimizeApparel.ApparelScoreRaw(null, apparel);
-            for (LinkedListNode<Apparel> n = l.First; n != null; n = n.Next)
+            if (!l.Contains(apparel))
             {
-                float nScore = JobGiver_OptimizeApparel.ApparelScoreRaw(null, apparel);
-                if (score >= nScore)
+                float score = JobGiver_OptimizeApparel.ApparelScoreRaw(null, apparel);
+                for (LinkedListNode<Apparel> n = l.First; n != null; n = n.Next)
                 {
-                    l.AddBefore(n, apparel);
-                    return;
+                    float nScore = JobGiver_OptimizeApparel.ApparelScoreRaw(null, apparel);
+                    if (score >= nScore)
+                    {
+                        l.AddBefore(n, apparel);
+                        return;
+                    }
+                    else if (score < nScore)
+                    {
+                        l.AddAfter(n, apparel);
+                        return;
+                    }
                 }
-                else if (score < nScore)
-                {
-                    l.AddAfter(n, apparel);
-                    return;
-                }
+                l.AddLast(apparel);
             }
-            l.AddLast(apparel);
 
             /*
 #if TRACE
@@ -143,6 +153,7 @@ namespace ChangeDresser
                 l.Clear();
             }
             this.StoredApparelLookup.Clear();
+            this.ApparelAdded = false;
         }
 
         public bool TryRemoveApparel(ThingDef def, out Apparel apparel)
@@ -232,14 +243,20 @@ namespace ChangeDresser
             return false;
         }
 
-        public List<Apparel> RemoveFilteredApparel(ThingFilter filter)
+        public List<Apparel> GetFilteredApparel(ThingFilter filter)
         {
-            List<Apparel> removed = new List<Apparel>(0);
+            List<Apparel> toRemove = new List<Apparel>(0);
             foreach (LinkedList<Apparel> ll in this.StoredApparelLookup.Values)
             {
-                
+                for(LinkedListNode<Apparel> n = ll.First; n != null; n = n.Next)
+                {
+                    if (!this.Dresser.settings.filter.Allows(n.Value))
+                    {
+                        toRemove.Add(n.Value);
+                    }
+                }
             }
-            return removed;
+            return toRemove;
         }
 
         public override bool Equals(object obj)

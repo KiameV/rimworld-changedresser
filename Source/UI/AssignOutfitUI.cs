@@ -9,8 +9,6 @@ namespace ChangeDresser.UI
 {
     class AssignOutfitUI : Window
     {
-        private static ThingFilter ApparelGlobalFilter;
-
         private readonly Building_Dresser Dresser;
         private Vector2 scrollPosition = new Vector2(0, 0);
 

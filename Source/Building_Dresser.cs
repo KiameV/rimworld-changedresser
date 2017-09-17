@@ -21,7 +21,7 @@ namespace ChangeDresser
 
         public const StoragePriority DefaultStoragePriority = StoragePriority.Low;
 
-        private StoredApparel StoredApparel = new StoredApparel();
+        private readonly StoredApparel StoredApparel;
         private bool useInApparelLookup = false;
 
         private Map CurrentMap { get; set; }
@@ -31,6 +31,11 @@ namespace ChangeDresser
             SupportedEditors.Add(CurrentEditorEnum.ChangeDresserApparelColor);
             SupportedEditors.Add(CurrentEditorEnum.ChangeDresserHair);
             SupportedEditors.Add(CurrentEditorEnum.ChangeDresserBody);
+        }
+
+        public Building_Dresser()
+        {
+            this.StoredApparel = new StoredApparel(this);
         }
 
         public void AddApparel(Apparel a)
@@ -67,14 +72,14 @@ namespace ChangeDresser
                     this.useInApparelLookup = value;
                     if (this.useInApparelLookup)
                     {
-                        WorldComp.DressersToUse.Add(this);
+                        WorldComp.AddDresser(this);
 #if DEBUG
                         Log.Warning(" added to WorldComp.DressersToUse. Count: " + WorldComp.DressersToUse.Count);
 #endif
                     }
                     else
                     {
-                        WorldComp.DressersToUse.Remove(this);
+                        WorldComp.RemoveDesser(this);
 #if DEBUG
                         Log.Warning(" removed from WorldComp.DressersToUse. Count: " + WorldComp.DressersToUse.Count);
 #endif
@@ -340,9 +345,10 @@ namespace ChangeDresser
         {
             try
             {
-                if (this.StoredApparel.RemoveApparel(a))
+                if (this.StoredApparel.Contains(a))
                 {
                     this.DropThing(a, forbidden);
+                    this.StoredApparel.RemoveApparel(a);
                 }
 #if DEBUG
                 else
@@ -365,34 +371,43 @@ namespace ChangeDresser
             return this.StoredApparel.RemoveApparel(a);
         }
 
-        private readonly Stopwatch stopWatch = new Stopwatch();
         public override void TickLong()
         {
-            try
+            if (this.useInApparelLookup)
             {
-                if (!this.stopWatch.IsRunning)
+                WorldComp.SortDressersToUse();
+            }
+
+            if (this.StoredApparel.ApparelAdded)
+            {
+#if DEBUG
+                Log.Warning(this.Label + " TickLong do stuff.");
+#endif
+                this.StoredApparel.ApparelAdded = false;
+                try
                 {
-                    this.stopWatch.Start();
-                }
-                // Do this every minute
-                else if (this.stopWatch.ElapsedMilliseconds > 60000)
-                {
-                    List<Apparel> removed = this.StoredApparel.RemoveFilteredApparel(this.settings.filter);
-                    foreach(Apparel a in removed)
+                    List<Apparel> removed = this.StoredApparel.GetFilteredApparel(this.settings.filter);
+                    foreach (Apparel a in removed)
                     {
                         this.DropThing(a, false);
+                        this.StoredApparel.RemoveApparel(a);
                     }
-                    this.stopWatch.Reset();
+                }
+                catch (Exception e)
+                {
+                    Log.Error(
+                        "ChangeDresser:Building_Dresser.TickLong\n" +
+                        e.GetType().Name + " " + e.Message + "\n" +
+                        e.StackTrace);
                 }
             }
-            catch (Exception e)
+#if DEBUG
+            else
             {
-                Log.Error(
-                    "ChangeDresser:Building_Dresser.TickLong\n" +
-                    e.GetType().Name + " " + e.Message + "\n" +
-                    e.StackTrace);
+                Log.Warning(this.Label + " TickLong don't do stuff.");
             }
-}
+#endif
+        }
 
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Pawn pawn)
         {

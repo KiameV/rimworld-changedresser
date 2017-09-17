@@ -149,16 +149,17 @@ namespace ChangeDresser.UI
                         }
                         break;
                     case CurrentEditorEnum.ChangeDresserHair:
-                        if (Settings.UseLeftRightHairSelect)
+                        /*if (Settings.UseLeftRightHairSelect)
                         {
                             WidgetUtil.AddSelectorWidget(editorLeft, editorTop, editorWidth, "ChangeDresser.HairStyle".Translate() + ":", this.dresserDto.HairStyleSelectionDto);
                             WidgetUtil.AddColorSelectorWidget(editorLeft, editorTop + WidgetUtil.SelectionRowHeight + 10f, editorWidth, this.dresserDto.HairColorSelectionDto, this.dresserDto.HairColorSelectionDto.ColorPresetsDTO);
                         }
                         else
-                        {
-                            WidgetUtil.AddListBoxWidget(editorLeft, editorTop, editorWidth, 150f, "ChangeDresser.HairStyle".Translate() + ":", this.dresserDto.HairStyleSelectionDto);
-                            WidgetUtil.AddColorSelectorWidget(editorLeft, editorTop + 150f + 10f, editorWidth, this.dresserDto.HairColorSelectionDto, this.dresserDto.HairColorSelectionDto.ColorPresetsDTO);
-                        }
+                        {*/
+                        const float listboxHeight = 250f;
+                        WidgetUtil.AddListBoxWidget(editorLeft, editorTop, editorWidth, listboxHeight, "ChangeDresser.HairStyle".Translate() + ":", this.dresserDto.HairStyleSelectionDto);
+                        WidgetUtil.AddColorSelectorWidget(editorLeft, editorTop + listboxHeight + 10f, editorWidth, this.dresserDto.HairColorSelectionDto, this.dresserDto.HairColorSelectionDto.ColorPresetsDTO);
+                        //}
                         break;
                 }
 
@@ -254,12 +255,12 @@ namespace ChangeDresser.UI
             {
                 base.PreClose();
 
-                if (this.dresserDto.ApparelSelectionsContainer.ColorPresetsDTO.IsModified)
+                if (this.dresserDto?.ApparelSelectionsContainer?.ColorPresetsDTO?.IsModified == true)
                 {
                     IOUtil.SaveColorPresets(ColorPresetType.Apparel, this.dresserDto.ApparelSelectionsContainer.ColorPresetsDTO);
                 }
 
-                if (this.dresserDto.HairColorSelectionDto.ColorPresetsDTO.IsModified)
+                if (this.dresserDto?.HairColorSelectionDto?.ColorPresetsDTO?.IsModified == true)
                 {
                     IOUtil.SaveColorPresets(ColorPresetType.Hair, this.dresserDto.HairColorSelectionDto.ColorPresetsDTO);
                 }
