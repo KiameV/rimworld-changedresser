@@ -47,6 +47,7 @@ namespace ChangeDresser.UI.Util
         public static Texture2D pasteIconTexture;
         public static Texture2D dropTexture;
         public static Texture2D colorFinder;
+        public static Texture2D noneTexture;
 
         public static void Initialize()
         {
@@ -57,6 +58,7 @@ namespace ChangeDresser.UI.Util
             copyIconTexture = ContentFinder<Texture2D>.Get("UI/copy", true);
             pasteIconTexture = ContentFinder<Texture2D>.Get("UI/paste", true);
             dropTexture = ContentFinder<Texture2D>.Get("UI/drop", true);
+            noneTexture = ContentFinder<Texture2D>.Get("UI/none", true);
 
             foreach (ModContentPack current in LoadedModManager.RunningMods)
             {

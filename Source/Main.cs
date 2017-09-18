@@ -161,7 +161,17 @@ namespace ChangeDresser
                             {
                                 a.icon = ContentFinder<UnityEngine.Texture2D>.Get(texPath, true);
                             }*/
-                            a.icon = ContentFinder<UnityEngine.Texture2D>.Get(new List<ThingDef>(o.filter.AllowedThingDefs)[0].graphicData.texPath, true);
+                            List<ThingDef> tdList = new List<ThingDef>(o.filter.AllowedThingDefs);
+                            Texture2D tex = null;
+                            if (tdList.Count > 0)
+                            {
+                                tex = ContentFinder<Texture2D>.Get(tdList[0].graphicData.texPath, true);
+                            }
+                            if (tex == null)
+                            {
+                                tex = WidgetUtil.noneTexture;
+                            }
+                            a.icon = tex;
                             StringBuilder sb = new StringBuilder();
                             if (!__instance.outfits.CurrentOutfit.Equals(o))
                             {
@@ -245,7 +255,17 @@ namespace ChangeDresser
                             {
                                 a.icon = ContentFinder<UnityEngine.Texture2D>.Get(texPath, true);
                             }*/
-                            a.icon = ContentFinder<UnityEngine.Texture2D>.Get(new List<ThingDef>(o.filter.AllowedThingDefs)[0].graphicData.texPath, true);
+                            List<ThingDef> tdList = new List<ThingDef>(o.filter.AllowedThingDefs);
+                            Texture2D tex = null;
+                            if (tdList.Count > 0)
+                            {
+                                tex = ContentFinder<Texture2D>.Get(tdList[0].graphicData.texPath, true);
+                            }
+                            if (tex == null)
+                            {
+                                tex = WidgetUtil.noneTexture;
+                            }
+                            a.icon = tex;
                             StringBuilder sb = new StringBuilder();
                             if (!pawn.outfits.CurrentOutfit.Equals(o))
                             {
