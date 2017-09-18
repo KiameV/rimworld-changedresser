@@ -40,6 +40,10 @@ namespace ChangeDresser
 
         public void AddApparel(Apparel a)
         {
+            if (a.Spawned)
+            {
+                a.DeSpawn();
+            }
             this.StoredApparel.AddApparel(a);
         }
 
