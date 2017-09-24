@@ -148,7 +148,7 @@ namespace ChangeDresser.UI.Util
 
             Color originalRgb = Color.white;
             Color rgb = Color.white;
-            if (presetsDto.HasSelected())
+            if (presetsDto?.HasSelected() == true)
             {
                 rgb = presetsDto.GetSelectedColor();
             }
@@ -170,48 +170,51 @@ namespace ChangeDresser.UI.Util
             hsl.l = Widgets.HorizontalSlider(new Rect(0, 175, 125f, 20f), hsl.l, 0, 1, false, null, "ChangeDresser.L".Translate(), ((int)(hsl.l * 255)).ToString());
             GUI.EndGroup();
 
-            GUI.BeginGroup(new Rect(5, colorPickerRect.yMax, (ColorPreset.width + 4) * presetsDto.Count, ColorPreset.height + 5));
             bool skipRGB = false;
-            float l = 0;
-            for (int i = 0; i < presetsDto.Count; ++i)
+            if (presetsDto != null)
             {
-                GUI.color = presetsDto[i];
-
-                l += ColorPreset.width + 4;
-                Rect presetRect = new Rect(l, 0f, ColorPreset.width, ColorPreset.height);
-                GUI.Label(presetRect, new GUIContent(ColorPreset,
-                    "ChangeDresser.ColorPresetHelp".Translate()));
-                if (Widgets.ButtonInvisible(presetRect, false))
+                GUI.BeginGroup(new Rect(5, colorPickerRect.yMax, (ColorPreset.width + 4) * presetsDto.Count, ColorPreset.height + 5));
+                float l = 0;
+                for (int i = 0; i < presetsDto.Count; ++i)
                 {
-                    if (Event.current.shift)
+                    GUI.color = presetsDto[i];
+
+                    l += ColorPreset.width + 4;
+                    Rect presetRect = new Rect(l, 0f, ColorPreset.width, ColorPreset.height);
+                    GUI.Label(presetRect, new GUIContent(ColorPreset,
+                        "ChangeDresser.ColorPresetHelp".Translate()));
+                    if (Widgets.ButtonInvisible(presetRect, false))
                     {
-                        if (presetsDto.IsSelected(i))
+                        if (Event.current.shift)
                         {
-                            presetsDto.Deselect();
+                            if (presetsDto.IsSelected(i))
+                            {
+                                presetsDto.Deselect();
+                            }
+                            else
+                            {
+                                if (selectionDtos.Count > 0 &&
+                                    !presetsDto.HasSelected())
+                                {
+                                    presetsDto.SetColor(i, selectionDtos[0].SelectedColor);
+                                }
+                                presetsDto.SetSelected(i);
+                            }
                         }
                         else
                         {
-                            if (selectionDtos.Count > 0 &&
-                                !presetsDto.HasSelected())
-                            {
-                                presetsDto.SetColor(i, selectionDtos[0].SelectedColor);
-                            }
-                            presetsDto.SetSelected(i);
+                            SetColorToSelected(selectionDtos, null, presetsDto[i]);
                         }
+                        skipRGB = true;
                     }
-                    else
+                    GUI.color = Color.white;
+                    if (presetsDto.IsSelected(i))
                     {
-                        SetColorToSelected(selectionDtos, null, presetsDto[i]);
+                        Widgets.DrawBox(presetRect, 1);
                     }
-                    skipRGB = true;
                 }
-                GUI.color = Color.white;
-                if (presetsDto.IsSelected(i))
-                {
-                    Widgets.DrawBox(presetRect, 1);
-                }
+                GUI.EndGroup();
             }
-            GUI.EndGroup();
             GUI.EndGroup();
 
             if (!skipRGB &&

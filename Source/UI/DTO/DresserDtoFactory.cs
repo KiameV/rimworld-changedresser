@@ -41,6 +41,37 @@ namespace ChangeDresser.UI.DTO
             {
                 editors = Building_ChangeMirror.SupportedEditors;
             }
+
+            if (AlienRaceUtil.IsAlien(pawn))
+            {
+                editors = new List<CurrentEditorEnum>(editors);
+                if (editors.Contains(CurrentEditorEnum.ChangeDresserBody))
+                {
+                    editors.Remove(CurrentEditorEnum.ChangeDresserBody);
+
+                    editors.Add(CurrentEditorEnum.ChangeDresserBodyAlien);
+
+                    if (selectedEditor == CurrentEditorEnum.ChangeDresserBody)
+                    {
+                        selectedEditor = CurrentEditorEnum.ChangeDresserBodyAlien;
+                    }
+                }
+
+                if (editors.Contains(CurrentEditorEnum.ChangeDresserHair))
+                {
+                    editors.Remove(CurrentEditorEnum.ChangeDresserHair);
+
+                    editors.Add(CurrentEditorEnum.ChangeDresserHairAlien);
+
+                    if (selectedEditor == CurrentEditorEnum.ChangeDresserHair)
+                    {
+                        selectedEditor = CurrentEditorEnum.ChangeDresserHairAlien;
+                    }
+                }
+
+                return new AlienDresserDTO(pawn, selectedEditor, editors);
+            }
+
             return new DresserDTO(pawn, selectedEditor, editors);
         }
     }

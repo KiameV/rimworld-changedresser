@@ -109,7 +109,7 @@ namespace ChangeDresser.UI
                 float editorWidth = 325f;
 
                 WidgetUtil.AddSelectorWidget(portraitRect.xMax + portraitBuffer, 10f, editorWidth, null, this.dresserDto.EditorTypeSelectionDto);
-
+                
                 switch ((CurrentEditorEnum)this.dresserDto.EditorTypeSelectionDto.SelectedItem)
                 {
                     case CurrentEditorEnum.ChangeDresserApparelColor:
@@ -160,6 +160,50 @@ namespace ChangeDresser.UI
                         WidgetUtil.AddListBoxWidget(editorLeft, editorTop, editorWidth, listboxHeight, "ChangeDresser.HairStyle".Translate() + ":", this.dresserDto.HairStyleSelectionDto);
                         WidgetUtil.AddColorSelectorWidget(editorLeft, editorTop + listboxHeight + 10f, editorWidth, this.dresserDto.HairColorSelectionDto, this.dresserDto.HairColorSelectionDto.ColorPresetsDTO);
                         //}
+                        break;
+
+
+                    case CurrentEditorEnum.ChangeDresserBodyAlien:
+                        if (this.dresserDto.AlienSkinColorPrimary != null)
+                        {
+                            GUI.color = Color.white;
+                            Text.Font = GameFont.Medium;
+                            GUI.Label(new Rect(editorLeft, editorTop, editorWidth, 30), "ChangeDresser.AlienPrimarySkinColor".Translate());
+                            Text.Font = GameFont.Small;
+
+                            WidgetUtil.AddColorSelectorWidget(editorLeft, editorTop + 40, editorWidth, this.dresserDto.AlienSkinColorPrimary, null);
+                        }
+                        if (this.dresserDto.AlienSkinColorSecondary != null)
+                        {
+                            GUI.color = Color.white;
+                            Text.Font = GameFont.Medium;
+                            GUI.Label(new Rect(editorLeft, editorTop + 260, editorWidth, 30), "ChangeDresser.AlienSecondarySkinColor".Translate());
+                            Text.Font = GameFont.Small;
+
+                            WidgetUtil.AddColorSelectorWidget(editorLeft, editorTop + 300, editorWidth, this.dresserDto.AlienSkinColorSecondary, null);
+                        }
+                        break;
+
+                    case CurrentEditorEnum.ChangeDresserHairAlien:
+                        if (this.dresserDto.AlienHairColorPrimary != null)
+                        {
+                            GUI.color = Color.white;
+                            Text.Font = GameFont.Medium;
+                            GUI.Label(new Rect(editorLeft, editorTop, editorWidth, 30), "ChangeDresser.AlienPrimaryHairColor".Translate());
+                            Text.Font = GameFont.Small;
+
+                            WidgetUtil.AddColorSelectorWidget(editorLeft, editorTop + 40, editorWidth, this.dresserDto.AlienHairColorPrimary, null);
+                        }
+
+                        if (this.dresserDto.AlienHairColorSecondary != null)
+                        {
+                            GUI.color = Color.white;
+                            Text.Font = GameFont.Medium;
+                            GUI.Label(new Rect(editorLeft, editorTop + 260, editorWidth, 30), "ChangeDresser.AlienSecondaryHairColor".Translate());
+                            Text.Font = GameFont.Small;
+
+                            WidgetUtil.AddColorSelectorWidget(editorLeft, editorTop + 300, editorWidth, this.dresserDto.AlienHairColorSecondary, null);
+                        }
                         break;
                 }
 
@@ -242,13 +286,21 @@ namespace ChangeDresser.UI
 
         private void ResetToDefault()
         {
+#if TRACE
+            Log.Warning(Environment.NewLine + "Begin DresserUI.ResetToDefault");
+#endif
+
             this.dresserDto.ResetToDefault();
             this.UpdatePawn(null, null);
+            
+#if TRACE
+            Log.Warning("End DresserUI.ResetToDefault" + Environment.NewLine);
+#endif
         }
 
         public override void PreClose()
         {
-#if DEBUG
+#if TRACE
             Log.Message(Environment.NewLine + "Start DresserUI.PreClose");
 #endif
             try
@@ -301,7 +353,7 @@ namespace ChangeDresser.UI
             {
                 Log.Error("Error on DresserUI.PreClose: " + e.GetType().Name + " " + e.Message);
             }
-#if DEBUG
+#if TRACE
             Log.Message("End DresserUI.PreClose" + Environment.NewLine);
 #endif
         }
@@ -314,12 +366,15 @@ namespace ChangeDresser.UI
 
                 if (sender is ApparelColorSelectionDTO)
                 {
-                    ApparelColorSelectionDTO dto = (ApparelColorSelectionDTO)sender;
-                    CompColorableUtility.SetColor(dto.Apparel, dto.SelectedColor, true);
-
-                    if (!this.ApparelWithColorChange.Contains(dto.Apparel))
+                    if (this.ApparelWithColorChange != null)
                     {
-                        this.ApparelWithColorChange.Add(dto.Apparel);
+                        ApparelColorSelectionDTO dto = (ApparelColorSelectionDTO)sender;
+                        CompColorableUtility.SetColor(dto.Apparel, dto.SelectedColor, true);
+
+                        if (!this.ApparelWithColorChange.Contains(dto.Apparel))
+                        {
+                            this.ApparelWithColorChange.Add(dto.Apparel);
+                        }
                     }
                 }
                 if (sender is BodyTypeSelectionDTO)
@@ -340,6 +395,15 @@ namespace ChangeDresser.UI
                 }
                 else if (sender is HeadTypeSelectionDTO)
                 {
+                    if (value.ToString().IndexOf("Narrow") >= 0 || 
+                        value.ToString().IndexOf("narrow") >= 0)
+                    {
+                        dresserDto.Pawn.story.crownType = CrownType.Narrow;
+                    }
+                    else
+                    {
+                        dresserDto.Pawn.story.crownType = CrownType.Average;
+                    }
                     typeof(Pawn_StoryTracker).GetField("headGraphicPath", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(dresserDto.Pawn.story, value);
                 }
                 else if (sender is SliderWidgetDTO)

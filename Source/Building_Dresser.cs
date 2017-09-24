@@ -426,7 +426,6 @@ namespace ChangeDresser
                         pawn.jobs.TryTakeOrderedJob(job);
                     }));
             }
-
             list.Add(new FloatMenuOption(
                 "ChangeDresser.ChangeHair".Translate(),
                 delegate
