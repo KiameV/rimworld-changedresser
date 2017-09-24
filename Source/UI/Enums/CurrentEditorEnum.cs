@@ -28,5 +28,7 @@ namespace ChangeDresser.UI.Enums
         ChangeDresserHair,
         ChangeDresserApparelColor,
         ChangeDresserBody,
+        ChangeDresserBodyAlien,
+        ChangeDresserHairAlien,
     }
 }

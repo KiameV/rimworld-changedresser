@@ -32,6 +32,8 @@
 	<ChangeDresserHair>Hair Style/Color</ChangeDresserHair>
 	<ChangeDresserApparelColor>Apparel Color</ChangeDresserApparelColor>
 	<ChangeDresserBody>Body</ChangeDresserBody>
+	<ChangeDresserHairAlien>Hair Style/Color</ChangeDresserHairAlien>
+	<ChangeDresserBodyAlien>Body</ChangeDresserBodyAlien>
 	
 	<!-- Dresser UI -->
 	<ChangeDresser.BodyType>Body Type</ChangeDresser.BodyType>
@@ -41,6 +43,10 @@
 	<ChangeDresser.HairStyle>Hair Style</ChangeDresser.HairStyle>
 	<ChangeDresser.AgeBiological>Biological Age</ChangeDresser.AgeBiological>
 	<ChangeDresser.AgeChronological>Chronological Age</ChangeDresser.AgeChronological>
+	<ChangeDresser.AlienPrimarySkinColor>Primary Skin Color</ChangeDresser.AlienPrimarySkinColor>
+	<ChangeDresser.AlienSecondarySkinColor>Secondary Skin Color</ChangeDresser.AlienSecondarySkinColor>
+	<ChangeDresser.AlienPrimaryHairColor>Primary Hair Color</ChangeDresser.AlienPrimaryHairColor>
+	<ChangeDresser.AlienSecondaryHairColor>Secondary Hair Color</ChangeDresser.AlienSecondaryHairColor>
 		
 	<!-- Assign Outfits UI -->
 	<ChangeDresser.UseAsApparelSource>Use Apparel From This Dresser</ChangeDresser.UseAsApparelSource>

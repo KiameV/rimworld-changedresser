@@ -50,6 +50,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlienRaceUtil.cs" />
     <Compile Include="Building_ChangeMirror.cs" />
     <Compile Include="Building_Dresser.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeApparelColor.cs" />
@@ -65,6 +66,7 @@
     <Compile Include="StoredApparel.cs" />
     <Compile Include="UI\AssignOutfitUI.cs" />
     <Compile Include="UI\DresserUI.cs" />
+    <Compile Include="UI\DTO\AlienDresserDTO.cs" />
     <Compile Include="UI\DTO\ColorPresetsDTO.cs" />
     <Compile Include="UI\DTO\DresserDTO.cs" />
     <Compile Include="UI\DTO\DresserDtoFactory.cs" />
