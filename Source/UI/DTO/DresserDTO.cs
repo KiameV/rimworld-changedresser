@@ -31,20 +31,23 @@ namespace ChangeDresser.UI.DTO
 {
     class DresserDTO
     {
-        private long originalAgeBioTicks = long.MinValue;
-        private long originalAgeChronTicks = long.MinValue;
+        public bool HasHair { get; protected set; }
 
-        public Pawn Pawn { get; private set; }
+        protected long originalAgeBioTicks = long.MinValue;
+        protected long originalAgeChronTicks = long.MinValue;
+
+        public readonly Pawn Pawn;
         public CurrentEditorEnum CurrentEditorEnum { get; set; }
 
-        public EditorTypeSelectionDTO EditorTypeSelectionDto { get; private set; }
-        public BodyTypeSelectionDTO BodyTypeSelectionDto { get; private set; }
-        public GenderSelectionDTO GenderSelectionDto { get; private set; }
-        public HairStyleSelectionDTO HairStyleSelectionDto { get; private set; }
-        public HairColorSelectionDTO HairColorSelectionDto { get; private set; }
-        public ApparelSelectionsContainer ApparelSelectionsContainer { get; private set; }
-        public SliderWidgetDTO SkinColorSliderDto { get; private set; }
-        public HeadTypeSelectionDTO HeadTypeSelectionDto { get; private set; }
+        public EditorTypeSelectionDTO EditorTypeSelectionDto { get; protected set; }
+
+        public BodyTypeSelectionDTO BodyTypeSelectionDto { get; protected set; }
+        public GenderSelectionDTO GenderSelectionDto { get; protected set; }
+        public HairStyleSelectionDTO HairStyleSelectionDto { get; protected set; }
+        public HairColorSelectionDTO HairColorSelectionDto { get; protected set; }
+        public ApparelSelectionsContainer ApparelSelectionsContainer { get; protected set; }
+        public SliderWidgetDTO SkinColorSliderDto { get; protected set; }
+        public HeadTypeSelectionDTO HeadTypeSelectionDto { get; protected set; }
 
         public SelectionColorWidgetDTO AlienSkinColorPrimary { get; protected set; }
         public SelectionColorWidgetDTO AlienSkinColorSecondary { get; protected set; }
@@ -56,7 +59,6 @@ namespace ChangeDresser.UI.DTO
             this.Pawn = pawn;
 
             this.CurrentEditorEnum = currentEditorEnum;
-
             this.EditorTypeSelectionDto = new EditorTypeSelectionDTO(this.CurrentEditorEnum, editors);
             this.EditorTypeSelectionDto.SelectionChangeListener += delegate (object sender)
             {
@@ -70,16 +72,38 @@ namespace ChangeDresser.UI.DTO
                     Prefs.HatsOnlyOnMap = false;
                 }
             };
+            
+            this.HasHair = true;
 
-            if (editors.Contains(CurrentEditorEnum.ChangeDresserApparelColor))
+            this.BodyTypeSelectionDto = null;
+            this.GenderSelectionDto = null;
+            this.HairStyleSelectionDto = null;
+            this.HairColorSelectionDto = null;
+            this.SkinColorSliderDto = null;
+            this.HeadTypeSelectionDto = null;
+
+            this.AlienSkinColorPrimary = null;
+            this.AlienSkinColorSecondary = null;
+            this.AlienHairColorPrimary = null;
+            this.AlienHairColorSecondary = null;
+
+            if (this.EditorTypeSelectionDto.Contains(CurrentEditorEnum.ChangeDresserApparelColor))
             {
                 this.ApparelSelectionsContainer = new ApparelSelectionsContainer(this.Pawn.apparel.WornApparel, IOUtil.LoadColorPresets(ColorPresetType.Apparel));
             }
 
-            if (editors.Contains(CurrentEditorEnum.ChangeDresserBody))
+            this.Initialize();
+        }
+
+        protected virtual void Initialize()
+        {
+#if ALIEN_DEBUG
+            Log.Warning("DresserDTO.initialize - start");
+#endif
+            if (this.EditorTypeSelectionDto.Contains(CurrentEditorEnum.ChangeDresserBody))
             {
-                this.originalAgeBioTicks = pawn.ageTracker.AgeBiologicalTicks;
-                this.originalAgeChronTicks = pawn.ageTracker.AgeChronologicalTicks;
+                this.originalAgeBioTicks = this.Pawn.ageTracker.AgeBiologicalTicks;
+                this.originalAgeChronTicks = this.Pawn.ageTracker.AgeChronologicalTicks;
 
                 this.BodyTypeSelectionDto = new BodyTypeSelectionDTO(this.Pawn.story.bodyType, this.Pawn.gender);
 
@@ -96,16 +120,11 @@ namespace ChangeDresser.UI.DTO
                 };
             }
 
-            if (editors.Contains(CurrentEditorEnum.ChangeDresserHair))
+            if (this.EditorTypeSelectionDto.Contains(CurrentEditorEnum.ChangeDresserHair))
             {
                 this.HairStyleSelectionDto = new HairStyleSelectionDTO(this.Pawn.story.hairDef, this.Pawn.gender);
                 this.HairColorSelectionDto = new HairColorSelectionDTO(this.Pawn.story.hairColor, IOUtil.LoadColorPresets(ColorPresetType.Hair));
             }
-
-            this.AlienSkinColorPrimary = null;
-            this.AlienSkinColorSecondary = null;
-            this.AlienHairColorPrimary = null;
-            this.AlienHairColorSecondary = null;
         }
 
         public void SetUpdatePawnListeners(UpdatePawnListener updatePawn)

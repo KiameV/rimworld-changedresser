@@ -44,31 +44,20 @@ namespace ChangeDresser.UI.DTO
 
             if (AlienRaceUtil.IsAlien(pawn))
             {
-                editors = new List<CurrentEditorEnum>(editors);
-                if (editors.Contains(CurrentEditorEnum.ChangeDresserBody))
+                List<CurrentEditorEnum> alienEditors = new List<CurrentEditorEnum>(editors.Count + 2);
+                foreach (CurrentEditorEnum ed in editors)
                 {
-                    editors.Remove(CurrentEditorEnum.ChangeDresserBody);
-
-                    editors.Add(CurrentEditorEnum.ChangeDresserBodyAlien);
-
-                    if (selectedEditor == CurrentEditorEnum.ChangeDresserBody)
+                    alienEditors.Add(ed);
+                    if (ed == CurrentEditorEnum.ChangeDresserBody)
                     {
-                        selectedEditor = CurrentEditorEnum.ChangeDresserBodyAlien;
+                        alienEditors.Add(CurrentEditorEnum.ChangeDresserAlienSkinColor);
+                    }
+                    else if (ed == CurrentEditorEnum.ChangeDresserHair)
+                    {
+                        alienEditors.Add(CurrentEditorEnum.ChangeDresserAlienHairColor);
                     }
                 }
-
-                if (editors.Contains(CurrentEditorEnum.ChangeDresserHair))
-                {
-                    editors.Remove(CurrentEditorEnum.ChangeDresserHair);
-
-                    editors.Add(CurrentEditorEnum.ChangeDresserHairAlien);
-
-                    if (selectedEditor == CurrentEditorEnum.ChangeDresserHair)
-                    {
-                        selectedEditor = CurrentEditorEnum.ChangeDresserHairAlien;
-                    }
-                }
-
+                editors = alienEditors;
                 return new AlienDresserDTO(pawn, selectedEditor, editors);
             }
 

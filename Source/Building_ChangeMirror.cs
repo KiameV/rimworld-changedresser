@@ -58,24 +58,27 @@ namespace ChangeDresser
                         pawn.jobs.TryTakeOrderedJob(job);
                     }));
             }
-            
-            list.Add(new FloatMenuOption(
-                "ChangeDresser.ChangeHair".Translate(),
-                delegate
-                {
-                    Job job = new Job(this.changeHairStyleJobDef, this);
-                    pawn.jobs.TryTakeOrderedJob(job);
-                }));
+
+            if (!AlienRaceUtil.IsAlien(pawn))
+            {
+                list.Add(new FloatMenuOption(
+                    "ChangeDresser.ChangeHair".Translate(),
+                    delegate
+                    {
+                        Job job = new Job(this.changeHairStyleJobDef, this);
+                        pawn.jobs.TryTakeOrderedJob(job);
+                    }));
+            }
 
             if (Settings.ShowBodyChange)
             {
                 list.Add(new FloatMenuOption(
-                "ChangeDresser.ChangeBody".Translate(),
-                delegate
-                {
-                    Job job = new Job(this.changeBodyJobDef, this);
-                    pawn.jobs.TryTakeOrderedJob(job);
-                }));
+                    "ChangeDresser.ChangeBody".Translate(),
+                    delegate
+                    {
+                        Job job = new Job(this.changeBodyJobDef, this);
+                        pawn.jobs.TryTakeOrderedJob(job);
+                    }));
             }
             return list;
         }

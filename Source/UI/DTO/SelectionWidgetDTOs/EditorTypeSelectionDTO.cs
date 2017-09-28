@@ -35,14 +35,7 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
         {
             this.editors = new List<CurrentEditorEnum>(editors);
 
-            for (int i = 0; i < this.editors.Count; ++i)
-            {
-                if (this.editors[i] == currentEditor)
-                {
-                    base.index = i;
-                    break;
-                }
-            }
+            this.SetSelectedEditor(currentEditor);
         }
 
         public override int Count
@@ -72,6 +65,33 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
         public override void ResetToDefault()
         {
             // Do nothing
+        }
+
+        internal bool Contains(CurrentEditorEnum currentEditorEnum)
+        {
+            return this.editors.Contains(currentEditorEnum);
+        }
+
+        internal void Remove(params CurrentEditorEnum[] toRemove)
+        {
+            foreach (CurrentEditorEnum ed in toRemove)
+            {
+                this.editors.Remove(ed);
+            }
+            base.index = 0;
+        }
+
+        public void SetSelectedEditor(CurrentEditorEnum editor)
+        {
+            base.index = 0;
+            for (int i = 0; i < this.editors.Count; ++i)
+            {
+                if (this.editors[i] == editor)
+                {
+                    base.index = i;
+                    break;
+                }
+            }
         }
     }
 }

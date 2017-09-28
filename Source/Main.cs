@@ -151,6 +151,8 @@ namespace ChangeDresser
 #endif
                     foreach (Outfit o in outfits.Outfits)
                     {
+                        if (o == null)
+                            continue;
                         bool forBattle = WorldComp.OutfitsForBattle.Contains(o);
 #if DEBUG
                         if (i == WAIT)
@@ -245,6 +247,8 @@ namespace ChangeDresser
 #endif
                     foreach (Outfit o in outfits.Outfits)
                     {
+                        if (o == null)
+                            continue;
                         bool forBattle = WorldComp.OutfitsForBattle.Contains(o);
 #if DEBUG
                         if (i == WAIT)
