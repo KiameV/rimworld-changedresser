@@ -37,6 +37,7 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
         private int savedMaleIndex = 0;
 
         public readonly string OriginalHeadType;
+        private List<string> crownTypes;
 
         public HeadTypeSelectionDTO(string headType, Gender gender) : base()
         {
@@ -46,6 +47,14 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
             this.AddHeadTypesToList("Things/Pawn/Humanlike/Heads/Female", this.femaleHeadTypes);
 
             this.Gender = gender;
+            this.FindIndex(headType);
+        }
+
+        public HeadTypeSelectionDTO(string headType, Gender gender, List<string> crownTypes) : this(headType, gender)
+        {
+            this.AddHeadTypesToList("Things/Pawn/Humanlike/Heads/Male", crownTypes);
+            this.AddHeadTypesToList("Things/Pawn/Humanlike/Heads/Female", crownTypes);
+            
             this.FindIndex(headType);
         }
 

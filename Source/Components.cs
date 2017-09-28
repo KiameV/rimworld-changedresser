@@ -129,7 +129,8 @@ namespace ChangeDresser
                 this.tempPawnOutfits = new List<PawnOutfits>(PawnOutfits.Count);
                 foreach (PawnOutfits po in PawnOutfits.Values)
                 {
-                    this.tempPawnOutfits.Add(po);
+                    if (po != null)
+                        this.tempPawnOutfits.Add(po);
                 }
             }
 

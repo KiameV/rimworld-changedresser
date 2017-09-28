@@ -62,6 +62,69 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
             this.FindIndex(hairDef);
         }
 
+        public HairStyleSelectionDTO(HairDef hairDef, Gender gender, IEnumerable<HairDef> hairDefs)
+        {
+            this.OriginalHairDef = hairDef;
+            this.femaleHairDefs = new List<HairDef>(hairDefs);
+            this.maleHairDefs = this.femaleHairDefs;
+            this.Gender = gender;
+            this.FindIndex(hairDef);
+        }
+/*
+        public HairStyleSelectionDTO(HairDef hairDef, Gender gender, IEnumerable<string> hairFilters)
+        {
+#if ALIEN_DEBUG
+            Log.Warning("HairStyleSelectionDTO - start");
+#endif
+            this.OriginalHairDef = hairDef;
+
+#if ALIEN_DEBUG
+            Log.Warning("Hair Defs:");
+            foreach (HairDef def in DefDatabase<HairDef>.AllDefs)
+            {
+                System.Text.StringBuilder sb = new System.Text.StringBuilder("Tags: [");
+                foreach (string tag in def.hairTags)
+                    sb.Append(tag + ", ");
+                Log.Warning(" - " + sb.ToString() + "] Text Path:" + def.texPath);
+            }
+
+            Log.Warning("Hair Filters:");
+            foreach (string s in hairFilters)
+                Log.Warning(" -" + s);
+#endif
+
+            foreach (HairDef def in DefDatabase<HairDef>.AllDefs)
+            {
+                foreach (string s in hairFilters)
+                {
+                    if (def.texPath.IndexOf(s) != -1)
+                    {
+                        if (def.hairGender == HairGender.Male ||
+                            def.hairGender == HairGender.MaleUsually ||
+                            def.hairGender == HairGender.Any)
+                        {
+                            this.maleHairDefs.Add(def);
+                        }
+
+                        if (def.hairGender == HairGender.Female ||
+                            def.hairGender == HairGender.FemaleUsually ||
+                            def.hairGender == HairGender.Any)
+                        {
+                            this.femaleHairDefs.Add(def);
+                        }
+                    }
+                    break;
+                }
+            }
+
+            this.Gender = gender;
+            this.FindIndex(hairDef);
+#if ALIEN_DEBUG
+            Log.Warning("HairStyleSelectionDTO - end");
+#endif
+        }
+*/
+
         private void FindIndex(HairDef hairDef)
         {
             for (int i = 0; i < this.hairDefs.Count; ++i)

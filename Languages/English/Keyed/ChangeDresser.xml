@@ -32,8 +32,8 @@
 	<ChangeDresserHair>Hair Style/Color</ChangeDresserHair>
 	<ChangeDresserApparelColor>Apparel Color</ChangeDresserApparelColor>
 	<ChangeDresserBody>Body</ChangeDresserBody>
-	<ChangeDresserHairAlien>Hair Style/Color</ChangeDresserHairAlien>
-	<ChangeDresserBodyAlien>Body</ChangeDresserBodyAlien>
+	<ChangeDresserAlienSkinColor>Alien Skin Color</ChangeDresserAlienSkinColor>
+	<ChangeDresserAlienHairColor>Alien Hair Color</ChangeDresserAlienHairColor>
 	
 	<!-- Dresser UI -->
 	<ChangeDresser.BodyType>Body Type</ChangeDresser.BodyType>
@@ -86,6 +86,7 @@
 	<ChangeDresser.SelectMultipleApparel>Hold Shift and click another\nitem to select multiple.</ChangeDresser.SelectMultipleApparel>
 	<ChangeDresser.ColorPresetHelp>Change: Hold shift and select a preset.\nUnselect: Hold shift and select the same preset.</ChangeDresser.ColorPresetHelp>
 	<ChangeDresser.NoClothingIsWorn>No clothing is being worn.</ChangeDresser.NoClothingIsWorn>
+	<ChangeDresser.NoEditableAttributes>No attributes can be changed for this alien race</ChangeDresser.NoEditableAttributes>
 	
 	<!-- Job Toils -->
 	<ChangeDresser.ChangeApparelColors>Change apparel colors</ChangeDresser.ChangeApparelColors>

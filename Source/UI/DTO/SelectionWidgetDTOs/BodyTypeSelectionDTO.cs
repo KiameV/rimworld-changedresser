@@ -41,10 +41,31 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
             this.OriginalBodyType = bodyType;
 
             Array a = Enum.GetValues(typeof(BodyType));
-            this.bodyTypes = new List<BodyType>(a.Length);
             this.maleBodyTypes = new List<BodyType>(a.Length - 1);
             this.femaleBodyTypes = new List<BodyType>(a.Length - 1);
             foreach (BodyType bt in a)
+            {
+                if (bt != BodyType.Undefined)
+                {
+                    if (bt != BodyType.Female)
+                        this.maleBodyTypes.Add(bt);
+                    if (bt != BodyType.Male)
+                        this.femaleBodyTypes.Add(bt);
+                }
+            }
+
+            this.bodyTypes = (gender == Gender.Male) ? this.maleBodyTypes : this.femaleBodyTypes;
+            this.FindIndex(bodyType);
+        }
+
+        public BodyTypeSelectionDTO(
+            BodyType bodyType, Gender gender, List<BodyType> possibleBodyTypes) : base()
+        {
+            this.OriginalBodyType = bodyType;
+            
+            this.maleBodyTypes = new List<BodyType>(possibleBodyTypes.Count - 1);
+            this.femaleBodyTypes = new List<BodyType>(possibleBodyTypes.Count - 1);
+            foreach (BodyType bt in possibleBodyTypes)
             {
                 if (bt != BodyType.Undefined)
                 {
