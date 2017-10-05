@@ -44,7 +44,7 @@ namespace ChangeDresser
                 Log.Warning(" Apparel " + a.LabelShort + " removed");
 #endif
 
-                bool handled = false;
+                /*bool handled = false;
                 foreach (Building_Dresser d in WorldComp.DressersToUse)
                 {
 #if DEBUG
@@ -65,8 +65,8 @@ namespace ChangeDresser
                         Log.Warning("   Does Not Handle");
                     }
 #endif
-                }
-                if (!handled)
+                }*/
+                if (!WorldComp.AddApparel(a))
                 {
 #if DEBUG
                     Log.Warning("  Apparel " + a.LabelShort + " was not handled");

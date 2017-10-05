@@ -46,6 +46,19 @@ namespace ChangeDresser
             }
         }
 
+        public static bool AddApparel(Apparel apparel)
+        {
+            foreach (Building_Dresser d in DressersToUse)
+            {
+                if (d.settings.AllowedToAccept(apparel))
+                {
+                    d.AddApparel(apparel);
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public static void AddDresser(Building_Dresser dresser)
         {
             bool added = false;
@@ -140,27 +153,36 @@ namespace ChangeDresser
             Scribe_Collections.Look(ref ofb, "outfitsForBattle", LookMode.Reference, new object[0]);
             OutfitsForBattle = ofb;
 
-            if (Scribe.mode == LoadSaveMode.PostLoadInit &&
-                this.tempPawnOutfits != null)
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
-                foreach (PawnOutfits po in this.tempPawnOutfits)
+                if (PawnOutfits == null)
                 {
-                    if (po != null)
+                    PawnOutfits = new Dictionary<Pawn, PawnOutfits>();
+                }
+
+                if (OutfitsForBattle == null)
+                {
+                    OutfitsForBattle = new List<Outfit>();
+                }
+
+                PawnOutfits.Clear();
+                if (this.tempPawnOutfits != null)
+                {
+                    foreach (PawnOutfits po in this.tempPawnOutfits)
                     {
-                        PawnOutfits.Add(po.Pawn, po);
+                        if (po != null && po.Pawn != null && !po.Pawn.Dead)
+                        {
+                            PawnOutfits.Add(po.Pawn, po);
+                        }
                     }
                 }
+
                 for (int i = OutfitsForBattle.Count - 1; i >= 0; --i)
                 {
                     if (OutfitsForBattle[i] == null)
                     {
                         OutfitsForBattle.RemoveAt(i);
                     }
-                }
-
-                if (PawnOutfits == null)
-                {
-                    PawnOutfits = new Dictionary<Pawn, PawnOutfits>();
                 }
             }
 

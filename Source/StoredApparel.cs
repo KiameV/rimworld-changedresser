@@ -14,7 +14,7 @@ namespace ChangeDresser
 
         private readonly Building_Dresser Dresser;
         private Dictionary<Def, LinkedList<Apparel>> StoredApparelLookup = new Dictionary<Def, LinkedList<Apparel>>();
-        public bool ApparelAdded { get; set; }
+        //public bool FilterApparel { get; set; }
         public int Count
         {
             get
@@ -35,7 +35,7 @@ namespace ChangeDresser
 
             this.Dresser = dresser;
 
-            this.ApparelAdded = true;
+            //this.FilterApparel = true;
         }
 
         public IEnumerable<Apparel> Apparel
@@ -65,7 +65,7 @@ namespace ChangeDresser
                     this.StoredApparelLookup.Add(apparel.def, l);
                 }
                 this.AddApparelToLinkedList(apparel, l);
-                this.ApparelAdded = true;
+                //this.FilterApparel = true;
             }
         }
 
@@ -153,7 +153,7 @@ namespace ChangeDresser
                 l.Clear();
             }
             this.StoredApparelLookup.Clear();
-            this.ApparelAdded = false;
+            //this.FilterApparel = false;
         }
 
         public bool TryRemoveApparel(ThingDef def, out Apparel apparel)
