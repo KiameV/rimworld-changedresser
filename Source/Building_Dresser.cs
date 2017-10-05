@@ -22,7 +22,7 @@ namespace ChangeDresser
         public const StoragePriority DefaultStoragePriority = StoragePriority.Low;
 
         private readonly StoredApparel StoredApparel;
-        private bool useInApparelLookup = false;
+        private readonly Stopwatch stopWatch = new Stopwatch();
 
         private Map CurrentMap { get; set; }
 
@@ -36,6 +36,7 @@ namespace ChangeDresser
         public Building_Dresser()
         {
             this.StoredApparel = new StoredApparel(this);
+            this.stopWatch.Start();
         }
 
         public void AddApparel(Apparel a)
@@ -57,7 +58,7 @@ namespace ChangeDresser
             return this.StoredApparel.TryRemoveBestApparel(def, filter, out apparel);
         }
 
-        public bool UseInApparelLookup
+        /*public bool UseInApparelLookup
         {
             get
             {
@@ -90,12 +91,13 @@ namespace ChangeDresser
                     }
                 }
             }
-        }
+        }*/
 
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
             base.SpawnSetup(map, respawningAfterLoad);
             this.CurrentMap = map;
+            WorldComp.AddDresser(this);
             
             if (settings == null)
             {
@@ -141,6 +143,7 @@ namespace ChangeDresser
         {
             try
             {
+                WorldComp.RemoveDesser(this);
                 this.Dispose();
                 base.DeSpawn();
             }
@@ -260,9 +263,9 @@ namespace ChangeDresser
 #endif
             base.ExposeData();
 
-            bool useInLookup = this.UseInApparelLookup;
-            Scribe_Values.Look(ref useInLookup, "useInApparelLookup", false, false);
-            this.UseInApparelLookup = useInLookup;
+            //bool useInLookup = this.UseInApparelLookup;
+            //Scribe_Values.Look(ref useInLookup, "useInApparelLookup", false, false);
+            //this.UseInApparelLookup = useInLookup;
 
             if (Scribe.mode == LoadSaveMode.Saving)
             {
@@ -328,10 +331,10 @@ namespace ChangeDresser
             sb.Append("ChangeDresser.ApparelCount".Translate());
             sb.Append(": ");
             sb.Append(this.Count);
-            sb.Append("\n");
-            sb.Append("ChangeDresser.UseAsApparelSource".Translate());
-            sb.Append(": ");
-            sb.Append(this.UseInApparelLookup.ToString());
+            //sb.Append("\n");
+            //sb.Append("ChangeDresser.UseAsApparelSource".Translate());
+            //sb.Append(": ");
+            //sb.Append(this.UseInApparelLookup.ToString());
             return sb.ToString();
         }
 
@@ -377,40 +380,50 @@ namespace ChangeDresser
 
         public override void TickLong()
         {
-            if (this.useInApparelLookup)
+            if (this.Spawned)
             {
-                WorldComp.SortDressersToUse();
-            }
-
-            if (this.StoredApparel.ApparelAdded)
-            {
-#if DEBUG
-                Log.Warning(this.Label + " TickLong do stuff.");
-#endif
-                this.StoredApparel.ApparelAdded = false;
-                try
+                if (base.Map != null)
                 {
-                    List<Apparel> removed = this.StoredApparel.GetFilteredApparel(this.settings.filter);
-                    foreach (Apparel a in removed)
+                    // Fix for an issue where apparel will appear on top of the dresser even though it's already stored inside
+                    foreach (Thing t in base.Map.thingGrid.ThingsAt(this.Position))
                     {
-                        this.DropThing(a, false);
-                        this.StoredApparel.RemoveApparel(a);
+                        if (t != null && t != this && t is Apparel)
+                        {
+                            this.AddApparel((Apparel)t);
+                        }
                     }
                 }
-                catch (Exception e)
+                if (stopWatch.ElapsedTicks > TimeSpan.TicksPerMinute)
                 {
-                    Log.Error(
-                        "ChangeDresser:Building_Dresser.TickLong\n" +
-                        e.GetType().Name + " " + e.Message + "\n" +
-                        e.StackTrace);
+                    WorldComp.SortDressersToUse();
+                    /*if (this.StoredApparel.FilterApparel)
+                    {*/
+                    //this.StoredApparel.FilterApparel = false;
+                    try
+                    {
+                        List<Apparel> removed = this.StoredApparel.GetFilteredApparel(this.settings.filter);
+                        foreach (Apparel a in removed)
+                        {
+                            if (this.StoredApparel.RemoveApparel(a))
+                            {
+                                if (!WorldComp.AddApparel(a))
+                                {
+                                    this.DropThing(a, false);
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(
+                            "ChangeDresser:Building_Dresser.TickLong\n" +
+                            e.GetType().Name + " " + e.Message + "\n" +
+                            e.StackTrace);
+                    }
+                    //}
+                    this.stopWatch.Reset();
                 }
             }
-#if DEBUG
-            else
-            {
-                Log.Warning(this.Label + " TickLong don't do stuff.");
-            }
-#endif
         }
 
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Pawn pawn)
