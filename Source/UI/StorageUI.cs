@@ -103,11 +103,13 @@ namespace ChangeDresser.UI
                     GUI.EndScrollView();
                     GUI.EndGroup();
                 }
+                
+                GUI.Label(new Rect((wornApparel == null) ? 0 : inRect.width * 0.5f, 60, (wornApparel == null) ? inRect.width : 100, 30), ("ChangeDresser.Storage").Translate(), WidgetUtil.MiddleCenter);
 
-                GUI.Label(new Rect(inRect.width * 0.5f, 60, 100, 30), ("ChangeDresser.Storage").Translate(), WidgetUtil.MiddleCenter);
-
-                apparelListRect = new Rect(inRect.width - apparelListWidth, 90, apparelListWidth, inRect.height - 130);
-                apparelScrollRect = new Rect(0f, 0f, apparelListWidth - 16f, this.Dresser.Count * cellHeight);
+                float left = (wornApparel == null) ? 0 : inRect.width - apparelListWidth;
+                float width = (wornApparel == null) ? inRect.width : apparelListWidth;
+                apparelListRect = new Rect(left, 90, width, inRect.height - 130);
+                apparelScrollRect = new Rect(0f, 0f, width - 16f, this.Dresser.Count * cellHeight);
 
                 GUI.BeginGroup(apparelListRect);
                 this.scrollPosRight = GUI.BeginScrollView(new Rect(GenUI.AtZero(apparelListRect)), this.scrollPosRight, apparelScrollRect);
