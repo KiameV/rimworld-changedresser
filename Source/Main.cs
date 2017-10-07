@@ -487,7 +487,30 @@ namespace ChangeDresser
         }
     }
 
-    /*[HarmonyPatch(typeof(Pawn_ApparelTracker), "Notify_ApparelRemoved")]
+    /*[HarmonyPatch(typeof(Pawn_TraderTracker), "ColonyThingsWillingToBuy")]
+    static class Patch_Pawn_TraderTracker_ColonyThingsWillingToBuy
+    {
+        static void Postfix(IEnumerable<Thing> __result)
+        {
+            Log.Error("POSTFIX WILLING TO BUY START");
+            Map map = Current.Game.VisibleMap;
+            if (map != null)
+            {
+                Log.Error("Map found");
+                List<Thing> l = new List<Thing>(__result);
+                foreach (Building b in map.listerBuildings.allBuildingsColonist)
+                {
+                    Building_Dresser d = b as Building_Dresser;
+                    if (d != null)
+                    {
+                        Log.Error("Dresser found " + d.Count);
+                        l.AddRange(d.Apparel as List<Thing>);
+                    }
+                }
+            }
+        }
+    }
+    [HarmonyPatch(typeof(Pawn_ApparelTracker), "Notify_ApparelRemoved")]
     static class Patch_Pawn_ApparelTracker_Notify_ApparelRemoved
     {
         static void Postfix(Pawn_ApparelTracker __instance, Apparel apparel)
