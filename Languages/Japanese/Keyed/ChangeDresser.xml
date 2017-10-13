@@ -50,13 +50,10 @@
   <!-- Apparel Storage UI -->
   <ChangeDresser.CreateFromWorn>現在の服装から新規作成</ChangeDresser.CreateFromWorn>
   <ChangeDresser.CreateFromStorage>既存の在庫から作成</ChangeDresser.CreateFromStorage>
-
   <!-- Informs the user that the pawn is already wearing the apparel group. Appears as "<group name> (<BeingWorn>) -->
   <ChangeDresser.BeingWorn>着装済</ChangeDresser.BeingWorn>
-
   <!-- Appears when there is an apparel group owned by another pawn. Appears as "<Claim> <group name>" -->
   <ChangeDresser.ClaimApparelGroup>別の服装に必要</ChangeDresser.ClaimApparelGroup>
-
   <!-- The following appear as "<Edit> <group name> <FromWorn>" and "<Edit> <group name> <FromStorage>" -->
   <ChangeDresser.EditApparelGroup>編集</ChangeDresser.EditApparelGroup>
   <ChangeDresser.FromWorn>現在の服装から</ChangeDresser.FromWorn>
@@ -67,6 +64,10 @@
   <ChangeDresser.R>R</ChangeDresser.R>
   <ChangeDresser.G>G</ChangeDresser.G>
   <ChangeDresser.B>B</ChangeDresser.B>
+  <!-- These refer to the Hue (H), Saturation (S), and Lightness (L) values for the selected color -->
+  <ChangeDresser.H>色調</ChangeDresser.H>
+  <ChangeDresser.S>彩度</ChangeDresser.S>
+  <ChangeDresser.L>明度</ChangeDresser.L>
 
   <!-- Help Text -->
   <ChangeDresser.RemoveToEnableDelete>全ての衣服を外し削除を有効</ChangeDresser.RemoveToEnableDelete>
@@ -101,4 +102,7 @@
   <ChangeDresser.ShowGenderAgeChange>性別と年齢の変更を許可</ChangeDresser.ShowGenderAgeChange>
   <ChangeDresser.LinkStorageGroupWithDresser>ストレージグループをドレッサーにリンク</ChangeDresser.LinkStorageGroupWithDresser>
   <ChangeDresser.LinkStorageGroupWithDresserDesc>  注意：ゲーム中に、ドレッサーにリンクされてない（チェックなし）状態からリンクされた（チェックあり）状態に変更すると、ストレージグループの中心になっていたドレッサーがなくなった場合、収納されていた衣服が失われる可能性があります。</ChangeDresser.LinkStorageGroupWithDresserDesc>
+  <ChangeDresser.UseLeftRightHairSelect>左 &lt;-> 右の選択を髪型に適用する</ChangeDresser.UseLeftRightHairSelect>
+  <ChangeDresser.UseRGBAndHSLSliders>RGB + HSL スライダーを使用する</ChangeDresser.UseRGBAndHSLSliders>
+
 </LanguageData>
