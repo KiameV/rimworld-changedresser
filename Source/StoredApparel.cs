@@ -7,7 +7,7 @@ using System.Text;
 
 namespace ChangeDresser
 {
-    class StoredApparel
+    public class StoredApparel
     {
         private static int ID = 0;
         private readonly int UniqueId;

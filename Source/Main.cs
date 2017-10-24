@@ -28,6 +28,30 @@ namespace ChangeDresser
             Log.Message("ChangeDresser: Adding Harmony Postfix to JobGiver_OptimizeApparel.TryGiveJob(Pawn)");
         }
 
+        public static Texture2D GetIcon(ThingDef td)
+        {
+            Texture2D tex = null;
+            if (td.uiIcon != null)
+            {
+                tex = td.uiIcon;
+            }
+            else if (td?.graphicData?.texPath != null)
+            {
+                tex = ContentFinder<Texture2D>.Get(td.graphicData.texPath, true);
+            }
+            else
+            {
+                tex = null;
+            }
+
+            if (tex == null)
+            {
+                tex = WidgetUtil.noneTexture;
+            }
+
+            return tex;
+        }
+
         public static void SwapApparel(Pawn pawn, Outfit toWear)
         {
 #if DEBUG
@@ -82,43 +106,106 @@ namespace ChangeDresser
                     }
                 }
             }
-            foreach (ThingDef def in toWear.filter.AllowedThingDefs)
+
+            pawn.outfits.CurrentOutfit = toWear;
+
+            typeof (JobGiver_OptimizeApparel)
+                .GetField("neededWarmth", BindingFlags.Static | BindingFlags.NonPublic)
+                .SetValue(null, PawnApparelGenerator.CalculateNeededWarmth(pawn, pawn.Map.Tile, GenLocalDate.Twelfth(pawn)));
+
+            MethodInfo mi = typeof(JobGiver_OptimizeApparel).GetMethod("TryGiveJob", BindingFlags.Instance | BindingFlags.NonPublic);
+
+            JobGiver_OptimizeApparel apparelOptimizer = new JobGiver_OptimizeApparel();
+            object[] param = new object[] { pawn };
+            for (int i = 0; i < 10; ++i)
             {
 #if DEBUG
-                Log.Warning("  Try Find Def " + def.label);
+                Log.Warning(i + " start equip for loop");
 #endif
-                if (pawn.apparel.CanWearWithoutDroppingAnything(def))
+                Job job = mi.Invoke(apparelOptimizer, param) as Job;
+#if DEBUG
+                Log.Warning(i + " job is null: " + (string)((job == null) ? "yes" : "no"));
+#endif
+                if (job == null)
+                    break;
+#if DEBUG
+                Log.Warning(job.def.defName);
+#endif
+                if (job.def == JobDefOf.Wear)
                 {
-#if DEBUG
-                    Log.Warning("   Can wear");
-#endif
-                    foreach (Building_Dresser d in WorldComp.DressersToUse)
+                    Apparel a = ((job.targetB != null) ? job.targetB.Thing : null) as Apparel;
+                    if (a == null)
                     {
-#if DEBUG
-                        Log.Warning("   Check dresser " + d.Label);
-#endif
-                        Apparel apparel;
-                        if (d.TryRemoveBestApparel(def, toWear.filter, out apparel))
-                        {
-#if DEBUG
-                            Log.Warning("    Found " + apparel.LabelShort);
-#endif
-                            pawn.apparel.Wear(apparel);
-                            break;
-                        }
-#if DEBUG
-                        else
-                            Log.Warning("    No matching apparel found");
-#endif
+                        Log.Warning("ChangeDresser: Problem equiping pawn. Apparel is null.");
+                        break;
                     }
+#if DEBUG
+                    Log.Warning("Wear from ground " + a.Label);
+#endif
+                    pawn.apparel.Wear(a);
+                }
+                else if (job.def == Building_Dresser.WEAR_APPAREL_FROM_DRESSER_JOB_DEF)
+                {
+                    Building_Dresser d = ((job.targetA != null) ? job.targetA.Thing : null) as Building_Dresser;
+                    Apparel a = ((job.targetB != null) ? job.targetB.Thing : null) as Apparel;
+
+                    if (d == null || a == null)
+                    {
+                        Log.Warning("ChangeDresser: Problem equiping pawn. Dresser or Apparel is null.");
+                        break;
+                    }
+#if DEBUG
+                    Log.Warning("Wear from dresser " + d.Label + " " + a.Label);
+#endif
+                    d.RemoveNoDrop(a);
+                    pawn.apparel.Wear(a);
                 }
 #if DEBUG
-                else
-                    Log.Warning("  Can't wear");
+                Log.Warning(i + " end equip for loop");
 #endif
             }
 
-            pawn.outfits.CurrentOutfit = toWear;
+            if (pawn.apparel.WornApparelCount == 0)
+            {
+                // When pawns are not on the home map they will not get dressed using the game's normal method
+
+                // This logic works but pawns will run back to the dresser to change cloths
+                foreach (ThingDef def in toWear.filter.AllowedThingDefs)
+                {
+    #if DEBUG
+                    Log.Warning("  Try Find Def " + def.label);
+    #endif
+                    if (pawn.apparel.CanWearWithoutDroppingAnything(def))
+                    {
+    #if DEBUG
+                        Log.Warning("   Can wear");
+    #endif
+                        foreach (Building_Dresser d in WorldComp.DressersToUse)
+                        {
+    #if DEBUG
+                            Log.Warning("   Check dresser " + d.Label);
+    #endif
+                            Apparel apparel;
+                            if (d.TryRemoveBestApparel(def, toWear.filter, out apparel))
+                            {
+    #if DEBUG
+                                Log.Warning("    Found " + apparel.LabelShort);
+    #endif
+                                pawn.apparel.Wear(apparel);
+                                break;
+                            }
+    #if DEBUG
+                            else
+                                Log.Warning("    No matching apparel found");
+    #endif
+                        }
+                    }
+    #if DEBUG
+                    else
+                        Log.Warning("  Can't wear");
+    #endif
+                }
+            }
 #if DEBUG
             Log.Message("End Main.SwapApparel" + Environment.NewLine);
 #endif
@@ -161,22 +248,15 @@ namespace ChangeDresser
                         if (!forBattle)
                         {
                             Command_Action a = new Command_Action();
-                            /*string texPath = "";
-                            if (texPath != null)
-                            {
-                                a.icon = ContentFinder<UnityEngine.Texture2D>.Get(texPath, true);
-                            }*/
                             List<ThingDef> tdList = new List<ThingDef>(o.filter.AllowedThingDefs);
-                            Texture2D tex = null;
                             if (tdList.Count > 0)
                             {
-                                tex = ContentFinder<Texture2D>.Get(tdList[0].graphicData.texPath, true);
+                                a.icon = Main.GetIcon(tdList[0]);
                             }
-                            if (tex == null)
+                            else
                             {
-                                tex = WidgetUtil.noneTexture;
+                                a.icon = WidgetUtil.noneTexture;
                             }
-                            a.icon = tex;
                             StringBuilder sb = new StringBuilder();
                             if (!__instance.outfits.CurrentOutfit.Equals(o))
                             {
@@ -257,22 +337,15 @@ namespace ChangeDresser
                         if (forBattle)
                         {
                             Command_Action a = new Command_Action();
-                            /*string texPath = "";
-                            if (texPath != null)
-                            {
-                                a.icon = ContentFinder<UnityEngine.Texture2D>.Get(texPath, true);
-                            }*/
                             List<ThingDef> tdList = new List<ThingDef>(o.filter.AllowedThingDefs);
-                            Texture2D tex = null;
                             if (tdList.Count > 0)
                             {
-                                tex = ContentFinder<Texture2D>.Get(tdList[0].graphicData.texPath, true);
+                                a.icon = Main.GetIcon(tdList[0]);
                             }
-                            if (tex == null)
+                            else
                             {
-                                tex = WidgetUtil.noneTexture;
+                                a.icon = WidgetUtil.noneTexture;
                             }
-                            a.icon = tex;
                             StringBuilder sb = new StringBuilder();
                             if (!pawn.outfits.CurrentOutfit.Equals(o))
                             {
@@ -390,6 +463,28 @@ namespace ChangeDresser
             }
         }
 
+        /*public static bool TryGetBestApparel(Thing original, Pawn pawn, out Thing betterThing, out Building_Dresser containingDresser)
+        {
+            containingDresser = null;
+            betterThing = null;
+            float baseApparelScore = 0f;
+
+            foreach (Building_Dresser dresser in WorldComp.DressersToUse)
+            {
+                float score = baseApparelScore;
+                Apparel a = dresser.FindBetterApparel(ref score, pawn, pawn.outfits.CurrentOutfit);
+
+                if (score > baseApparelScore && a != null)
+                {
+                    betterThing = a;
+                    baseApparelScore = score;
+                    containingDresser = dresser;
+                }
+
+            }
+            return betterThing != null && containingDresser != null;
+        }*/
+
         private static bool DoDressersHaveApparel()
         {
             foreach (Building_Dresser d in WorldComp.DressersToUse)
@@ -487,6 +582,45 @@ namespace ChangeDresser
         }
     }
 
+    [HarmonyPatch(typeof(ReservationManager), "CanReserve")]
+    static class Patch_ReservationManager_CanReserve
+    {
+        private static FieldInfo mapFI = null;
+        static void Postfix(ref bool __result, ReservationManager __instance, Pawn claimant, LocalTargetInfo target, int maxPawns, int stackCount, ReservationLayerDef layer, bool ignoreOtherReservations)
+        {
+            if (mapFI == null)
+            {
+                mapFI = typeof(ReservationManager).GetField("map", BindingFlags.NonPublic | BindingFlags.Instance);
+            }
+
+#if DEBUG
+            Log.Warning("\nCanReserve original result: " + __result);
+#endif
+            if (!__result && (target.Thing == null || target.Thing.def.defName.Equals("ChangeDresser")))
+            {
+                IEnumerable<Thing> things = ((Map)mapFI.GetValue(__instance))?.thingGrid.ThingsAt(target.Cell);
+                if (things != null)
+                {
+#if DEBUG
+                    Log.Warning("CanReserve - Found things");
+#endif
+                    foreach (Thing t in things)
+                    {
+#if DEBUG
+                        Log.Warning("CanReserve - def " + t.def.defName);
+#endif
+                        if (t.def.defName.Equals("ChangeDresser"))
+                        {
+#if DEBUG
+                            Log.Warning("CanReserve is now true\n");
+#endif
+                            __result = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
     /*[HarmonyPatch(typeof(Pawn_TraderTracker), "ColonyThingsWillingToBuy")]
     static class Patch_Pawn_TraderTracker_ColonyThingsWillingToBuy
     {
