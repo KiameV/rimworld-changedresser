@@ -1,4 +1,5 @@
 ﻿using ChangeDresser.UI.Enums;
+using ChangeDresser.UI.Util;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,8 @@ namespace ChangeDresser
         public readonly JobDef changeBodyJobDef = DefDatabase<JobDef>.GetNamed("ChangeBody", true);
         public readonly JobDef storeApparelJobDef = DefDatabase<JobDef>.GetNamed("StoreApparel", true);
         public readonly JobDef wearApparelFromStorageJobDef = DefDatabase<JobDef>.GetNamed("WearApparelFromStorage", true);
+
+        public static JobDef WEAR_APPAREL_FROM_DRESSER_JOB_DEF { get; private set; }
 
         public static readonly List<CurrentEditorEnum> SupportedEditors = new List<CurrentEditorEnum>(3);
 
@@ -37,6 +40,8 @@ namespace ChangeDresser
         {
             this.StoredApparel = new StoredApparel(this);
             this.stopWatch.Start();
+
+            WEAR_APPAREL_FROM_DRESSER_JOB_DEF = this.wearApparelFromStorageJobDef;
         }
 
         public void AddApparel(Apparel a)
@@ -387,9 +392,18 @@ namespace ChangeDresser
                     // Fix for an issue where apparel will appear on top of the dresser even though it's already stored inside
                     foreach (Thing t in base.Map.thingGrid.ThingsAt(this.Position))
                     {
-                        if (t != null && t != this && t is Apparel)
+                        if (t != null && t != this)
                         {
-                            this.AddApparel((Apparel)t);
+                            if (t is Apparel)
+                            {
+                                this.AddApparel((Apparel)t);
+                            }
+                            else
+                            {
+                                IntVec3 p = t.Position;
+                                p.x = p.x + 1;
+                                t.Position = p;
+                            }
                         }
                     }
                 }
@@ -487,7 +501,7 @@ namespace ChangeDresser
             int groupKey = 987767542;
 
             Command_Action a = new Command_Action();
-            a.icon = ContentFinder<UnityEngine.Texture2D>.Get("UI/manageapparel", true);
+            a.icon = WidgetUtil.manageapparelTexture;
             a.defaultDesc = "ChangeDresser.ManageApparelDesc".Translate();
             a.defaultLabel = "ChangeDresser.ManageApparel".Translate();
             a.activateSound = SoundDef.Named("Click");
@@ -496,7 +510,7 @@ namespace ChangeDresser
             l.Add(a);
 
             a = new Command_Action();
-            a.icon = ContentFinder<UnityEngine.Texture2D>.Get("UI/assignweapons", true);
+            a.icon = WidgetUtil.assignweaponsTexture;
             a.defaultDesc = "ChangeDresser.AssignOutfitsDesc".Translate();
             a.defaultLabel = "ChangeDresser.AssignOutfits".Translate();
             a.activateSound = SoundDef.Named("Click");
@@ -505,7 +519,7 @@ namespace ChangeDresser
             l.Add(a);
 
             a = new Command_Action();
-            a.icon = ContentFinder<UnityEngine.Texture2D>.Get("UI/empty", true);
+            a.icon = WidgetUtil.emptyTexture;
             a.defaultDesc = "ChangeDresser.EmptyDesc".Translate();
             a.defaultLabel = "ChangeDresser.Empty".Translate();
             a.activateSound = SoundDef.Named("Click");

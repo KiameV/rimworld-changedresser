@@ -72,6 +72,14 @@ namespace ChangeDresser.UI
                 List<Outfit> allOutfits = Current.Game.outfitDatabase.AllOutfits;
                 int y = 50 + HEIGHT + Y_BUFFER;
 
+
+                this.scrollPosition = GUI.BeginScrollView(
+                    new Rect(0, y, inRect.width, inRect.height - y - 50),
+                    this.scrollPosition,
+                    new Rect(0, y, 
+                        NAME_WIDTH + X_BUFFER + ((CHECKBOX_WIDTH + X_BUFFER) * allOutfits.Count), 
+                        (HEIGHT + Y_BUFFER) * WorldComp.PawnOutfits.Count + y));
+
                 // Header - Lists the Outfit names
                 int x = NAME_WIDTH + X_BUFFER;
                 //y = 0;
@@ -84,13 +92,6 @@ namespace ChangeDresser.UI
                 }
                 y += HEIGHT + Y_BUFFER;
 
-                this.scrollPosition = GUI.BeginScrollView(
-                    new Rect(0, y, inRect.width, inRect.height - y - 50),
-                    this.scrollPosition,
-                    new Rect(0, y, 
-                        NAME_WIDTH + X_BUFFER + ((CHECKBOX_WIDTH + X_BUFFER) * allOutfits.Count), 
-                        (HEIGHT + Y_BUFFER) * WorldComp.PawnOutfits.Count + y));
-                
                 // Use For Battle row
                 x = 0;
                 Widgets.Label(new Rect(x, y, NAME_WIDTH, HEIGHT), "ChangeDresser.UseForBattle".Translate());
