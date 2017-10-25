@@ -22,10 +22,11 @@ namespace ChangeDresser
             WidgetUtil.Initialize();
             
             Log.Message("ChangeDresser: Adding Harmony Postfix to Pawn.GetGizmos");
-            Log.Message("ChangeDresser: Adding Harmony Postfix to Pawn_ApparelTracker.Notify_ApparelAdded");
+            //Log.Message("ChangeDresser: Adding Harmony Postfix to Pawn_ApparelTracker.Notify_ApparelAdded");
             Log.Message("ChangeDresser: Adding Harmony Postfix to Pawn_DraftController.Drafted { set }");
             Log.Message("ChangeDresser: Adding Harmony Postfix to Pawn_DraftController.GetGizmos");
             Log.Message("ChangeDresser: Adding Harmony Postfix to JobGiver_OptimizeApparel.TryGiveJob(Pawn)");
+            Log.Message("ChangeDresser: Adding Harmony Postfix to ReservationManager.CanReserve");
         }
 
         public static Texture2D GetIcon(ThingDef td)
@@ -498,6 +499,88 @@ namespace ChangeDresser
         }
     }
 
+    [HarmonyPatch(typeof(TradeShip), "ColonyThingsWillingToBuy")]
+    static class Patch_TradeShip_ColonyThingsWillingToBuy
+    {
+        //private static FieldInfo pawnFieldInfo = null;
+        static void Postfix(ref IEnumerable<Thing> __result, Pawn playerNegotiator)
+        {
+            /*if (pawnFieldInfo == null)
+            {
+                pawnFieldInfo = typeof(Pawn_TraderTracker).GetField("pawn", BindingFlags.NonPublic | BindingFlags.Instance);
+            }
+
+            Pawn pawn = pawnFieldInfo.GetValue(__instance) as Pawn;*/
+
+            if (playerNegotiator != null && playerNegotiator.Map != null)
+            {
+                List<Thing> things = new List<Thing>();
+                if (__result != null)
+                {
+                    things.AddRange(__result);
+                }
+#if TRADE_DEBUG
+                Log.Warning("Patch TradeShip.ColonyThingsWillingToBuy: Pawn name: " + playerNegotiator?.Name);
+#endif
+                foreach (Building_Dresser d in WorldComp.DressersToUse)
+                {
+                    if (d.IncludeInTradeDeals && d.Map == playerNegotiator.Map)
+                    {
+                        things.AddRange(d.EmptyOnTop());
+                    }
+                }
+                __result = things;
+            }
+#if TRADE_DEBUG
+            else
+            {
+                Log.Warning("Patch TradeShip.ColonyThingsWillingToBuy: Pawn is null");
+            }
+#endif
+        }
+    }
+
+    /*[HarmonyPatch(typeof(TradeDeal), "TryExecute")]
+    static class Patch_TradeDeal_TryExecute
+    {
+        static void Postfix(ref bool __result)
+        {
+            if (__result)
+            {
+#if TRADE_DEBUG
+                Log.Warning("Start ChangeDresser.Patch_TradeDeal_TryExecute");
+#endif
+                foreach (Building_Dresser d in WorldComp.DressersToUse)
+                {
+                    if (d.Map != null)
+                    {
+                        d.HandleThingsOnTop();
+                    }
+                }
+#if TRADE_DEBUG
+                Log.Warning("End ChangeDresser.Patch_TradeDeal_TryExecute");
+#endif
+            }
+        }
+    }*/
+
+    [HarmonyPatch(typeof(Dialog_Trade), "Close")]
+    static class Patch_Dialog_Trade_Close
+    {
+        static void Postfix()
+        {
+            foreach (Building_Dresser d in WorldComp.DressersToUse)
+            {
+                if (d.Map != null)
+                {
+                    d.HandleThingsOnTop();
+                }
+            }
+        }
+    }
+
+
+    /* This prevents pawns from constantly switching apparel
     [HarmonyPatch(typeof(Pawn_ApparelTracker), "Notify_ApparelAdded")]
     static class Patch_Pawn_ApparelTracker_Notify_ApparelAdded
     {
@@ -580,7 +663,7 @@ namespace ChangeDresser
             Log.Message("End Pawn_ApparelTracker.Notify_ApparelAdded" + Environment.NewLine);
 #endif
         }
-    }
+    }*/
 
     [HarmonyPatch(typeof(ReservationManager), "CanReserve")]
     static class Patch_ReservationManager_CanReserve

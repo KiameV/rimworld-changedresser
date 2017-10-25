@@ -167,7 +167,7 @@ namespace ChangeDresser.UI
             catch (Exception e)
             {
                 Log.Error(this.GetType().Name + " closed due to: " + e.GetType().Name + " " + e.Message);
-                Messages.Message(this.GetType().Name + " closed due to: " + e.GetType().Name + " " + e.Message, MessageSound.Negative);
+                Messages.Message(this.GetType().Name + " closed due to: " + e.GetType().Name + " " + e.Message, MessageTypeDefOf.RejectInput);
                 base.Close();
             }
             finally

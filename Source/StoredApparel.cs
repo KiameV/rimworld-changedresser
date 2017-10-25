@@ -298,5 +298,20 @@ namespace ChangeDresser
             }
             return betterApparel;
         }
+
+        public IEnumerable<T> Empty<T>() where T : Thing
+        {
+            List<T> t = new List<T>(this.Count);
+            foreach (LinkedList<Apparel> ll in this.StoredApparelLookup.Values)
+            {
+                foreach (Apparel a in ll)
+                {
+                    t.Add(a as T);
+                }
+                ll.Clear();
+            }
+            this.StoredApparelLookup.Clear();
+            return t;
+        }
     }
 }

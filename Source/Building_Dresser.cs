@@ -10,8 +10,10 @@ using Verse.AI;
 
 namespace ChangeDresser
 {
-    public class Building_Dresser : Building_Storage, IStoreSettingsParent
+    public class Building_Dresser : Building_Storage//, IStoreSettingsParent
     {
+        public const long THIRTY_SECONDS = TimeSpan.TicksPerMinute / 2;
+
         public readonly JobDef changeApparelColorJobDef = DefDatabase<JobDef>.GetNamed("ChangeApparelColor", true);
         public readonly JobDef changeHairStyleJobDef = DefDatabase<JobDef>.GetNamed("ChangeHairStyle", true);
         public readonly JobDef changeBodyJobDef = DefDatabase<JobDef>.GetNamed("ChangeBody", true);
@@ -28,6 +30,9 @@ namespace ChangeDresser
         private readonly Stopwatch stopWatch = new Stopwatch();
 
         private Map CurrentMap { get; set; }
+
+        private bool includeInTradeDeals = true;
+        public bool IncludeInTradeDeals { get { return this.includeInTradeDeals; } }
 
         static Building_Dresser()
         {
@@ -46,7 +51,7 @@ namespace ChangeDresser
 
         public void AddApparel(Apparel a)
         {
-            if (a.Spawned)
+            if (a != null && a.Spawned)
             {
                 a.DeSpawn();
             }
@@ -62,41 +67,6 @@ namespace ChangeDresser
         {
             return this.StoredApparel.TryRemoveBestApparel(def, filter, out apparel);
         }
-
-        /*public bool UseInApparelLookup
-        {
-            get
-            {
-                return this.useInApparelLookup;
-            }
-            set
-            {
-#if DEBUG
-                Log.Warning("Building_Dresser.UseInApparelLookup.Set useInApparelLookup: " + value);
-#endif
-                if (this.useInApparelLookup != value)
-                {
-#if DEBUG
-                    Log.Warning(" useInApparelLookup changed");
-#endif
-                    this.useInApparelLookup = value;
-                    if (this.useInApparelLookup)
-                    {
-                        WorldComp.AddDresser(this);
-#if DEBUG
-                        Log.Warning(" added to WorldComp.DressersToUse. Count: " + WorldComp.DressersToUse.Count);
-#endif
-                    }
-                    else
-                    {
-                        WorldComp.RemoveDesser(this);
-#if DEBUG
-                        Log.Warning(" removed from WorldComp.DressersToUse. Count: " + WorldComp.DressersToUse.Count);
-#endif
-                    }
-                }
-            }
-        }*/
 
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
@@ -123,22 +93,6 @@ namespace ChangeDresser
             {
                 Log.Error(
                     "ChangeDresser:Building_Dresser.Destroy\n" +
-                    e.GetType().Name + " " + e.Message + "\n" +
-                    e.StackTrace);
-            }
-        }
-
-        public override void Discard()
-        {
-            try
-            {
-                this.Dispose();
-                base.Discard();
-            }
-            catch (Exception e)
-            {
-                Log.Error(
-                    "ChangeDresser:Building_Dresser.Discard\n" +
                     e.GetType().Name + " " + e.Message + "\n" +
                     e.StackTrace);
             }
@@ -199,6 +153,71 @@ namespace ChangeDresser
                     e.GetType().Name + " " + e.Message + "\n" +
                     e.StackTrace);
             }
+        }
+
+        public IEnumerable<Thing> EmptyOnTop()
+        {
+            IEnumerable<Thing> things = this.StoredApparel.Empty<Thing>();
+            foreach (Thing t in things)
+            {
+                if (!t.Spawned)
+                {
+                    Thing ouThing;
+                    if (!t.Spawned)
+                    {
+                        GenThing.TryDropAndSetForbidden(t, base.Position, this.CurrentMap, ThingPlaceMode.Near, out ouThing, false);
+                        if (!t.Spawned)
+                        {
+                            GenPlace.TryPlaceThing(t, base.Position, this.CurrentMap, ThingPlaceMode.Near);
+                        }
+                    }
+
+                    if (!t.Spawned)
+                    {
+                        this.AddApparel(t as Apparel);
+                    }
+                    else
+                    {
+                        this.Map.thingGrid.Deregister(t);
+                        t.Position = this.Position;
+                        this.Map.thingGrid.Register(t);
+                    }
+                }
+            }
+            return things;
+        }
+
+        public void HandleThingsOnTop()
+        {
+#if TRADE_DEBUG
+            Log.Warning("Start ChangeDresser.HandleThingsOnTop for " + this.Label + " Spawned: " + this.Spawned);
+#endif
+            if (this.Spawned)
+            {
+                foreach (Thing t in base.Map.thingGrid.ThingsAt(this.Position))
+                {
+#if TRADE_DEBUG
+                    Log.Warning("ChangeDresser.HandleThingsOnTop - Thing " + t?.Label);
+#endif
+                    if (t != null && t != this)
+                    {
+                        if (t is Apparel)
+                        {
+                            this.AddApparel((Apparel)t);
+                        }
+                        else
+                        {
+                            IntVec3 p = t.Position;
+                            p.x = p.x + 1;
+                            t.Position = p;
+                            Log.Warning("Moving " + t.Label);
+                        }
+                    }
+                }
+            }
+#if TRADE_DEBUG
+            Log.Warning("End ChangeDresser.HandleThingsOnTop");
+#endif
         }
 
         private Random random = null;
@@ -281,6 +300,7 @@ namespace ChangeDresser
             Log.Warning(" Scribe_Collections.Look tempApparelList");
 #endif
             Scribe_Collections.Look(ref this.tempApparelList, "apparel", LookMode.Deep, new object[0]);
+            Scribe_Values.Look(ref this.includeInTradeDeals, "includeInTradeDeals", true);
 #if DEBUG
             if (this.tempApparelList != null)
                 Log.Warning(" tempApparelList Count: " + this.tempApparelList.Count);
@@ -326,7 +346,7 @@ namespace ChangeDresser
 
         public override string GetInspectString()
         {
-            this.Tick();
+            //this.Tick();
             StringBuilder sb = new StringBuilder(base.GetInspectString());
             sb.Append("\n");
             sb.Append("ChangeDresser.StoragePriority".Translate());
@@ -336,10 +356,10 @@ namespace ChangeDresser
             sb.Append("ChangeDresser.ApparelCount".Translate());
             sb.Append(": ");
             sb.Append(this.Count);
-            //sb.Append("\n");
-            //sb.Append("ChangeDresser.UseAsApparelSource".Translate());
-            //sb.Append(": ");
-            //sb.Append(this.UseInApparelLookup.ToString());
+            sb.Append("\n");
+            sb.Append("ChangeDresser.IncludeInTradeDeals".Translate());
+            sb.Append(": ");
+            sb.Append(this.includeInTradeDeals.ToString());
             return sb.ToString();
         }
 
@@ -390,24 +410,9 @@ namespace ChangeDresser
                 if (base.Map != null)
                 {
                     // Fix for an issue where apparel will appear on top of the dresser even though it's already stored inside
-                    foreach (Thing t in base.Map.thingGrid.ThingsAt(this.Position))
-                    {
-                        if (t != null && t != this)
-                        {
-                            if (t is Apparel)
-                            {
-                                this.AddApparel((Apparel)t);
-                            }
-                            else
-                            {
-                                IntVec3 p = t.Position;
-                                p.x = p.x + 1;
-                                t.Position = p;
-                            }
-                        }
-                    }
+                    this.HandleThingsOnTop();
                 }
-                if (stopWatch.ElapsedTicks > TimeSpan.TicksPerMinute)
+                if (stopWatch.ElapsedTicks > THIRTY_SECONDS)
                 {
                     WorldComp.SortDressersToUse();
                     /*if (this.StoredApparel.FilterApparel)
@@ -526,10 +531,30 @@ namespace ChangeDresser
             a.action = 
                 delegate
                 {
-                    this.DropApparel(this.StoredApparel.Apparel, false);
+                    this.DropApparel(this.StoredApparel.Empty<Apparel>(), false);
                     this.StoredApparel.Clear();
                 };
             a.groupKey = groupKey + 2;
+            l.Add(a);
+
+            a = new Command_Action();
+            if (this.includeInTradeDeals)
+            {
+                a.icon = WidgetUtil.yesSellTexture;
+            }
+            else
+            {
+                a.icon = WidgetUtil.noSellTexture;
+            }
+            a.defaultDesc = "ChangeDresser.IncludeInTradeDealsDesc".Translate();
+            a.defaultLabel = "ChangeDresser.IncludeInTradeDeals".Translate();
+            a.activateSound = SoundDef.Named("Click");
+            a.action =
+                delegate
+                {
+                    this.includeInTradeDeals = !this.includeInTradeDeals;
+                };
+            a.groupKey = groupKey + 3;
             l.Add(a);
 
             return SaveStorageSettingsUtil.SaveStorageSettingsGizmoUtil.AddSaveLoadGizmos(l, SaveStorageSettingsUtil.SaveTypeEnum.Apparel_Management, this.settings.filter);

@@ -2,7 +2,6 @@
 <LanguageData>
 	<!-- Window Labels -->
 	<ChangeDresser.DresserLabel>Dresser</ChangeDresser.DresserLabel>
-	<ChangeDresser.ApparelGroupLabel>Apparel Group</ChangeDresser.ApparelGroupLabel>
 	<ChangeDresser.ApparelStorageLabel>Apparel Storage</ChangeDresser.ApparelStorageLabel>
 	
 	<!-- Gizmo (Command Button) -->
@@ -16,6 +15,8 @@
 	<ChangeDresser.ChangeToDesc>Change to this outfit.</ChangeDresser.ChangeToDesc>
 	<ChangeDresser.Wearing>Wearing</ChangeDresser.Wearing>
 	<ChangeDresser.WearingDesc>Currently wearing this outfit.</ChangeDresser.WearingDesc>
+	<ChangeDresser.IncludeInTradeDeals>Include Apparel In Trade</ChangeDresser.IncludeInTradeDeals>
+	<ChangeDresser.IncludeInTradeDealsDesc>Toggle whether to include the stored apparel in trade deals.</ChangeDresser.IncludeInTradeDealsDesc>
 	
 	<!-- Common Strings -->
 	<ChangeDresser.Worn>Worn</ChangeDresser.Worn>
@@ -49,26 +50,12 @@
 	<ChangeDresser.AlienSecondaryHairColor>Secondary Hair Color</ChangeDresser.AlienSecondaryHairColor>
 		
 	<!-- Assign Outfits UI -->
-	<ChangeDresser.UseAsApparelSource>Use Apparel From This Dresser</ChangeDresser.UseAsApparelSource>
 	<ChangeDresser.ManageOutfits>Manage Outfits</ChangeDresser.ManageOutfits>
 	<ChangeDresser.UseForBattle>Use In Battle</ChangeDresser.UseForBattle>
 	
 	<!-- Game UI -->
 	<ChangeDresser.StoragePriority>Storage Priority</ChangeDresser.StoragePriority>
 	<ChangeDresser.ApparelCount>Pieces of Apparel</ChangeDresser.ApparelCount>
-	<ChangeDresser.ApparelGroupCount>Apparel Groups</ChangeDresser.ApparelGroupCount>
-	
-	<!-- Apparel Storage UI -->
-	<ChangeDresser.CreateFromWorn>Create From Worn</ChangeDresser.CreateFromWorn>
-	<ChangeDresser.CreateFromStorage>Create From Storage</ChangeDresser.CreateFromStorage>
-	<!-- Informs the user that the pawn is already wearing the apparel group. Appears as "<group name> (<BeingWorn>) -->
-	<ChangeDresser.BeingWorn>Being worn</ChangeDresser.BeingWorn>
-	<!-- Appears when there is an apparel group owned by another pawn. Appears as "<Claim> <group name>" -->
-	<ChangeDresser.ClaimApparelGroup>Claim</ChangeDresser.ClaimApparelGroup>
-	<!-- The following appear as "<Edit> <group name> <FromWorn>" and "<Edit> <group name> <FromStorage>" -->
-	<ChangeDresser.EditApparelGroup>Edit</ChangeDresser.EditApparelGroup>
-	<ChangeDresser.FromWorn>From Worn</ChangeDresser.FromWorn>
-	<ChangeDresser.FromStorage>From Storage</ChangeDresser.FromStorage>
 	
 	<!-- Color Selection -->
 	<!-- These refer to the Red (R), Green (G), and Blue (B) values for the selected color -->
@@ -93,16 +80,12 @@
 	<ChangeDresser.ChangeHair>Change hair style/color</ChangeDresser.ChangeHair>
 	<ChangeDresser.ChangeBody>Change body attributes</ChangeDresser.ChangeBody>
 	<ChangeDresser.StoreApparel>Store apparel</ChangeDresser.StoreApparel>
-	<ChangeDresser.WearGroup>Wear Group</ChangeDresser.WearGroup>
-	<ChangeDresser.UnwearGroup>Unwear Group</ChangeDresser.UnwearGroup>
 	
 	<!-- Error Messages -->
 	<!-- The text after this string is either Hair Color or Apparel Color -->
 	<ChangeDresser.ProblemSavingPreset>Problem while saving Color Presets for</ChangeDresser.ProblemSavingPreset>
 	<!-- The text after this string is either Hair Color or Apparel Color -->
 	<ChangeDresser.ProblemLoadingPreset>Problem while loading Color Presets for</ChangeDresser.ProblemLoadingPreset>
-	<!-- The text before this string is the pawn's name. Text after this string is the apparel group's name -->
-	<ChangeDresser.UnableToWearApparelGroup>was unable to find apparel group</ChangeDresser.UnableToWearApparelGroup>
 	<!-- The text before this string is the pawn's name. -->
 	<ChangeDresser.AlreadyHasCombatApparel>already has combat apparel.</ChangeDresser.AlreadyHasCombatApparel>
 	
@@ -110,8 +93,4 @@
 	<ChangeDresser>Change Dresser</ChangeDresser>
 	<ChangeDresser.ShowBodyChange>Allow Body Change</ChangeDresser.ShowBodyChange>
 	<ChangeDresser.ShowGenderAgeChange>Allow Gender and Age Change</ChangeDresser.ShowGenderAgeChange>
-	<ChangeDresser.LinkStorageGroupWithDresser>Link Storage Groups to Dresser</ChangeDresser.LinkStorageGroupWithDresser>
-	<ChangeDresser.LinkStorageGroupWithDresserDesc>  Caution: Going from unlinked (unchecked) to linked (checked) mid-game can cause apparel to become lost if the storage group's parent dresser no longer exists.</ChangeDresser.LinkStorageGroupWithDresserDesc>
-	<ChangeDresser.UseLeftRightHairSelect>Use Left &lt;-&gt; Right Selection for Hair Styles</ChangeDresser.UseLeftRightHairSelect>
-	<ChangeDresser.UseRGBAndHSLSliders>Use RGB + HSL Sliders</ChangeDresser.UseRGBAndHSLSliders>
 </LanguageData>

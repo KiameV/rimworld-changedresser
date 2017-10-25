@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<JobDefs>
+<Defs>
   <JobDef>
     <defName>ChangeApparelColor</defName>
     <driverClass>ChangeDresser.DresserJobDriver.JobDriver_ChangeApparelColor</driverClass>
@@ -30,4 +30,4 @@
     <driverClass>ChangeDresser.DresserJobDriver.JobDriver_WearApparelFromStorage</driverClass>
     <reportString>wearing TargetA.</reportString>
   </JobDef>
-</JobDefs>
+</Defs>
