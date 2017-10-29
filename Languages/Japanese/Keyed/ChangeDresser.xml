@@ -27,14 +27,14 @@
   <ChangeDresser.Delete>削除</ChangeDresser.Delete>
   <ChangeDresser.SelectAll>全て選択</ChangeDresser.SelectAll>
   <ChangeDresser.DeselectAll>全て取り消す</ChangeDresser.DeselectAll>
-  <ChangeDresser.SelectPawn>Select Pawn</ChangeDresser.SelectPawn>
+  <ChangeDresser.SelectPawn>選択ポーン</ChangeDresser.SelectPawn>
 
   <!-- Editor Names (top selection bar in the Dresser window) -->
   <ChangeDresserHair>髪型/髪の色</ChangeDresserHair>
   <ChangeDresserApparelColor>服装の色</ChangeDresserApparelColor>
   <ChangeDresserBody>身体特徴</ChangeDresserBody>
-  <ChangeDresserAlienSkinColor>Alien Skin Color</ChangeDresserAlienSkinColor>
-  <ChangeDresserAlienHairColor>Alien Hair Color</ChangeDresserAlienHairColor>
+  <ChangeDresserAlienSkinColor>追加種族の肌色</ChangeDresserAlienSkinColor>
+  <ChangeDresserAlienHairColor>追加種族の髪色</ChangeDresserAlienHairColor>
 
   <!-- Dresser UI -->
   <ChangeDresser.BodyType>体型</ChangeDresser.BodyType>
@@ -44,14 +44,14 @@
   <ChangeDresser.HairStyle>髪型</ChangeDresser.HairStyle>
   <ChangeDresser.AgeBiological>肉体年齢</ChangeDresser.AgeBiological>
   <ChangeDresser.AgeChronological>暦上年齢</ChangeDresser.AgeChronological>
-  <ChangeDresser.AlienPrimarySkinColor>Primary Skin Color</ChangeDresser.AlienPrimarySkinColor>
-  <ChangeDresser.AlienSecondarySkinColor>Secondary Skin Color</ChangeDresser.AlienSecondarySkinColor>
-  <ChangeDresser.AlienPrimaryHairColor>Primary Hair Color</ChangeDresser.AlienPrimaryHairColor>
-  <ChangeDresser.AlienSecondaryHairColor>Secondary Hair Color</ChangeDresser.AlienSecondaryHairColor>
+  <ChangeDresser.AlienPrimarySkinColor>一番目の肌色</ChangeDresser.AlienPrimarySkinColor>
+  <ChangeDresser.AlienSecondarySkinColor>二番目の肌色</ChangeDresser.AlienSecondarySkinColor>
+  <ChangeDresser.AlienPrimaryHairColor>一番目の髪色</ChangeDresser.AlienPrimaryHairColor>
+  <ChangeDresser.AlienSecondaryHairColor>二番目の髪色</ChangeDresser.AlienSecondaryHairColor>
 
   <!-- Assign Outfits UI -->
-  <ChangeDresser.ManageOutfits>Manage Outfits</ChangeDresser.ManageOutfits>
-  <ChangeDresser.UseForBattle>Use In Battle</ChangeDresser.UseForBattle>
+  <ChangeDresser.ManageOutfits>衣装の管理</ChangeDresser.ManageOutfits>
+  <ChangeDresser.UseForBattle>戦闘で使用</ChangeDresser.UseForBattle>
 
   <!-- Game UI -->
   <ChangeDresser.StoragePriority>在庫の優先順位</ChangeDresser.StoragePriority>
@@ -93,4 +93,5 @@
   <ChangeDresser>Change Dresser</ChangeDresser>
   <ChangeDresser.ShowBodyChange>体型の変更を許可する</ChangeDresser.ShowBodyChange>
   <ChangeDresser.ShowGenderAgeChange>性別と年齢の変更を許可する</ChangeDresser.ShowGenderAgeChange>
+
 </LanguageData>
