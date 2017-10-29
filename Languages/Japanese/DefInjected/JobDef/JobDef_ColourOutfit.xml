@@ -6,7 +6,6 @@
   <ChangeHairStyle.reportString>髪型を変更する。(色も)</ChangeHairStyle.reportString>
   <ChangeBody.reportString>体型を変更する。</ChangeBody.reportString>
   <StoreApparel.reportString>衣服を保存</StoreApparel.reportString>
-  <WearApparelGroup.reportString>着用する衣服グループ。</WearApparelGroup.reportString>
   <WearApparelFromStorage.reportString>TargetAを着用する。</WearApparelFromStorage.reportString>
 
 
