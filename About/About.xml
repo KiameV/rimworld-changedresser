@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
-    <name>Change Dresser - BETA</name>
+    <name>Change Dresser - A18</name>
     <author>Kiame Vivacity</author>
-    <targetVersion>0.18.1700</targetVersion>
-	<url>https://ludeon.com/forums/index.php?topic=30973.0</url>
+    <targetVersion>0.18.0</targetVersion>
+	<url>https://ludeon.com/forums/index.php?topic=35632.0</url>
     <description>Adds a dresser and mirror which allow a pawn to change their apparal colors, hair color, skin color, hair style, body type, head type, and gender.
 
 Thank you translators!
