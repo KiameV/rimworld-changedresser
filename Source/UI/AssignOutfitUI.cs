@@ -183,13 +183,13 @@ namespace ChangeDresser.UI
                     {
                         Messages.Message(
                                 pawn.NameStringShort + " will no longer wear " + outfit.label +
-                                ". Could not find another Outfit for them to wear. Please fix this manually.", MessageTypeDefOf.CautionInput);
+                                ". Could not find another Outfit for them to wear. Please fix this manually.", MessageSound.Negative);
                     }
                     else
                     {
                         Messages.Message(
                                 pawn.NameStringShort + " will no longer wear " + outfit.label +
-                                " and will instead be assigned to wear " + newOutfit.label, MessageTypeDefOf.CautionInput);
+                                " and will instead be assigned to wear " + newOutfit.label, MessageSound.Negative);
                     }
                 }
             }

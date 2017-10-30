@@ -56,7 +56,7 @@ namespace ChangeDresser
             }
             catch (Exception e)
             {
-                Messages.Message("ChangeDresser.ProblemLoadingPreset".Translate() + " " + type + ".", MessageTypeDefOf.SilentInput);
+                Messages.Message("ChangeDresser.ProblemLoadingPreset".Translate() + " " + type + ".", MessageSound.Silent);
                 Log.Warning(e.GetType() + " " + e.Message);
                 presetsDto = CreateDefaultColorPresets();
             }
@@ -98,7 +98,7 @@ namespace ChangeDresser
             }
             catch (Exception e)
             {
-                Messages.Message("ChangeDresser.ProblemSavingPreset".Translate() + " " + type + ".", MessageTypeDefOf.SilentInput);
+                Messages.Message("ChangeDresser.ProblemSavingPreset".Translate() + " " + type + ".", MessageSound.Silent);
                 Log.Error(e.GetType() + " " + e.Message);
             }
         }

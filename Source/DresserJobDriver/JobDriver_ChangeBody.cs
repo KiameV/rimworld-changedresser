@@ -10,11 +10,6 @@ namespace ChangeDresser.DresserJobDriver
 {
     internal class JobDriver_ChangeBody : JobDriver
     {
-        public override bool TryMakePreToilReservations()
-        {
-            return true;
-        }
-
         protected override IEnumerable<Toil> MakeNewToils()
         {
             yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch).FailOnDespawnedOrNull(TargetIndex.A);
@@ -22,7 +17,7 @@ namespace ChangeDresser.DresserJobDriver
             {
                 initAction = delegate
                 {
-                    Find.WindowStack.Add(new DresserUI(DresserDtoFactory.Create(this.GetActor(), base.job, CurrentEditorEnum.ChangeDresserBody)));
+                    Find.WindowStack.Add(new DresserUI(DresserDtoFactory.Create(this.GetActor(), base.CurJob, CurrentEditorEnum.ChangeDresserBody)));
                 }
             };
             yield break;
