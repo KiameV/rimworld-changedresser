@@ -117,7 +117,7 @@
 		<size>(1,1)</size>
 		<designationHotKey>Misc12</designationHotKey>
 		<staticSunShadowHeight>0.5</staticSunShadowHeight>
-		<surfaceType>Item</surfaceType>
+		<surfaceType>None</surfaceType>
 		<canOverlapZones>false</canOverlapZones>
 		<placeWorkers>
 			<li>PlaceWorker_ShowFacilitiesConnections</li>

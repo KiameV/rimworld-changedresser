@@ -64,6 +64,12 @@ namespace ChangeDresser
             List<Apparel> worn = new List<Apparel>(pawn.apparel.WornApparel);
             foreach (Apparel a in worn)
             {
+                if (Settings.KeepForcedApparel && 
+                    pawn.outfits.forcedHandler.ForcedApparel.Contains(a))
+                {
+                    continue;
+                }
+                    
                 pawn.apparel.Remove(a);
 #if DEBUG
                 Log.Warning(" Apparel " + a.LabelShort + " removed");

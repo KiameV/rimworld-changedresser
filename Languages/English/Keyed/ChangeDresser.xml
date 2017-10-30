@@ -91,6 +91,7 @@
 	
 	<!-- Mod Settings -->
 	<ChangeDresser>Change Dresser</ChangeDresser>
+	<ChangeDresser.KeepForcedApparel>Keep Forced Apparel</ChangeDresser.KeepForcedApparel>
 	<ChangeDresser.ShowBodyChange>Allow Body Change</ChangeDresser.ShowBodyChange>
 	<ChangeDresser.ShowGenderAgeChange>Allow Gender and Age Change</ChangeDresser.ShowGenderAgeChange>
 </LanguageData>
