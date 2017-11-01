@@ -27,6 +27,7 @@ namespace ChangeDresser
             Log.Message("ChangeDresser: Adding Harmony Postfix to Pawn_DraftController.GetGizmos");
             Log.Message("ChangeDresser: Adding Harmony Postfix to JobGiver_OptimizeApparel.TryGiveJob(Pawn)");
             Log.Message("ChangeDresser: Adding Harmony Postfix to ReservationManager.CanReserve");
+            Log.Message("ChangeDresser: Adding Harmony Postfix to OutfitDatabase.TryDelete");
         }
 
         public static Texture2D GetIcon(ThingDef td)
@@ -546,6 +547,73 @@ namespace ChangeDresser
         }
     }
 
+    [HarmonyPatch(typeof(Dialog_Trade), "Close")]
+    static class Patch_Dialog_Trade_Close
+    {
+        static void Postfix()
+        {
+            foreach (Building_Dresser d in WorldComp.DressersToUse)
+            {
+                if (d.Map != null)
+                {
+                    d.HandleThingsOnTop();
+                }
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(ReservationManager), "CanReserve")]
+    static class Patch_ReservationManager_CanReserve
+    {
+        private static FieldInfo mapFI = null;
+        static void Postfix(ref bool __result, ReservationManager __instance, Pawn claimant, LocalTargetInfo target, int maxPawns, int stackCount, ReservationLayerDef layer, bool ignoreOtherReservations)
+        {
+            if (mapFI == null)
+            {
+                mapFI = typeof(ReservationManager).GetField("map", BindingFlags.NonPublic | BindingFlags.Instance);
+            }
+
+#if DEBUG
+            Log.Warning("\nCanReserve original result: " + __result);
+#endif
+            if (!__result && (target.Thing == null || target.Thing.def.defName.Equals("ChangeDresser")))
+            {
+                IEnumerable<Thing> things = ((Map)mapFI.GetValue(__instance))?.thingGrid.ThingsAt(target.Cell);
+                if (things != null)
+                {
+#if DEBUG
+                    Log.Warning("CanReserve - Found things");
+#endif
+                    foreach (Thing t in things)
+                    {
+#if DEBUG
+                        Log.Warning("CanReserve - def " + t.def.defName);
+#endif
+                        if (t.def.defName.Equals("ChangeDresser"))
+                        {
+#if DEBUG
+                            Log.Warning("CanReserve is now true\n");
+#endif
+                            __result = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(OutfitDatabase), "TryDelete")]
+    static class Patch_OutfitDatabase_TryDelete
+    {
+        static void Postfix(ref AcceptanceReport __result, Outfit outfit)
+        {
+            if (__result.Accepted)
+            {
+                WorldComp.OutfitsForBattle.Remove(outfit);
+            }
+        }
+    }
+
     /*[HarmonyPatch(typeof(TradeDeal), "TryExecute")]
     static class Patch_TradeDeal_TryExecute
     {
@@ -569,22 +637,6 @@ namespace ChangeDresser
             }
         }
     }*/
-
-    [HarmonyPatch(typeof(Dialog_Trade), "Close")]
-    static class Patch_Dialog_Trade_Close
-    {
-        static void Postfix()
-        {
-            foreach (Building_Dresser d in WorldComp.DressersToUse)
-            {
-                if (d.Map != null)
-                {
-                    d.HandleThingsOnTop();
-                }
-            }
-        }
-    }
-
 
     /* This prevents pawns from constantly switching apparel
     [HarmonyPatch(typeof(Pawn_ApparelTracker), "Notify_ApparelAdded")]
@@ -670,46 +722,6 @@ namespace ChangeDresser
 #endif
         }
     }*/
-
-    [HarmonyPatch(typeof(ReservationManager), "CanReserve")]
-    static class Patch_ReservationManager_CanReserve
-    {
-        private static FieldInfo mapFI = null;
-        static void Postfix(ref bool __result, ReservationManager __instance, Pawn claimant, LocalTargetInfo target, int maxPawns, int stackCount, ReservationLayerDef layer, bool ignoreOtherReservations)
-        {
-            if (mapFI == null)
-            {
-                mapFI = typeof(ReservationManager).GetField("map", BindingFlags.NonPublic | BindingFlags.Instance);
-            }
-
-#if DEBUG
-            Log.Warning("\nCanReserve original result: " + __result);
-#endif
-            if (!__result && (target.Thing == null || target.Thing.def.defName.Equals("ChangeDresser")))
-            {
-                IEnumerable<Thing> things = ((Map)mapFI.GetValue(__instance))?.thingGrid.ThingsAt(target.Cell);
-                if (things != null)
-                {
-#if DEBUG
-                    Log.Warning("CanReserve - Found things");
-#endif
-                    foreach (Thing t in things)
-                    {
-#if DEBUG
-                        Log.Warning("CanReserve - def " + t.def.defName);
-#endif
-                        if (t.def.defName.Equals("ChangeDresser"))
-                        {
-#if DEBUG
-                            Log.Warning("CanReserve is now true\n");
-#endif
-                            __result = true;
-                        }
-                    }
-                }
-            }
-        }
-    }
     /*[HarmonyPatch(typeof(Pawn_TraderTracker), "ColonyThingsWillingToBuy")]
     static class Patch_Pawn_TraderTracker_ColonyThingsWillingToBuy
     {
