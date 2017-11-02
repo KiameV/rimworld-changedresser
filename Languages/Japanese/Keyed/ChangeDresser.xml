@@ -13,8 +13,8 @@
   <ChangeDresser.EmptyDesc>ドレッサーの中身を空にします。服装グループの在庫は含まれません。</ChangeDresser.EmptyDesc>
   <ChangeDresser.ChangeTo>Change To</ChangeDresser.ChangeTo>
   <ChangeDresser.ChangeToDesc>この衣装に変更します。</ChangeDresser.ChangeToDesc>
-  <ChangeDresser.Wearing>着ています</ChangeDresser.Wearing>
-  <ChangeDresser.WearingDesc>現在この服を着ています。</ChangeDresser.WearingDesc>
+  <ChangeDresser.Wearing>着用中の服装</ChangeDresser.Wearing>
+  <ChangeDresser.WearingDesc>現在この服装を着ています。</ChangeDresser.WearingDesc>
   <ChangeDresser.IncludeInTradeDeals>衣装を売る</ChangeDresser.IncludeInTradeDeals>
   <ChangeDresser.IncludeInTradeDealsDesc>保存された衣装を取引の在庫に含めるかどうかを切り替えます。</ChangeDresser.IncludeInTradeDealsDesc>
 
