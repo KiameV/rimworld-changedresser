@@ -53,6 +53,7 @@
     <Compile Include="Building_ChangeMirror.cs" />
     <Compile Include="Building_Dresser.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeApparelColor.cs" />
+    <Compile Include="DresserJobDriver\JobDriver_ChangeBodyAlienColor.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeBody.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeHairStyle.cs" />
     <Compile Include="DresserJobDriver\JobDriver_StoreApparel.cs" />

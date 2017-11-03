@@ -19,6 +19,7 @@ namespace ChangeDresser
         public readonly JobDef changeBodyJobDef = DefDatabase<JobDef>.GetNamed("ChangeBody", true);
         public readonly JobDef storeApparelJobDef = DefDatabase<JobDef>.GetNamed("StoreApparel", true);
         public readonly JobDef wearApparelFromStorageJobDef = DefDatabase<JobDef>.GetNamed("WearApparelFromStorage", true);
+        public readonly JobDef changeBodyAlienColor = DefDatabase<JobDef>.GetNamed("ChangeBodyAlienColor", true);
 
         public static JobDef WEAR_APPAREL_FROM_DRESSER_JOB_DEF { get; private set; }
 
@@ -447,6 +448,7 @@ namespace ChangeDresser
 
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Pawn pawn)
         {
+            bool isAlien = AlienRaceUtil.IsAlien(pawn);
             List<FloatMenuOption> list = new List<FloatMenuOption>();
             if (pawn.apparel.WornApparel.Count > 0)
             {
@@ -458,7 +460,7 @@ namespace ChangeDresser
                         pawn.jobs.TryTakeOrderedJob(job);
                     }));
             }
-            if (!AlienRaceUtil.IsAlien(pawn) || AlienRaceUtil.HasHair(pawn))
+            if (!isAlien || AlienRaceUtil.HasHair(pawn))
             {
                 list.Add(new FloatMenuOption(
                     "ChangeDresser.ChangeHair".Translate(),
@@ -477,6 +479,17 @@ namespace ChangeDresser
                         Job job = new Job(this.changeBodyJobDef, this);
                         pawn.jobs.TryTakeOrderedJob(job);
                     }));
+
+                if (isAlien)
+                {
+                    list.Add(new FloatMenuOption(
+                        "ChangeDresser.ChangeAlienBodyColor".Translate(),
+                        delegate
+                        {
+                            Job job = new Job(this.changeBodyAlienColor, this);
+                            pawn.jobs.TryTakeOrderedJob(job);
+                        }));
+                }
             }
             list.Add(new FloatMenuOption(
                 "ChangeDresser.StoreApparel".Translate(),

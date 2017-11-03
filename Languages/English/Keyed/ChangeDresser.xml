@@ -80,6 +80,7 @@
 	<ChangeDresser.ChangeHair>Change hair style/color</ChangeDresser.ChangeHair>
 	<ChangeDresser.ChangeBody>Change body attributes</ChangeDresser.ChangeBody>
 	<ChangeDresser.StoreApparel>Store apparel</ChangeDresser.StoreApparel>
+	<ChangeDresser.ChangeAlienBodyColor>Change alien body color</ChangeDresser.ChangeAlienBodyColor>
 	
 	<!-- Error Messages -->
 	<!-- The text after this string is either Hair Color or Apparel Color -->
