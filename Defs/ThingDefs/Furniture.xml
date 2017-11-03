@@ -17,7 +17,7 @@
 				<cornerBR>Damage/Corner</cornerBR>
 			</damageData>
 		</graphicData>
-		<altitudeLayer>Building</altitudeLayer>
+		<altitudeLayer>FloorEmplacement</altitudeLayer>
 		<passability>PassThroughOnly</passability>
 		<fillPercent>0.4</fillPercent>
 		<castEdgeShadows>true</castEdgeShadows>
@@ -91,9 +91,10 @@
 		<graphicData>
 			<texPath>Furniture/ColorChangeDresser_mirror</texPath>
 			<graphicClass>Graphic_Multi</graphicClass>
+      <shaderType>CutoutComplex</shaderType>
 			<drawSize>(1,1)</drawSize>
 		</graphicData>
-		<altitudeLayer>Building</altitudeLayer>
+		<altitudeLayer>BuildingOnTop</altitudeLayer>
 		<passability>Standable</passability>
 		<fillPercent>0.4</fillPercent>
 		<castEdgeShadows>false</castEdgeShadows>
