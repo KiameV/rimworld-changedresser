@@ -458,7 +458,7 @@ namespace ChangeDresser
                         pawn.jobs.TryTakeOrderedJob(job);
                     }));
             }
-            if (!AlienRaceUtil.IsAlien(pawn))
+            if (!AlienRaceUtil.IsAlien(pawn) || AlienRaceUtil.HasHair(pawn))
             {
                 list.Add(new FloatMenuOption(
                     "ChangeDresser.ChangeHair".Translate(),

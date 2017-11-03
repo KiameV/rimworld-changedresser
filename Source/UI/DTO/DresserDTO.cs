@@ -51,8 +51,8 @@ namespace ChangeDresser.UI.DTO
 
         public SelectionColorWidgetDTO AlienSkinColorPrimary { get; protected set; }
         public SelectionColorWidgetDTO AlienSkinColorSecondary { get; protected set; }
-        public HairColorSelectionDTO AlienHairColorPrimary { get; protected set; }
-        public HairColorSelectionDTO AlienHairColorSecondary { get; protected set; }
+        //public HairColorSelectionDTO AlienHairColorPrimary { get; protected set; }
+        //public HairColorSelectionDTO AlienHairColorSecondary { get; protected set; }
 
         public DresserDTO(Pawn pawn, CurrentEditorEnum currentEditorEnum, List<CurrentEditorEnum> editors)
         {
@@ -84,8 +84,8 @@ namespace ChangeDresser.UI.DTO
 
             this.AlienSkinColorPrimary = null;
             this.AlienSkinColorSecondary = null;
-            this.AlienHairColorPrimary = null;
-            this.AlienHairColorSecondary = null;
+            //this.AlienHairColorPrimary = null;
+            //this.AlienHairColorSecondary = null;
 
             if (this.EditorTypeSelectionDto.Contains(CurrentEditorEnum.ChangeDresserApparelColor))
             {
@@ -154,10 +154,10 @@ namespace ChangeDresser.UI.DTO
                 this.AlienSkinColorPrimary.UpdatePawnListener += updatePawn;
             if (this.AlienSkinColorSecondary != null)
                 this.AlienSkinColorSecondary.UpdatePawnListener += updatePawn;
-            if (this.AlienHairColorPrimary != null)
-                this.AlienHairColorPrimary.UpdatePawnListener += updatePawn;
-            if (this.AlienHairColorSecondary != null)
-                this.AlienHairColorSecondary.UpdatePawnListener += updatePawn;
+            //if (this.AlienHairColorPrimary != null)
+            //    this.AlienHairColorPrimary.UpdatePawnListener += updatePawn;
+            //if (this.AlienHairColorSecondary != null)
+            //    this.AlienHairColorSecondary.UpdatePawnListener += updatePawn;
         }
 
         public void ResetToDefault()
@@ -181,8 +181,8 @@ namespace ChangeDresser.UI.DTO
             
             this.AlienSkinColorPrimary?.ResetToDefault();
             this.AlienSkinColorSecondary?.ResetToDefault();
-            this.AlienHairColorPrimary?.ResetToDefault();
-            this.AlienHairColorSecondary?.ResetToDefault();
+            //this.AlienHairColorPrimary?.ResetToDefault();
+            //this.AlienHairColorSecondary?.ResetToDefault();
 #if TRACE
             Log.Warning("End DresserDTO.ResetToDefault" + System.Environment.NewLine);
 #endif
