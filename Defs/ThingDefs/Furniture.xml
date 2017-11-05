@@ -52,9 +52,9 @@
 					<Comfort>0.05</Comfort>
 				</statOffsets>
 				<maxSimultaneous>1</maxSimultaneous>
-				<maxDistance>6</maxDistance>
 			</li>
-		</comps><inspectorTabs>
+		</comps>
+		<inspectorTabs>
 			<li>ITab_Storage</li>
 		</inspectorTabs>
 		<building>
@@ -128,7 +128,6 @@
 					<Comfort>0.05</Comfort>
 				</statOffsets>
 				<maxSimultaneous>1</maxSimultaneous>
-				<maxDistance>8</maxDistance>
 			</li>
 		</comps>
 		<building>

@@ -274,11 +274,34 @@ namespace ChangeDresser
             Apparel betterApparel = null;
             foreach (LinkedList<Apparel> ll in this.StoredApparelLookup.Values)
             {
+                bool skipApparelType = false;
                 foreach (Apparel apparel in ll)
                 {
-                    if (currentOutfit.filter.Allows(apparel))
+                    if (!currentOutfit.filter.Allows(apparel.def))
                     {
-                        if (!apparel.IsForbidden(pawn))
+                        continue;
+                    }
+                    else
+                    {
+                        if (Settings.KeepForcedApparel)
+                        {
+                            List<Apparel> wornApparel = pawn.apparel.WornApparel;
+                            for (int i = 0; i < wornApparel.Count; i++)
+                            {
+                                if (!ApparelUtility.CanWearTogether(wornApparel[i].def, apparel.def) &&
+                                    !pawn.outfits.forcedHandler.IsForced(wornApparel[i]))
+                                {
+                                    skipApparelType = true;
+                                    break;
+                                }
+                            }
+                            if (skipApparelType)
+                            {
+                                continue;
+                            }
+                        }
+                        if (!apparel.IsForbidden(pawn) &&
+                            currentOutfit.filter.Allows(apparel.def))
                         {
                             float gain = JobGiver_OptimizeApparel.ApparelScoreGain(pawn, apparel);
                             if (gain >= 0.05f && gain > baseApparelScore)
@@ -294,6 +317,10 @@ namespace ChangeDresser
                             }
                         }
                     }
+                }
+                if (skipApparelType)
+                {
+                    continue;
                 }
             }
             return betterApparel;
