@@ -276,6 +276,55 @@ namespace ChangeDresser
             {
                 foreach (Apparel apparel in ll)
                 {
+                    if (!currentOutfit.filter.Allows(apparel.def))
+                    {
+                        break;
+                    }
+
+                    if (Settings.KeepForcedApparel)
+                    {
+                        bool skipApparelType = false;
+                        List<Apparel> wornApparel = pawn.apparel.WornApparel;
+                        for (int i = 0; i < wornApparel.Count; i++)
+                        {
+                            if (!ApparelUtility.CanWearTogether(wornApparel[i].def, apparel.def, pawn.RaceProps.body) &&
+                                !pawn.outfits.forcedHandler.IsForced(wornApparel[i]))
+                            {
+                                skipApparelType = true;
+                                break;
+                            }
+                        }
+                        if (skipApparelType)
+                        {
+                            break;
+                        }
+                    }
+
+                    if (!apparel.IsForbidden(pawn) &&
+                        currentOutfit.filter.Allows(apparel.def))
+                    {
+                        float gain = JobGiver_OptimizeApparel.ApparelScoreGain(pawn, apparel);
+                        if (gain >= 0.05f && gain > baseApparelScore)
+                        {
+                            if (ApparelUtility.HasPartsToWear(pawn, apparel.def))
+                            {
+                                if (ReservationUtility.CanReserveAndReach(pawn, dresser, PathEndMode.OnCell, pawn.NormalMaxDanger(), 1))
+                                {
+                                    betterApparel = apparel;
+                                    baseApparelScore = gain;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return betterApparel;
+            /*
+            Apparel betterApparel = null;
+            foreach (LinkedList<Apparel> ll in this.StoredApparelLookup.Values)
+            {
+                foreach (Apparel apparel in ll)
+                {
                     if (currentOutfit.filter.Allows(apparel))
                     {
                         if (Settings.KeepForcedApparel)
@@ -309,7 +358,7 @@ namespace ChangeDresser
                     }
                 }
             }
-            return betterApparel;
+            return betterApparel;*/
         }
 
         public IEnumerable<T> Empty<T>() where T : Thing
