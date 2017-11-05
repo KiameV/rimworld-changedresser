@@ -278,6 +278,19 @@ namespace ChangeDresser
                 {
                     if (currentOutfit.filter.Allows(apparel))
                     {
+                        if (Settings.KeepForcedApparel)
+                        {
+                            List<Apparel> wornApparel = pawn.apparel.WornApparel;
+                            for (int i = 0; i < wornApparel.Count; i++)
+                            {
+                                if (!ApparelUtility.CanWearTogether(wornApparel[i].def, apparel.def, pawn.RaceProps.body) &&
+                                    !pawn.outfits.forcedHandler.AllowedToAutomaticallyDrop(wornApparel[i]))
+                                {
+                                    continue;
+                                }
+                            }
+                        }
+
                         if (!apparel.IsForbidden(pawn))
                         {
                             float gain = JobGiver_OptimizeApparel.ApparelScoreGain(pawn, apparel);

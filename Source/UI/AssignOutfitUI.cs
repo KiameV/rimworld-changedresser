@@ -23,7 +23,7 @@ namespace ChangeDresser.UI
             this.forcePause = true;
             this.closeOnClickedOutside = false;
             
-            foreach (Pawn p in PawnsFinder.AllMapsAndWorld_Alive)
+            foreach (Pawn p in PawnsFinder.AllMapsWorldAndTemporary_Alive)
             {
                 if (p.Faction == Faction.OfPlayer && p.def.race.Humanlike)
                 {
