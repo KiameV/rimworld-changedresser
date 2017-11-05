@@ -274,17 +274,17 @@ namespace ChangeDresser
             Apparel betterApparel = null;
             foreach (LinkedList<Apparel> ll in this.StoredApparelLookup.Values)
             {
-                bool skipApparelType = false;
                 foreach (Apparel apparel in ll)
                 {
                     if (!currentOutfit.filter.Allows(apparel.def))
                     {
-                        continue;
+                        break;
                     }
                     else
                     {
                         if (Settings.KeepForcedApparel)
                         {
+                            bool skipApparelType = false;
                             List<Apparel> wornApparel = pawn.apparel.WornApparel;
                             for (int i = 0; i < wornApparel.Count; i++)
                             {
@@ -297,7 +297,7 @@ namespace ChangeDresser
                             }
                             if (skipApparelType)
                             {
-                                continue;
+                                break;
                             }
                         }
                         if (!apparel.IsForbidden(pawn) &&
@@ -317,10 +317,6 @@ namespace ChangeDresser
                             }
                         }
                     }
-                }
-                if (skipApparelType)
-                {
-                    continue;
                 }
             }
             return betterApparel;
