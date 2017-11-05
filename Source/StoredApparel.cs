@@ -301,7 +301,7 @@ namespace ChangeDresser
                             }
                         }
                         if (!apparel.IsForbidden(pawn) &&
-                            currentOutfit.filter.Allows(apparel.def))
+                            currentOutfit.filter.Allows(apparel))
                         {
                             float gain = JobGiver_OptimizeApparel.ApparelScoreGain(pawn, apparel);
                             if (gain >= 0.05f && gain > baseApparelScore)
