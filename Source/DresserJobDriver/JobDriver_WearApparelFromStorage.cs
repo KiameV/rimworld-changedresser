@@ -30,6 +30,10 @@ namespace ChangeDresser.DresserJobDriver
 #if DEBUG || DEBUG_TRACKER
                             Log.Warning(" Remove " + w.Label);
 #endif
+                            if (Settings.KeepForcedApparel && pawn.outfits.forcedHandler.IsForced(w))
+                            {
+                                continue;
+                            }
                             pawn.apparel.Remove(w);
                         }
 
