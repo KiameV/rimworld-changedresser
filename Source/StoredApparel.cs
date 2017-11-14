@@ -13,7 +13,7 @@ namespace ChangeDresser
         private readonly int UniqueId;
 
         private readonly Building_Dresser Dresser;
-        private Dictionary<Def, LinkedList<Apparel>> StoredApparelLookup = new Dictionary<Def, LinkedList<Apparel>>();
+        internal Dictionary<Def, LinkedList<Apparel>> StoredApparelLookup = new Dictionary<Def, LinkedList<Apparel>>();
         //public bool FilterApparel { get; set; }
         public int Count
         {

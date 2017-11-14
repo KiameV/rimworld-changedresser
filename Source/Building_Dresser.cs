@@ -27,7 +27,7 @@ namespace ChangeDresser
 
         public const StoragePriority DefaultStoragePriority = StoragePriority.Low;
 
-        private readonly StoredApparel StoredApparel;
+        internal readonly StoredApparel StoredApparel;
         private readonly Stopwatch stopWatch = new Stopwatch();
 
         private Map CurrentMap { get; set; }
@@ -81,6 +81,17 @@ namespace ChangeDresser
                 base.settings.CopyFrom(this.def.building.defaultStorageSettings);
                 base.settings.filter.SetDisallowAll();
             }
+
+            foreach (Building_RepairChangeDresser r in BuildingUtil.FindThingsOfTypeNextTo<Building_RepairChangeDresser>(base.Map, base.Position))
+            {
+#if DEBUG_REPAIR
+                Log.Warning("Adding Dresser " + this.Label + " to " + r.Label);
+#endif
+                if (!r.AttachedDressers.Contains(this))
+                {
+                    r.AttachedDressers.AddLast(this);
+                }
+            }
         }
 
         public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
@@ -132,6 +143,14 @@ namespace ChangeDresser
                     "ChangeDresser:Building_Dresser.Dispose\n" +
                     e.GetType().Name + " " + e.Message + "\n" +
                     e.StackTrace);
+            }
+            
+            foreach (Building_RepairChangeDresser r in BuildingUtil.FindThingsOfTypeNextTo<Building_RepairChangeDresser>(base.Map, base.Position))
+            {
+#if DEBUG_REPAIR
+                Log.Warning("Removing Dresser " + this.Label + " to " + r.Label);
+#endif
+                r.AttachedDressers.Remove(this);
             }
         }
 

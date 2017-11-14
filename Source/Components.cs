@@ -7,7 +7,59 @@ using System.Diagnostics;
 
 namespace ChangeDresser
 {
-    class WorldComp : WorldComponent
+    /*class GameComp : GameComponent
+    {
+        public static ThingDef DresserDef { get; private set; }
+        public static ThingDef MirrorDef { get; private set; }
+
+        public GameComp(Game game) : base() { DresserDef = MirrorDef = null; }
+
+        public override void FinalizeInit()
+        {
+            base.FinalizeInit();
+            
+            if (DresserDef == null)
+            {
+                foreach (ThingDef td in DefDatabase<ThingDef>.AllDefs)
+                {
+                    if (DresserDef == null &&
+                        td.defName.Equals("ChangeDresser"))
+                    {
+                        DresserDef = td;
+                    }
+                    else if (MirrorDef == null &&
+                             td.defName.Equals("ChangeMirror"))
+                    {
+                        MirrorDef = td;
+                    }
+
+                    if (DresserDef != null && MirrorDef != null)
+                    {
+                        break;
+                    }
+                }
+
+                foreach (ThingDef td in DefDatabase<ThingDef>.AllDefs)
+                {
+                    CompProperties_AffectedByFacilities comp = td.GetCompProperties<CompProperties_AffectedByFacilities>();
+                    if (comp != null && td.defName.Contains("Bed"))
+                    {
+                        if (!comp.linkableFacilities.Contains(DresserDef))
+                        {
+                            comp.linkableFacilities.Add(DresserDef);
+                        }
+
+                        if (!comp.linkableFacilities.Contains(MirrorDef))
+                        {
+                            comp.linkableFacilities.Add(MirrorDef);
+                        }
+                    }
+                }
+            }
+        }
+    }*/
+
+    public class WorldComp : WorldComponent
     {
         private static Stopwatch stopWatch = null;
 

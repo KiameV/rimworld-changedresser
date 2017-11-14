@@ -56,6 +56,8 @@
 	<!-- Game UI -->
 	<ChangeDresser.StoragePriority>Storage Priority</ChangeDresser.StoragePriority>
 	<ChangeDresser.ApparelCount>Pieces of Apparel</ChangeDresser.ApparelCount>
+	<!-- Repair UI -->
+	<ChangeDresser.AttachedDressers>Attached Dressers</ChangeDresser.AttachedDressers>
 	
 	<!-- Color Selection -->
 	<!-- These refer to the Red (R), Green (G), and Blue (B) values for the selected color -->

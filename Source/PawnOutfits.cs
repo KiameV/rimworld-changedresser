@@ -6,7 +6,7 @@ using Verse;
 
 namespace ChangeDresser
 {
-    class PawnOutfits : IExposable
+    public class PawnOutfits : IExposable
     {
         public List<Outfit> Outfits = new List<Outfit>();
         public Pawn Pawn = null;

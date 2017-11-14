@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
-
 	<ThingDef ParentName="ArtableFurnitureBase">
 		<defName>ChangeDresser</defName>
 		<label>change dresser</label>
@@ -138,6 +137,73 @@
 		</building>
 		<hasInteractionCell>True</hasInteractionCell>
 		<interactionCellOffset>(0,0,1)</interactionCellOffset>
+		<designationCategory>Furniture</designationCategory>
+	</ThingDef>
+	
+	<ThingDef ParentName="ArtableFurnitureBase">
+		<defName>RepairChangeDresser</defName>
+		<label>change dresser mending attachment</label>
+		<description>An attachment to change dressers which can mend the stored apparel.</description>
+		<thingClass>ChangeDresser.Building_RepairChangeDresser</thingClass>
+		<graphicData>
+			<texPath>Furniture/RepairChangeDresser</texPath>
+			<graphicClass>Graphic_Multi</graphicClass>
+			<drawSize>(1,1)</drawSize>
+			<damageData>
+				<cornerTL>Damage/Corner</cornerTL>
+				<cornerTR>Damage/Corner</cornerTR>
+				<cornerBL>Damage/Corner</cornerBL>
+				<cornerBR>Damage/Corner</cornerBR>
+			</damageData>
+		</graphicData>
+		<altitudeLayer>FloorEmplacement</altitudeLayer>
+		<passability>PassThroughOnly</passability>
+		<fillPercent>0.4</fillPercent>
+		<castEdgeShadows>true</castEdgeShadows>
+		<stuffCategories>
+			<li>Metallic</li>
+			<li>Woody</li>
+			<li>Stony</li>
+		</stuffCategories>
+		<costStuffCount>20</costStuffCount>
+		<costList>
+			<Component>6</Component>
+			<Steel>250</Steel>
+		</costList>
+		<defaultPlacingRot>South</defaultPlacingRot>
+		<statBases>
+			<MaxHitPoints>100</MaxHitPoints>
+			<Mass>30</Mass>
+			<WorkToBuild>20000</WorkToBuild>
+			<Flammability>1.0</Flammability>
+			<Beauty>-10</Beauty>
+		</statBases>
+		<size>(1,1)</size>
+		<designationHotKey>Misc12</designationHotKey>
+		<staticSunShadowHeight>0.5</staticSunShadowHeight>
+		<surfaceType>Item</surfaceType>
+		<canOverlapZones>false</canOverlapZones>
+		<placeWorkers>
+			<li>PlaceWorker_ShowFacilitiesConnections</li>
+		</placeWorkers>
+		<comps>
+			<li Class="CompProperties_Breakdownable"/>
+			<li Class="CompProperties_Flickable"/>
+			<li Class="CompProperties_Facility">
+				<maxSimultaneous>1</maxSimultaneous>
+				<maxDistance>1</maxDistance>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>300</basePowerConsumption>
+				<shortCircuitInRain>true</shortCircuitInRain>
+				<startElectricalFires>true</startElectricalFires>
+			</li>
+		</comps>
+		<building>
+			<ignoreStoredThingsBeauty>false</ignoreStoredThingsBeauty>
+		</building>
+		<hasInteractionCell>false</hasInteractionCell>
 		<designationCategory>Furniture</designationCategory>
 	</ThingDef>
 </Defs>
