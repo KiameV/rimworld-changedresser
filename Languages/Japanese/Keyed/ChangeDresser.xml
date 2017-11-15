@@ -56,6 +56,9 @@
   <!-- Game UI -->
   <ChangeDresser.StoragePriority>在庫の優先順位</ChangeDresser.StoragePriority>
   <ChangeDresser.ApparelCount>服装の在庫数</ChangeDresser.ApparelCount>
+  <!-- Repair UI -->
+  <ChangeDresser.AttachedDressers>ドレッサーの付属品</ChangeDresser.AttachedDressers>
+  <ChangeDresser.IsMending>修繕する</ChangeDresser.IsMending>
 
   <!-- Color Selection -->
   <!-- These refer to the Red (R), Green (G), and Blue (B) values for the selected color -->
@@ -80,6 +83,7 @@
   <ChangeDresser.ChangeHair>髪型や髪色を変更</ChangeDresser.ChangeHair>
   <ChangeDresser.ChangeBody>体型を変更</ChangeDresser.ChangeBody>
   <ChangeDresser.StoreApparel>服装の在庫</ChangeDresser.StoreApparel>
+  <ChangeDresser.ChangeAlienBodyColor>エイリアンの体色を変更</ChangeDresser.ChangeAlienBodyColor>
 
   <!-- Error Messages -->
   <!-- The text after this string is either Hair Color or Apparel Color -->
@@ -91,6 +95,7 @@
 
   <!-- Mod Settings -->
   <ChangeDresser>Change Dresser</ChangeDresser>
+  <ChangeDresser.KeepForcedApparel>衣装を強制する</ChangeDresser.KeepForcedApparel>
   <ChangeDresser.ShowBodyChange>体型の変更を許可する</ChangeDresser.ShowBodyChange>
   <ChangeDresser.ShowGenderAgeChange>性別と年齢の変更を許可する</ChangeDresser.ShowGenderAgeChange>
 
