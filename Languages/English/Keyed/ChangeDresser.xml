@@ -58,6 +58,7 @@
 	<ChangeDresser.ApparelCount>Pieces of Apparel</ChangeDresser.ApparelCount>
 	<!-- Repair UI -->
 	<ChangeDresser.AttachedDressers>Attached Dressers</ChangeDresser.AttachedDressers>
+	<ChangeDresser.IsMending>Is Mending</ChangeDresser.IsMending>
 	
 	<!-- Color Selection -->
 	<!-- These refer to the Red (R), Green (G), and Blue (B) values for the selected color -->

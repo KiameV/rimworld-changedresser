@@ -10,15 +10,14 @@ namespace ChangeDresser
 {
     class Building_RepairChangeDresser : Building
     {
-        public const long FIFTEEN_SECONDS = TimeSpan.TicksPerSecond * 15;
-
-        public static float RepairRate = 0.1f;
+        private const int LOW_POWER_COST = 6;
+        //private const int RARE_TICKS_PER_HP = 4;
 
         public LinkedList<Building_Dresser> AttachedDressers = new LinkedList<Building_Dresser>();
         public CompPowerTrader compPowerTrader;
-        public Stopwatch stopwatch = new Stopwatch();
 
         private bool isRepairing = false;
+        //private int rareTickCount = 0;
 
         public override string GetInspectString()
         {
@@ -28,6 +27,10 @@ namespace ChangeDresser
             sb.Append("ChangeDresser.AttachedDressers".Translate());
             sb.Append(": ");
             sb.Append(this.AttachedDressers.Count);
+            sb.Append("\n");
+            sb.Append("ChangeDresser.IsMending".Translate());
+            sb.Append(": ");
+            sb.Append(this.isRepairing);
             return sb.ToString();
         }
 
@@ -35,6 +38,7 @@ namespace ChangeDresser
         {
             base.SpawnSetup(map, respawningAfterLoad);
             this.compPowerTrader = base.GetComp<CompPowerTrader>();
+            this.compPowerTrader.PowerOutput = -LOW_POWER_COST;
 
             this.AttachedDressers = BuildingUtil.FindThingsOfTypeNextTo<Building_Dresser>(base.Map, base.Position);
 #if DEBUG_REPAIR
@@ -52,73 +56,58 @@ namespace ChangeDresser
             this.AttachedDressers.Clear();
         }
 
-        public override void TickRare()
+        public override void TickLong()
         {
-            long dt;
-            if (!this.stopwatch.IsRunning)
+            this.isRepairing = false;
+            if (!this.compPowerTrader.PowerOn)
             {
-                this.stopwatch.Start();
+                goto LEAVE_LOOP;
+            }
+
+            /*++this.rareTickCount;
+            if (this.rareTickCount < RARE_TICKS_PER_HP)
+            {
+                Log.Warning(rareTickCount + " is less than " + RARE_TICKS_PER_HP + ", return");
                 return;
             }
-            else if (!this.isRepairing &&
-                     this.stopwatch.ElapsedTicks < FIFTEEN_SECONDS)
+            this.rareTickCount = 0;*/
+
+            for (LinkedListNode<Building_Dresser> n = this.AttachedDressers.First; n != null; n = n.Next)
             {
-                return;
-            }
-            else
-            {
-                if (!this.isRepairing)
+                Building_Dresser d = n.Value;
+                if (!d.Spawned)
                 {
-                    dt = 10;
+                    this.AttachedDressers.Remove(n);
                 }
                 else
                 {
-                    dt = stopwatch.ElapsedMilliseconds;
-                }
-                this.stopwatch.Reset();
-            }
-
-            Log.Warning("Repair Tick dt: " + dt + " Repair Amount: " + dt * RepairRate);
-
-            this.isRepairing = false;
-            float repairAmount = dt * RepairRate;
-            if (this.compPowerTrader.PowerOn)
-            {
-                for (LinkedListNode<Building_Dresser> n = this.AttachedDressers.First; n != null; n = n.Next)
-                {
-                    Building_Dresser d = n.Value;
-                    if (!d.Spawned)
+                    foreach (LinkedList<Apparel> l in d.StoredApparel.StoredApparelLookup.Values)
                     {
-                        this.AttachedDressers.Remove(n);
-                    }
-                    else
-                    {
-                        foreach (LinkedList<Apparel> l in d.StoredApparel.StoredApparelLookup.Values)
+                        foreach (Apparel a in l)
                         {
-                            foreach (Apparel a in l)
+                            if (a.HitPoints < a.MaxHitPoints)
                             {
-                                if (a.HitPoints < a.MaxHitPoints)
-                                {
-                                    isRepairing = true;
-                                    a.HitPoints = (int)(a.HitPoints * repairAmount);
-                                }
+                                isRepairing = true;
+                                a.HitPoints += 1;
+                                goto LEAVE_LOOP;
                             }
                         }
                     }
                 }
+            }
 
-                if (this.isRepairing)
-                {
-                    float generatedHeat = GenTemperature.ControlTemperatureTempChange(
-                        base.Position, base.Map, 10, float.MaxValue);
-                    this.GetRoomGroup().Temperature += generatedHeat;
-
-                    this.compPowerTrader.PowerOutput = -this.compPowerTrader.Props.basePowerConsumption;
-                }
-                else
-                {
-                    this.compPowerTrader.PowerOutput = this.compPowerTrader.Props.basePowerConsumption * -0.0285714285714286f;
-                }
+            LEAVE_LOOP:
+            if (this.isRepairing)
+            {
+                float generatedHeat = GenTemperature.ControlTemperatureTempChange(
+                    base.Position, base.Map, 10, float.MaxValue);
+                this.GetRoomGroup().Temperature += generatedHeat;
+                
+                this.compPowerTrader.PowerOutput = -this.compPowerTrader.Props.basePowerConsumption;
+            }
+            else
+            {
+                this.compPowerTrader.PowerOutput = this.compPowerTrader.Props.basePowerConsumption * -0.0285714285714286f;
             }
         }
     }

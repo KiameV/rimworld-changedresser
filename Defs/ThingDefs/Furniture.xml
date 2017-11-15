@@ -78,8 +78,7 @@
 		<hasInteractionCell>True</hasInteractionCell>
 		<interactionCellOffset>(0,0,1)</interactionCellOffset>
 		<designationCategory>Furniture</designationCategory>
-		<!--<surfaceType>None</surfaceType>
-    <tickerType>Long</tickerType>-->
+		<tickerType>Long</tickerType>
 	</ThingDef>
 
 	<ThingDef ParentName="ArtableFurnitureBase">
@@ -142,7 +141,7 @@
 	
 	<ThingDef ParentName="ArtableFurnitureBase">
 		<defName>RepairChangeDresser</defName>
-		<label>change dresser mending attachment</label>
+		<label>mending attachment</label>
 		<description>An attachment to change dressers which can mend the stored apparel.</description>
 		<thingClass>ChangeDresser.Building_RepairChangeDresser</thingClass>
 		<graphicData>
@@ -205,5 +204,10 @@
 		</building>
 		<hasInteractionCell>false</hasInteractionCell>
 		<designationCategory>Furniture</designationCategory>
+		<tickerType>Long</tickerType>
+		<researchPrerequisites>
+			<li>Mending</li>
+			<li>MultiAnalyzer</li>
+		</researchPrerequisites>
 	</ThingDef>
 </Defs>
