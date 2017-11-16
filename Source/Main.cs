@@ -18,8 +18,6 @@ namespace ChangeDresser
         {
             var harmony = HarmonyInstance.Create("com.changedresser.rimworld.mod");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
-
-            WidgetUtil.Initialize();
             
             Log.Message("ChangeDresser: Adding Harmony Postfix to Pawn.GetGizmos");
             //Log.Message("ChangeDresser: Adding Harmony Postfix to Pawn_ApparelTracker.Notify_ApparelAdded");
@@ -506,58 +504,99 @@ namespace ChangeDresser
         }
     }
 
-    [HarmonyPatch(typeof(TradeShip), "ColonyThingsWillingToBuy")]
-    static class Patch_TradeShip_ColonyThingsWillingToBuy
+    static class TradeUtil
     {
-        //private static FieldInfo pawnFieldInfo = null;
-        static void Postfix(ref IEnumerable<Thing> __result, Pawn playerNegotiator)
-        {
-            /*if (pawnFieldInfo == null)
-            {
-                pawnFieldInfo = typeof(Pawn_TraderTracker).GetField("pawn", BindingFlags.NonPublic | BindingFlags.Instance);
-            }
-
-            Pawn pawn = pawnFieldInfo.GetValue(__instance) as Pawn;*/
-
-            if (playerNegotiator != null && playerNegotiator.Map != null)
-            {
-                List<Thing> things = new List<Thing>();
-                if (__result != null)
-                {
-                    things.AddRange(__result);
-                }
-#if TRADE_DEBUG
-                Log.Warning("Patch TradeShip.ColonyThingsWillingToBuy: Pawn name: " + playerNegotiator?.Name);
-#endif
-                foreach (Building_Dresser d in WorldComp.DressersToUse)
-                {
-                    if (d.IncludeInTradeDeals && d.Map == playerNegotiator.Map)
-                    {
-                        things.AddRange(d.EmptyOnTop());
-                    }
-                }
-                __result = things;
-            }
-#if TRADE_DEBUG
-            else
-            {
-                Log.Warning("Patch TradeShip.ColonyThingsWillingToBuy: Pawn is null");
-            }
-#endif
-        }
-    }
-
-    [HarmonyPatch(typeof(Dialog_Trade), "Close")]
-    static class Patch_Dialog_Trade_Close
-    {
-        static void Postfix()
+        public static void EmptyDressers()
         {
             foreach (Building_Dresser d in WorldComp.DressersToUse)
             {
-                if (d.Map != null)
+                if (d.Map != null && d.Spawned && d.IncludeInTradeDeals)
                 {
-                    d.HandleThingsOnTop();
+                    d.Empty<Apparel>();
                 }
+            }
+        }
+
+        public static IEnumerable<T> EmptyDressers<T>(Map map) where T : Thing
+        {
+            List<T> a = new List<T>();
+            foreach (Building_Dresser d in WorldComp.DressersToUse)
+            {
+                if (d.Map == map && d.Spawned && d.IncludeInTradeDeals)
+                {
+                    a.AddRange(d.Empty<T>());
+                }
+            }
+            return a;
+        }
+
+        public static void ReclaimApparel()
+        {
+            foreach (Building_Dresser d in WorldComp.DressersToUse)
+            {
+                if (d.Map != null && d.Spawned)
+                {
+                    d.ReclaimApparel();
+                }
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(Pawn_TraderTracker), "ColonyThingsWillingToBuy")]
+    static class Patch_TradeShip_ColonyThingsWillingToBuy
+    {
+        // Before a caravan trade
+        static void Postfix(ref IEnumerable<Thing> __result, Pawn playerNegotiator)
+        {
+            if (playerNegotiator != null && playerNegotiator.Map != null)
+            {
+                List<Thing> result = new List<Thing>(__result);
+                result.AddRange(TradeUtil.EmptyDressers<Thing>(playerNegotiator.Map));
+                __result = result;
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(TradeShip), "ColonyThingsWillingToBuy")]
+    static class Patch_PassingShip_TryOpenComms
+    {
+        // Before an orbital trade
+        static void Postfix(ref IEnumerable<Thing> __result, Pawn playerNegotiator)
+        {
+            if (playerNegotiator != null && playerNegotiator.Map != null)
+            {
+                List<Thing> result = new List<Thing>(__result);
+                result.AddRange(TradeUtil.EmptyDressers<Thing>(playerNegotiator.Map));
+                __result = result;
+            }
+        }
+    }
+
+    /*[HarmonyPatch(typeof(Window), "PreOpen")]
+    static class Patch_Window_PreOpen
+    {
+        // Before loading launch pods
+        static void Prefix(Dialog_LoadTransporters __instance)
+        {
+            Type type = __instance.GetType();
+            if (type == typeof(Dialog_LoadTransporters))
+            {
+                TradeUtil.EmptyDressers();
+            }
+        }
+    }*/
+
+    [HarmonyPatch(typeof(Window), "PreClose")]
+    static class Patch_Window_PreClose
+    {
+        // Before closing any window
+        static void Postfix(Window __instance)
+        {
+            Type type = __instance.GetType();
+            if (type == typeof(Dialog_Trade))
+                // || type == typeof(Dialog_LoadTransporters))
+            {
+                TradeUtil.ReclaimApparel();
             }
         }
     }

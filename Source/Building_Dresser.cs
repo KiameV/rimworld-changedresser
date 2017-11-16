@@ -52,6 +52,9 @@ namespace ChangeDresser
 
         public void AddApparel(Apparel a)
         {
+#if DEBUG
+            Log.Warning("AddApparel " + a.Label + " Spawned: " + a.Spawned + " IsForbidden: " + a.IsForbidden(Faction.OfPlayer));
+#endif
             if (a != null && a.Spawned)
             {
                 a.DeSpawn();
@@ -151,15 +154,15 @@ namespace ChangeDresser
             }
         }
 
-        private void DropApparel(IEnumerable<Apparel> apparel, bool makeForbidden = true)
+        private void DropApparel<T>(IEnumerable<T> things, bool makeForbidden = true) where T : Thing
         {
             try
             {
-                if (apparel != null)
+                if (things != null)
                 {
-                    foreach (Apparel a in apparel)
+                    foreach (T t in things)
                     {
-                        this.DropThing(a, makeForbidden);
+                        this.DropThing(t, makeForbidden);
                     }
                 }
             }
@@ -172,36 +175,24 @@ namespace ChangeDresser
             }
         }
 
-        public IEnumerable<Thing> EmptyOnTop()
+        public IEnumerable<T> Empty<T>() where T : Thing
         {
-            IEnumerable<Thing> things = this.StoredApparel.Empty<Thing>();
-            foreach (Thing t in things)
-            {
-                if (!t.Spawned)
-                {
-                    Thing ouThing;
-                    if (!t.Spawned)
-                    {
-                        GenThing.TryDropAndSetForbidden(t, base.Position, this.CurrentMap, ThingPlaceMode.Near, out ouThing, false);
-                        if (!t.Spawned)
-                        {
-                            GenPlace.TryPlaceThing(t, base.Position, this.CurrentMap, ThingPlaceMode.Near);
-                        }
-                    }
+            IEnumerable<T> apparel = this.StoredApparel.Empty<T>();
+            this.DropApparel(apparel, false);
+            this.StoredApparel.Clear();
+            return apparel;
+        }
 
-                    if (!t.Spawned)
-                    {
-                        this.AddApparel(t as Apparel);
-                    }
-                    else
-                    {
-                        this.Map.thingGrid.Deregister(t);
-                        t.Position = this.Position;
-                        this.Map.thingGrid.Register(t);
-                    }
-                }
+        internal void ReclaimApparel()
+        {
+            List<Apparel> l = new List<Apparel>(BuildingUtil.FindThingsOfTypeNextTo<Apparel>(base.Map, base.Position, 1));
+#if DEBUG
+            Log.Warning("Apparel found: " + l.Count);
+#endif
+            foreach (Apparel a in l)
+            {
+                this.AddApparel(a);
             }
-            return things;
         }
 
         public void HandleThingsOnTop()
@@ -498,7 +489,7 @@ namespace ChangeDresser
             else
                 l = new List<Gizmo>(1);
 
-            int groupKey = 987767542;
+            int groupKey = this.GetType().Name.GetHashCode();
 
             Command_Action a = new Command_Action();
             a.icon = WidgetUtil.manageapparelTexture;
@@ -507,6 +498,7 @@ namespace ChangeDresser
             a.activateSound = SoundDef.Named("Click");
             a.action = delegate { Find.WindowStack.Add(new UI.StorageUI(this, null)); };
             a.groupKey = groupKey;
+            ++groupKey;
             l.Add(a);
 
             a = new Command_Action();
@@ -515,7 +507,8 @@ namespace ChangeDresser
             a.defaultLabel = "ChangeDresser.AssignOutfits".Translate();
             a.activateSound = SoundDef.Named("Click");
             a.action = delegate { Find.WindowStack.Add(new UI.AssignOutfitUI(this)); };
-            a.groupKey = groupKey + 1;
+            a.groupKey = groupKey;
+            ++groupKey;
             l.Add(a);
 
             a = new Command_Action();
@@ -526,10 +519,24 @@ namespace ChangeDresser
             a.action = 
                 delegate
                 {
-                    this.DropApparel(this.StoredApparel.Empty<Apparel>(), false);
-                    this.StoredApparel.Clear();
+                    this.Empty<Apparel>();
                 };
-            a.groupKey = groupKey + 2;
+            a.groupKey = groupKey;
+            ++groupKey;
+            l.Add(a);
+
+            a = new Command_Action();
+            a.icon = WidgetUtil.collectTexture;
+            a.defaultDesc = "ChangeDresser.CollectDesc".Translate();
+            a.defaultLabel = "ChangeDresser.Collect".Translate();
+            a.activateSound = SoundDef.Named("Click");
+            a.action =
+                delegate
+                {
+                    this.ReclaimApparel();
+                };
+            a.groupKey = groupKey;
+            ++groupKey;
             l.Add(a);
 
             a = new Command_Action();
@@ -549,7 +556,8 @@ namespace ChangeDresser
                 {
                     this.includeInTradeDeals = !this.includeInTradeDeals;
                 };
-            a.groupKey = groupKey + 3;
+            a.groupKey = groupKey;
+            ++groupKey;
             l.Add(a);
 
             return SaveStorageSettingsUtil.SaveStorageSettingsGizmoUtil.AddSaveLoadGizmos(l, SaveStorageSettingsUtil.SaveTypeEnum.Apparel_Management, this.settings.filter);

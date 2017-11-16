@@ -54,8 +54,9 @@ namespace ChangeDresser.UI.Util
         public static Texture2D manageapparelTexture;
         public static Texture2D assignweaponsTexture;
         public static Texture2D emptyTexture;
+        public static Texture2D collectTexture;
 
-        public static void Initialize()
+        static WidgetUtil()
         {
             nextTexture = ContentFinder<Texture2D>.Get("UI/next", true);
             previousTexture = ContentFinder<Texture2D>.Get("UI/previous", true);
@@ -71,6 +72,7 @@ namespace ChangeDresser.UI.Util
             manageapparelTexture = ContentFinder<Texture2D>.Get("UI/manageapparel", true);
             assignweaponsTexture = ContentFinder<Texture2D>.Get("UI/assignweapons", true);
             emptyTexture = ContentFinder<Texture2D>.Get("UI/empty", true);
+            collectTexture = ContentFinder<Texture2D>.Get("UI/collect", true);
 
             foreach (ModContentPack current in LoadedModManager.RunningMods)
             {

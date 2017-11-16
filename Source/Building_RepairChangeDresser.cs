@@ -44,7 +44,7 @@ namespace ChangeDresser
 
             this.CurrentMap = map;
 
-            foreach(Building_Dresser d in BuildingUtil.FindThingsOfTypeNextTo<Building_Dresser>(base.Map, base.Position, Settings.RepairAttachmentDistance))
+            foreach (Building_Dresser d in BuildingUtil.FindThingsOfTypeNextTo<Building_Dresser>(base.Map, base.Position, Settings.RepairAttachmentDistance))
             {
                 this.AddDresser(d);
             }
