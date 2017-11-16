@@ -15,4 +15,11 @@
   <ChangeMirror_Frame.label>鏡台(施工)</ChangeMirror_Frame.label>
   <ChangeMirror_Frame.description>化粧を施して、髪を切ったり染めます。</ChangeMirror_Frame.description>
 
+  <RepairChangeDresser.label>修繕用付属品</RepairChangeDresser.label>
+  <RepairChangeDresser.description>離接しているドレッサーに、保管されている衣服を修繕できる機能を追加します。</RepairChangeDresser.description>
+  <RepairChangeDresser_Blueprint.label>修繕用付属品(設計)</RepairChangeDresser_Blueprint.label>
+  <RepairChangeDresser_Blueprint_Install.label>修繕用付属品(移動先)</RepairChangeDresser_Blueprint_Install.label>
+  <RepairChangeDresser_Frame.label>修繕用付属品(施工)</RepairChangeDresser_Frame.label>
+  <RepairChangeDresser_Frame.description>離接しているドレッサーに、保管されている衣服を修繕できる機能を追加します。</RepairChangeDresser_Frame.description>
+
 </LanguageData>
