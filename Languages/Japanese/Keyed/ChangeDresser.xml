@@ -13,8 +13,8 @@
   <ChangeDresser.EmptyDesc>ドレッサーの中身を空にします。服装グループの在庫は含まれません。</ChangeDresser.EmptyDesc>
   <ChangeDresser.ChangeTo>Change To</ChangeDresser.ChangeTo>
   <ChangeDresser.ChangeToDesc>この衣装に変更します。</ChangeDresser.ChangeToDesc>
-  <ChangeDresser.Wearing>着ています</ChangeDresser.Wearing>
-  <ChangeDresser.WearingDesc>現在この服を着ています。</ChangeDresser.WearingDesc>
+  <ChangeDresser.Wearing>着用中の服装</ChangeDresser.Wearing>
+  <ChangeDresser.WearingDesc>現在この服装を着ています。</ChangeDresser.WearingDesc>
   <ChangeDresser.IncludeInTradeDeals>衣装を売る</ChangeDresser.IncludeInTradeDeals>
   <ChangeDresser.IncludeInTradeDealsDesc>保存された衣装を取引の在庫に含めるかどうかを切り替えます。</ChangeDresser.IncludeInTradeDealsDesc>
 
@@ -56,6 +56,9 @@
   <!-- Game UI -->
   <ChangeDresser.StoragePriority>在庫の優先順位</ChangeDresser.StoragePriority>
   <ChangeDresser.ApparelCount>服装の在庫数</ChangeDresser.ApparelCount>
+  <!-- Repair UI -->
+  <ChangeDresser.AttachedDressers>ドレッサーの付属品</ChangeDresser.AttachedDressers>
+  <ChangeDresser.IsMending>修繕する</ChangeDresser.IsMending>
 
   <!-- Color Selection -->
   <!-- These refer to the Red (R), Green (G), and Blue (B) values for the selected color -->
@@ -80,6 +83,7 @@
   <ChangeDresser.ChangeHair>髪型や髪色を変更</ChangeDresser.ChangeHair>
   <ChangeDresser.ChangeBody>体型を変更</ChangeDresser.ChangeBody>
   <ChangeDresser.StoreApparel>服装の在庫</ChangeDresser.StoreApparel>
+  <ChangeDresser.ChangeAlienBodyColor>エイリアンの体色を変更</ChangeDresser.ChangeAlienBodyColor>
 
   <!-- Error Messages -->
   <!-- The text after this string is either Hair Color or Apparel Color -->
@@ -91,6 +95,7 @@
 
   <!-- Mod Settings -->
   <ChangeDresser>Change Dresser</ChangeDresser>
+  <ChangeDresser.KeepForcedApparel>衣装を強制する</ChangeDresser.KeepForcedApparel>
   <ChangeDresser.ShowBodyChange>体型の変更を許可する</ChangeDresser.ShowBodyChange>
   <ChangeDresser.ShowGenderAgeChange>性別と年齢の変更を許可する</ChangeDresser.ShowGenderAgeChange>
 
