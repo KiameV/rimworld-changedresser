@@ -31,6 +31,7 @@ namespace ChangeDresser
         public static bool ShowGenderAgeChange { get { return showGenderAgeChange; } }
         public static bool ShowBodyChange { get { return showBodyChange; } }
         public static bool KeepForcedApparel { get { return keepForcedApparel; } }
+        public static int RepairAttachmentDistance { get { return 6; } }
 
         public override void ExposeData()
         {

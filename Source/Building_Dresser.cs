@@ -82,15 +82,12 @@ namespace ChangeDresser
                 base.settings.filter.SetDisallowAll();
             }
 
-            foreach (Building_RepairChangeDresser r in BuildingUtil.FindThingsOfTypeNextTo<Building_RepairChangeDresser>(base.Map, base.Position))
+            foreach (Building_RepairChangeDresser r in BuildingUtil.FindThingsOfTypeNextTo<Building_RepairChangeDresser>(base.Map, base.Position, Settings.RepairAttachmentDistance))
             {
 #if DEBUG_REPAIR
                 Log.Warning("Adding Dresser " + this.Label + " to " + r.Label);
 #endif
-                if (!r.AttachedDressers.Contains(this))
-                {
-                    r.AttachedDressers.AddLast(this);
-                }
+                r.AddDresser(this);
             }
         }
 
@@ -144,13 +141,13 @@ namespace ChangeDresser
                     e.GetType().Name + " " + e.Message + "\n" +
                     e.StackTrace);
             }
-            
-            foreach (Building_RepairChangeDresser r in BuildingUtil.FindThingsOfTypeNextTo<Building_RepairChangeDresser>(base.Map, base.Position))
+
+            foreach (Building_RepairChangeDresser r in BuildingUtil.FindThingsOfTypeNextTo<Building_RepairChangeDresser>(base.Map, base.Position, Settings.RepairAttachmentDistance))
             {
 #if DEBUG_REPAIR
                 Log.Warning("Removing Dresser " + this.Label + " to " + r.Label);
 #endif
-                r.AttachedDressers.Remove(this);
+                r.RemoveDresser(this);
             }
         }
 
@@ -239,44 +236,10 @@ namespace ChangeDresser
             Log.Warning("End ChangeDresser.HandleThingsOnTop");
 #endif
         }
-
-        private Random random = null;
-        private void DropThing(Thing a, bool makeForbidden = true)
+        
+        private void DropThing(Thing t, bool makeForbidden = true)
         {
-            try
-            {
-                Thing t;
-                if (!a.Spawned)
-                {
-                    GenThing.TryDropAndSetForbidden(a, base.Position, this.CurrentMap, ThingPlaceMode.Near, out t, makeForbidden);
-                    if (!a.Spawned)
-                    {
-                        GenPlace.TryPlaceThing(a, base.Position, this.CurrentMap, ThingPlaceMode.Near);
-                    }
-                }
-                if (a.Position.Equals(base.Position))
-                {
-                    IntVec3 pos = a.Position;
-                    if (this.random == null)
-                        this.random = new System.Random();
-                    int dir = this.random.Next(2);
-                    int amount = this.random.Next(2);
-                    if (amount == 0)
-                        amount = -1;
-                    if (dir == 0)
-                        pos.x = pos.x + amount;
-                    else
-                        pos.z = pos.z + amount;
-                    a.Position = pos;
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Error(
-                    "ChangeDresser:Building_Dresser.DropApparel\n" +
-                    e.GetType().Name + " " + e.Message + "\n" +
-                    e.StackTrace);
-            }
+            BuildingUtil.DropThing(t, this, this.CurrentMap, makeForbidden);
         }
 
         public override void Notify_ReceivedThing(Thing newItem)

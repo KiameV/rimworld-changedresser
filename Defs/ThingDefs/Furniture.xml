@@ -53,7 +53,13 @@
 				<maxSimultaneous>1</maxSimultaneous>
 				<maxDistance>6</maxDistance>
 			</li>
-		</comps><inspectorTabs>
+			<li Class="CompProperties_AffectedByFacilities">
+				<linkableFacilities>
+					<li>RepairChangeDresser</li>
+				</linkableFacilities>
+			</li>
+		</comps>
+		<inspectorTabs>
 			<li>ITab_Storage</li>
 		</inspectorTabs>
 		<building>
@@ -89,7 +95,7 @@
 		<graphicData>
 			<texPath>Furniture/ColorChangeDresser_mirror</texPath>
 			<graphicClass>Graphic_Multi</graphicClass>
-      <shaderType>CutoutComplex</shaderType>
+			<shaderType>CutoutComplex</shaderType>
 			<drawSize>(1,1)</drawSize>
 		</graphicData>
 		<altitudeLayer>BuildingOnTop</altitudeLayer>
@@ -138,7 +144,7 @@
 		<interactionCellOffset>(0,0,1)</interactionCellOffset>
 		<designationCategory>Furniture</designationCategory>
 	</ThingDef>
-	
+
 	<ThingDef ParentName="ArtableFurnitureBase">
 		<defName>RepairChangeDresser</defName>
 		<label>mending attachment</label>
@@ -188,15 +194,15 @@
 		<comps>
 			<li Class="CompProperties_Breakdownable"/>
 			<li Class="CompProperties_Flickable"/>
-			<li Class="CompProperties_Facility">
-				<maxSimultaneous>1</maxSimultaneous>
-				<maxDistance>1</maxDistance>
-			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>300</basePowerConsumption>
+				<basePowerConsumption>1000</basePowerConsumption>
 				<shortCircuitInRain>true</shortCircuitInRain>
 				<startElectricalFires>true</startElectricalFires>
+			</li>
+			<li Class="CompProperties_Facility">
+				<maxSimultaneous>1</maxSimultaneous>
+				<maxDistance>6</maxDistance>
 			</li>
 		</comps>
 		<building>
