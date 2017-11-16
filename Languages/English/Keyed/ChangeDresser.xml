@@ -11,6 +11,8 @@
 	<ChangeDresser.AssignOutfitsDesc>Assign Outfits to Pawns for both battle and civilian needs.</ChangeDresser.AssignOutfitsDesc>
 	<ChangeDresser.Empty>Empty</ChangeDresser.Empty>
 	<ChangeDresser.EmptyDesc>Empty the dresser's contents. Does not include storage group apparel.</ChangeDresser.EmptyDesc>
+	<ChangeDresser.Collect>Collect</ChangeDresser.Collect>
+	<ChangeDresser.CollectDesc>Collect the apparel around the dresser and store it.</ChangeDresser.CollectDesc>
 	<ChangeDresser.ChangeTo>Change To</ChangeDresser.ChangeTo>
 	<ChangeDresser.ChangeToDesc>Change to this outfit.</ChangeDresser.ChangeToDesc>
 	<ChangeDresser.Wearing>Wearing</ChangeDresser.Wearing>

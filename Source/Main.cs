@@ -505,44 +505,152 @@ namespace ChangeDresser
         }
     }
 
-    [HarmonyPatch(typeof(TradeShip), "ColonyThingsWillingToBuy")]
+    static class TradeUtil
+    {
+        public static void EmptyDressers()
+        {
+            foreach (Building_Dresser d in WorldComp.DressersToUse)
+            {
+                if (d.Map != null && d.Spawned && d.IncludeInTradeDeals)
+                {
+                    d.Empty<Apparel>();
+                }
+            }
+        }
+
+        public static IEnumerable<T> EmptyDressers<T>(Map map) where T : Thing
+        {
+            List<T> a = new List<T>();
+            foreach (Building_Dresser d in WorldComp.DressersToUse)
+            {
+                if (d.Map == map && d.Spawned && d.IncludeInTradeDeals)
+                {
+                    a.AddRange(d.Empty<T>());
+                }
+            }
+            return a;
+        }
+
+        public static void ReclaimApparel()
+        {
+            foreach (Building_Dresser d in WorldComp.DressersToUse)
+            {
+                if (d.Map != null && d.Spawned)
+                {
+                    d.ReclaimApparel();
+                }
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(Pawn_TraderTracker), "ColonyThingsWillingToBuy")]
     static class Patch_TradeShip_ColonyThingsWillingToBuy
     {
-        //private static FieldInfo pawnFieldInfo = null;
+        // Before a caravan trade
         static void Postfix(ref IEnumerable<Thing> __result, Pawn playerNegotiator)
         {
-            /*if (pawnFieldInfo == null)
-            {
-                pawnFieldInfo = typeof(Pawn_TraderTracker).GetField("pawn", BindingFlags.NonPublic | BindingFlags.Instance);
-            }
-
-            Pawn pawn = pawnFieldInfo.GetValue(__instance) as Pawn;*/
-
             if (playerNegotiator != null && playerNegotiator.Map != null)
             {
-                List<Thing> things = new List<Thing>();
-                if (__result != null)
+                List<Thing> result = new List<Thing>(__result);
+                result.AddRange(TradeUtil.EmptyDressers<Thing>(playerNegotiator.Map));
+                __result = result;
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(TradeShip), "ColonyThingsWillingToBuy")]
+    static class Patch_PassingShip_TryOpenComms
+    {
+        // Before an orbital trade
+        static void Postfix(ref IEnumerable<Thing> __result, Pawn playerNegotiator)
+        {
+            if (playerNegotiator != null && playerNegotiator.Map != null)
+            {
+                List<Thing> result = new List<Thing>(__result);
+                result.AddRange(TradeUtil.EmptyDressers<Thing>(playerNegotiator.Map));
+                __result = result;
+            }
+        }
+    }
+
+    /*[HarmonyPatch(typeof(Window), "PreOpen")]
+    static class Patch_Window_PreOpen
+    {
+        // Before loading launch pods
+        static void Prefix(Dialog_LoadTransporters __instance)
+        {
+            Type type = __instance.GetType();
+            if (type == typeof(Dialog_LoadTransporters))
+            {
+                TradeUtil.EmptyDressers();
+            }
+        }
+    }*/
+
+    [HarmonyPatch(typeof(Window), "PreClose")]
+    static class Patch_Window_PreClose
+    {
+        // Before closing any window
+        static void Postfix(Window __instance)
+        {
+            Type type = __instance.GetType();
+            if (type == typeof(Dialog_Trade))
+                // || type == typeof(Dialog_LoadTransporters))
+            {
+                TradeUtil.ReclaimApparel();
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(ReservationManager), "CanReserve")]
+    static class Patch_ReservationManager_CanReserve
+    {
+        private static FieldInfo mapFI = null;
+        static void Postfix(ref bool __result, ReservationManager __instance, Pawn claimant, LocalTargetInfo target, int maxPawns, int stackCount, ReservationLayerDef layer, bool ignoreOtherReservations)
+            {
+            if (mapFI == null)
                 {
-                    things.AddRange(__result);
+                mapFI = typeof(ReservationManager).GetField("map", BindingFlags.NonPublic | BindingFlags.Instance);
                 }
-#if TRADE_DEBUG
-                Log.Warning("Patch TradeShip.ColonyThingsWillingToBuy: Pawn name: " + playerNegotiator?.Name);
+
+#if DEBUG
+            Log.Warning("\nCanReserve original result: " + __result);
 #endif
-                foreach (Building_Dresser d in WorldComp.DressersToUse)
+            if (!__result && (target.Thing == null || target.Thing.def.defName.Equals("ChangeDresser")))
+            {
+                IEnumerable<Thing> things = ((Map)mapFI.GetValue(__instance))?.thingGrid.ThingsAt(target.Cell);
+                if (things != null)
                 {
-                    if (d.IncludeInTradeDeals && d.Map == playerNegotiator.Map)
+#if DEBUG
+                    Log.Warning("CanReserve - Found things");
+#endif
+                    foreach (Thing t in things)
+                {
+#if DEBUG
+                        Log.Warning("CanReserve - def " + t.def.defName);
+#endif
+                        if (t.def.defName.Equals("ChangeDresser"))
                     {
-                        things.AddRange(d.EmptyOnTop());
+#if DEBUG
+                            Log.Warning("CanReserve is now true\n");
+#endif
+                            __result = true;
                     }
                 }
-                __result = things;
             }
-#if TRADE_DEBUG
-            else
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(OutfitDatabase), "TryDelete")]
+    static class Patch_OutfitDatabase_TryDelete
+    {
+        static void Postfix(ref AcceptanceReport __result, Outfit outfit)
+        {
+            if (__result.Accepted)
             {
-                Log.Warning("Patch TradeShip.ColonyThingsWillingToBuy: Pawn is null");
+                WorldComp.OutfitsForBattle.Remove(outfit);
             }
-#endif
         }
     }
 
@@ -569,22 +677,6 @@ namespace ChangeDresser
             }
         }
     }*/
-
-    [HarmonyPatch(typeof(Dialog_Trade), "Close")]
-    static class Patch_Dialog_Trade_Close
-    {
-        static void Postfix()
-        {
-            foreach (Building_Dresser d in WorldComp.DressersToUse)
-            {
-                if (d.Map != null)
-                {
-                    d.HandleThingsOnTop();
-                }
-            }
-        }
-    }
-
 
     /* This prevents pawns from constantly switching apparel
     [HarmonyPatch(typeof(Pawn_ApparelTracker), "Notify_ApparelAdded")]
@@ -671,45 +763,6 @@ namespace ChangeDresser
         }
     }*/
 
-    [HarmonyPatch(typeof(ReservationManager), "CanReserve")]
-    static class Patch_ReservationManager_CanReserve
-    {
-        private static FieldInfo mapFI = null;
-        static void Postfix(ref bool __result, ReservationManager __instance, Pawn claimant, LocalTargetInfo target, int maxPawns, int stackCount, ReservationLayerDef layer, bool ignoreOtherReservations)
-        {
-            if (mapFI == null)
-            {
-                mapFI = typeof(ReservationManager).GetField("map", BindingFlags.NonPublic | BindingFlags.Instance);
-            }
-
-#if DEBUG
-            Log.Warning("\nCanReserve original result: " + __result);
-#endif
-            if (!__result && (target.Thing == null || target.Thing.def.defName.Equals("ChangeDresser")))
-            {
-                IEnumerable<Thing> things = ((Map)mapFI.GetValue(__instance))?.thingGrid.ThingsAt(target.Cell);
-                if (things != null)
-                {
-#if DEBUG
-                    Log.Warning("CanReserve - Found things");
-#endif
-                    foreach (Thing t in things)
-                    {
-#if DEBUG
-                        Log.Warning("CanReserve - def " + t.def.defName);
-#endif
-                        if (t.def.defName.Equals("ChangeDresser"))
-                        {
-#if DEBUG
-                            Log.Warning("CanReserve is now true\n");
-#endif
-                            __result = true;
-                        }
-                    }
-                }
-            }
-        }
-    }
     /*[HarmonyPatch(typeof(Pawn_TraderTracker), "ColonyThingsWillingToBuy")]
     static class Patch_Pawn_TraderTracker_ColonyThingsWillingToBuy
     {
