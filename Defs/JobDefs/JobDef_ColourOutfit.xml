@@ -30,4 +30,9 @@
     <driverClass>ChangeDresser.DresserJobDriver.JobDriver_WearApparelFromStorage</driverClass>
     <reportString>wearing TargetA.</reportString>
   </JobDef>
+  <JobDef>
+    <defName>ChangeBodyAlienColor</defName>
+    <driverClass>ChangeDresser.DresserJobDriver.JobDriver_ChangeBodyAlienColor</driverClass>
+    <reportString>Change alien body color.</reportString>
+  </JobDef>
 </Defs>

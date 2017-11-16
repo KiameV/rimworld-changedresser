@@ -25,9 +25,9 @@ namespace ChangeDresser.UI.DTO
 
         protected override void Initialize()
         {
-            object raceSettings = base.Pawn.def.GetType().GetField("alienRace")?.GetValue(base.Pawn.def);
-            object generalSettings = raceSettings?.GetType().GetField("generalSettings")?.GetValue(raceSettings);
-            object hairSettings = raceSettings?.GetType().GetField("hairSettings")?.GetValue(raceSettings);
+            object raceSettings = AlienRaceUtil.GetAlienRaceSettings(base.Pawn);
+            object generalSettings = AlienRaceUtil.GetGeneralSettings(base.Pawn);
+            object hairSettings = AlienRaceUtil.GetHairSettings(base.Pawn);
 
             foreach (ThingComp tc in base.Pawn.GetComps<ThingComp>())
             {
@@ -77,28 +77,28 @@ namespace ChangeDresser.UI.DTO
                         base.AlienSkinColorPrimary.SelectionChangeListener += this.SecondarySkinColorChange;
                     }
 
-                    base.AlienHairColorPrimary = new HairColorSelectionDTO(this.Pawn.story.hairColor, IOUtil.LoadColorPresets(ColorPresetType.Hair));
-                    base.AlienHairColorPrimary.SelectionChangeListener += this.PrimaryHairColorChange;
+                    base.HairColorSelectionDto = new HairColorSelectionDTO(this.Pawn.story.hairColor, IOUtil.LoadColorPresets(ColorPresetType.Hair));
+                    base.HairColorSelectionDto.SelectionChangeListener += this.PrimaryHairColorChange;
 
-                    if (SecondaryHairColorFieldInfo != null)
+                    /*if (SecondaryHairColorFieldInfo != null)
                     {
                         base.AlienHairColorSecondary = new HairColorSelectionDTO((Color)SecondarySkinColorFieldInfo.GetValue(this.alienComp), IOUtil.LoadColorPresets(ColorPresetType.Hair));
                         base.AlienHairColorSecondary.SelectionChangeListener += this.SecondaryHairColorChange;
-                    }
+                    }*/
                 }
             }
 
-            if (this.EditorTypeSelectionDto.Contains(CurrentEditorEnum.ChangeDresserAlienHairColor))
+            if (this.EditorTypeSelectionDto.Contains(CurrentEditorEnum.ChangeDresserHair))
             {
                 if (raceSettings != null)
                 {
-                    base.HasHair = (bool)hairSettings?.GetType().GetField("HasHair")?.GetValue(hairSettings);
+                    base.HasHair = AlienRaceUtil.HasHair(base.Pawn);
 #if ALIEN_DEBUG
                     Log.Warning("initialize - got hair settings: HasHair = " + base.HasHair);
 #endif
                     if (base.HasHair)
                     {
-                        List<string> hairTags = (List<string>)hairSettings.GetType().GetField("hairTags")?.GetValue(hairSettings);
+                        List<string> hairTags = AlienRaceUtil.GetHairTags(base.Pawn);
                         if (hairTags != null)
                         {
                             IEnumerable<HairDef> hairDefs = from hair in DefDatabase<HairDef>.AllDefs
@@ -124,13 +124,17 @@ namespace ChangeDresser.UI.DTO
                             }*/
                             base.HairStyleSelectionDto = new HairStyleSelectionDTO(this.Pawn.story.hairDef, this.Pawn.gender, hairDefs);
                         }
+                        else
+                        {
+                            base.HairStyleSelectionDto = new HairStyleSelectionDTO(this.Pawn.story.hairDef, this.Pawn.gender);
+                        }
                     }
                     else
                     {
 #if ALIEN_DEBUG
                         Log.Warning("initialize - remove hair editors");
 #endif
-                        base.EditorTypeSelectionDto.Remove(CurrentEditorEnum.ChangeDresserHair, CurrentEditorEnum.ChangeDresserAlienHairColor);
+                        base.EditorTypeSelectionDto.Remove(CurrentEditorEnum.ChangeDresserHair);//, CurrentEditorEnum.ChangeDresserAlienHairColor);
 #if ALIEN_DEBUG
                         Log.Warning("initialize - hair editors removed");
 #endif
@@ -140,7 +144,8 @@ namespace ChangeDresser.UI.DTO
             
             if (this.EditorTypeSelectionDto.Contains(CurrentEditorEnum.ChangeDresserBody))
             {
-                if (generalSettings != null)
+                float maleGenderProbability = 0.5f;
+                if (AlienRaceUtil.HasMaleGenderProbability(base.Pawn))
                 {
 #if ALIEN_DEBUG
                     Log.Warning("initialize - generalSettings found");
@@ -148,14 +153,10 @@ namespace ChangeDresser.UI.DTO
                     FieldInfo fi = generalSettings.GetType().GetField("MaleGenderProbability");
                     if (fi != null)
                     {
-                        float maleGenderProbability = (float)fi.GetValue(generalSettings);
+                        maleGenderProbability = AlienRaceUtil.GetMaleGenderProbability(base.Pawn);
 #if ALIEN_DEBUG
                         Log.Warning("initialize - male gender prob = " + maleGenderProbability);
 #endif
-                        if (maleGenderProbability > 0f && maleGenderProbability < 1f)
-                        {
-                            base.GenderSelectionDto = new GenderSelectionDTO(base.Pawn.gender);
-                        }
                     }
 
                     /* TODO
@@ -176,14 +177,14 @@ namespace ChangeDresser.UI.DTO
                         }
                     }*/
                 }
+                if (maleGenderProbability > 0f && maleGenderProbability < 1f)
+                {
+                    base.GenderSelectionDto = new GenderSelectionDTO(base.Pawn.gender);
+                    base.GenderSelectionDto.SelectionChangeListener += GenderChange;
+                }
 #if ALIEN_DEBUG
                 Log.Warning("initialize - done");
 #endif
-            }
-
-            if (base.GenderSelectionDto != null && base.BodyTypeSelectionDto == null)
-            {
-                base.GenderSelectionDto.SelectionChangeListener += GenderChange;
             }
         }
 
@@ -199,13 +200,13 @@ namespace ChangeDresser.UI.DTO
 
         private void PrimaryHairColorChange(object sender)
         {
-            this.Pawn.story.hairColor = base.AlienHairColorPrimary.SelectedColor;
+            this.Pawn.story.hairColor = base.HairColorSelectionDto.SelectedColor;//base.AlienHairColorPrimary.SelectedColor;
         }
 
-        private void SecondaryHairColorChange(object sender)
+        /*private void SecondaryHairColorChange(object sender)
         {
             SecondaryHairColorFieldInfo.SetValue(this.alienComp, base.AlienHairColorSecondary.SelectedColor);
-        }
+        }*/
 
         private void GenderChange(object sender)
         {

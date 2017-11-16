@@ -10,6 +10,86 @@ namespace ChangeDresser
         private static Assembly alienRaceAssembly = null;
         private static bool initialized = false;
         private static List<ThingDef> alienRaces = new List<ThingDef>(0);
+
+        #region Get Field/Metho Info
+        private static FieldInfo raceSettingsFieldInfo = null;
+        private static FieldInfo hairSettingsFieldInfo = null;
+        private static FieldInfo generalSettingsFieldInfo = null;
+
+        public static object GetAlienRaceSettings(Pawn pawn)
+        {
+            if (raceSettingsFieldInfo == null)
+            {
+                raceSettingsFieldInfo = pawn.def.GetType().GetField("alienRace");
+#if ALIEN_DEBUG || DEBUG || REFLECTION_DEBUG
+                Log.Warning("raceSettingsFieldInfo found: " + (string)((raceSettingsFieldInfo != null) ? "True" : "False"));
+#endif
+            }
+            return raceSettingsFieldInfo?.GetValue(pawn.def);
+        }
+
+        public static object GetHairSettings(Pawn pawn)
+        {
+            object raceSettings = GetAlienRaceSettings(pawn);
+            if (hairSettingsFieldInfo == null)
+            {
+                hairSettingsFieldInfo = raceSettings?.GetType().GetField("hairSettings");
+#if ALIEN_DEBUG || DEBUG || REFLECTION_DEBUG
+                Log.Warning("hairSettingsFieldInfo found: " + (string)((hairSettingsFieldInfo != null) ? "True" : "False"));
+#endif
+            }
+            return hairSettingsFieldInfo.GetValue(raceSettings);
+        }
+
+        public static bool HasHair(Pawn pawn)
+        {
+            object hairSettings = GetHairSettings(pawn);
+            return (bool)hairSettings?.GetType().GetField("hasHair")?.GetValue(hairSettings);
+        }
+
+        public static object GetGeneralSettings(Pawn pawn)
+        {
+            object raceSettings = GetAlienRaceSettings(pawn);
+            if (generalSettingsFieldInfo == null)
+            {
+                object generalSettingsFieldInfo = raceSettings.GetType().GetField("generalSettings");
+#if ALIEN_DEBUG || DEBUG || REFLECTION_DEBUG
+                Log.Warning("generalSettingsFieldInfo found: " + (string)((generalSettingsFieldInfo != null) ? "True" : "False"));
+#endif
+            }
+            return generalSettingsFieldInfo?.GetValue(raceSettings);
+        }
+
+        public static List<string> GetHairTags(Pawn pawn)
+        {
+            object hairSettings = GetHairSettings(pawn);
+            object hairTags = hairSettings.GetType().GetField("hairTags")?.GetValue(hairSettings);
+#if ALIEN_DEBUG || DEBUG || REFLECTION_DEBUG
+            Log.Warning("hairTags found: " + (string)((hairTags != null) ? "True" : "False"));
+#endif
+            return (List<string>)hairTags;
+        }
+
+        private static FieldInfo GetMaleGenderProbabilityFieldInfo(Pawn pawn)
+        {
+            FieldInfo fi = GetGeneralSettings(pawn)?.GetType().GetField("maleGenderProbability");
+#if ALIEN_DEBUG || DEBUG || REFLECTION_DEBUG
+            Log.Warning("maleGenderProbability found: " + (string)((fi != null) ? "True" : "False"));
+#endif
+            return fi;
+        }
+
+        public static bool HasMaleGenderProbability(Pawn pawn)
+        {
+            return GetMaleGenderProbabilityFieldInfo(pawn) != null;
+        }
+
+        public static float GetMaleGenderProbability(Pawn pawn)
+        {
+            return (float)GetMaleGenderProbabilityFieldInfo(pawn)?.GetValue(GetGeneralSettings(pawn));
+        }
+        #endregion
+
         public static bool Exists
         {
             get

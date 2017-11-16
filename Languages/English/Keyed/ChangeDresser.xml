@@ -11,11 +11,13 @@
 	<ChangeDresser.AssignOutfitsDesc>Assign Outfits to Pawns for both battle and civilian needs.</ChangeDresser.AssignOutfitsDesc>
 	<ChangeDresser.Empty>Empty</ChangeDresser.Empty>
 	<ChangeDresser.EmptyDesc>Empty the dresser's contents. Does not include storage group apparel.</ChangeDresser.EmptyDesc>
+	<ChangeDresser.Collect>Collect</ChangeDresser.Collect>
+	<ChangeDresser.CollectDesc>Collect the apparel around the dresser and store it.</ChangeDresser.CollectDesc>
 	<ChangeDresser.ChangeTo>Change To</ChangeDresser.ChangeTo>
 	<ChangeDresser.ChangeToDesc>Change to this outfit.</ChangeDresser.ChangeToDesc>
 	<ChangeDresser.Wearing>Wearing</ChangeDresser.Wearing>
 	<ChangeDresser.WearingDesc>Currently wearing this outfit.</ChangeDresser.WearingDesc>
-	<ChangeDresser.IncludeInTradeDeals>Include Apparel In Trade</ChangeDresser.IncludeInTradeDeals>
+	<ChangeDresser.IncludeInTradeDeals>Sell Apparel</ChangeDresser.IncludeInTradeDeals>
 	<ChangeDresser.IncludeInTradeDealsDesc>Toggle whether to include the stored apparel in trade deals.</ChangeDresser.IncludeInTradeDealsDesc>
 	
 	<!-- Common Strings -->
@@ -56,6 +58,9 @@
 	<!-- Game UI -->
 	<ChangeDresser.StoragePriority>Storage Priority</ChangeDresser.StoragePriority>
 	<ChangeDresser.ApparelCount>Pieces of Apparel</ChangeDresser.ApparelCount>
+	<!-- Repair UI -->
+	<ChangeDresser.AttachedDressers>Attached Dressers</ChangeDresser.AttachedDressers>
+	<ChangeDresser.IsMending>Is Mending</ChangeDresser.IsMending>
 	
 	<!-- Color Selection -->
 	<!-- These refer to the Red (R), Green (G), and Blue (B) values for the selected color -->
@@ -80,6 +85,7 @@
 	<ChangeDresser.ChangeHair>Change hair style/color</ChangeDresser.ChangeHair>
 	<ChangeDresser.ChangeBody>Change body attributes</ChangeDresser.ChangeBody>
 	<ChangeDresser.StoreApparel>Store apparel</ChangeDresser.StoreApparel>
+	<ChangeDresser.ChangeAlienBodyColor>Change alien body color</ChangeDresser.ChangeAlienBodyColor>
 	
 	<!-- Error Messages -->
 	<!-- The text after this string is either Hair Color or Apparel Color -->
@@ -91,6 +97,7 @@
 	
 	<!-- Mod Settings -->
 	<ChangeDresser>Change Dresser</ChangeDresser>
+	<ChangeDresser.KeepForcedApparel>Keep Forced Apparel</ChangeDresser.KeepForcedApparel>
 	<ChangeDresser.ShowBodyChange>Allow Body Change</ChangeDresser.ShowBodyChange>
 	<ChangeDresser.ShowGenderAgeChange>Allow Gender and Age Change</ChangeDresser.ShowGenderAgeChange>
 </LanguageData>

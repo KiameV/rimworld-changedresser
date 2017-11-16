@@ -149,20 +149,20 @@ namespace ChangeDresser.UI
                         const float listboxHeight = 250f;
                         if (this.dresserDto.HairStyleSelectionDto != null)
                         {
-                            bool showHairColor = this.dresserDto.HairColorSelectionDto != null;
+                            //bool showHairColor = this.dresserDto.HairColorSelectionDto != null;
 
                             float height = listboxHeight;
-                            if (!showHairColor)
+                            /*if (!showHairColor)
                             {
                                 height += 250;
-                            }
+                            }*/
 
                             WidgetUtil.AddListBoxWidget(editorLeft, editorTop, editorWidth, height, "ChangeDresser.HairStyle".Translate() + ":", this.dresserDto.HairStyleSelectionDto);
 
-                            if (showHairColor)
-                            {
-                                WidgetUtil.AddColorSelectorWidget(editorLeft, editorTop + listboxHeight + 10f, editorWidth, this.dresserDto.HairColorSelectionDto, this.dresserDto.HairColorSelectionDto.ColorPresetsDTO);
-                            }
+                            //if (showHairColor)
+                            //{
+                            WidgetUtil.AddColorSelectorWidget(editorLeft, editorTop + listboxHeight + 10f, editorWidth, this.dresserDto.HairColorSelectionDto, this.dresserDto.HairColorSelectionDto.ColorPresetsDTO);
+                            //}
                         }
                         break;
 
@@ -188,7 +188,7 @@ namespace ChangeDresser.UI
                         }
                         break;
 
-                    case CurrentEditorEnum.ChangeDresserAlienHairColor:
+                    /*case CurrentEditorEnum.ChangeDresserAlienHairColor:
                         if (this.dresserDto.AlienHairColorPrimary != null)
                         {
                             GUI.color = Color.white;
@@ -207,7 +207,7 @@ namespace ChangeDresser.UI
                             Text.Font = GameFont.Small;
 
                             WidgetUtil.AddColorSelectorWidget(editorLeft, editorTop + 300, editorWidth, this.dresserDto.AlienHairColorSecondary, null);
-                        }
+                        }*/
                         break;
                 }
 

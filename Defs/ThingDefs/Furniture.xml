@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
-
 	<ThingDef ParentName="ArtableFurnitureBase">
 		<defName>ChangeDresser</defName>
 		<label>change dresser</label>
@@ -17,7 +16,7 @@
 				<cornerBR>Damage/Corner</cornerBR>
 			</damageData>
 		</graphicData>
-		<altitudeLayer>Building</altitudeLayer>
+		<altitudeLayer>FloorEmplacement</altitudeLayer>
 		<passability>PassThroughOnly</passability>
 		<fillPercent>0.4</fillPercent>
 		<castEdgeShadows>true</castEdgeShadows>
@@ -54,7 +53,13 @@
 				<maxSimultaneous>1</maxSimultaneous>
 				<maxDistance>6</maxDistance>
 			</li>
-		</comps><inspectorTabs>
+			<li Class="CompProperties_AffectedByFacilities">
+				<linkableFacilities>
+					<li>RepairChangeDresser</li>
+				</linkableFacilities>
+			</li>
+		</comps>
+		<inspectorTabs>
 			<li>ITab_Storage</li>
 		</inspectorTabs>
 		<building>
@@ -79,8 +84,7 @@
 		<hasInteractionCell>True</hasInteractionCell>
 		<interactionCellOffset>(0,0,1)</interactionCellOffset>
 		<designationCategory>Furniture</designationCategory>
-		<!--<surfaceType>None</surfaceType>
-    <tickerType>Long</tickerType>-->
+		<tickerType>Long</tickerType>
 	</ThingDef>
 
 	<ThingDef ParentName="ArtableFurnitureBase">
@@ -91,9 +95,10 @@
 		<graphicData>
 			<texPath>Furniture/ColorChangeDresser_mirror</texPath>
 			<graphicClass>Graphic_Multi</graphicClass>
+			<shaderType>CutoutComplex</shaderType>
 			<drawSize>(1,1)</drawSize>
 		</graphicData>
-		<altitudeLayer>Building</altitudeLayer>
+		<altitudeLayer>BuildingOnTop</altitudeLayer>
 		<passability>Standable</passability>
 		<fillPercent>0.4</fillPercent>
 		<castEdgeShadows>false</castEdgeShadows>
@@ -117,7 +122,7 @@
 		<size>(1,1)</size>
 		<designationHotKey>Misc12</designationHotKey>
 		<staticSunShadowHeight>0.5</staticSunShadowHeight>
-		<surfaceType>Item</surfaceType>
+		<surfaceType>None</surfaceType>
 		<canOverlapZones>false</canOverlapZones>
 		<placeWorkers>
 			<li>PlaceWorker_ShowFacilitiesConnections</li>
@@ -138,5 +143,77 @@
 		<hasInteractionCell>True</hasInteractionCell>
 		<interactionCellOffset>(0,0,1)</interactionCellOffset>
 		<designationCategory>Furniture</designationCategory>
+	</ThingDef>
+
+	<ThingDef ParentName="ArtableFurnitureBase">
+		<defName>RepairChangeDresser</defName>
+		<label>mending attachment</label>
+		<description>An attachment to change dressers which can mend the stored apparel.</description>
+		<thingClass>ChangeDresser.Building_RepairChangeDresser</thingClass>
+		<graphicData>
+			<texPath>Furniture/RepairChangeDresser</texPath>
+			<graphicClass>Graphic_Multi</graphicClass>
+			<drawSize>(1,1)</drawSize>
+			<damageData>
+				<cornerTL>Damage/Corner</cornerTL>
+				<cornerTR>Damage/Corner</cornerTR>
+				<cornerBL>Damage/Corner</cornerBL>
+				<cornerBR>Damage/Corner</cornerBR>
+			</damageData>
+		</graphicData>
+		<altitudeLayer>FloorEmplacement</altitudeLayer>
+		<passability>PassThroughOnly</passability>
+		<fillPercent>0.4</fillPercent>
+		<castEdgeShadows>true</castEdgeShadows>
+		<stuffCategories>
+			<li>Metallic</li>
+			<li>Woody</li>
+			<li>Stony</li>
+		</stuffCategories>
+		<costStuffCount>20</costStuffCount>
+		<costList>
+			<Component>6</Component>
+			<Steel>250</Steel>
+		</costList>
+		<defaultPlacingRot>South</defaultPlacingRot>
+		<statBases>
+			<MaxHitPoints>100</MaxHitPoints>
+			<Mass>30</Mass>
+			<WorkToBuild>20000</WorkToBuild>
+			<Flammability>1.0</Flammability>
+			<Beauty>-10</Beauty>
+		</statBases>
+		<size>(1,1)</size>
+		<designationHotKey>Misc12</designationHotKey>
+		<staticSunShadowHeight>0.5</staticSunShadowHeight>
+		<surfaceType>Item</surfaceType>
+		<canOverlapZones>false</canOverlapZones>
+		<placeWorkers>
+			<li>PlaceWorker_ShowFacilitiesConnections</li>
+		</placeWorkers>
+		<comps>
+			<li Class="CompProperties_Breakdownable"/>
+			<li Class="CompProperties_Flickable"/>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>1000</basePowerConsumption>
+				<shortCircuitInRain>true</shortCircuitInRain>
+				<startElectricalFires>true</startElectricalFires>
+			</li>
+			<li Class="CompProperties_Facility">
+				<maxSimultaneous>1</maxSimultaneous>
+				<maxDistance>6</maxDistance>
+			</li>
+		</comps>
+		<building>
+			<ignoreStoredThingsBeauty>false</ignoreStoredThingsBeauty>
+		</building>
+		<hasInteractionCell>false</hasInteractionCell>
+		<designationCategory>Furniture</designationCategory>
+		<tickerType>Long</tickerType>
+		<researchPrerequisites>
+			<li>Mending</li>
+			<li>MultiAnalyzer</li>
+		</researchPrerequisites>
 	</ThingDef>
 </Defs>

@@ -26,9 +26,12 @@ namespace ChangeDresser
     {
         private static bool showGenderAgeChange = true;
         private static bool showBodyChange = true;
+        private static bool keepForcedApparel = true;
 
         public static bool ShowGenderAgeChange { get { return showGenderAgeChange; } }
         public static bool ShowBodyChange { get { return showBodyChange; } }
+        public static bool KeepForcedApparel { get { return keepForcedApparel; } }
+        public static int RepairAttachmentDistance { get { return 6; } }
 
         public override void ExposeData()
         {
@@ -36,6 +39,7 @@ namespace ChangeDresser
 
             Scribe_Values.Look<bool>(ref showGenderAgeChange, "ChangeDresser.ShowGenderAgeChange", true, true);
             Scribe_Values.Look<bool>(ref showBodyChange, "ChangeDresser.ShowBodyChange", true, true);
+            Scribe_Values.Look<bool>(ref keepForcedApparel, "ChangeDresser.KeepForcedApparel", false, true);
 
             VerifySupportedEditors(showBodyChange);
         }
@@ -45,6 +49,8 @@ namespace ChangeDresser
             Listing_Standard l = new Listing_Standard(GameFont.Small);
             l.ColumnWidth = System.Math.Min(400, rect.width / 2);
             l.Begin(rect);
+            l.CheckboxLabeled("ChangeDresser.KeepForcedApparel".Translate(), ref keepForcedApparel);
+            l.Gap(4);
             l.CheckboxLabeled("ChangeDresser.ShowBodyChange".Translate(), ref showBodyChange);
             if (showBodyChange)
             {

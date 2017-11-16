@@ -52,10 +52,10 @@ namespace ChangeDresser.UI.DTO
                     {
                         alienEditors.Add(CurrentEditorEnum.ChangeDresserAlienSkinColor);
                     }
-                    else if (ed == CurrentEditorEnum.ChangeDresserHair)
+                    /*else if (ed == CurrentEditorEnum.ChangeDresserHair)
                     {
                         alienEditors.Add(CurrentEditorEnum.ChangeDresserAlienHairColor);
-                    }
+                    }*/
                 }
                 editors = alienEditors;
                 return new AlienDresserDTO(pawn, selectedEditor, editors);
