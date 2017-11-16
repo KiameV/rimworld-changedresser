@@ -11,8 +11,10 @@
   <ChangeDresser.AssignOutfitsDesc>戦闘時と通常時の両方の必要に合わせて、入植者に服装を割り当てます。</ChangeDresser.AssignOutfitsDesc>
   <ChangeDresser.Empty>空にする</ChangeDresser.Empty>
   <ChangeDresser.EmptyDesc>ドレッサーの中身を空にします。服装グループの在庫は含まれません。</ChangeDresser.EmptyDesc>
-  <ChangeDresser.ChangeTo>Change To</ChangeDresser.ChangeTo>
-  <ChangeDresser.ChangeToDesc>この衣装に変更します。</ChangeDresser.ChangeToDesc>
+  <ChangeDresser.Collect>収納する</ChangeDresser.Collect>
+  <ChangeDresser.CollectDesc>ドレッサーの周囲に衣服を集めて、それらを収納します。</ChangeDresser.CollectDesc>
+  <ChangeDresser.ChangeTo>着替える:</ChangeDresser.ChangeTo>
+  <ChangeDresser.ChangeToDesc>この衣服に変更します。</ChangeDresser.ChangeToDesc>
   <ChangeDresser.Wearing>着用中の服装</ChangeDresser.Wearing>
   <ChangeDresser.WearingDesc>現在この服装を着ています。</ChangeDresser.WearingDesc>
   <ChangeDresser.IncludeInTradeDeals>衣装を売る</ChangeDresser.IncludeInTradeDeals>
