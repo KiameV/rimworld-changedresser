@@ -101,9 +101,18 @@ namespace ChangeDresser
         {
             if (this.lastBattleOutfit != null)
             {
-                outfit = this.lastBattleOutfit;
-                return true;
+                if (WorldComp.OutfitsForBattle.Contains(this.lastBattleOutfit) &&
+                    this.Outfits.Contains(this.lastBattleOutfit))
+                {
+                    outfit = this.lastBattleOutfit;
+                    return true;
+                }
+                else
+                {
+                    this.lastBattleOutfit = null;
+                }
             }
+
             foreach (Outfit o in this.Outfits)
             {
                 if (WorldComp.OutfitsForBattle.Contains(o))
@@ -120,9 +129,18 @@ namespace ChangeDresser
         {
             if (this.lastCivilianOutfit != null)
             {
-                outfit = this.lastCivilianOutfit;
-                return true;
+                if (!WorldComp.OutfitsForBattle.Contains(this.lastCivilianOutfit) &&
+                    this.Outfits.Contains(this.lastCivilianOutfit))
+                {
+                    outfit = this.lastCivilianOutfit;
+                    return true;
+                }
+                else
+                {
+                    this.lastCivilianOutfit = null;
+                }
             }
+
             foreach (Outfit o in this.Outfits)
             {
                 if (!WorldComp.OutfitsForBattle.Contains(o))
