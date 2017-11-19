@@ -209,7 +209,7 @@
 			<ignoreStoredThingsBeauty>false</ignoreStoredThingsBeauty>
 		</building>
 		<hasInteractionCell>false</hasInteractionCell>
-		<designationCategory>Furniture</designationCategory>
+		<designationCategory>Misc</designationCategory>
 		<tickerType>Long</tickerType>
 		<researchPrerequisites>
 			<li>Mending</li>

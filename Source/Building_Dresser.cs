@@ -322,15 +322,16 @@ namespace ChangeDresser
         {
             //this.Tick();
             StringBuilder sb = new StringBuilder(base.GetInspectString());
-            sb.Append("\n");
+            if (sb.Length > 0)
+                sb.Append(Environment.NewLine);
             sb.Append("ChangeDresser.StoragePriority".Translate());
             sb.Append(": ");
             sb.Append(("StoragePriority" + base.settings.Priority).Translate());
-            sb.Append("\n");
+            sb.Append(Environment.NewLine);
             sb.Append("ChangeDresser.ApparelCount".Translate());
             sb.Append(": ");
             sb.Append(this.Count);
-            sb.Append("\n");
+            sb.Append(Environment.NewLine);
             sb.Append("ChangeDresser.IncludeInTradeDeals".Translate());
             sb.Append(": ");
             sb.Append(this.includeInTradeDeals.ToString());

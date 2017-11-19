@@ -1,6 +1,7 @@
 ﻿using RimWorld;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Verse;
 
@@ -22,11 +23,12 @@ namespace ChangeDresser
         {
             //this.Tick();
             StringBuilder sb = new StringBuilder(base.GetInspectString());
-            sb.Append("\n");
+            if (sb.Length > 0)
+                sb.Append(Environment.NewLine);
             sb.Append("ChangeDresser.AttachedDressers".Translate());
             sb.Append(": ");
             sb.Append(this.AttachedDressers.Count);
-            sb.Append("\n");
+            sb.Append(Environment.NewLine);
             sb.Append("ChangeDresser.IsMending".Translate());
             sb.Append(": ");
             if (BeingRepaird == null)
@@ -132,26 +134,69 @@ namespace ChangeDresser
             }
         }
 
-        private Apparel FindApparelToRepair()
+        private void OrderAttachedDressers()
         {
+            bool isSorted = true;
             for (LinkedListNode<Building_Dresser> n = this.AttachedDressers.First; n != null; n = n.Next)
             {
-                Building_Dresser d = n.Value;
-                if (!d.Spawned)
+                if (!n.Value.Spawned)
                 {
                     this.AttachedDressers.Remove(n);
                 }
-                else
+                else if (
+                    n.Next != null &&
+                    n.Value.settings.Priority < n.Next.Value.settings.Priority)
                 {
-                    foreach (LinkedList<Apparel> l in d.StoredApparel.StoredApparelLookup.Values)
+                    isSorted = false;
+                }
+            }
+
+            if (!isSorted)
+            {
+                LinkedList<Building_Dresser> ordered = new LinkedList<Building_Dresser>();
+                for (LinkedListNode<Building_Dresser> n = this.AttachedDressers.First; n != null; n = n.Next)
+                {
+                    Building_Dresser d = n.Value;
+                    bool inserted = false;
+                    for (LinkedListNode<Building_Dresser> o = ordered.First; o != null; o = o.Next)
                     {
-                        foreach (Apparel a in l)
+                        if (d.settings.Priority > o.Value.settings.Priority)
                         {
-                            if (a.HitPoints < a.MaxHitPoints)
-                            {
-                                d.RemoveNoDrop(a);
-                                return a;
-                            }
+                            ordered.AddBefore(o, d);
+                            inserted = true;
+                            break;
+                        }
+                    }
+                    if (!inserted)
+                    {
+                        ordered.AddLast(d);
+                    }
+                }
+                this.AttachedDressers.Clear();
+                this.AttachedDressers = ordered;
+
+                Log.Warning("CD New Order:");
+                foreach (Building_Dresser d in this.AttachedDressers)
+                {
+                    Log.Warning(" " + d.Label + " " + d.settings.Priority);
+                }
+            }
+        }
+
+        private Apparel FindApparelToRepair()
+        {
+            this.OrderAttachedDressers();
+            for (LinkedListNode<Building_Dresser> n = this.AttachedDressers.First; n != null; n = n.Next)
+            {
+                Building_Dresser d = n.Value;
+                foreach (LinkedList<Apparel> l in d.StoredApparel.StoredApparelLookup.Values)
+                {
+                    foreach (Apparel a in l)
+                    {
+                        if (a.HitPoints < a.MaxHitPoints)
+                        {
+                            d.RemoveNoDrop(a);
+                            return a;
                         }
                     }
                 }
@@ -167,23 +212,13 @@ namespace ChangeDresser
             }
 
             Building_Dresser dresserToUse = null;
+            this.OrderAttachedDressers();
             for (LinkedListNode<Building_Dresser> n = this.AttachedDressers.First; n != null; n = n.Next)
             {
                 Building_Dresser d = n.Value;
-                if (!d.Spawned)
+                if (d.settings.AllowedToAccept(this.BeingRepaird))
                 {
-                    this.AttachedDressers.Remove(n);
-                }
-                else
-                {
-                    if (d.settings.AllowedToAccept(this.BeingRepaird))
-                    {
-                        if (dresserToUse == null ||
-                            dresserToUse.settings.Priority < d.settings.Priority)
-                        {
-                            dresserToUse = d;
-                        }
-                    }
+                    dresserToUse = d;
                 }
             }
 
