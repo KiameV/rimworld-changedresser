@@ -133,6 +133,11 @@ namespace ChangeDresser.UI
                                 this.Dresser.Remove(apparel);
                                 this.cachedApparel.Clear();
                                 this.cachedApparel = null;
+                                PawnOutfits outfits;
+                                if (WorldComp.PawnOutfits.TryGetValue(this.Pawn, out outfits))
+                                {
+                                    outfits.ColorApparel(apparel);
+                                }
                                 this.Pawn.apparel.Wear(apparel);
                                 GUI.EndGroup();
                                 break;

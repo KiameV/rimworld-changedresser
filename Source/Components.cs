@@ -2,68 +2,12 @@
 using RimWorld.Planet;
 using System.Collections.Generic;
 using Verse;
-using System;
-using System.Diagnostics;
 
 namespace ChangeDresser
 {
-    /*class GameComp : GameComponent
-    {
-        public static ThingDef DresserDef { get; private set; }
-        public static ThingDef MirrorDef { get; private set; }
-
-        public GameComp(Game game) : base() { DresserDef = MirrorDef = null; }
-
-        public override void FinalizeInit()
-        {
-            base.FinalizeInit();
-            
-            if (DresserDef == null)
-            {
-                foreach (ThingDef td in DefDatabase<ThingDef>.AllDefs)
-                {
-                    if (DresserDef == null &&
-                        td.defName.Equals("ChangeDresser"))
-                    {
-                        DresserDef = td;
-                    }
-                    else if (MirrorDef == null &&
-                             td.defName.Equals("ChangeMirror"))
-                    {
-                        MirrorDef = td;
-                    }
-
-                    if (DresserDef != null && MirrorDef != null)
-                    {
-                        break;
-                    }
-                }
-
-                foreach (ThingDef td in DefDatabase<ThingDef>.AllDefs)
-                {
-                    CompProperties_AffectedByFacilities comp = td.GetCompProperties<CompProperties_AffectedByFacilities>();
-                    if (comp != null && td.defName.Contains("Bed"))
-                    {
-                        if (!comp.linkableFacilities.Contains(DresserDef))
-                        {
-                            comp.linkableFacilities.Add(DresserDef);
-                        }
-
-                        if (!comp.linkableFacilities.Contains(MirrorDef))
-                        {
-                            comp.linkableFacilities.Add(MirrorDef);
-                        }
-                    }
-                }
-            }
-        }
-    }*/
-
     public class WorldComp : WorldComponent
     {
-        private static Stopwatch stopWatch = null;
-
-        public static List<Building_Dresser> DressersToUse { get; private set; }
+        public static LinkedList<Building_Dresser> DressersToUse { get; private set; }
 
         public static Dictionary<Pawn, PawnOutfits> PawnOutfits { get; private set; }
         public static List<Outfit> OutfitsForBattle { get; private set; }
@@ -76,7 +20,7 @@ namespace ChangeDresser
             }
             else
             {
-                DressersToUse = new List<Building_Dresser>();
+                DressersToUse = new LinkedList<Building_Dresser>();
             }
 
             if (PawnOutfits != null)
@@ -111,27 +55,24 @@ namespace ChangeDresser
             return false;
         }
 
-        public static void AddDresser(Building_Dresser dresser)
+        public static bool AddApparel(Apparel apparel, Map map)
         {
-            bool added = false;
-            for (int i = 0; i < DressersToUse.Count; ++i)
+            foreach (Building_Dresser d in DressersToUse)
             {
-                if (dresser.settings.Priority > DressersToUse[i].settings.Priority)
+                if (d.Map == map && d.settings.AllowedToAccept(apparel))
                 {
-                    added = true;
-                    DressersToUse.Insert(i, dresser);
-                    break;
+                    d.AddApparel(apparel);
+                    return true;
                 }
             }
-            if (!added)
-            {
-                DressersToUse.Add(dresser);
-            }
+            return false;
+        }
 
-            if (stopWatch == null)
+        public static void AddDresser(Building_Dresser dresser)
+        {
+            if (!DressersToUse.Contains(dresser))
             {
-                stopWatch = new Stopwatch();
-                stopWatch.Start();
+                DressersToUse.AddLast(dresser);
             }
         }
 
@@ -139,11 +80,6 @@ namespace ChangeDresser
         {
             if (DressersToUse.Remove(dresser))
             {
-                if (DressersToUse.Count == 0)
-                {
-                    stopWatch.Stop();
-                    stopWatch = null;
-                }
                 return true;
             }
             return false;
@@ -151,39 +87,24 @@ namespace ChangeDresser
 
         public static void SortDressersToUse()
         {
-            if (stopWatch == null)
-            {
-#if DEBUG || DRESSER_LIST_DEBUG
-                Log.Warning("WorldComp.SortDressersToUse: stopWatch null. RETURN");
-#endif
-                return;
-            }
-
-            if (stopWatch.ElapsedTicks < TimeSpan.TicksPerMinute)
-            {
-#if DEBUG || DRESSER_LIST_DEBUG
-                Log.Warning("WorldComp.SortDressersToUse: stopWatch.ElapsedTicks < TimeSpan.TicksPerMinute. RETURN");
-#endif
-                return;
-            }
-
-            for (int i = 0; i < DressersToUse.Count - 1; ++i)
-            {
-                if (DressersToUse[i].settings.Priority < DressersToUse[i + 1].settings.Priority)
-                {
-                    Building_Dresser tmp = DressersToUse[i];
-                    DressersToUse[i] = DressersToUse[i + 1];
-                    DressersToUse[i + 1] = tmp;
-                }
-            }
-            stopWatch.Reset();
-
-#if DEBUG || DRESSER_LIST_DEBUG
+            LinkedList<Building_Dresser> l = new LinkedList<Building_Dresser>();
             foreach (Building_Dresser d in DressersToUse)
             {
-                Log.Warning(d.Label + " " + d.settings.Priority + ", ");
+                bool added = false;
+                for (LinkedListNode<Building_Dresser> n = DressersToUse.First; n.Next != null; n = n.Next)
+                {
+                    if (d.settings.Priority > n.Value.settings.Priority)
+                    {
+                        l.AddBefore(n, d);
+                    }
+                }
+                if (!added)
+                {
+                    l.AddLast(d);
+                }
             }
-#endif
+            DressersToUse.Clear();
+            DressersToUse = l;
         }
 
         private List<PawnOutfits> tempPawnOutfits = null;

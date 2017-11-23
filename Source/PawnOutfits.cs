@@ -35,7 +35,7 @@ namespace ChangeDresser
             }
         }
 
-        public bool TryGetColorFor(ApparelLayer layer, out Color color)
+        public bool ColorApparel(Apparel apparel)
         {
 #if DEBUG
             Log.Message(Environment.NewLine + "Start PawnOutfits.TryGetColorFor Layer: " + layer + " " + ((int)layer).ToString());
@@ -53,16 +53,25 @@ namespace ChangeDresser
             }
             Log.Warning(sb.ToString());
 #endif
-            if (this.IsColorAssigned[(int)layer])
+            int layer = (int)apparel.def.apparel.LastLayer;
+            if (layer < this.IsColorAssigned.Count && 
+                this.IsColorAssigned[layer])
             {
-                color = this.ColorForLayer[(int)layer];
+                apparel.SetColor(this.ColorForLayer[layer]);
 #if DEBUG
                 Log.Message("Start PawnOutfits.TryGetColorFor" + Environment.NewLine);
 #endif
                 return true;
             }
-            color = default(Color);
             return false;
+        }
+
+        public void ColorApparel(Pawn pawn)
+        {
+            foreach (Apparel a in pawn.apparel.WornApparel)
+            {
+                this.ColorApparel(a);
+            }
         }
 
         public void SetColorFor(ApparelLayer layer, Color color)

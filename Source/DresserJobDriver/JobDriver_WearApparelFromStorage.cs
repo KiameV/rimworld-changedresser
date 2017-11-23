@@ -58,6 +58,12 @@ namespace ChangeDresser.DresserJobDriver
                                 dresser.AddApparel(w);
                             }
                         }
+                        
+                        /*PawnOutfits outfits;
+                        if (WorldComp.PawnOutfits.TryGetValue(pawn, out outfits))
+                        {
+                            outfits.ColorApparel(pawn);
+                        }*/
                     }
 #if DEBUG || DEBUG_TRACKER
                     Log.Message("End JobDriver_WearApparelFromStorage" + System.Environment.NewLine);

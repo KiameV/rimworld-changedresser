@@ -243,20 +243,21 @@ namespace ChangeDresser
             return false;
         }
 
-        public List<Apparel> GetFilteredApparel(ThingFilter filter)
+        public List<Apparel> RemoveFilteredApparel(ThingFilter filter)
         {
-            List<Apparel> toRemove = new List<Apparel>(0);
+            List<Apparel> removed = new List<Apparel>(0);
             foreach (LinkedList<Apparel> ll in this.StoredApparelLookup.Values)
             {
                 for(LinkedListNode<Apparel> n = ll.First; n != null; n = n.Next)
                 {
                     if (!this.Dresser.settings.filter.Allows(n.Value))
                     {
-                        toRemove.Add(n.Value);
+                        ll.Remove(n);
+                        removed.Add(n.Value);
                     }
                 }
             }
-            return toRemove;
+            return removed;
         }
 
         public override bool Equals(object obj)

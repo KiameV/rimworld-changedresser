@@ -20,7 +20,7 @@ namespace ChangeDresser
             harmony.PatchAll(Assembly.GetExecutingAssembly());
             
             Log.Message("ChangeDresser: Adding Harmony Postfix to Pawn.GetGizmos");
-            //Log.Message("ChangeDresser: Adding Harmony Postfix to Pawn_ApparelTracker.Notify_ApparelAdded");
+            Log.Message("ChangeDresser: Adding Harmony Postfix to Pawn_ApparelTracker.Notify_ApparelAdded");
             Log.Message("ChangeDresser: Adding Harmony Postfix to Pawn_DraftController.Drafted { set }");
             Log.Message("ChangeDresser: Adding Harmony Postfix to Pawn_DraftController.GetGizmos");
             Log.Message("ChangeDresser: Adding Harmony Postfix to JobGiver_OptimizeApparel.TryGiveJob(Pawn)");
@@ -218,8 +218,21 @@ namespace ChangeDresser
         }
     }
 
+    [HarmonyPatch(typeof(Pawn_ApparelTracker), "Notify_ApparelAdded")]
+    static class Patch_Pawn_ApparelTracker_Notify_ApparelAdded
+    {
+        static void Prefix(Pawn_ApparelTracker __instance, Apparel apparel)
+        {
+            PawnOutfits outfits;
+            if (WorldComp.PawnOutfits.TryGetValue(__instance.pawn, out outfits))
+            {
+                outfits.ColorApparel(apparel);
+            }
+        }
+    }
+
     [HarmonyPatch(typeof(Pawn), "GetGizmos")]
-    static class Pawn_GetGizmos
+    static class Patch_Pawn_GetGizmos
     {
 #if DEBUG
         private static int i = 0;
@@ -281,6 +294,7 @@ namespace ChangeDresser
                             a.action = delegate
                             {
                                 Main.SwapApparel(__instance, o);
+                                //outfits.ColorApparel(__instance);
                             };
                             l.Add(a);
                         }
@@ -370,6 +384,7 @@ namespace ChangeDresser
                             a.action = delegate
                             {
                                 Main.SwapApparel(pawn, o);
+                                //outfits.ColorApparel(pawn);
                             };
                             l.Add(a);
                         }
@@ -426,6 +441,7 @@ namespace ChangeDresser
                 if (found)
                 {
                     Main.SwapApparel(pawn, outfitToWear);
+                    //outfits.ColorApparel(pawn);
                 }
             }
         }
@@ -469,28 +485,6 @@ namespace ChangeDresser
             }
         }
 
-        /*public static bool TryGetBestApparel(Thing original, Pawn pawn, out Thing betterThing, out Building_Dresser containingDresser)
-        {
-            containingDresser = null;
-            betterThing = null;
-            float baseApparelScore = 0f;
-
-            foreach (Building_Dresser dresser in WorldComp.DressersToUse)
-            {
-                float score = baseApparelScore;
-                Apparel a = dresser.FindBetterApparel(ref score, pawn, pawn.outfits.CurrentOutfit);
-
-                if (score > baseApparelScore && a != null)
-                {
-                    betterThing = a;
-                    baseApparelScore = score;
-                    containingDresser = dresser;
-                }
-
-            }
-            return betterThing != null && containingDresser != null;
-        }*/
-
         private static bool DoDressersHaveApparel()
         {
             foreach (Building_Dresser d in WorldComp.DressersToUse)
@@ -506,17 +500,6 @@ namespace ChangeDresser
 
     static class TradeUtil
     {
-        public static void EmptyDressers()
-        {
-            foreach (Building_Dresser d in WorldComp.DressersToUse)
-            {
-                if (d.Map != null && d.Spawned && d.IncludeInTradeDeals)
-                {
-                    d.Empty<Apparel>();
-                }
-            }
-        }
-
         public static IEnumerable<T> EmptyDressers<T>(Map map) where T : Thing
         {
             List<T> a = new List<T>();
@@ -571,21 +554,7 @@ namespace ChangeDresser
             }
         }
     }
-
-    /*[HarmonyPatch(typeof(Window), "PreOpen")]
-    static class Patch_Window_PreOpen
-    {
-        // Before loading launch pods
-        static void Prefix(Dialog_LoadTransporters __instance)
-        {
-            Type type = __instance.GetType();
-            if (type == typeof(Dialog_LoadTransporters))
-            {
-                TradeUtil.EmptyDressers();
-            }
-        }
-    }*/
-
+    
     [HarmonyPatch(typeof(Window), "PreClose")]
     static class Patch_Window_PreClose
     {
@@ -652,166 +621,4 @@ namespace ChangeDresser
             }
         }
     }
-
-    /*[HarmonyPatch(typeof(TradeDeal), "TryExecute")]
-    static class Patch_TradeDeal_TryExecute
-    {
-        static void Postfix(ref bool __result)
-        {
-            if (__result)
-            {
-#if TRADE_DEBUG
-                Log.Warning("Start ChangeDresser.Patch_TradeDeal_TryExecute");
-#endif
-                foreach (Building_Dresser d in WorldComp.DressersToUse)
-                {
-                    if (d.Map != null)
-                    {
-                        d.HandleThingsOnTop();
-                    }
-                }
-#if TRADE_DEBUG
-                Log.Warning("End ChangeDresser.Patch_TradeDeal_TryExecute");
-#endif
-            }
-        }
-    }*/
-
-    /* This prevents pawns from constantly switching apparel
-    [HarmonyPatch(typeof(Pawn_ApparelTracker), "Notify_ApparelAdded")]
-    static class Patch_Pawn_ApparelTracker_Notify_ApparelAdded
-    {
-        struct LastTimeAndTries
-        {
-            public int Tries;
-            public long LastTime;
-            public LastTimeAndTries(int tries, long lastTime)
-            {
-                this.Tries = tries;
-                this.LastTime = lastTime;
-            }
-        }
-        static Dictionary<Pawn, LastTimeAndTries> lastTimeAndTries = new Dictionary<Pawn, LastTimeAndTries>();
-        static void Postfix(Pawn_ApparelTracker __instance, Apparel apparel)
-        {
-#if DEBUG || DEBUG_TRACKER
-            Log.Message(Environment.NewLine + "Start Pawn_ApparelTracker.Notify_ApparelAdded");
-#endif
-            long now = DateTime.Now.Ticks;
-            LastTimeAndTries i;
-            if (lastTimeAndTries.TryGetValue(__instance.pawn, out i))
-            {
-                long delta = now - i.LastTime;
-                if (delta < TimeSpan.TicksPerMinute)
-                {
-                    if (i.Tries >= 8)
-                    {
-#if DEBUG || DEBUG_TRACKER
-                        Log.Warning(__instance.pawn.Name.ToStringShort + " reached the maximum number of tried in a minute");
-#endif
-                        return;
-                    }
-                    else // i.Tries < 8
-                    {
-#if DEBUG || DEBUG_TRACKER
-                        Log.Warning(__instance.pawn.Name.ToStringShort + " try count: " + i);
-#endif
-                        ++i.Tries;
-                    }
-                }
-                else
-                {
-#if DEBUG || DEBUG_TRACKER
-                    Log.Warning(__instance.pawn.Name.ToStringShort + " try reset");
-#endif
-                    i.Tries = 1;
-                    i.LastTime = now;
-                }
-            }
-            else
-            {
-                i = new LastTimeAndTries(1, now);
-            }
-
-            PawnOutfits po;
-            if (WorldComp.PawnOutfits.TryGetValue(__instance.pawn, out po))
-            {
-#if DEBUG
-                Log.Warning(" po found");
-#endif
-                Color c;
-                if (po.TryGetColorFor(apparel.def.apparel.LastLayer, out c))
-                {
-#if DEBUG
-                    Log.Warning(" assigned color for layer " + apparel.def.apparel.LastLayer);
-#endif
-                    CompColorableUtility.SetColor(apparel, c, true);
-                    __instance.pawn.Drawer.renderer.graphics.ResolveAllGraphics();
-                    PortraitsCache.SetDirty(__instance.pawn);
-                }
-#if DEBUG
-                else
-                {
-                    Log.Warning(" no assigned color for layer " + apparel.def.apparel.LastLayer);
-                }
-#endif
-            }
-#if DEBUG || DEBUG_TRACKER
-            Log.Message("End Pawn_ApparelTracker.Notify_ApparelAdded" + Environment.NewLine);
-#endif
-        }
-    }*/
-    /*[HarmonyPatch(typeof(Pawn_TraderTracker), "ColonyThingsWillingToBuy")]
-    static class Patch_Pawn_TraderTracker_ColonyThingsWillingToBuy
-    {
-        static void Postfix(IEnumerable<Thing> __result)
-        {
-            Log.Error("POSTFIX WILLING TO BUY START");
-            Map map = Current.Game.VisibleMap;
-            if (map != null)
-            {
-                Log.Error("Map found");
-                List<Thing> l = new List<Thing>(__result);
-                foreach (Building b in map.listerBuildings.allBuildingsColonist)
-                {
-                    Building_Dresser d = b as Building_Dresser;
-                    if (d != null)
-                    {
-                        Log.Error("Dresser found " + d.Count);
-                        l.AddRange(d.Apparel as List<Thing>);
-                    }
-                }
-            }
-        }
-    }
-    [HarmonyPatch(typeof(Pawn_ApparelTracker), "Notify_ApparelRemoved")]
-    static class Patch_Pawn_ApparelTracker_Notify_ApparelRemoved
-    {
-        static void Postfix(Pawn_ApparelTracker __instance, Apparel apparel)
-        {
-            if (!Main.IsSwapping)
-            {
-                StoredApparelContainer.Notify_ApparelRemoved(__instance.pawn, apparel);
-            }
-        }
-    }
-
-    [HarmonyPatch(typeof(Settlement_TraderTracker), "RegenerateStock")]
-    static class Patch_Settlement_TraderTracker_RegenerateStock
-    {
-        static void Postfix(Settlement_TraderTracker __instance)
-        {
-            ThingOwner<Thing> l = (ThingOwner<Thing>)typeof(Settlement_TraderTracker).GetField("stock", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(__instance);
-            foreach (Thing t in Current.Game.VisibleMap.spawnedThings)
-            {
-                if (t is Building_Dresser)
-                {
-                    foreach (Thing apparel in ((Building_Dresser)t).StoredApparel)
-                    {
-                        l.TryAdd(apparel, false);
-                    }
-                }
-            }
-        }
-    }*/
 }

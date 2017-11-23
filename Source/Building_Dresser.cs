@@ -4,6 +4,7 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 using System.Text;
 using Verse;
 using Verse.AI;
@@ -28,7 +29,6 @@ namespace ChangeDresser
         public const StoragePriority DefaultStoragePriority = StoragePriority.Low;
 
         internal readonly StoredApparel StoredApparel;
-        private readonly Stopwatch stopWatch = new Stopwatch();
 
         private Map CurrentMap { get; set; }
 
@@ -45,7 +45,6 @@ namespace ChangeDresser
         public Building_Dresser()
         {
             this.StoredApparel = new StoredApparel(this);
-            this.stopWatch.Start();
 
             WEAR_APPAREL_FROM_DRESSER_JOB_DEF = this.wearApparelFromStorageJobDef;
         }
@@ -77,7 +76,7 @@ namespace ChangeDresser
             base.SpawnSetup(map, respawningAfterLoad);
             this.CurrentMap = map;
             WorldComp.AddDresser(this);
-            
+
             if (settings == null)
             {
                 base.settings = new StorageSettings(this);
@@ -92,6 +91,8 @@ namespace ChangeDresser
 #endif
                 r.AddDresser(this);
             }
+
+            this.UpdatePreviousStorageFilter();
         }
 
         public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
@@ -114,7 +115,6 @@ namespace ChangeDresser
         {
             try
             {
-                WorldComp.RemoveDesser(this);
                 this.Dispose();
                 base.DeSpawn();
             }
@@ -145,6 +145,7 @@ namespace ChangeDresser
                     e.StackTrace);
             }
 
+            WorldComp.RemoveDesser(this);
             foreach (Building_RepairChangeDresser r in BuildingUtil.FindThingsOfTypeNextTo<Building_RepairChangeDresser>(base.Map, base.Position, Settings.RepairAttachmentDistance))
             {
 #if DEBUG_REPAIR
@@ -152,6 +153,11 @@ namespace ChangeDresser
 #endif
                 r.RemoveDresser(this);
             }
+        }
+
+        private void DropThing(Thing t, bool makeForbidden = true)
+        {
+            BuildingUtil.DropThing(t, this, this.CurrentMap, makeForbidden);
         }
 
         private void DropApparel<T>(IEnumerable<T> things, bool makeForbidden = true) where T : Thing
@@ -226,11 +232,6 @@ namespace ChangeDresser
 #if TRADE_DEBUG
             Log.Warning("End ChangeDresser.HandleThingsOnTop");
 #endif
-        }
-        
-        private void DropThing(Thing t, bool makeForbidden = true)
-        {
-            BuildingUtil.DropThing(t, this, this.CurrentMap, makeForbidden);
         }
 
         public override void Notify_ReceivedThing(Thing newItem)
@@ -320,7 +321,6 @@ namespace ChangeDresser
 
         public override string GetInspectString()
         {
-            //this.Tick();
             StringBuilder sb = new StringBuilder(base.GetInspectString());
             if (sb.Length > 0)
                 sb.Append(Environment.NewLine);
@@ -380,46 +380,30 @@ namespace ChangeDresser
 
         public override void TickLong()
         {
-            if (this.Spawned)
+            if (this.Spawned && base.Map != null)
             {
-                if (base.Map != null)
+                // Fix for an issue where apparel will appear on top of the dresser even though it's already stored inside
+                this.HandleThingsOnTop();
+            }
+
+            if (!this.AreStorageSettingsEqual())
+            {
+                this.UpdatePreviousStorageFilter();
+
+                WorldComp.SortDressersToUse();
+
+                List<Apparel> removed = this.StoredApparel.RemoveFilteredApparel(this.settings.filter);
+                foreach (Apparel a in removed)
                 {
-                    // Fix for an issue where apparel will appear on top of the dresser even though it's already stored inside
-                    this.HandleThingsOnTop();
-                }
-                if (stopWatch.ElapsedTicks > THIRTY_SECONDS)
-                {
-                    WorldComp.SortDressersToUse();
-                    /*if (this.StoredApparel.FilterApparel)
-                    {*/
-                    //this.StoredApparel.FilterApparel = false;
-                    try
+                    if (!WorldComp.AddApparel(a, base.Map))
                     {
-                        List<Apparel> removed = this.StoredApparel.GetFilteredApparel(this.settings.filter);
-                        foreach (Apparel a in removed)
-                        {
-                            if (this.StoredApparel.RemoveApparel(a))
-                            {
-                                if (!WorldComp.AddApparel(a))
-                                {
-                                    this.DropThing(a, false);
-                                }
-                            }
-                        }
+                        this.DropThing(a, false);
                     }
-                    catch (Exception e)
-                    {
-                        Log.Error(
-                            "ChangeDresser:Building_Dresser.TickLong\n" +
-                            e.GetType().Name + " " + e.Message + "\n" +
-                            e.StackTrace);
-                    }
-                    //}
-                    this.stopWatch.Reset();
                 }
             }
         }
 
+        #region Float Menu Options
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Pawn pawn)
         {
             bool isAlien = AlienRaceUtil.IsAlien(pawn);
@@ -474,12 +458,14 @@ namespace ChangeDresser
                 }));
             return list;
         }
+        #endregion
 
         public Apparel FindBetterApparel(ref float baseApparelScore, Pawn pawn, Outfit currentOutfit)
         {
             return this.StoredApparel.FindBetterApparel(ref baseApparelScore, pawn, currentOutfit, this);
         }
 
+        #region Gizmos
         public override IEnumerable<Gizmo> GetGizmos()
         {
             IEnumerable<Gizmo> enumerables = base.GetGizmos();
@@ -517,7 +503,7 @@ namespace ChangeDresser
             a.defaultDesc = "ChangeDresser.EmptyDesc".Translate();
             a.defaultLabel = "ChangeDresser.Empty".Translate();
             a.activateSound = SoundDef.Named("Click");
-            a.action = 
+            a.action =
                 delegate
                 {
                     this.Empty<Apparel>();
@@ -563,5 +549,44 @@ namespace ChangeDresser
 
             return SaveStorageSettingsUtil.SaveStorageSettingsGizmoUtil.AddSaveLoadGizmos(l, SaveStorageSettingsUtil.SaveTypeEnum.Apparel_Management, this.settings.filter);
         }
+        #endregion
+
+        #region ThingFilters
+        private ThingFilter previousStorageFilters = new ThingFilter();
+        private FieldInfo AllowedDefsFI = typeof(ThingFilter).GetField("allowedDefs", BindingFlags.Instance | BindingFlags.NonPublic);
+        protected bool AreStorageSettingsEqual()
+        {
+            ThingFilter currentFilters = base.settings.filter;
+            if (currentFilters.AllowedDefCount != this.previousStorageFilters.AllowedDefCount ||
+                currentFilters.AllowedQualityLevels != this.previousStorageFilters.AllowedQualityLevels ||
+                currentFilters.AllowedHitPointsPercents != this.previousStorageFilters.AllowedHitPointsPercents)
+            {
+                return false;
+            }
+
+            HashSet<ThingDef> currentAllowed = AllowedDefsFI.GetValue(currentFilters) as HashSet<ThingDef>;
+            foreach (ThingDef previousAllowed in AllowedDefsFI.GetValue(this.previousStorageFilters) as HashSet<ThingDef>)
+            {
+                if (!currentAllowed.Contains(previousAllowed))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private void UpdatePreviousStorageFilter()
+        {
+            ThingFilter currentFilters = base.settings.filter;
+
+            this.previousStorageFilters.AllowedHitPointsPercents = currentFilters.AllowedHitPointsPercents;
+            this.previousStorageFilters.AllowedQualityLevels = currentFilters.AllowedQualityLevels;
+
+            HashSet<ThingDef> previousAllowed = AllowedDefsFI.GetValue(this.previousStorageFilters) as HashSet<ThingDef>;
+            previousAllowed.Clear();
+            previousAllowed.AddRange(AllowedDefsFI.GetValue(currentFilters) as HashSet<ThingDef>);
+        }
+        #endregion
     }
 }
