@@ -145,7 +145,7 @@
 		<designationCategory>Furniture</designationCategory>
 	</ThingDef>
 
-	<ThingDef ParentName="ArtableFurnitureBase">
+	<ThingDef ParentName="FurnitureBase">
 		<defName>RepairChangeDresser</defName>
 		<label>mending attachment</label>
 		<description>An attachment to change dressers which can mend the stored apparel.</description>

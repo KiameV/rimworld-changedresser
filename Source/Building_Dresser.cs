@@ -191,11 +191,11 @@ namespace ChangeDresser
 
         internal void ReclaimApparel()
         {
-            List<Apparel> l = new List<Apparel>(BuildingUtil.FindThingsOfTypeNextTo<Apparel>(base.Map, base.Position, 1));
 #if DEBUG
+            List<Apparel> l = new List<Apparel>(BuildingUtil.FindThingsOfTypeNextTo<Apparel>(base.Map, base.Position, 1));
             Log.Warning("Apparel found: " + l.Count);
 #endif
-            foreach (Apparel a in l)
+            foreach (Apparel a in BuildingUtil.FindThingsOfTypeNextTo<Apparel>(base.Map, base.Position, 1))
             {
                 this.AddApparel(a);
             }
@@ -210,10 +210,10 @@ namespace ChangeDresser
             {
                 foreach (Thing t in base.Map.thingGrid.ThingsAt(this.Position))
                 {
-#if TRADE_DEBUG
-                    Log.Warning("ChangeDresser.HandleThingsOnTop - Thing " + t?.Label);
+#if DEBUG
+                    Log.Warning("ChangeDresser.HandleThingsOnTop - Thing " + t.Label + " Type: " + t.GetType().Name);
 #endif
-                    if (t != null && t != this)
+                    if (t != null && t != this && !(t is Blueprint) && !(t is Building))
                     {
                         if (t is Apparel)
                         {
@@ -403,7 +403,7 @@ namespace ChangeDresser
             }
         }
 
-        #region Float Menu Options
+#region Float Menu Options
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Pawn pawn)
         {
             bool isAlien = AlienRaceUtil.IsAlien(pawn);
@@ -458,14 +458,14 @@ namespace ChangeDresser
                 }));
             return list;
         }
-        #endregion
+#endregion
 
         public Apparel FindBetterApparel(ref float baseApparelScore, Pawn pawn, Outfit currentOutfit)
         {
             return this.StoredApparel.FindBetterApparel(ref baseApparelScore, pawn, currentOutfit, this);
         }
 
-        #region Gizmos
+#region Gizmos
         public override IEnumerable<Gizmo> GetGizmos()
         {
             IEnumerable<Gizmo> enumerables = base.GetGizmos();
@@ -549,9 +549,9 @@ namespace ChangeDresser
 
             return SaveStorageSettingsUtil.SaveStorageSettingsGizmoUtil.AddSaveLoadGizmos(l, SaveStorageSettingsUtil.SaveTypeEnum.Apparel_Management, this.settings.filter);
         }
-        #endregion
+#endregion
 
-        #region ThingFilters
+#region ThingFilters
         private ThingFilter previousStorageFilters = new ThingFilter();
         private FieldInfo AllowedDefsFI = typeof(ThingFilter).GetField("allowedDefs", BindingFlags.Instance | BindingFlags.NonPublic);
         protected bool AreStorageSettingsEqual()
@@ -587,6 +587,6 @@ namespace ChangeDresser
             previousAllowed.Clear();
             previousAllowed.AddRange(AllowedDefsFI.GetValue(currentFilters) as HashSet<ThingDef>);
         }
-        #endregion
+#endregion
     }
 }

@@ -281,6 +281,11 @@ namespace ChangeDresser
                     {
                         break;
                     }
+                    if (!currentOutfit.filter.Allows(apparel) ||
+                        apparel.IsForbidden(pawn))
+                    {
+                        continue;
+                    }
 
                     if (Settings.KeepForcedApparel)
                     {
@@ -301,19 +306,15 @@ namespace ChangeDresser
                         }
                     }
 
-                    if (!apparel.IsForbidden(pawn) &&
-                        currentOutfit.filter.Allows(apparel.def))
+                    float gain = JobGiver_OptimizeApparel.ApparelScoreGain(pawn, apparel);
+                    if (gain >= 0.05f && gain > baseApparelScore)
                     {
-                        float gain = JobGiver_OptimizeApparel.ApparelScoreGain(pawn, apparel);
-                        if (gain >= 0.05f && gain > baseApparelScore)
+                        if (ApparelUtility.HasPartsToWear(pawn, apparel.def))
                         {
-                            if (ApparelUtility.HasPartsToWear(pawn, apparel.def))
+                            if (ReservationUtility.CanReserveAndReach(pawn, dresser, PathEndMode.OnCell, pawn.NormalMaxDanger(), 1))
                             {
-                                if (ReservationUtility.CanReserveAndReach(pawn, dresser, PathEndMode.OnCell, pawn.NormalMaxDanger(), 1))
-                                {
-                                    betterApparel = apparel;
-                                    baseApparelScore = gain;
-                                }
+                                betterApparel = apparel;
+                                baseApparelScore = gain;
                             }
                         }
                     }

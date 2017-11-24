@@ -23,7 +23,7 @@ namespace ChangeDresser
             Log.Message("ChangeDresser: Adding Harmony Postfix to Pawn_ApparelTracker.Notify_ApparelAdded");
             Log.Message("ChangeDresser: Adding Harmony Postfix to Pawn_DraftController.Drafted { set }");
             Log.Message("ChangeDresser: Adding Harmony Postfix to Pawn_DraftController.GetGizmos");
-            Log.Message("ChangeDresser: Adding Harmony Postfix to JobGiver_OptimizeApparel.TryGiveJob(Pawn)");
+            Log.Message("ChangeDresser: Adding Harmony Postfix to JobGiver_OptimizeApparel.TryGiveJob");
             Log.Message("ChangeDresser: Adding Harmony Postfix to ReservationManager.CanReserve");
             Log.Message("ChangeDresser: Adding Harmony Postfix to OutfitDatabase.TryDelete");
         }
