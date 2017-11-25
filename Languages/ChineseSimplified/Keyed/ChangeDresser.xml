@@ -2,11 +2,22 @@
 <LanguageData>
   <!-- Window Labels -->
   <ChangeDresser.DresserLabel>梳妆台</ChangeDresser.DresserLabel>
-  <ChangeDresser.ApparelGroupLabel>服装方案</ChangeDresser.ApparelGroupLabel>
   <ChangeDresser.ApparelStorageLabel>服装库存</ChangeDresser.ApparelStorageLabel>
   <!-- Gizmo (Command Button) -->
   <ChangeDresser.ManageApparel>服装管理</ChangeDresser.ManageApparel>
   <ChangeDresser.ManageApparelDesc>打开服装库存来进行管理。</ChangeDresser.ManageApparelDesc>
+  <ChangeDresser.AssignOutfits>指定服装</ChangeDresser.AssignOutfits>
+  <ChangeDresser.AssignOutfitsDesc>为目标指定战斗或民用需求的服装。</ChangeDresser.AssignOutfitsDesc>
+  <ChangeDresser.Empty>清空</ChangeDresser.Empty>
+  <ChangeDresser.EmptyDesc>清空梳妆台存储的服装，不包括记录的服装方案。</ChangeDresser.EmptyDesc>
+  <ChangeDresser.Collect>收集</ChangeDresser.Collect>
+  <ChangeDresser.CollectDesc>收集并存储梳妆台周围的服装。</ChangeDresser.CollectDesc>
+  <ChangeDresser.ChangeTo>更改至</ChangeDresser.ChangeTo>
+  <ChangeDresser.ChangeToDesc>更改至该服装方案。</ChangeDresser.ChangeToDesc>
+  <ChangeDresser.Wearing>着装中</ChangeDresser.Wearing>
+  <ChangeDresser.WearingDesc>当前正穿着该服装方案。</ChangeDresser.WearingDesc>
+  <ChangeDresser.IncludeInTradeDeals>出售服装</ChangeDresser.IncludeInTradeDeals>
+  <ChangeDresser.IncludeInTradeDealsDesc>切换存储的服装是否会出现在贸易目录中。</ChangeDresser.IncludeInTradeDealsDesc>
   <!-- Common Strings -->
   <ChangeDresser.Worn>已装备</ChangeDresser.Worn>
   <ChangeDresser.Storage>库存</ChangeDresser.Storage>
@@ -16,10 +27,13 @@
   <ChangeDresser.Delete>删除</ChangeDresser.Delete>
   <ChangeDresser.SelectAll>全选</ChangeDresser.SelectAll>
   <ChangeDresser.DeselectAll>取消全部</ChangeDresser.DeselectAll>
+  <ChangeDresser.SelectPawn>选择单位</ChangeDresser.SelectPawn>
   <!-- Editor Names (top selection bar in the Dresser window) -->
   <ChangeDresserHair>发型/发色</ChangeDresserHair>
   <ChangeDresserApparelColor>装备颜色</ChangeDresserApparelColor>
   <ChangeDresserBody>身体特征</ChangeDresserBody>
+  <ChangeDresserAlienSkinColor>外星人肤色</ChangeDresserAlienSkinColor>
+  <ChangeDresserAlienHairColor>外星人发色</ChangeDresserAlienHairColor>
   <!-- Dresser UI -->
   <ChangeDresser.BodyType>体形</ChangeDresser.BodyType>
   <ChangeDresser.HeadType>脸型</ChangeDresser.HeadType>
@@ -28,58 +42,78 @@
   <ChangeDresser.HairStyle>发型</ChangeDresser.HairStyle>
   <ChangeDresser.AgeBiological>生理年龄</ChangeDresser.AgeBiological>
   <ChangeDresser.AgeChronological>物理年龄</ChangeDresser.AgeChronological>
-  <!-- Apparel Group UI -->
-  <ChangeDresser.ApparelGroupOwner>拥有者</ChangeDresser.ApparelGroupOwner>
-  <ChangeDresser.ApparelGroupName>方案名</ChangeDresser.ApparelGroupName>
-  <ChangeDresser.ApparelGroup>服装方案</ChangeDresser.ApparelGroup>
-  <ChangeDresser.ApparelGroupRestrictToPawnCheckBox>与殖民者绑定</ChangeDresser.ApparelGroupRestrictToPawnCheckBox>
-  <ChangeDresser.ForceSwitchCombat>征召时着装</ChangeDresser.ForceSwitchCombat>
+  <ChangeDresser.AlienPrimarySkinColor>主要肤色</ChangeDresser.AlienPrimarySkinColor>
+  <ChangeDresser.AlienSecondarySkinColor>次要肤色</ChangeDresser.AlienSecondarySkinColor>
+  <ChangeDresser.AlienPrimaryHairColor>主要发色</ChangeDresser.AlienPrimaryHairColor>
+  <ChangeDresser.AlienSecondaryHairColor>次要发色</ChangeDresser.AlienSecondaryHairColor>
+  <!-- Assign Outfits UI -->
+  <ChangeDresser.ManageOutfits>管理服装方案</ChangeDresser.ManageOutfits>
+  <ChangeDresser.UseForBattle>战斗中使用</ChangeDresser.UseForBattle>
   <!-- Game UI -->
   <ChangeDresser.StoragePriority>存储优先级</ChangeDresser.StoragePriority>
   <ChangeDresser.ApparelCount>服装库存数</ChangeDresser.ApparelCount>
-  <ChangeDresser.ApparelGroupCount>服装方案数</ChangeDresser.ApparelGroupCount>
-  <!-- Apparel Storage UI -->
-  <ChangeDresser.CreateFromWorn>从当前着装创建</ChangeDresser.CreateFromWorn>
-  <ChangeDresser.CreateFromStorage>从已有库存创建</ChangeDresser.CreateFromStorage>
-  <!-- Informs the user that the pawn is already wearing the apparel group. Appears as "<group name> (<BeingWorn>) -->
-  <ChangeDresser.BeingWorn>已穿戴</ChangeDresser.BeingWorn>
-  <!-- Appears when there is an apparel group owned by another pawn. Appears as "<Claim> <group name>" -->
-  <ChangeDresser.ClaimApparelGroup>占有</ChangeDresser.ClaimApparelGroup>
-  <!-- The following appear as "<Edit> <group name> <FromWorn>" and "<Edit> <group name> <FromStorage>" -->
-  <ChangeDresser.EditApparelGroup>更改方案</ChangeDresser.EditApparelGroup>
-  <ChangeDresser.FromWorn>与当前着装</ChangeDresser.FromWorn>
-  <ChangeDresser.FromStorage>与已有库存</ChangeDresser.FromStorage>
+  <!-- Repair UI -->
+  <ChangeDresser.AttachedDressers>连接至梳妆台</ChangeDresser.AttachedDressers>
+  <ChangeDresser.IsMending>正在修补中</ChangeDresser.IsMending>
   <!-- Color Selection -->
   <!-- These refer to the Red (R), Green (G), and Blue (B) values for the selected color -->
   <ChangeDresser.R>R</ChangeDresser.R>
   <ChangeDresser.G>G</ChangeDresser.G>
   <ChangeDresser.B>B</ChangeDresser.B>
+  <!-- These refer to the Hue (H), Saturation (S), and Lightness (L) values for the selected color -->
+  <ChangeDresser.H>色调</ChangeDresser.H>
+  <ChangeDresser.S>饱和度</ChangeDresser.S>
+  <ChangeDresser.L>亮度</ChangeDresser.L>
   <!-- Help Text -->
   <ChangeDresser.RemoveToEnableDelete>移除所有服装后才可删除方案。</ChangeDresser.RemoveToEnableDelete>
   <ChangeDresser.GenderChangeWarning>改变性别和年龄可能有不利影响。\n请自行斟酌。</ChangeDresser.GenderChangeWarning>
   <ChangeDresser.SelectMultipleApparel>按住Shift并单击另一个\n道具来选择多个。</ChangeDresser.SelectMultipleApparel>
   <ChangeDresser.ColorPresetHelp>修改：按住Shift并选择一个预设。\n取消选择：按住Shift并选择当前预设。</ChangeDresser.ColorPresetHelp>
   <ChangeDresser.NoClothingIsWorn>没有穿戴中的服装。</ChangeDresser.NoClothingIsWorn>
+  <ChangeDresser.NoEditableAttributes>该外星人种族无法改变任何属性。</ChangeDresser.NoEditableAttributes>
   <!-- Job Toils -->
   <ChangeDresser.ChangeApparelColors>改变服装颜色</ChangeDresser.ChangeApparelColors>
   <ChangeDresser.ChangeHair>改变发型或发色</ChangeDresser.ChangeHair>
   <ChangeDresser.ChangeBody>改变身体特征</ChangeDresser.ChangeBody>
   <ChangeDresser.StoreApparel>存取服装</ChangeDresser.StoreApparel>
-  <ChangeDresser.WearGroup>穿上服装方案</ChangeDresser.WearGroup>
-  <ChangeDresser.UnwearGroup>脱下服装方案</ChangeDresser.UnwearGroup>
+  <ChangeDresser.ChangeAlienBodyColor>改变外星人肤色</ChangeDresser.ChangeAlienBodyColor>
   <!-- Error Messages -->
   <!-- The text after this string is either Hair Color or Apparel Color -->
   <ChangeDresser.ProblemSavingPreset>存储以下颜色预设方案时出错：</ChangeDresser.ProblemSavingPreset>
   <!-- The text after this string is either Hair Color or Apparel Color -->
   <ChangeDresser.ProblemLoadingPreset>加载以下颜色预设方案时出错：</ChangeDresser.ProblemLoadingPreset>
-  <!-- The text before this string is the pawn's name. Text after this string is the apparel group's name -->
-  <ChangeDresser.UnableToWearApparelGroup>无法找到服装方案：</ChangeDresser.UnableToWearApparelGroup>
   <!-- The text before this string is the pawn's name. -->
   <ChangeDresser.AlreadyHasCombatApparel>已经拥有战斗服装。</ChangeDresser.AlreadyHasCombatApparel>
   <!-- Mod Settings -->
   <ChangeDresser>Change Dresser 梳妆台</ChangeDresser>
+  <ChangeDresser.KeepForcedApparel>保持强制着装</ChangeDresser.KeepForcedApparel>
   <ChangeDresser.ShowBodyChange>允许改变身体特征</ChangeDresser.ShowBodyChange>
   <ChangeDresser.ShowGenderAgeChange>允许改变性别和年龄</ChangeDresser.ShowGenderAgeChange>
-  <ChangeDresser.LinkStorageGroupWithDresser>将服装方案与梳妆台绑定</ChangeDresser.LinkStorageGroupWithDresser>
-  <ChangeDresser.LinkStorageGroupWithDresserDesc>注意：如果记录服装方案的梳妆台不存在，在游戏中途从不绑定更改至绑定会造成服装方案丢失。</ChangeDresser.LinkStorageGroupWithDresserDesc>
+  <!--<ChangeDresser.ApparelGroupLabel>服装方案</ChangeDresser.ApparelGroupLabel>-->
+  <!-- Apparel Group UI -->
+  <!--<ChangeDresser.ApparelGroupOwner>拥有者</ChangeDresser.ApparelGroupOwner>-->
+  <!--<ChangeDresser.ApparelGroupName>方案名</ChangeDresser.ApparelGroupName>-->
+  <!--<ChangeDresser.ApparelGroup>服装方案</ChangeDresser.ApparelGroup>-->
+  <!--<ChangeDresser.ApparelGroupRestrictToPawnCheckBox>与殖民者绑定</ChangeDresser.ApparelGroupRestrictToPawnCheckBox>-->
+  <!--<ChangeDresser.ForceSwitchCombat>征召时着装</ChangeDresser.ForceSwitchCombat>-->
+  <!--<ChangeDresser.ApparelGroupCount>服装方案数</ChangeDresser.ApparelGroupCount>-->
+  <!-- Apparel Storage UI -->
+  <!--<ChangeDresser.CreateFromWorn>从当前着装创建</ChangeDresser.CreateFromWorn>-->
+  <!--<ChangeDresser.CreateFromStorage>从已有库存创建</ChangeDresser.CreateFromStorage>-->
+  <!-- Informs the user that the pawn is already wearing the apparel group. Appears as "<group name> (<BeingWorn>) -->
+  <!--<ChangeDresser.BeingWorn>已穿戴</ChangeDresser.BeingWorn>-->
+  <!-- Appears when there is an apparel group owned by another pawn. Appears as "<Claim> <group name>" -->
+  <!--<ChangeDresser.ClaimApparelGroup>占有</ChangeDresser.ClaimApparelGroup>-->
+  <!-- The following appear as "<Edit> <group name> <FromWorn>" and "<Edit> <group name> <FromStorage>" -->
+  <!--<ChangeDresser.EditApparelGroup>更改方案</ChangeDresser.EditApparelGroup>-->
+  <!--<ChangeDresser.FromWorn>与当前着装</ChangeDresser.FromWorn>-->
+  <!--<ChangeDresser.FromStorage>与已有库存</ChangeDresser.FromStorage>-->
+  <!--<ChangeDresser.WearGroup>穿上服装方案</ChangeDresser.WearGroup>-->
+  <!--<ChangeDresser.UnwearGroup>脱下服装方案</ChangeDresser.UnwearGroup>-->
+  <!-- The text before this string is the pawn's name. Text after this string is the apparel group's name -->
+  <!--<ChangeDresser.UnableToWearApparelGroup>无法找到服装方案：</ChangeDresser.UnableToWearApparelGroup>-->
+  <!--<ChangeDresser.LinkStorageGroupWithDresser>将服装方案与梳妆台绑定</ChangeDresser.LinkStorageGroupWithDresser>-->
+  <!--<ChangeDresser.LinkStorageGroupWithDresserDesc>注意：如果记录服装方案的梳妆台不存在，在游戏中途从不绑定更改至绑定会造成服装方案丢失。</ChangeDresser.LinkStorageGroupWithDresserDesc>-->
+  <!--<ChangeDresser.UseLeftRightHairSelect>Use Left &lt;-> Right Selection for Hair Styles</ChangeDresser.UseLeftRightHairSelect>-->
+  <!--<ChangeDresser.UseRGBAndHSLSliders>Use RGB + HSL Sliders</ChangeDresser.UseRGBAndHSLSliders>-->
 </LanguageData>
