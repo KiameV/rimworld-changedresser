@@ -334,13 +334,13 @@ namespace ChangeDresser.UI
 #if DEBUG
                             Log.Warning("  po found ");
 #endif
-                            foreach (ApparelLayer l in a.def.apparel.layers)
-                            {
+                            //foreach (ApparelLayer l in a.def.apparel.layers)
+                            //{
 #if DEBUG
                                 Log.Warning("  color change for " + a.Label);
 #endif
-                                po.SetColorFor(l, a.DrawColor);
-                            }
+                                po.SetColorFor(a.def.apparel.LastLayer, a.DrawColor);
+                            //}
                         }
                     }
 
