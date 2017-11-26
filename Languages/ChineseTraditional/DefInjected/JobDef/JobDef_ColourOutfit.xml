@@ -1,13 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-
   <ChangeApparelColor.reportString>正在前往改變自己。</ChangeApparelColor.reportString>
   <ChangeHairColor.reportString>改變髮型或發色。</ChangeHairColor.reportString>
   <ChangeHairStyle.reportString>改變髮型或發色。</ChangeHairStyle.reportString>
   <ChangeBody.reportString>改變身體特徵。</ChangeBody.reportString>
   <StoreApparel.reportString>存取服裝。</StoreApparel.reportString>
-  <WearApparelGroup.reportString>穿上服裝。</WearApparelGroup.reportString>
   <WearApparelFromStorage.reportString>正在穿上TargetA。</WearApparelFromStorage.reportString>
-
-
+  <ChangeBodyAlienColor.reportString>改變外星人身體顏色。</ChangeBodyAlienColor.reportString>
 </LanguageData>
