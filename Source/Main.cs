@@ -423,19 +423,13 @@ namespace ChangeDresser
                 bool found = false;
                 if (pawn.Drafted)
                 {
-                    if (outfits.TryGetBattleOutfit(out outfitToWear))
-                    {
-                        outfits.LastCivilianOutfit = pawn.outfits.CurrentOutfit;
-                        found = true;
-                    }
+                    outfits.LastCivilianOutfit = pawn.outfits.CurrentOutfit;
+                    found = outfits.TryGetBattleOutfit(out outfitToWear);
                 }
                 else
                 {
-                    if (outfits.TryGetCivilianOutfit(out outfitToWear))
-                    {
-                        outfits.LastBattleOutfit = pawn.outfits.CurrentOutfit;
-                        found = true;
-                    }
+                    outfits.LastBattleOutfit = pawn.outfits.CurrentOutfit;
+                    found = outfits.TryGetCivilianOutfit(out outfitToWear);
                 }
 
                 if (found)
