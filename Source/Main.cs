@@ -615,4 +615,28 @@ namespace ChangeDresser
             }
         }
     }
+
+    #region Handle "Do until X" for stored apparel
+    [HarmonyPatch(typeof(RecipeWorkerCounter), "CountProducts")]
+    static class Patch_RecipeWorkerCounter_CountProducts
+    {
+        static void Postfix(ref int __result, RecipeWorkerCounter __instance, Bill_Production bill)
+        {
+            if (WorldComp.DressersToUse.Count > 0)
+            {
+                ThingDef def = __instance.recipe.products[0].thingDef;
+                if (def.IsApparel)
+                {
+                    foreach (Building_Dresser d in WorldComp.DressersToUse)
+                    {
+                        if (bill.Map == d.Map)
+                        {
+                            __result += d.GetApparelCount(def);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    #endregion
 }
