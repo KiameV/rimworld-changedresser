@@ -311,14 +311,21 @@ namespace ChangeDresser.UI
             {
                 base.PreClose();
 
-                if (this.dresserDto?.ApparelSelectionsContainer?.ColorPresetsDTO?.IsModified == true)
+                if (this.dresserDto != null)
                 {
-                    IOUtil.SaveColorPresets(ColorPresetType.Apparel, this.dresserDto.ApparelSelectionsContainer.ColorPresetsDTO);
-                }
+                    if (this.dresserDto.ApparelSelectionsContainer != null &&
+                        this.dresserDto.ApparelSelectionsContainer.ColorPresetsDTO != null &&
+                        this.dresserDto.ApparelSelectionsContainer.ColorPresetsDTO.IsModified == true)
+                    {
+                        IOUtil.SaveColorPresets(ColorPresetType.Apparel, this.dresserDto.ApparelSelectionsContainer.ColorPresetsDTO);
+                    }
 
-                if (this.dresserDto?.HairColorSelectionDto?.ColorPresetsDTO?.IsModified == true)
-                {
-                    IOUtil.SaveColorPresets(ColorPresetType.Hair, this.dresserDto.HairColorSelectionDto.ColorPresetsDTO);
+                    if (this.dresserDto.HairColorSelectionDto != null &&
+                        this.dresserDto.HairColorSelectionDto.ColorPresetsDTO != null &&
+                        this.dresserDto.HairColorSelectionDto.ColorPresetsDTO.IsModified == true)
+                    {
+                        IOUtil.SaveColorPresets(ColorPresetType.Hair, this.dresserDto.HairColorSelectionDto.ColorPresetsDTO);
+                    }
                 }
 
                 if (this.ApparelWithColorChange != null)

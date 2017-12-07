@@ -162,7 +162,7 @@ namespace ChangeDresser.UI.Util
 
             Color originalRgb = Color.white;
             Color rgb = Color.white;
-            if (presetsDto?.HasSelected() == true)
+            if (presetsDto != null && presetsDto.HasSelected() == true)
             {
                 rgb = presetsDto.GetSelectedColor();
             }

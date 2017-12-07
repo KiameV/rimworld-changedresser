@@ -35,7 +35,7 @@ namespace ChangeDresser
             {
                 tex = td.uiIcon;
             }
-            else if (td?.graphicData?.texPath != null)
+            else if (td != null && td.graphicData != null && td.graphicData.texPath != null)
             {
                 tex = ContentFinder<Texture2D>.Get(td.graphicData.texPath, true);
             }
@@ -578,25 +578,29 @@ namespace ChangeDresser
 #if DEBUG
             Log.Warning("\nCanReserve original result: " + __result);
 #endif
-            if (!__result && (target.Thing == null || target.Thing.def.defName.Equals("ChangeDresser")))
+            if (!__result && mapFI != null && (target.Thing == null || target.Thing.def.defName.Equals("ChangeDresser")))
             {
-                IEnumerable<Thing> things = ((Map)mapFI.GetValue(__instance))?.thingGrid.ThingsAt(target.Cell);
-                if (things != null)
+                Map m = (Map)mapFI.GetValue(__instance);
+                if (m != null)
                 {
+                    IEnumerable<Thing> things = m.thingGrid.ThingsAt(target.Cell);
+                    if (things != null)
+                    {
 #if DEBUG
                     Log.Warning("CanReserve - Found things");
 #endif
-                    foreach (Thing t in things)
-                    {
+                        foreach (Thing t in things)
+                        {
 #if DEBUG
                         Log.Warning("CanReserve - def " + t.def.defName);
 #endif
-                        if (t.def.defName.Equals("ChangeDresser"))
-                        {
+                            if (t.def.defName.Equals("ChangeDresser"))
+                            {
 #if DEBUG
                             Log.Warning("CanReserve is now true\n");
 #endif
-                            __result = true;
+                                __result = true;
+                            }
                         }
                     }
                 }
