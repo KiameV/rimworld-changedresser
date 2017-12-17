@@ -311,14 +311,21 @@ namespace ChangeDresser.UI
             {
                 base.PreClose();
 
-                if (this.dresserDto?.ApparelSelectionsContainer?.ColorPresetsDTO?.IsModified == true)
+                if (this.dresserDto != null)
                 {
-                    IOUtil.SaveColorPresets(ColorPresetType.Apparel, this.dresserDto.ApparelSelectionsContainer.ColorPresetsDTO);
-                }
+                    if (this.dresserDto.ApparelSelectionsContainer != null &&
+                        this.dresserDto.ApparelSelectionsContainer.ColorPresetsDTO != null &&
+                        this.dresserDto.ApparelSelectionsContainer.ColorPresetsDTO.IsModified == true)
+                    {
+                        IOUtil.SaveColorPresets(ColorPresetType.Apparel, this.dresserDto.ApparelSelectionsContainer.ColorPresetsDTO);
+                    }
 
-                if (this.dresserDto?.HairColorSelectionDto?.ColorPresetsDTO?.IsModified == true)
-                {
-                    IOUtil.SaveColorPresets(ColorPresetType.Hair, this.dresserDto.HairColorSelectionDto.ColorPresetsDTO);
+                    if (this.dresserDto.HairColorSelectionDto != null &&
+                        this.dresserDto.HairColorSelectionDto.ColorPresetsDTO != null &&
+                        this.dresserDto.HairColorSelectionDto.ColorPresetsDTO.IsModified == true)
+                    {
+                        IOUtil.SaveColorPresets(ColorPresetType.Hair, this.dresserDto.HairColorSelectionDto.ColorPresetsDTO);
+                    }
                 }
 
                 if (this.ApparelWithColorChange != null)
@@ -334,13 +341,13 @@ namespace ChangeDresser.UI
 #if DEBUG
                             Log.Warning("  po found ");
 #endif
-                            foreach (ApparelLayer l in a.def.apparel.layers)
-                            {
+                            //foreach (ApparelLayer l in a.def.apparel.layers)
+                            //{
 #if DEBUG
                                 Log.Warning("  color change for " + a.Label);
 #endif
-                                po.SetColorFor(l, a.DrawColor);
-                            }
+                                po.SetColorFor(a.def.apparel.LastLayer, a.DrawColor);
+                            //}
                         }
                     }
 

@@ -42,8 +42,10 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
                 if (!this.selectedColor.Equals(value))
                 {
                     this.selectedColor = value;
-                    this.SelectionChangeListener?.Invoke(this);
-                    this.UpdatePawnListener?.Invoke(this, this.selectedColor);
+                    if (this.SelectionChangeListener != null)
+                        this.SelectionChangeListener.Invoke(this);
+                    if (this.UpdatePawnListener != null)
+                        this.UpdatePawnListener.Invoke(this, this.selectedColor);
                 }
             }
         }
@@ -57,7 +59,8 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
         public void ResetToDefault()
         {
             this.selectedColor = this.OriginalColor;
-            this.UpdatePawnListener?.Invoke(this, this.OriginalColor);
+            if (this.UpdatePawnListener != null)
+                this.UpdatePawnListener.Invoke(this, this.OriginalColor);
         }
     }
 }

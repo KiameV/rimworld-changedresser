@@ -25,18 +25,32 @@ namespace ChangeDresser
                 Log.Warning("raceSettingsFieldInfo found: " + (string)((raceSettingsFieldInfo != null) ? "True" : "False"));
 #endif
             }
-            return raceSettingsFieldInfo?.GetValue(pawn.def);
+            if (raceSettingsFieldInfo == null)
+            {
+                Log.ErrorOnce("Unable to get raceSettingsFieldInfo", "raceSettingsFieldInfo".GetHashCode());
+                return null;
+            }
+            return raceSettingsFieldInfo.GetValue(pawn.def);
         }
 
         public static object GetHairSettings(Pawn pawn)
         {
             object raceSettings = GetAlienRaceSettings(pawn);
+            if (raceSettings == null)
+            {
+                return null;
+            }
             if (hairSettingsFieldInfo == null)
             {
-                hairSettingsFieldInfo = raceSettings?.GetType().GetField("hairSettings");
+                hairSettingsFieldInfo = raceSettings.GetType().GetField("hairSettings");
 #if ALIEN_DEBUG || DEBUG || REFLECTION_DEBUG
                 Log.Warning("hairSettingsFieldInfo found: " + (string)((hairSettingsFieldInfo != null) ? "True" : "False"));
 #endif
+            }
+            if (hairSettingsFieldInfo == null)
+            {
+                Log.ErrorOnce("Unable to get hairSettingsFieldInfo", "hairSettingsFieldInfo".GetHashCode());
+                return null;
             }
             return hairSettingsFieldInfo.GetValue(raceSettings);
         }
@@ -44,12 +58,26 @@ namespace ChangeDresser
         public static bool HasHair(Pawn pawn)
         {
             object hairSettings = GetHairSettings(pawn);
-            return (bool)hairSettings?.GetType().GetField("hasHair")?.GetValue(hairSettings);
+            if (hairSettings == null)
+            {
+                return false;
+            }
+            var fi = hairSettings.GetType().GetField("hasHair");
+            if (fi == null)
+            {
+                Log.ErrorOnce("Unable to get hasHair", "hasHair".GetHashCode());
+                return false;
+            }
+            return (bool)fi.GetValue(hairSettings);
         }
 
         public static object GetGeneralSettings(Pawn pawn)
         {
             object raceSettings = GetAlienRaceSettings(pawn);
+            if (raceSettings == null)
+            {
+                return null;
+            }
             if (generalSettingsFieldInfo == null)
             {
                 object generalSettingsFieldInfo = raceSettings.GetType().GetField("generalSettings");
@@ -57,26 +85,33 @@ namespace ChangeDresser
                 Log.Warning("generalSettingsFieldInfo found: " + (string)((generalSettingsFieldInfo != null) ? "True" : "False"));
 #endif
             }
-            return generalSettingsFieldInfo?.GetValue(raceSettings);
+            if (generalSettingsFieldInfo == null)
+            {
+                Log.ErrorOnce("Unable to get generalSettings", "generalSettings".GetHashCode());
+                return null;
+            }
+            return generalSettingsFieldInfo.GetValue(raceSettings);
         }
 
         public static List<string> GetHairTags(Pawn pawn)
         {
             object hairSettings = GetHairSettings(pawn);
-            object hairTags = hairSettings.GetType().GetField("hairTags")?.GetValue(hairSettings);
-#if ALIEN_DEBUG || DEBUG || REFLECTION_DEBUG
-            Log.Warning("hairTags found: " + (string)((hairTags != null) ? "True" : "False"));
-#endif
-            return (List<string>)hairTags;
+            var fi = hairSettings.GetType().GetField("hairTags");
+            if (fi == null)
+            {
+                Log.ErrorOnce("Unable to get hairTags", "hairTags".GetHashCode());
+                return null;
+            }
+            return (List<string>)fi.GetValue(hairSettings);
         }
 
         private static FieldInfo GetMaleGenderProbabilityFieldInfo(Pawn pawn)
         {
-            FieldInfo fi = GetGeneralSettings(pawn)?.GetType().GetField("maleGenderProbability");
-#if ALIEN_DEBUG || DEBUG || REFLECTION_DEBUG
-            Log.Warning("maleGenderProbability found: " + (string)((fi != null) ? "True" : "False"));
-#endif
-            return fi;
+            object generalSettings = GetGeneralSettings(pawn);
+            if (generalSettings == null)
+                return null;
+
+            return generalSettings.GetType().GetField("maleGenderProbability");
         }
 
         public static bool HasMaleGenderProbability(Pawn pawn)
@@ -86,7 +121,13 @@ namespace ChangeDresser
 
         public static float GetMaleGenderProbability(Pawn pawn)
         {
-            return (float)GetMaleGenderProbabilityFieldInfo(pawn)?.GetValue(GetGeneralSettings(pawn));
+            FieldInfo fi = GetMaleGenderProbabilityFieldInfo(pawn);
+            if (fi == null)
+            {
+                Log.ErrorOnce("Unable to get male gender probability. Setting to 0.5f", "maleGenderProbability".GetHashCode());
+                return .5f;
+            }
+            return (float)fi.GetValue(GetGeneralSettings(pawn));
         }
         #endregion
 

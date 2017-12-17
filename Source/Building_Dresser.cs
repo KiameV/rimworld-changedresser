@@ -61,6 +61,11 @@ namespace ChangeDresser
             this.StoredApparel.AddApparel(a);
         }
 
+        internal int GetApparelCount(ThingDef def)
+        {
+            return this.StoredApparel.GetApparelCount(def);
+        }
+
         internal bool TryRemoveApparel(ThingDef def, out Apparel apparel)
         {
             return this.StoredApparel.TryRemoveApparel(def, out apparel);
@@ -587,6 +592,6 @@ namespace ChangeDresser
             previousAllowed.Clear();
             previousAllowed.AddRange(AllowedDefsFI.GetValue(currentFilters) as HashSet<ThingDef>);
         }
-#endregion
+        #endregion
     }
 }

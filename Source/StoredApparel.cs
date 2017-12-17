@@ -13,7 +13,7 @@ namespace ChangeDresser
         private readonly int UniqueId;
 
         private readonly Building_Dresser Dresser;
-        internal Dictionary<Def, LinkedList<Apparel>> StoredApparelLookup = new Dictionary<Def, LinkedList<Apparel>>();
+        internal Dictionary<ThingDef, LinkedList<Apparel>> StoredApparelLookup = new Dictionary<ThingDef, LinkedList<Apparel>>();
         //public bool FilterApparel { get; set; }
         public int Count
         {
@@ -134,6 +134,16 @@ namespace ChangeDresser
             Log.Message("End StoredApparel.AddApparelToLinkedList");
 #endif
             */
+        }
+
+        internal int GetApparelCount(ThingDef def)
+        {
+            LinkedList<Apparel> l;
+            if (this.StoredApparelLookup.TryGetValue(def, out l))
+            {
+                return l.Count;
+            }
+            return 0;
         }
 
         public bool Contains(Apparel apparel)

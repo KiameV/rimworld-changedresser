@@ -50,7 +50,8 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
                 if (this.selectedValue != value)
                 {
                     this.selectedValue = value;
-                    UpdatePawnListener?.Invoke(this, value);
+                    if (this.UpdatePawnListener != null)
+                        this.UpdatePawnListener.Invoke(this, value);
                 }
             }
         }
@@ -58,7 +59,8 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
         public void ResetToDefault()
         {
             this.selectedValue = this.OriginalValue;
-            this.UpdatePawnListener?.Invoke(this, this.OriginalValue);
+            if (this.UpdatePawnListener != null)
+                this.UpdatePawnListener.Invoke(this, this.OriginalValue);
         }
     }
 }

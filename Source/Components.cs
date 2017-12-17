@@ -91,7 +91,7 @@ namespace ChangeDresser
             foreach (Building_Dresser d in DressersToUse)
             {
                 bool added = false;
-                for (LinkedListNode<Building_Dresser> n = DressersToUse.First; n.Next != null; n = n.Next)
+                for (LinkedListNode<Building_Dresser> n = DressersToUse.First; n != null; n = n.Next)
                 {
                     if (d.settings.Priority > n.Value.settings.Priority)
                     {

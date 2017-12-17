@@ -166,21 +166,30 @@ namespace ChangeDresser.UI.DTO
             Log.Warning(System.Environment.NewLine + "DresserDTO.Begin ResetToDefault");
 #endif
             // Gender must happen first
-            this.GenderSelectionDto?.ResetToDefault();
-            this.BodyTypeSelectionDto?.ResetToDefault();
-            this.HairStyleSelectionDto?.ResetToDefault();
-            this.HairColorSelectionDto?.ResetToDefault();
-            this.ApparelSelectionsContainer?.ResetToDefault();
-            this.SkinColorSliderDto?.ResetToDefault();
-            this.HeadTypeSelectionDto?.ResetToDefault();
+            if (this.GenderSelectionDto != null)
+                this.GenderSelectionDto.ResetToDefault();
+            if (this.BodyTypeSelectionDto != null)
+                this.BodyTypeSelectionDto.ResetToDefault();
+            if (this.HairStyleSelectionDto != null)
+                this.HairStyleSelectionDto.ResetToDefault();
+            if (this.HairColorSelectionDto != null)
+                this.HairColorSelectionDto.ResetToDefault();
+            if (this.ApparelSelectionsContainer != null)
+                this.ApparelSelectionsContainer.ResetToDefault();
+            if (this.SkinColorSliderDto != null)
+                this.SkinColorSliderDto.ResetToDefault();
+            if (this.HeadTypeSelectionDto != null)
+                this.HeadTypeSelectionDto.ResetToDefault();
+
             if (this.originalAgeBioTicks != long.MinValue)
                 this.Pawn.ageTracker.AgeBiologicalTicks = this.originalAgeBioTicks;
             if (this.originalAgeChronTicks != long.MinValue)
                 this.Pawn.ageTracker.AgeChronologicalTicks = this.originalAgeChronTicks;
-
             
-            this.AlienSkinColorPrimary?.ResetToDefault();
-            this.AlienSkinColorSecondary?.ResetToDefault();
+            if (this.AlienSkinColorPrimary != null)
+                this.AlienSkinColorPrimary.ResetToDefault();
+            if (this.AlienSkinColorSecondary != null)
+                this.AlienSkinColorSecondary.ResetToDefault();
             //this.AlienHairColorPrimary?.ResetToDefault();
             //this.AlienHairColorSecondary?.ResetToDefault();
 #if TRACE

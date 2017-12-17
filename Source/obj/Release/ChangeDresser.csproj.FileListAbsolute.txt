@@ -3,3 +3,5 @@ C:\Users\Travisty\Documents\Visual Studio 2017\Projects\RimWorld\ChangeDresser\C
 D:\Steam\steamapps\common\RimWorld\Mods\ChangeDresser\Assemblies\ChangeDresser.dll
 C:\Users\Travisty\Documents\Visual Studio 2017\Projects\RimWorld\ChangeDresser\Source\obj\Release\ChangeDresser.dll
 C:\Users\Travisty\Documents\Visual Studio 2017\Projects\RimWorld\ChangeDresser\Source\obj\Release\ChangeDresser.csprojResolveAssemblyReference.cache
+C:\Users\tofft\Documents\Visual Studio 2017\Projects\RimWorld\ChangeDresser\Source\obj\Release\ChangeDresser.csproj.CoreCompileInputs.cache
+C:\Users\tofft\Documents\Visual Studio 2017\Projects\RimWorld\ChangeDresser\Source\obj\Release\ChangeDresser.dll
