@@ -28,6 +28,8 @@ namespace ChangeDresser
 
         public const StoragePriority DefaultStoragePriority = StoragePriority.Low;
 
+        public bool AllowAdds { get; set; }
+
         internal readonly StoredApparel StoredApparel;
 
         private Map CurrentMap { get; set; }
@@ -44,9 +46,11 @@ namespace ChangeDresser
 
         public Building_Dresser()
         {
-            this.StoredApparel = new StoredApparel(this);
+            this.StoredApparel = new StoredApparel();
 
             WEAR_APPAREL_FROM_DRESSER_JOB_DEF = this.wearApparelFromStorageJobDef;
+
+            this.AllowAdds = true;
         }
 
         public void AddApparel(Apparel a)
@@ -54,11 +58,27 @@ namespace ChangeDresser
 #if DEBUG
             Log.Warning("AddApparel " + a.Label + " Spawned: " + a.Spawned + " IsForbidden: " + a.IsForbidden(Faction.OfPlayer));
 #endif
-            if (a != null && a.Spawned)
+            if (a != null)
             {
-                a.DeSpawn();
+                if (this.settings.AllowedToAccept(a))
+                {
+                    if (a.Spawned)
+                    {
+                        a.DeSpawn();
+                    }
+                    this.StoredApparel.AddApparel(a);
+                }
+                else // Not Allowed
+                {
+                    if (!WorldComp.AddApparel(a, this.CurrentMap))
+                    {
+                        if (!a.Spawned)
+                        {
+                            BuildingUtil.DropThing(a, this, this.CurrentMap, false);
+                        }
+                    }
+                }
             }
-            this.StoredApparel.AddApparel(a);
         }
 
         internal int GetApparelCount(ThingDef def)
@@ -138,7 +158,7 @@ namespace ChangeDresser
             {
                 if (this.StoredApparel != null)
                 {
-                    this.DropApparel(this.StoredApparel.Apparel);
+                    this.DropApparel(this.StoredApparel.Apparel, false);
                     this.StoredApparel.Clear();
                 }
             }
@@ -186,12 +206,28 @@ namespace ChangeDresser
             }
         }
 
-        public IEnumerable<T> Empty<T>() where T : Thing
+        public void Empty<T>(List<T> removed = null) where T : Thing
         {
-            IEnumerable<T> apparel = this.StoredApparel.Empty<T>();
-            this.DropApparel(apparel, false);
-            this.StoredApparel.Clear();
-            return apparel;
+            try
+            {
+                this.AllowAdds = false;
+
+                foreach (LinkedList<Apparel> ll in this.StoredApparel.StoredApparelLookup.Values)
+                {
+                    foreach (Apparel a in ll)
+                    {
+                        if (removed != null)
+                            removed.Add(a as T);
+                        BuildingUtil.DropThing(a, this, this.CurrentMap, false);
+                    }
+                    ll.Clear();
+                }
+                this.StoredApparel.StoredApparelLookup.Clear();
+            }
+            finally
+            {
+                this.AllowAdds = true;
+            }
         }
 
         internal void ReclaimApparel()
@@ -200,9 +236,17 @@ namespace ChangeDresser
             List<Apparel> l = new List<Apparel>(BuildingUtil.FindThingsOfTypeNextTo<Apparel>(base.Map, base.Position, 1));
             Log.Warning("Apparel found: " + l.Count);
 #endif
-            foreach (Apparel a in BuildingUtil.FindThingsOfTypeNextTo<Apparel>(base.Map, base.Position, 1))
+            List <Thing> l = BuildingUtil.FindThingsNextTo(base.Map, base.Position, 1);
+            if (l.Count > 0)
             {
-                this.AddApparel(a);
+                foreach (Thing t in l)
+                {
+                    if (t is Apparel)
+                    {
+                        this.AddApparel((Apparel)t);
+                    }
+                }
+                l.Clear();
             }
         }
 
@@ -241,7 +285,8 @@ namespace ChangeDresser
 
         public override void Notify_ReceivedThing(Thing newItem)
         {
-            if (!(newItem is Apparel))
+            if (!this.AllowAdds || 
+                !(newItem is Apparel))
             {
                 DropThing(newItem);
                 return;
@@ -393,17 +438,25 @@ namespace ChangeDresser
 
             if (!this.AreStorageSettingsEqual())
             {
-                this.UpdatePreviousStorageFilter();
-
-                WorldComp.SortDressersToUse();
-
-                List<Apparel> removed = this.StoredApparel.RemoveFilteredApparel(this.settings.filter);
-                foreach (Apparel a in removed)
+                try
                 {
-                    if (!WorldComp.AddApparel(a, base.Map))
+                    this.AllowAdds = false;
+
+                    WorldComp.SortDressersToUse();
+                    this.UpdatePreviousStorageFilter();
+
+                    List<Apparel> removed = this.StoredApparel.RemoveFilteredApparel(this.settings);
+                    foreach (Apparel a in removed)
                     {
-                        this.DropThing(a, false);
+                        if (!WorldComp.AddApparel(a, base.Map))
+                        {
+                            this.DropThing(a, false);
+                        }
                     }
+                }
+                finally
+                {
+                    this.AllowAdds = true;
                 }
             }
         }

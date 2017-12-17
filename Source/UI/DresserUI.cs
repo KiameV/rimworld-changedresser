@@ -61,8 +61,7 @@ namespace ChangeDresser.UI
             this.dresserDto.Pawn.Drawer.renderer.graphics.ResolveAllGraphics();
             PortraitsCache.SetDirty(this.dresserDto.Pawn);
         }
-
-        int i = 0;
+        
         public override void DoWindowContents(Rect inRect)
         {
             try
@@ -207,8 +206,8 @@ namespace ChangeDresser.UI
                             Text.Font = GameFont.Small;
 
                             WidgetUtil.AddColorSelectorWidget(editorLeft, editorTop + 300, editorWidth, this.dresserDto.AlienHairColorSecondary, null);
-                        }*/
-                        break;
+                        }
+                        break;*/
                 }
 
                 Text.Anchor = TextAnchor.MiddleLeft;

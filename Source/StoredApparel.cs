@@ -9,12 +9,7 @@ namespace ChangeDresser
 {
     public class StoredApparel
     {
-        private static int ID = 0;
-        private readonly int UniqueId;
-
-        private readonly Building_Dresser Dresser;
         internal Dictionary<ThingDef, LinkedList<Apparel>> StoredApparelLookup = new Dictionary<ThingDef, LinkedList<Apparel>>();
-        //public bool FilterApparel { get; set; }
         public int Count
         {
             get
@@ -26,16 +21,6 @@ namespace ChangeDresser
                 }
                 return count;
             }
-        }
-
-        public StoredApparel(Building_Dresser dresser)
-        {
-            this.UniqueId = ID;
-            ++ID;
-
-            this.Dresser = dresser;
-
-            //this.FilterApparel = true;
         }
 
         public IEnumerable<Apparel> Apparel
@@ -65,7 +50,6 @@ namespace ChangeDresser
                     this.StoredApparelLookup.Add(apparel.def, l);
                 }
                 this.AddApparelToLinkedList(apparel, l);
-                //this.FilterApparel = true;
             }
         }
 
@@ -163,7 +147,6 @@ namespace ChangeDresser
                 l.Clear();
             }
             this.StoredApparelLookup.Clear();
-            //this.FilterApparel = false;
         }
 
         public bool TryRemoveApparel(ThingDef def, out Apparel apparel)
@@ -219,7 +202,8 @@ namespace ChangeDresser
 #if DEBUG
                 Log.Warning("Apparel List found Count: " + l.Count);
 #endif
-                for (LinkedListNode<Apparel> n = l.First; n != null; n = n.Next)
+                LinkedListNode<Apparel> n = l.First;
+                while (n != null)
                 {
 #if DEBUG
                     Log.Warning("Apparel " + n.Value.Label);
@@ -228,17 +212,22 @@ namespace ChangeDresser
                     {
                         if (filter.Allows(n.Value))
                         {
+                            var next = n.Next;
                             l.Remove(n);
+                            n = next;
                             apparel = n.Value;
 #if DEBUG
                             Log.Warning("Start StoredApparel.TryRemoveBestApperal Return: True Apparel:" + apparel.LabelShort + Environment.NewLine);
 #endif
                             return true;
                         }
-#if DEBUG
                         else
+                        {
+                            n = n.Next;
+#if DEBUG
                             Log.Warning("Filter rejected");
 #endif
+                        }
                     }
                     catch
                     {
@@ -253,31 +242,24 @@ namespace ChangeDresser
             return false;
         }
 
-        public List<Apparel> RemoveFilteredApparel(ThingFilter filter)
+        public List<Apparel> RemoveFilteredApparel(StorageSettings settings)
         {
             List<Apparel> removed = new List<Apparel>(0);
             foreach (LinkedList<Apparel> ll in this.StoredApparelLookup.Values)
             {
-                for(LinkedListNode<Apparel> n = ll.First; n != null; n = n.Next)
+                LinkedListNode<Apparel> n = ll.First;
+                while (n != null)
                 {
-                    if (!this.Dresser.settings.filter.Allows(n.Value))
+                    var next = n.Next;
+                    if (!settings.AllowedToAccept(n.Value))
                     {
                         ll.Remove(n);
                         removed.Add(n.Value);
                     }
+                    n = n.Next;
                 }
             }
             return removed;
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj != null && this.GetHashCode() == obj.GetHashCode();
-        }
-
-        public override int GetHashCode()
-        {
-            return this.UniqueId;
         }
 
         public Apparel FindBetterApparel(ref float baseApparelScore, Pawn pawn, Outfit currentOutfit, Building dresser)
@@ -371,21 +353,6 @@ namespace ChangeDresser
                 }
             }
             return betterApparel;*/
-        }
-
-        public IEnumerable<T> Empty<T>() where T : Thing
-        {
-            List<T> t = new List<T>(this.Count);
-            foreach (LinkedList<Apparel> ll in this.StoredApparelLookup.Values)
-            {
-                foreach (Apparel a in ll)
-                {
-                    t.Add(a as T);
-                }
-                ll.Clear();
-            }
-            this.StoredApparelLookup.Clear();
-            return t;
         }
     }
 }
