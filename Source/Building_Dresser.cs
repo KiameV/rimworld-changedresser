@@ -217,8 +217,8 @@ namespace ChangeDresser
                     foreach (Apparel a in ll)
                     {
                         if (removed != null)
-                            removed.Add(a as T);
-                        BuildingUtil.DropThing(a, this, this.CurrentMap, false);
+                         BuildingUtil.DropThing(a, this, this.CurrentMap, false);
+                           removed.Add(a as T);
                     }
                     ll.Clear();
                 }

@@ -80,7 +80,7 @@ namespace ChangeDresser
             }
             if (generalSettingsFieldInfo == null)
             {
-                object generalSettingsFieldInfo = raceSettings.GetType().GetField("generalSettings");
+                generalSettingsFieldInfo = raceSettings.GetType().GetField("generalSettings");
 #if ALIEN_DEBUG || DEBUG || REFLECTION_DEBUG
                 Log.Warning("generalSettingsFieldInfo found: " + (string)((generalSettingsFieldInfo != null) ? "True" : "False"));
 #endif
