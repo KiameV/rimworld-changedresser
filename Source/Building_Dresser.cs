@@ -156,11 +156,7 @@ namespace ChangeDresser
         {
             try
             {
-                if (this.StoredApparel != null)
-                {
-                    this.DropApparel(this.StoredApparel.Apparel, false);
-                    this.StoredApparel.Clear();
-                }
+                this.Empty<Apparel>();
             }
             catch (Exception e)
             {
@@ -216,9 +212,11 @@ namespace ChangeDresser
                 {
                     foreach (Apparel a in ll)
                     {
+                        BuildingUtil.DropThing(a, this, this.CurrentMap, false);
                         if (removed != null)
-                         BuildingUtil.DropThing(a, this, this.CurrentMap, false);
-                           removed.Add(a as T);
+                        {
+                            removed.Add(a as T);
+                        }
                     }
                     ll.Clear();
                 }

@@ -210,24 +210,21 @@ namespace ChangeDresser
 #endif
                     try
                     {
+                        var next = n.Next;
                         if (filter.Allows(n.Value))
                         {
-                            var next = n.Next;
                             l.Remove(n);
-                            n = next;
                             apparel = n.Value;
 #if DEBUG
                             Log.Warning("Start StoredApparel.TryRemoveBestApperal Return: True Apparel:" + apparel.LabelShort + Environment.NewLine);
 #endif
                             return true;
                         }
+#if DEBUG                        
                         else
-                        {
-                            n = n.Next;
-#if DEBUG
                             Log.Warning("Filter rejected");
 #endif
-                        }
+                        n = next;
                     }
                     catch
                     {
