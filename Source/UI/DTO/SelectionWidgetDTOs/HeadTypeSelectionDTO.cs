@@ -37,7 +37,7 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
         private int savedMaleIndex = 0;
 
         public readonly string OriginalHeadType;
-        private List<string> crownTypes;
+        //private List<string> crownTypes;
 
         public HeadTypeSelectionDTO(string headType, Gender gender) : base()
         {

@@ -501,7 +501,7 @@ namespace ChangeDresser
             {
                 if (d.Map == map && d.Spawned && d.IncludeInTradeDeals)
                 {
-                    a.AddRange(d.Empty<T>());
+                    d.Empty<T>(a);
                 }
             }
             return a;
@@ -548,19 +548,13 @@ namespace ChangeDresser
             }
         }
     }
-    
-    [HarmonyPatch(typeof(Window), "PreClose")]
+
+    [HarmonyPatch(typeof(Dialog_Trade), "Close")]
     static class Patch_Window_PreClose
     {
-        // Before closing any window
-        static void Postfix(Window __instance)
+        static void Postfix(bool doCloseSound)
         {
-            Type type = __instance.GetType();
-            if (type == typeof(Dialog_Trade))
-                // || type == typeof(Dialog_LoadTransporters))
-            {
-                TradeUtil.ReclaimApparel();
-            }
+            TradeUtil.ReclaimApparel();
         }
     }
 
@@ -620,17 +614,18 @@ namespace ChangeDresser
         }
     }
 
-    #region Handle "Do until X" for stored apparel
+    #region Handle "Do until X" for stored weapons
     [HarmonyPatch(typeof(RecipeWorkerCounter), "CountProducts")]
     static class Patch_RecipeWorkerCounter_CountProducts
     {
         static void Postfix(ref int __result, RecipeWorkerCounter __instance, Bill_Production bill)
         {
-            if (WorldComp.DressersToUse.Count > 0)
+            List<ThingCountClass> products = __instance.recipe.products;
+            if (WorldComp.DressersToUse.Count > 0 && products != null)
             {
-                ThingDef def = __instance.recipe.products[0].thingDef;
-                if (def.IsApparel)
+                foreach (ThingCountClass product in products)
                 {
+                    ThingDef def = product.thingDef;
                     foreach (Building_Dresser d in WorldComp.DressersToUse)
                     {
                         if (bill.Map == d.Map)

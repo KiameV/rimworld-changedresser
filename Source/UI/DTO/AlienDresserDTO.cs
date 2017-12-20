@@ -159,23 +159,38 @@ namespace ChangeDresser.UI.DTO
 #endif
                     }
 
-                    /* TODO
-                    object alienPartGenerator = generalSettings.GetType().GetField("alienPartGenerator")?.GetValue(generalSettings);
-                    if (alienPartGenerator != null)
+                    fi = generalSettings.GetType().GetField("alienPartGenerator");
+                    if (fi != null)
                     {
-                        List<string> crownTypes = (List<string>)alienPartGenerator.GetType().GetField("aliencrowntypes")?.GetValue(alienPartGenerator);
-                        string crownType = (string)alienComp?.GetType().GetField("crownType")?.GetValue(alienComp);
-                        if (crownTypes != null && crownType != null && crownTypes.Count > 1)
+                        object alienPartGenerator = fi.GetValue(generalSettings);
+                        if (alienPartGenerator != null)
                         {
-                            this.HeadTypeSelectionDto = new HeadTypeSelectionDTO(crownType, this.Pawn.gender, crownTypes);
-                        }
+                            fi = alienPartGenerator.GetType().GetField("aliencrowntypes");
+                            if (fi != null && alienComp != null)
+                            {
+                                List<string> crownTypes = (List<string>)fi.GetValue(alienPartGenerator);
+                                fi = alienComp.GetType().GetField("crownType");
+                                if (fi != null)
+                                {
+                                    string crownType = (string)fi.GetValue(alienComp);
+                                    if (crownTypes != null && crownType != null && crownTypes.Count > 1)
+                                    {
+                                        this.HeadTypeSelectionDto = new HeadTypeSelectionDTO(crownType, this.Pawn.gender, crownTypes);
+                                    }
+                                }
+                            }
 
-                        List<BodyType> alienbodytypes = (List<BodyType>)alienPartGenerator.GetType().GetField("alienbodytypes")?.GetValue(alienPartGenerator);
-                        if (alienbodytypes != null)
-                        {
-                            this.BodyTypeSelectionDto = new BodyTypeSelectionDTO(this.Pawn.story.bodyType, this.Pawn.gender, alienbodytypes);
+                            fi = alienPartGenerator.GetType().GetField("alienbodytypes");
+                            if (fi != null)
+                            {
+                                List<BodyType> alienbodytypes = (List<BodyType>)fi.GetValue(alienPartGenerator);
+                                if (alienbodytypes != null)
+                                {
+                                    this.BodyTypeSelectionDto = new BodyTypeSelectionDTO(this.Pawn.story.bodyType, this.Pawn.gender, alienbodytypes);
+                                }
+                            }
                         }
-                    }*/
+                    }
                 }
                 if (maleGenderProbability > 0f && maleGenderProbability < 1f)
                 {

@@ -42,24 +42,12 @@ namespace ChangeDresser
             }
         }
 
-        public static bool AddApparel(Apparel apparel)
+        public static bool AddApparel(Apparel apparel, Map map = null)
         {
             foreach (Building_Dresser d in DressersToUse)
             {
-                if (d.settings.AllowedToAccept(apparel))
-                {
-                    d.AddApparel(apparel);
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public static bool AddApparel(Apparel apparel, Map map)
-        {
-            foreach (Building_Dresser d in DressersToUse)
-            {
-                if (d.Map == map && d.settings.AllowedToAccept(apparel))
+                if ((map == null || d.Map == map) && 
+                    d.settings.AllowedToAccept(apparel))
                 {
                     d.AddApparel(apparel);
                     return true;
@@ -91,11 +79,13 @@ namespace ChangeDresser
             foreach (Building_Dresser d in DressersToUse)
             {
                 bool added = false;
-                for (LinkedListNode<Building_Dresser> n = DressersToUse.First; n != null; n = n.Next)
+                for (LinkedListNode<Building_Dresser> n = l.First; n != null; n = n.Next)
                 {
                     if (d.settings.Priority > n.Value.settings.Priority)
                     {
+                        added = true;
                         l.AddBefore(n, d);
+                        break;
                     }
                 }
                 if (!added)

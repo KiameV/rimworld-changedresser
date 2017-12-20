@@ -137,8 +137,10 @@ namespace ChangeDresser
         private void OrderAttachedDressers()
         {
             bool isSorted = true;
-            for (LinkedListNode<Building_Dresser> n = this.AttachedDressers.First; n != null; n = n.Next)
+            LinkedListNode<Building_Dresser> n = this.AttachedDressers.First;
+            while (n != null)
             {
+                var next = n.Next;
                 if (!n.Value.Spawned)
                 {
                     this.AttachedDressers.Remove(n);
@@ -149,12 +151,13 @@ namespace ChangeDresser
                 {
                     isSorted = false;
                 }
+                n = next;
             }
 
             if (!isSorted)
             {
                 LinkedList<Building_Dresser> ordered = new LinkedList<Building_Dresser>();
-                for (LinkedListNode<Building_Dresser> n = this.AttachedDressers.First; n != null; n = n.Next)
+                for (n = this.AttachedDressers.First; n != null; n = n.Next)
                 {
                     Building_Dresser d = n.Value;
                     bool inserted = false;
@@ -174,12 +177,13 @@ namespace ChangeDresser
                 }
                 this.AttachedDressers.Clear();
                 this.AttachedDressers = ordered;
-
+#if DEBUG
                 Log.Warning("CD New Order:");
                 foreach (Building_Dresser d in this.AttachedDressers)
                 {
                     Log.Warning(" " + d.Label + " " + d.settings.Priority);
                 }
+#endif
             }
         }
 

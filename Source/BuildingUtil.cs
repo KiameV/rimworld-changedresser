@@ -7,7 +7,28 @@ namespace ChangeDresser
 {
     class BuildingUtil
     {
-        public static IEnumerable<T> FindThingsOfTypeNextTo<T>(Map map, IntVec3 position, int distance) where T : Thing
+        public static List<Thing> FindThingsNextTo(Map map, IntVec3 position, int distance)
+        {
+            int minX = Math.Max(0, position.x - distance);
+            int maxX = Math.Min(map.info.Size.x, position.x + distance);
+            int minZ = Math.Max(0, position.z - distance);
+            int maxZ = Math.Min(map.info.Size.z, position.z + distance);
+
+            List<Thing> list = new List<Thing>();
+            for (int x = minX - 1; x <= maxX; ++x)
+            {
+                for (int z = minZ - 1; z <= maxZ; ++z)
+                {
+                    foreach (Thing t in map.thingGrid.ThingsAt(new IntVec3(x, position.y, z)))
+                    {
+                        list.Add(t);
+                    }
+                }
+            }
+            return list;
+        }
+
+        public static List<T> FindThingsOfTypeNextTo<T>(Map map, IntVec3 position, int distance) where T : Thing
         {
             int minX = Math.Max(0, position.x - distance);
             int maxX = Math.Min(map.info.Size.x, position.x + distance);
