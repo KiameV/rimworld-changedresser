@@ -10,14 +10,14 @@
   <ChangeDresser.AssignOutfitsDesc>為目標指定戰鬥或民用需求的服裝。</ChangeDresser.AssignOutfitsDesc>
   <ChangeDresser.Empty>清空</ChangeDresser.Empty>
   <ChangeDresser.EmptyDesc>清空梳妝檯存儲的服裝，不包括記錄的服裝方案。</ChangeDresser.EmptyDesc>
-  <ChangeDresser.Collect>收集</ChangeDresser.Collect>
+  <ChangeDresser.Collect>收撿</ChangeDresser.Collect>
   <ChangeDresser.CollectDesc>收集並存儲梳妝檯周圍的服裝。</ChangeDresser.CollectDesc>
   <ChangeDresser.ChangeTo>更改至</ChangeDresser.ChangeTo>
   <ChangeDresser.ChangeToDesc>更改至該服裝方案。</ChangeDresser.ChangeToDesc>
   <ChangeDresser.Wearing>著裝中</ChangeDresser.Wearing>
   <ChangeDresser.WearingDesc>當前正穿著該服裝方案。</ChangeDresser.WearingDesc>
-  <ChangeDresser.IncludeInTradeDeals>出售服裝</ChangeDresser.IncludeInTradeDeals>
-  <ChangeDresser.IncludeInTradeDealsDesc>切換存儲的服裝是否會出現在貿易目錄中。</ChangeDresser.IncludeInTradeDealsDesc>
+  <ChangeDresser.IncludeInTradeDeals>出售</ChangeDresser.IncludeInTradeDeals>
+  <ChangeDresser.IncludeInTradeDealsDesc>切換，是否讓已存儲的服裝出現在貿易目錄裡。</ChangeDresser.IncludeInTradeDealsDesc>
   <!-- Common Strings -->
   <ChangeDresser.Worn>已裝備</ChangeDresser.Worn>
   <ChangeDresser.Storage>庫存</ChangeDresser.Storage>
@@ -54,7 +54,7 @@
   <ChangeDresser.ApparelCount>服裝庫存數</ChangeDresser.ApparelCount>
   <!-- Repair UI -->
   <ChangeDresser.AttachedDressers>連接至梳妝檯</ChangeDresser.AttachedDressers>
-  <ChangeDresser.IsMending>正在修補中</ChangeDresser.IsMending>
+  <ChangeDresser.IsMending>修補中</ChangeDresser.IsMending>
   <!-- Color Selection -->
   <!-- These refer to the Red (R), Green (G), and Blue (B) values for the selected color -->
   <ChangeDresser.R>R</ChangeDresser.R>

@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <ChangeDresser.label>梳妆台</ChangeDresser.label>
+  <ChangeDresser.label>魔法梳妆台</ChangeDresser.label>
   <ChangeDresser.description>改变你的服装颜色或存取服装。</ChangeDresser.description>
-  <ChangeDresser_Blueprint.label>梳妆台（蓝图）</ChangeDresser_Blueprint.label>
-  <ChangeDresser_Blueprint_Install.label>梳妆台（蓝图）</ChangeDresser_Blueprint_Install.label>
-  <ChangeDresser_Frame.label>梳妆台（建造中）</ChangeDresser_Frame.label>
+  <ChangeDresser_Blueprint.label>魔法梳妆台（蓝图）</ChangeDresser_Blueprint.label>
+  <ChangeDresser_Blueprint_Install.label>魔法梳妆台（蓝图）</ChangeDresser_Blueprint_Install.label>
+  <ChangeDresser_Frame.label>魔法梳妆台（建造中）</ChangeDresser_Frame.label>
   <ChangeDresser_Frame.description>改变你的服装颜色或存取服装。</ChangeDresser_Frame.description>
   <ChangeMirror.label>穿衣镜</ChangeMirror.label>
   <ChangeMirror.description>化妆和染发。</ChangeMirror.description>
@@ -12,10 +12,10 @@
   <ChangeMirror_Blueprint_Install.label>穿衣镜（蓝图）</ChangeMirror_Blueprint_Install.label>
   <ChangeMirror_Frame.label>穿衣镜（建造中）</ChangeMirror_Frame.label>
   <ChangeMirror_Frame.description>化妆和染发。</ChangeMirror_Frame.description>
-  <RepairChangeDresser.label>修补装置</RepairChangeDresser.label>
+  <RepairChangeDresser.label>修补装置（服装）</RepairChangeDresser.label>
   <RepairChangeDresser.description>一个可以修补梳妆台内已存储服装的装置。</RepairChangeDresser.description>
-  <RepairChangeDresser_Blueprint.label>修补装置（蓝图）</RepairChangeDresser_Blueprint.label>
-  <RepairChangeDresser_Blueprint_Install.label>修补装置（蓝图）</RepairChangeDresser_Blueprint_Install.label>
-  <RepairChangeDresser_Frame.label>修补装置（建造中）</RepairChangeDresser_Frame.label>
+  <RepairChangeDresser_Blueprint.label>修补装置（服装）（蓝图）</RepairChangeDresser_Blueprint.label>
+  <RepairChangeDresser_Blueprint_Install.label>修补装置（服装）（蓝图）</RepairChangeDresser_Blueprint_Install.label>
+  <RepairChangeDresser_Frame.label>修补装置（服装）（建造中）</RepairChangeDresser_Frame.label>
   <RepairChangeDresser_Frame.description>一个可以修补梳妆台内已存储服装的装置。</RepairChangeDresser_Frame.description>
 </LanguageData>
