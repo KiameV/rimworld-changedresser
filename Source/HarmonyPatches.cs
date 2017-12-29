@@ -14,7 +14,7 @@ using Verse.AI.Group;
 namespace ChangeDresser
 {
     [StaticConstructorOnStartup]
-    class HarmonyPatches
+    partial class HarmonyPatches
     {
         static HarmonyPatches()
         {

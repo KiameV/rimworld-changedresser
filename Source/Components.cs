@@ -81,6 +81,16 @@ namespace ChangeDresser
             return DressersToUse.Count > 0;
         }
 
+        public static bool HasDressers(Map map)
+        {
+            foreach (Building_Dresser d in DressersToUse)
+            {
+                if (d.Spawned && d.Map == map)
+                    return true;
+            }
+            return false;
+        }
+
         public static bool RemoveDesser(Building_Dresser dresser)
         {
             if (DressersToUse.Remove(dresser))

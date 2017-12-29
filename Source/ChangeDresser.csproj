@@ -64,6 +64,7 @@
     <Compile Include="Components.cs" />
     <Compile Include="DresserJobDriver\JobDriver_WearApparelFromStorage.cs" />
     <Compile Include="HarmonyPatches.cs" />
+    <Compile Include="HarmonyPatches_Bills.cs" />
     <Compile Include="PawnOutfits.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />

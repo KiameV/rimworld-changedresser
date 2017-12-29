@@ -176,9 +176,9 @@ namespace ChangeDresser
             }
         }
 
-        private void DropThing(Thing t, bool makeForbidden = true)
+        private bool DropThing(Thing t, bool makeForbidden = true)
         {
-            BuildingUtil.DropThing(t, this, this.CurrentMap, makeForbidden);
+            return BuildingUtil.DropThing(t, this, this.CurrentMap, makeForbidden);
         }
 
         private void DropApparel<T>(IEnumerable<T> things, bool makeForbidden = true) where T : Thing
@@ -246,6 +246,29 @@ namespace ChangeDresser
                 }
                 l.Clear();
             }
+        }
+
+        public bool TryGetFilteredApparel(Bill bill, ThingFilter filter, out List<Apparel> gotten)
+        {
+            gotten = null;
+            foreach (KeyValuePair<ThingDef, LinkedList<Apparel>> kv in this.StoredApparel.StoredApparelLookup)
+            {
+                if (bill.IsFixedOrAllowedIngredient(kv.Key) && filter.Allows(kv.Key))
+                {
+                    foreach (Apparel t in kv.Value)
+                    {
+                        if (bill.IsFixedOrAllowedIngredient(t) && filter.Allows(t))
+                        {
+                            if (gotten == null)
+                            {
+                                gotten = new List<Apparel>();
+                            }
+                            gotten.Add(t);
+                        }
+                    }
+                }
+            }
+            return gotten != null;
         }
 
         public void HandleThingsOnTop()
@@ -396,14 +419,14 @@ namespace ChangeDresser
 
         public int Count { get { return this.StoredApparel.Count; } }
 
-        public void Remove(Apparel a, bool forbidden = true)
+        public bool Remove(Apparel a, bool forbidden = true)
         {
             try
             {
-                if (this.StoredApparel.Contains(a))
+                if (this.StoredApparel.Contains(a) && 
+                    this.DropThing(a, forbidden))
                 {
-                    this.DropThing(a, forbidden);
-                    this.StoredApparel.RemoveApparel(a);
+                    return this.StoredApparel.RemoveApparel(a);
                 }
 #if DEBUG
                 else
@@ -419,6 +442,7 @@ namespace ChangeDresser
                     e.GetType().Name + " " + e.Message + "\n" +
                     e.StackTrace);
             }
+            return false;
         }
 
         public bool RemoveNoDrop(Apparel a)

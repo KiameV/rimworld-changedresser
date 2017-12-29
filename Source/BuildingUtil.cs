@@ -53,7 +53,7 @@ namespace ChangeDresser
         }
 
         private static Random random = null;
-        public static void DropThing(Thing toDrop, Building from, Map map, bool makeForbidden = true)
+        public static bool DropThing(Thing toDrop, Building from, Map map, bool makeForbidden = true)
         {
             try
             {
@@ -66,6 +66,7 @@ namespace ChangeDresser
                         GenPlace.TryPlaceThing(toDrop, from.Position, map, ThingPlaceMode.Near);
                     }
                 }
+
                 if (toDrop.Position.Equals(from.Position))
                 {
                     IntVec3 pos = toDrop.Position;
@@ -81,6 +82,8 @@ namespace ChangeDresser
                         pos.z = pos.z + amount;
                     toDrop.Position = pos;
                 }
+
+                return toDrop.Spawned;
             }
             catch (Exception e)
             {
@@ -89,6 +92,7 @@ namespace ChangeDresser
                     e.GetType().Name + " " + e.Message + "\n" +
                     e.StackTrace);
             }
+            return false;
         }
     }
 }
