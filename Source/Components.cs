@@ -2,6 +2,7 @@
 using RimWorld.Planet;
 using System.Collections.Generic;
 using Verse;
+using System;
 
 namespace ChangeDresser
 {
@@ -62,6 +63,22 @@ namespace ChangeDresser
             {
                 DressersToUse.AddLast(dresser);
             }
+        }
+
+        public static IEnumerable<Building_Dresser> GetDressers(Map map)
+        {
+            foreach (Building_Dresser d in DressersToUse)
+            {
+                if (d.Spawned && d.Map == map)
+                {
+                    yield return d;
+                }
+            }
+        }
+
+        public static bool HasDressers()
+        {
+            return DressersToUse.Count > 0;
         }
 
         public static bool RemoveDesser(Building_Dresser dresser)

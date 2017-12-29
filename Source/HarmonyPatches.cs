@@ -1,6 +1,7 @@
 ﻿using ChangeDresser.UI.Util;
 using Harmony;
 using RimWorld;
+using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -8,24 +9,33 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using Verse.AI;
+using Verse.AI.Group;
 
 namespace ChangeDresser
 {
     [StaticConstructorOnStartup]
-    class Main
+    class HarmonyPatches
     {
-        static Main()
+        static HarmonyPatches()
         {
             var harmony = HarmonyInstance.Create("com.changedresser.rimworld.mod");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
             
-            Log.Message("ChangeDresser: Adding Harmony Postfix to Pawn.GetGizmos");
-            Log.Message("ChangeDresser: Adding Harmony Postfix to Pawn_ApparelTracker.Notify_ApparelAdded");
-            Log.Message("ChangeDresser: Adding Harmony Postfix to Pawn_DraftController.Drafted { set }");
-            Log.Message("ChangeDresser: Adding Harmony Postfix to Pawn_DraftController.GetGizmos");
-            Log.Message("ChangeDresser: Adding Harmony Postfix to JobGiver_OptimizeApparel.TryGiveJob");
-            Log.Message("ChangeDresser: Adding Harmony Postfix to ReservationManager.CanReserve");
-            Log.Message("ChangeDresser: Adding Harmony Postfix to OutfitDatabase.TryDelete");
+            Log.Message(
+                "ChangeDresser Harmony Patches:" + Environment.NewLine +
+                "  Prefix:" + Environment.NewLine +
+                "    Dialog_FormCaravan.PostOpen" + Environment.NewLine +
+                "    CaravanExitMapUtility.ExitMapAndCreateCaravan(IEnumerable<Pawn>, Faction, int)" + Environment.NewLine +
+                "    CaravanExitMapUtility.ExitMapAndCreateCaravan(IEnumerable<Pawn>, Faction, int, int)" + Environment.NewLine + 
+                "  Postfix:" + Environment.NewLine +
+                "    Pawn.GetGizmos" + Environment.NewLine +
+                "    Pawn_ApparelTracker.Notify_ApparelAdded" + Environment.NewLine +
+                "    Pawn_DraftController.Drafted { set }" + Environment.NewLine +
+                "    Pawn_DraftController.GetGizmos" + Environment.NewLine +
+                "    JobGiver_OptimizeApparel.TryGiveJob" + Environment.NewLine +
+                "    ReservationManager.CanReserve" + Environment.NewLine + 
+                "    OutfitDatabase.TryDelete" + Environment.NewLine +
+                "    CaravanFormingUtility.StopFormingCaravan");
         }
 
         public static Texture2D GetIcon(ThingDef td)
@@ -59,6 +69,12 @@ namespace ChangeDresser
                 Environment.NewLine + 
                 "Start Main.SwapApparel Pawn: " + pawn.Name.ToStringShort + " toWear: " + toWear.label);
 #endif
+            if (!WorldComp.HasDressers())
+            {
+                Log.Warning("No Change Dressers found. Apparel will not be swapped.");
+                return;
+            }
+
             // Remove apparel from pawn
             List<Apparel> worn = new List<Apparel>(pawn.apparel.WornApparel);
             foreach (Apparel a in worn)
@@ -270,7 +286,7 @@ namespace ChangeDresser
                             List<ThingDef> tdList = new List<ThingDef>(o.filter.AllowedThingDefs);
                             if (tdList.Count > 0)
                             {
-                                a.icon = Main.GetIcon(tdList[0]);
+                                a.icon = HarmonyPatches.GetIcon(tdList[0]);
                             }
                             else
                             {
@@ -293,7 +309,7 @@ namespace ChangeDresser
                             a.activateSound = SoundDef.Named("Click");
                             a.action = delegate
                             {
-                                Main.SwapApparel(__instance, o);
+                                HarmonyPatches.SwapApparel(__instance, o);
                                 //outfits.ColorApparel(__instance);
                             };
                             l.Add(a);
@@ -360,7 +376,7 @@ namespace ChangeDresser
                             List<ThingDef> tdList = new List<ThingDef>(o.filter.AllowedThingDefs);
                             if (tdList.Count > 0)
                             {
-                                a.icon = Main.GetIcon(tdList[0]);
+                                a.icon = HarmonyPatches.GetIcon(tdList[0]);
                             }
                             else
                             {
@@ -383,7 +399,7 @@ namespace ChangeDresser
                             a.activateSound = SoundDef.Named("Click");
                             a.action = delegate
                             {
-                                Main.SwapApparel(pawn, o);
+                                HarmonyPatches.SwapApparel(pawn, o);
                                 //outfits.ColorApparel(pawn);
                             };
                             l.Add(a);
@@ -434,7 +450,7 @@ namespace ChangeDresser
 
                 if (found)
                 {
-                    Main.SwapApparel(pawn, outfitToWear);
+                    HarmonyPatches.SwapApparel(pawn, outfitToWear);
                     //outfits.ColorApparel(pawn);
                 }
             }
@@ -613,6 +629,82 @@ namespace ChangeDresser
             }
         }
     }
+
+    #region Caravan Forming
+    [HarmonyPatch(typeof(Dialog_FormCaravan), "PostOpen")]
+    static class Patch_Dialog_FormCaravan_PostOpen
+    {
+        static void Prefix(Window __instance)
+        {
+            Type type = __instance.GetType();
+            if (type == typeof(Dialog_FormCaravan))
+            {
+                Map map = __instance.GetType().GetField("map", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(__instance) as Map;
+
+                foreach (Building_Dresser d in WorldComp.GetDressers(map))
+                {
+                    d.Empty<Thing>();
+                }
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(CaravanFormingUtility), "StopFormingCaravan")]
+    static class Patch_CaravanFormingUtility_StopFormingCaravan
+    {
+        [HarmonyPriority(Priority.First)]
+        static void Postfix(Lord lord)
+        {
+            foreach (Building_Dresser d in WorldComp.GetDressers(lord.Map))
+            {
+                d.ReclaimApparel();
+            }
+        }
+    }
+
+    [HarmonyPatch(
+        typeof(CaravanExitMapUtility), "ExitMapAndCreateCaravan",
+        new Type[] { typeof(IEnumerable<Pawn>), typeof(Faction), typeof(int), typeof(int) })]
+    static class Patch_CaravanExitMapUtility_ExitMapAndCreateCaravan_1
+    {
+        [HarmonyPriority(Priority.First)]
+        static void Prefix(IEnumerable<Pawn> pawns, Faction faction, int exitFromTile, int directionTile)
+        {
+            if (faction == Faction.OfPlayer)
+            {
+                List<Pawn> p = new List<Pawn>(pawns);
+                if (p.Count > 0)
+                {
+                    foreach (Building_Dresser d in WorldComp.GetDressers(p[0].Map))
+                    {
+                        d.ReclaimApparel();
+                    }
+                }
+            }
+        }
+    }
+
+    [HarmonyPatch(
+        typeof(CaravanExitMapUtility), "ExitMapAndCreateCaravan",
+        new Type[] { typeof(IEnumerable<Pawn>), typeof(Faction), typeof(int) })]
+    static class Patch_CaravanExitMapUtility_ExitMapAndCreateCaravan_2
+    {
+        static void Prefix(IEnumerable<Pawn> pawns, Faction faction, int startingTile)
+        {
+            if (faction == Faction.OfPlayer)
+            {
+                List<Pawn> p = new List<Pawn>(pawns);
+                if (p.Count > 0)
+                {
+                    foreach (Building_Dresser d in WorldComp.GetDressers(p[0].Map))
+                    {
+                        d.ReclaimApparel();
+                    }
+                }
+            }
+        }
+    }
+    #endregion
 
     #region Handle "Do until X" for stored weapons
     [HarmonyPatch(typeof(RecipeWorkerCounter), "CountProducts")]
