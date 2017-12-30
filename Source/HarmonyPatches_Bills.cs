@@ -213,7 +213,7 @@ namespace ChangeDresser
                             if (count <= 0)
                                 break;
                             
-                            if (sa.Dresser.Remove(sa.Apparel, false))
+                            if (sa.Dresser.TryRemove(sa.Apparel, false))
                             {
                                 count -= sa.Apparel.stackCount;
                                 chosen.Add(new ThingAmount(sa.Apparel, sa.Apparel.stackCount));

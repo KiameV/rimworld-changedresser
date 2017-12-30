@@ -419,14 +419,18 @@ namespace ChangeDresser
 
         public int Count { get { return this.StoredApparel.Count; } }
 
-        public bool Remove(Apparel a, bool forbidden = true)
+        public void Remove(Apparel a, bool forbidden = true)
+        {
+            this.TryRemove(a, forbidden);
+        }
+
+        public bool TryRemove(Apparel a, bool forbidden = true)
         {
             try
             {
-                if (this.StoredApparel.Contains(a) && 
-                    this.DropThing(a, forbidden))
+                if (this.StoredApparel.Contains(a))
                 {
-                    return this.StoredApparel.RemoveApparel(a);
+                    return this.DropThing(a, forbidden);
                 }
 #if DEBUG
                 else
