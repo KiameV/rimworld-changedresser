@@ -130,17 +130,23 @@ namespace ChangeDresser.UI
                         {
                             if (Widgets.ButtonImage(buttonRect, WidgetUtil.previousTexture))
                             {
-                                this.Dresser.Remove(apparel);
-                                this.cachedApparel.Clear();
-                                this.cachedApparel = null;
-                                PawnOutfits outfits;
-                                if (WorldComp.PawnOutfits.TryGetValue(this.Pawn, out outfits))
+                                if (this.Dresser.TryRemove(apparel, false))
                                 {
-                                    outfits.ColorApparel(apparel);
+                                    this.cachedApparel.Clear();
+                                    this.cachedApparel = null;
+                                    PawnOutfits outfits;
+                                    if (WorldComp.PawnOutfits.TryGetValue(this.Pawn, out outfits))
+                                    {
+                                        outfits.ColorApparel(apparel);
+                                    }
+                                    this.Pawn.apparel.Wear(apparel);
+                                    GUI.EndGroup();
+                                    break;
                                 }
-                                this.Pawn.apparel.Wear(apparel);
-                                GUI.EndGroup();
-                                break;
+                                else
+                                {
+                                    Log.Error("Problem dropping " + apparel.Label);
+                                }
                             }
                         }
                         else
@@ -156,11 +162,17 @@ namespace ChangeDresser.UI
 
                     if (Widgets.ButtonImage(new Rect(rowRect.width - 45f, 0f, cellHeight, cellHeight), WidgetUtil.dropTexture))
                     {
-                        this.Dresser.Remove(apparel, false);
-                        this.cachedApparel.Clear();
-                        this.cachedApparel = null;
-                        GUI.EndGroup();
-                        break;
+                        if (this.Dresser.TryRemove(apparel, false))
+                        {
+                            this.cachedApparel.Clear();
+                            this.cachedApparel = null;
+                            GUI.EndGroup();
+                            break;
+                        }
+                        else
+                        {
+                            Log.Error("Problem dropping " + apparel.Label);
+                        }
                     }
 
                     GUI.EndGroup();

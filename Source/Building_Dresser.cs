@@ -419,6 +419,9 @@ namespace ChangeDresser
 
         public int Count { get { return this.StoredApparel.Count; } }
 
+        /// <summary>
+        /// DO NOT CHANGE THIS METHOD'S SIGNATURE. IT WILL BREAK MENDING PATCH MOD
+        /// </summary>
         public void Remove(Apparel a, bool forbidden = true)
         {
             this.TryRemove(a, forbidden);
@@ -428,7 +431,7 @@ namespace ChangeDresser
         {
             try
             {
-                if (this.StoredApparel.Contains(a))
+                if (this.StoredApparel.RemoveApparel(a))
                 {
                     return this.DropThing(a, forbidden);
                 }
