@@ -118,7 +118,7 @@ namespace ChangeDresser.UI
                 Text.Font = GameFont.Medium;
                 for (int i = 0; i < this.CachedApparel.Count; ++i)
                 {
-                    Apparel apparel = this.CachedApparel[i];
+                    Apparel apparel = this.cachedApparel[i];
                     Rect rowRect = new Rect(0, 2f + i * cellHeight, apparelScrollRect.width, cellHeight);
                     GUI.BeginGroup(rowRect);
 

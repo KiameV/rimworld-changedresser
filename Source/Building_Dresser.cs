@@ -431,6 +431,7 @@ namespace ChangeDresser
         {
             try
             {
+                this.AllowAdds = false;
                 if (this.StoredApparel.RemoveApparel(a))
                 {
                     return this.DropThing(a, forbidden);
@@ -448,6 +449,10 @@ namespace ChangeDresser
                     "ChangeDresser:Building_Dresser.Remove\n" +
                     e.GetType().Name + " " + e.Message + "\n" +
                     e.StackTrace);
+            }
+            finally
+            {
+                this.AllowAdds = true;
             }
             return false;
         }
