@@ -167,7 +167,7 @@ namespace ChangeDresser
             }
 
             WorldComp.RemoveDesser(this);
-            foreach (Building_RepairChangeDresser r in BuildingUtil.FindThingsOfTypeNextTo<Building_RepairChangeDresser>(base.Map, base.Position, Settings.RepairAttachmentDistance))
+            foreach (Building_RepairChangeDresser r in BuildingUtil.FindThingsOfTypeNextTo<Building_RepairChangeDresser>(this.CurrentMap, base.Position, Settings.RepairAttachmentDistance))
             {
 #if DEBUG_REPAIR
                 Log.Warning("Removing Dresser " + this.Label + " to " + r.Label);

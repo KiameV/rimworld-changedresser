@@ -565,6 +565,16 @@ namespace ChangeDresser
         }
     }
 
+    [HarmonyPatch(typeof(TradeDeal), "Reset")]
+    static class Patch_TradeDeal_Reset
+    {
+        // On Reset from Trade Dialog
+        static void Prefix()
+        {
+            TradeUtil.ReclaimApparel();
+        }
+    }
+
     [HarmonyPatch(typeof(Dialog_Trade), "Close")]
     static class Patch_Window_PreClose
     {
