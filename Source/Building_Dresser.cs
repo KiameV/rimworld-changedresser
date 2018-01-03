@@ -70,7 +70,7 @@ namespace ChangeDresser
                 }
                 else // Not Allowed
                 {
-                    if (!WorldComp.AddApparel(a, this.CurrentMap))
+                    if (!WorldComp.AddApparel(a))
                     {
                         if (!a.Spawned)
                         {
@@ -482,7 +482,7 @@ namespace ChangeDresser
                     List<Apparel> removed = this.StoredApparel.RemoveFilteredApparel(this.settings);
                     foreach (Apparel a in removed)
                     {
-                        if (!WorldComp.AddApparel(a, base.Map))
+                        if (!WorldComp.AddApparel(a))
                         {
                             this.DropThing(a, false);
                         }
