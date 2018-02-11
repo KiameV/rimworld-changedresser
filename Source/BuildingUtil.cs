@@ -51,8 +51,7 @@ namespace ChangeDresser
             }
             return list;
         }
-
-        private static Random random = null;
+        
         public static bool DropThing(Thing toDrop, Building from, Map map, bool makeForbidden = true)
         {
             try
@@ -67,21 +66,26 @@ namespace ChangeDresser
                     }
                 }
 
-                if (toDrop.Position.Equals(from.Position))
+                IntVec3 pos = from.Position;
+                for (int i = 0; i < 4; ++i)
                 {
-                    IntVec3 pos = toDrop.Position;
-                    if (random == null)
-                        random = new Random();
-                    int dir = random.Next(2);
-                    int amount = random.Next(2);
-                    if (amount == 0)
-                        amount = -1;
-                    if (dir == 0)
-                        pos.x = pos.x + amount;
-                    else
-                        pos.z = pos.z + amount;
-                    toDrop.Position = pos;
+                    pos = Transform(i, from.Position);
+
+                    bool canDropHere = true;
+                    foreach (Thing temp in map.thingGrid.ThingsAt(pos))
+                    {
+                        if (temp.def.passability == Traversability.Impassable)
+                        {
+                            canDropHere = false;
+                            break;
+                        }
+                    }
+
+                    if (canDropHere)
+                        break;
                 }
+
+                toDrop.Position = pos;
 
                 return toDrop.Spawned;
             }
@@ -93,6 +97,27 @@ namespace ChangeDresser
                     e.StackTrace);
             }
             return false;
+        }
+
+        private static IntVec3 Transform(int i, IntVec3 from)
+        {
+            IntVec3 result = from;
+            switch (i)
+            {
+                case 0:
+                    result.x = result.x + 1;
+                    break;
+                case 1:
+                    result.x = result.x - 1;
+                    break;
+                case 2:
+                    result.z = result.z + 1;
+                    break;
+                default:
+                    result.z = result.z - 1;
+                    break;
+            }
+            return result;
         }
     }
 }
