@@ -65,6 +65,7 @@
     <Compile Include="DresserJobDriver\JobDriver_WearApparelFromStorage.cs" />
     <Compile Include="HarmonyPatches.cs" />
     <Compile Include="HarmonyPatches_Bills.cs" />
+    <Compile Include="HarmonyPatches_WealthWatcher.cs" />
     <Compile Include="PawnOutfits.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
@@ -98,6 +99,9 @@
     <PostBuildEvent>xcopy "$(ProjectDir)..\About\About.xml" "$(OutDir)..\About\" /Y /I
 
 
+xcopy "$(ProjectDir)..\About\ModSync.xml" "$(OutDir)..\About\" /Y /I
+
+
 xcopy "$(ProjectDir)..\About\Preview.png" "$(OutDir)..\About\" /Y /I
 
 
@@ -113,5 +117,9 @@ xcopy "$(ProjectDir)..\Languages\*.*" "$(OutDir)..\Languages" /Y /I /E
 
 
 xcopy "$(ProjectDir)..\Textures\*.*" "$(OutDir)..\Textures" /Y /I /E</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
 </Project>

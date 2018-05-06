@@ -345,7 +345,7 @@ namespace ChangeDresser.UI
 #if DEBUG
                                 Log.Warning("  color change for " + a.Label);
 #endif
-                                po.SetColorFor(a.def.apparel.LastLayer, a.DrawColor);
+                                po.SetColorFor(a, a.DrawColor);
                             //}
                         }
                     }
@@ -361,7 +361,7 @@ namespace ChangeDresser.UI
             }
             catch (Exception e)
             {
-                Log.Error("Error on DresserUI.PreClose: " + e.GetType().Name + " " + e.Message);
+                Log.Error("Error on DresserUI.PreClose: " + e.GetType().Name + " " + e.Message + Environment.NewLine + e.StackTrace);
             }
 #if TRACE
             Log.Message("End DresserUI.PreClose" + Environment.NewLine);

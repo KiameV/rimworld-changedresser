@@ -17,28 +17,58 @@ namespace ChangeDresser
         private Outfit lastCivilianOutfit = null;
         public Outfit LastCivilianOutfit { set { this.lastCivilianOutfit = value; } }
 
+        private List<bool> IsColorAssigned = null;
         private List<Color> ColorForLayer = null;
-        private List<bool> IsColorAssigned;
 
         public PawnOutfits()
         {
             this.InitializeIsColorAssigned();
         }
 
-        public void InitializeIsColorAssigned()
+        private void InitializeIsColorAssigned()
         {
-            int size = Enum.GetValues(typeof(ApparelLayer)).Length;
-            this.IsColorAssigned = new List<bool>(size);
-            for (int i = 0; i < size; ++i)
+            if (!HaveColorsBeenAssigned)
             {
-                this.IsColorAssigned.Add(false);
+                int size = Enum.GetValues(typeof(ApparelLayer)).Length;
+                if (this.IsColorAssigned == null || this.IsColorAssigned.Count == 0)
+                {
+                    this.IsColorAssigned = new List<bool>(size);
+                    for (int i = 0; i < size; ++i)
+                    {
+                        this.IsColorAssigned.Add(false);
+                    }
+                }
+
+                if (this.ColorForLayer == null || this.ColorForLayer.Count == 0)
+                {
+                    this.ColorForLayer = new List<Color>(size);
+                    for (int i = 0; i < size; ++i)
+                    {
+                        this.ColorForLayer.Add(Color.white);
+                    }
+                }
+            }
+        }
+
+        private bool HaveColorsBeenAssigned
+        {
+            get
+            {
+                if (this.IsColorAssigned == null || this.IsColorAssigned.Count == 0 || 
+                    this.ColorForLayer == null || this.ColorForLayer.Count == 0)
+                {
+                    return false;
+                }
+                return true;
             }
         }
 
         public bool ColorApparel(Apparel apparel)
         {
-#if DEBUG
-            Log.Message(Environment.NewLine + "Start PawnOutfits.TryGetColorFor Layer: " + layer + " " + ((int)layer).ToString());
+#if DEBUG || DEBUG_APPAREL_COLOR
+            Log.Warning("Start PawnOutfits.ColorApparel(Apparel: " + apparel.Label + ")");
+            /*ApparelLayer debugLayer = apparel.def.apparel.LastLayer;
+            Log.Message(Environment.NewLine + "Start PawnOutfits.TryGetColorFor Layer: " + debugLayer + " " + ((int)debugLayer).ToString());
 
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
             for (int i = 0; i < this.IsColorAssigned.Count; ++i)
@@ -51,58 +81,89 @@ namespace ChangeDresser
                 }
                 sb.Append(" -- ");
             }
-            Log.Warning(sb.ToString());
+            Log.Warning(sb.ToString());*/
 #endif
-            int layer = (int)apparel.def.apparel.LastLayer;
-            if (layer < this.IsColorAssigned.Count && 
-                this.IsColorAssigned[layer])
+            if (!HaveColorsBeenAssigned)
             {
-                apparel.SetColor(this.ColorForLayer[layer]);
-#if DEBUG
-                Log.Message("Start PawnOutfits.TryGetColorFor" + Environment.NewLine);
+#if DEBUG || DEBUG_APPAREL_COLOR
+                Log.Message("    No colors assigned yet");
 #endif
                 return true;
             }
+
+            foreach (ApparelLayer layer in apparel.def.apparel.layers)
+            {
+#if DEBUG || DEBUG_APPAREL_COLOR
+                Log.Message("    Layer: " + layer);
+#endif
+                if ((int)layer < this.IsColorAssigned.Count &&
+                    this.IsColorAssigned[(int)layer] == true)
+                {
+                    apparel.SetColor(this.ColorForLayer[(int)layer]);
+#if DEBUG || DEBUG_APPAREL_COLOR
+                    Log.Message("        Set color to: " + this.ColorForLayer[(int)layer]);
+#endif
+                    return true;
+                }
+#if DEBUG || DEBUG_APPAREL_COLOR
+                else
+                {
+                    Log.Message("        No color set for layer");
+                }
+#endif
+            }
+
+#if DEBUG || DEBUG_APPAREL_COLOR
+            Log.Message("    No color match found");
+#endif
             return false;
         }
 
-        public void ColorApparel(Pawn pawn)
+        /*public void ColorApparel(Pawn pawn)
         {
-            foreach (Apparel a in pawn.apparel.WornApparel)
+            if (HaveColorsBeenAssigned)
             {
-                this.ColorApparel(a);
+                foreach (Apparel a in pawn.apparel.WornApparel)
+                {
+                    this.ColorApparel(a);
+                }
             }
-        }
+        }*/
 
-        public void SetColorFor(ApparelLayer layer, Color color)
+        public void SetColorFor(Apparel apparel, Color color)
         {
-#if DEBUG
-            Log.Message(Environment.NewLine + "Start PawnOutfits.SetColorFor Layer: " + layer + " " + ((int)layer).ToString() + " Color: " + color);
+            if (apparel != null)
+            {
+#if DEBUG || DEBUG_APPAREL_COLOR
+            Log.Warning("Start PawnOutfits.SetColorFor (Apparel: " + apparel.Label + " Color: " + color + ")");
 #endif
-            if (this.ColorForLayer == null || this.ColorForLayer.Count == 0)
-            {
-                this.ColorForLayer = new List<Color>(this.IsColorAssigned.Count);
-                for(int i = 0; i < this.IsColorAssigned.Count; ++i)
+                /*Log.Message("IsColorAssigned:");
+                for(int i = 0; i < IsColorAssigned.Count; ++i)
                 {
-                    this.ColorForLayer.Add(default(Color));
+                    Log.Message("    i: " + i + " Value: " + IsColorAssigned[i]);
+                }
+                Log.Message("ColorForLayer:");
+                for (int i = 0; i < ColorForLayer.Count; ++i)
+                {
+                    Log.Message("    i: " + i + " Value: " + ColorForLayer[i]);
+                }*/
+
+
+                this.InitializeIsColorAssigned();
+                foreach (ApparelLayer layer in apparel.def.apparel.layers)
+                {
+#if DEBUG || DEBUG_APPAREL_COLOR
+                    Log.Warning("    Setting layer " + layer);
+#endif
+                    this.IsColorAssigned[(int)layer] = true;
+                    this.ColorForLayer[(int)layer] = color;
                 }
             }
-            this.IsColorAssigned[(int)layer] = true;
-            this.ColorForLayer[(int)layer] = color;
-#if DEBUG
-            System.Text.StringBuilder sb = new System.Text.StringBuilder();
-            for (int i = 0; i < this.IsColorAssigned.Count; ++i)
+#if DEBUG || DEBUG_APPAREL_COLOR
+            else
             {
-                sb.Append(this.IsColorAssigned[i]);
-                if (this.ColorForLayer != null)
-                {
-                    sb.Append(" ");
-                    sb.Append(this.ColorForLayer[i].ToString());
-                }
-                sb.Append(" -- ");
+                Log.Warning("PawnOutfits.SetColorFor [null] Apparel");
             }
-            Log.Warning(sb.ToString());
-            Log.Message("End PawnOutfits.SetColorFor" + Environment.NewLine);
 #endif
         }
 

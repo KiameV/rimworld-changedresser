@@ -35,7 +35,8 @@ namespace ChangeDresser
                 "    JobGiver_OptimizeApparel.TryGiveJob" + Environment.NewLine +
                 "    ReservationManager.CanReserve" + Environment.NewLine + 
                 "    OutfitDatabase.TryDelete" + Environment.NewLine +
-                "    CaravanFormingUtility.StopFormingCaravan");
+                "    CaravanFormingUtility.StopFormingCaravan" + Environment.NewLine +
+                "    WealthWatcher.ForceRecount");
         }
 
         public static Texture2D GetIcon(ThingDef td)
@@ -665,7 +666,7 @@ namespace ChangeDresser
         [HarmonyPriority(Priority.First)]
         static void Postfix(Lord lord)
         {
-            foreach (Building_Dresser d in WorldComp.GetDressers(lord.Map))
+            foreach (Building_Dresser d in WorldComp.DressersToUse)
             {
                 d.ReclaimApparel();
             }
@@ -685,7 +686,7 @@ namespace ChangeDresser
                 List<Pawn> p = new List<Pawn>(pawns);
                 if (p.Count > 0)
                 {
-                    foreach (Building_Dresser d in WorldComp.GetDressers(p[0].Map))
+                    foreach (Building_Dresser d in WorldComp.DressersToUse)
                     {
                         d.ReclaimApparel();
                     }
@@ -706,7 +707,7 @@ namespace ChangeDresser
                 List<Pawn> p = new List<Pawn>(pawns);
                 if (p.Count > 0)
                 {
-                    foreach (Building_Dresser d in WorldComp.GetDressers(p[0].Map))
+                    foreach (Building_Dresser d in WorldComp.DressersToUse)
                     {
                         d.ReclaimApparel();
                     }
@@ -732,7 +733,7 @@ namespace ChangeDresser
                     {
                         if (bill.Map == d.Map)
                         {
-                            __result += d.GetApparelCount(def);
+                            __result += d.GetApparelCount(def, bill.ingredientFilter);
                         }
                     }
                 }

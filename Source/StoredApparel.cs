@@ -4,6 +4,7 @@ using Verse;
 using Verse.AI;
 using System;
 using System.Text;
+using UnityEngine;
 
 namespace ChangeDresser
 {
@@ -120,14 +121,73 @@ namespace ChangeDresser
             */
         }
 
-        internal int GetApparelCount(ThingDef def)
+        internal int GetApparelCount(ThingDef expectedDef, ThingFilter ingredientFilter)
         {
             LinkedList<Apparel> l;
-            if (this.StoredApparelLookup.TryGetValue(def, out l))
+            if (this.StoredApparelLookup.TryGetValue(expectedDef, out l))
             {
-                return l.Count;
+                int count = 0;
+                foreach (Apparel a in l)
+                {
+                    if (this.Allows(a, expectedDef, ingredientFilter))
+                    {
+                        ++count;
+                    }
+                }
+                return count;
             }
             return 0;
+        }
+
+        private bool Allows(Thing t, ThingDef expectedDef, ThingFilter filter)
+        {
+            if (filter == null)
+            {
+                return true;
+            }
+
+#if DEBUG || DEBUG_DO_UNTIL_X
+            Log.Warning("StoredApparel.Allows Begin [" + t.Label + "]");
+#endif
+            if (t.def != expectedDef)
+            {
+#if DEBUG || DEBUG_DO_UNTIL_X
+                Log.Warning("    StoredApparel.Allows End Def Does Not Match [False]");
+#endif
+                return false;
+            }
+            if (expectedDef.useHitPoints &&
+                filter.AllowedHitPointsPercents.min != 0f && filter.AllowedHitPointsPercents.max != 100f)
+            {
+                float num = (float)t.HitPoints / (float)t.MaxHitPoints;
+                num = GenMath.RoundedHundredth(num);
+                if (!filter.AllowedHitPointsPercents.IncludesEpsilon(Mathf.Clamp01(num)))
+                {
+#if DEBUG || DEBUG_DO_UNTIL_X
+                    Log.Warning("    StoredApparel.Allows End Hit Points [False]");
+#endif
+                    return false;
+                }
+            }
+            if (filter.AllowedQualityLevels != QualityRange.All && t.def.FollowQualityThingFilter())
+            {
+                QualityCategory p;
+                if (!t.TryGetQuality(out p))
+                {
+                    p = QualityCategory.Normal;
+                }
+                if (!filter.AllowedQualityLevels.Includes(p))
+                {
+#if DEBUG || DEBUG_DO_UNTIL_X
+                    Log.Warning("    StoredApparel.Allows End Quality [False]");
+#endif
+                    return false;
+                }
+            }
+#if DEBUG || DEBUG_DO_UNTIL_X
+            Log.Warning("    StoredApparel.Allows End [True]");
+#endif
+            return true;
         }
 
         public bool Contains(Apparel apparel)
