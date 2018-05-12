@@ -232,6 +232,10 @@ namespace ChangeDresser
 #if DEBUG
             Log.Message("End Main.SwapApparel" + Environment.NewLine);
 #endif
+            foreach (Apparel a in pawn.apparel.WornApparel)
+            {
+                Patch_Pawn_ApparelTracker_Notify_ApparelAdded.ColorApparel(pawn, a);
+            }
         }
     }
 
@@ -240,8 +244,13 @@ namespace ChangeDresser
     {
         static void Prefix(Pawn_ApparelTracker __instance, Apparel apparel)
         {
+            ColorApparel(__instance.pawn, apparel);
+        }
+
+        internal static void ColorApparel(Pawn pawn, Apparel apparel)
+        {
             PawnOutfits outfits;
-            if (WorldComp.PawnOutfits.TryGetValue(__instance.pawn, out outfits))
+            if (WorldComp.PawnOutfits.TryGetValue(pawn, out outfits))
             {
                 outfits.ColorApparel(apparel);
             }
