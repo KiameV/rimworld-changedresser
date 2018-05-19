@@ -12,6 +12,7 @@ namespace ChangeDresser
         private const int LOW_POWER_COST = 10;
         //private const int RARE_TICKS_PER_HP = 4;
 
+        private static LinkedList<Apparel> AllApparelBeingRepaired = new LinkedList<Apparel>();
         private LinkedList<Building_Dresser> AttachedDressers = new LinkedList<Building_Dresser>();
         public CompPowerTrader compPowerTrader;
 
@@ -66,7 +67,7 @@ namespace ChangeDresser
 
             this.compPowerTrader.powerStoppedAction = new Action(delegate ()
             {
-                this.PlaceApparelInDresser();
+                this.StopRepairing();
                 this.compPowerTrader.PowerOutput = 0;
             });
         }
@@ -74,21 +75,21 @@ namespace ChangeDresser
         public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
         {
             base.Destroy(mode);
-            this.PlaceApparelInDresser();
+            this.StopRepairing();
             this.AttachedDressers.Clear();
         }
 
         public override void Discard(bool silentlyRemoveReferences = false)
         {
             base.Discard(silentlyRemoveReferences);
-            this.PlaceApparelInDresser();
+            this.StopRepairing();
             this.AttachedDressers.Clear();
         }
 
         public override void DeSpawn()
         {
             base.DeSpawn();
-            this.PlaceApparelInDresser();
+            this.StopRepairing();
             this.AttachedDressers.Clear();
         }
 
@@ -99,13 +100,13 @@ namespace ChangeDresser
                 // Power is off
                 if (BeingRepaird != null)
                 {
-                    this.PlaceApparelInDresser();
+                    this.StopRepairing();
                 }
             }
             else if (this.BeingRepaird == null)
             {
                 // Power is on and not repairing anything
-                this.BeingRepaird = this.FindApparelToRepair();
+                this.StartRepairing();
             }
             else if (
                 this.BeingRepaird != null && 
@@ -114,8 +115,8 @@ namespace ChangeDresser
                 // Power is on
                 // Repairing something
                 // Apparel is fully repaired
-                this.PlaceApparelInDresser();
-                this.BeingRepaird = this.FindApparelToRepair();
+                this.StopRepairing();
+                this.StartRepairing();
             }
             
             if (this.BeingRepaird != null)
@@ -187,9 +188,33 @@ namespace ChangeDresser
             }
         }
 
-        private Apparel FindApparelToRepair()
+        private void StartRepairing()
         {
+#if AUTO_MENDER
+            Log.Warning("Begin RepairChangeDresser.StartRepairing");
+            Log.Message("    Currently Being Repaired:");
+            foreach(Apparel a in AllApparelBeingRepaired)
+            {
+                Log.Message("        " + a.Label);
+            }
+#endif
             this.OrderAttachedDressers();
+            foreach (PawnOutfitTracker po in WorldComp.PawnOutfits.Values)
+            {
+                foreach (Apparel a in po.CustomApparel)
+                {
+                    if (a.HitPoints < a.MaxHitPoints &&
+                        !AllApparelBeingRepaired.Contains(a))
+                    {
+                        this.BeingRepaird = a;
+                        AllApparelBeingRepaired.AddLast(a);
+#if AUTO_MENDER
+                        Log.Warning("End RepairChangeDresser.StartRepairing -- " + a.Label);
+#endif
+                        return;
+                    }
+                }
+            }
             for (LinkedListNode<Building_Dresser> n = this.AttachedDressers.First; n != null; n = n.Next)
             {
                 Building_Dresser d = n.Value;
@@ -197,51 +222,31 @@ namespace ChangeDresser
                 {
                     foreach (Apparel a in l)
                     {
-                        if (a.HitPoints < a.MaxHitPoints)
+                        if (a.HitPoints < a.MaxHitPoints &&
+                            !AllApparelBeingRepaired.Contains(a))
                         {
-                            d.RemoveNoDrop(a);
-                            return a;
+                            this.BeingRepaird = a;
+                            AllApparelBeingRepaired.AddLast(a);
+#if AUTO_MENDER
+                            Log.Warning("End RepairChangeDresser.StartRepairing -- " + a.Label);
+#endif
+                            return;
                         }
                     }
                 }
             }
-            return null;
+#if AUTO_MENDER
+            Log.Warning("End RepairChangeDresser.StartRepairing -- No new repairs to start");
+#endif
         }
 
-        private void PlaceApparelInDresser()
+        private void StopRepairing()
         {
-            if (this.BeingRepaird == null)
+            if (this.BeingRepaird != null)
             {
-                return;
+                AllApparelBeingRepaired.Remove(this.BeingRepaird);
+                this.BeingRepaird = null;
             }
-
-            Building_Dresser dresserToUse = null;
-            this.OrderAttachedDressers();
-            for (LinkedListNode<Building_Dresser> n = this.AttachedDressers.First; n != null; n = n.Next)
-            {
-                Building_Dresser d = n.Value;
-                if (d.settings.AllowedToAccept(this.BeingRepaird))
-                {
-                    dresserToUse = d;
-                }
-            }
-
-            if (dresserToUse != null)
-            {
-                dresserToUse.AddApparel(this.BeingRepaird);
-            }
-            else
-            {
-                BuildingUtil.DropThing(this.BeingRepaird, this, this.CurrentMap, false);
-            }
-            this.BeingRepaird = null;
-        }
-
-        public override void ExposeData()
-        {
-            base.ExposeData();
-            
-            Scribe_Deep.Look(ref this.BeingRepaird, "beingRepaired", new object[0]);
         }
 
         public void AddDresser(Building_Dresser dresser)

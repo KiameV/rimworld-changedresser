@@ -462,6 +462,7 @@ namespace ChangeDresser
             return this.StoredApparel.RemoveApparel(a);
         }
 
+        //private long lastAutoCollect = 0;
         public override void TickLong()
         {
             if (this.Spawned && base.Map != null)
@@ -493,6 +494,13 @@ namespace ChangeDresser
                     this.AllowAdds = true;
                 }
             }
+
+            /*long now = DateTime.Now.Millisecond;
+            if (now - this.lastAutoCollect > THIRTY_SECONDS)
+            {
+                this.lastAutoCollect = now;
+                this.ReclaimApparel();
+            }*/
         }
 
 #region Float Menu Options
@@ -552,9 +560,9 @@ namespace ChangeDresser
         }
 #endregion
 
-        public Apparel FindBetterApparel(ref float baseApparelScore, Pawn pawn, Outfit currentOutfit)
+        public bool FindBetterApparel(ref float baseApparelScore, ref Apparel betterApparel, Pawn pawn, Outfit currentOutfit)
         {
-            return this.StoredApparel.FindBetterApparel(ref baseApparelScore, pawn, currentOutfit, this);
+            return this.StoredApparel.FindBetterApparel(ref baseApparelScore, ref betterApparel, pawn, currentOutfit, this);
         }
 
 #region Gizmos
@@ -586,6 +594,16 @@ namespace ChangeDresser
             a.defaultLabel = "ChangeDresser.AssignOutfits".Translate();
             a.activateSound = SoundDef.Named("Click");
             a.action = delegate { Find.WindowStack.Add(new UI.AssignOutfitUI(this)); };
+            a.groupKey = groupKey;
+            ++groupKey;
+            l.Add(a);
+
+            a = new Command_Action();
+            a.icon = WidgetUtil.customapparelTexture;
+            a.defaultDesc = "ChangeDresser.CustomOutfitDesc".Translate();
+            a.defaultLabel = "ChangeDresser.CustomOutfit".Translate();
+            a.activateSound = SoundDef.Named("Click");
+            a.action = delegate { Find.WindowStack.Add(new UI.CustomOutfitUI(this)); };
             a.groupKey = groupKey;
             ++groupKey;
             l.Add(a);

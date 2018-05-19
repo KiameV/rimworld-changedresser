@@ -134,10 +134,10 @@ namespace ChangeDresser.UI
                                 {
                                     this.cachedApparel.Clear();
                                     this.cachedApparel = null;
-                                    PawnOutfits outfits;
+                                    PawnOutfitTracker outfits;
                                     if (WorldComp.PawnOutfits.TryGetValue(this.Pawn, out outfits))
                                     {
-                                        outfits.ColorApparel(apparel);
+                                        outfits.ApplyApparelColor(apparel);
                                     }
                                     this.Pawn.apparel.Wear(apparel);
                                     GUI.EndGroup();

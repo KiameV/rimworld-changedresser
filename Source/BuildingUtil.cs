@@ -51,25 +51,30 @@ namespace ChangeDresser
             }
             return list;
         }
-        
+
         public static bool DropThing(Thing toDrop, Building from, Map map, bool makeForbidden = true)
+        {
+            return DropThing(toDrop, from.Position, map, makeForbidden);
+        }
+
+        public static bool DropThing(Thing toDrop, IntVec3 from, Map map, bool makeForbidden = true)
         {
             try
             {
                 Thing t;
                 if (!toDrop.Spawned)
                 {
-                    GenThing.TryDropAndSetForbidden(toDrop, from.Position, map, ThingPlaceMode.Near, out t, makeForbidden);
+                    GenThing.TryDropAndSetForbidden(toDrop, from, map, ThingPlaceMode.Near, out t, makeForbidden);
                     if (!toDrop.Spawned)
                     {
-                        GenPlace.TryPlaceThing(toDrop, from.Position, map, ThingPlaceMode.Near);
+                        GenPlace.TryPlaceThing(toDrop, from, map, ThingPlaceMode.Near);
                     }
                 }
 
-                IntVec3 pos = from.Position;
+                IntVec3 pos = from;
                 for (int i = 0; i < 4; ++i)
                 {
-                    pos = Transform(i, from.Position);
+                    pos = Transform(i, from);
 
                     bool canDropHere = true;
                     foreach (Thing temp in map.thingGrid.ThingsAt(pos))

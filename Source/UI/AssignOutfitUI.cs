@@ -23,18 +23,18 @@ namespace ChangeDresser.UI
             this.forcePause = true;
             this.closeOnClickedOutside = false;
             
-            foreach (Pawn p in PawnsFinder.AllMapsWorldAndTemporary_Alive)
+            foreach (Pawn p in PawnsFinder.AllMapsCaravansAndTravelingTransportPods_Colonists)
             {
                 if (p.Faction == Faction.OfPlayer && p.def.race.Humanlike)
                 {
                     if (!WorldComp.PawnOutfits.ContainsKey(p))
                     {
-                        PawnOutfits po = new PawnOutfits();
+                        PawnOutfitTracker po = new PawnOutfitTracker();
                         po.Pawn = p;
                         Outfit currentOutfit = p.outfits.CurrentOutfit;
                         if (currentOutfit != null)
                         {
-                            po.Outfits.Add(currentOutfit);
+                            po.AddOutfit(new DefinedOutfit(currentOutfit, WorldComp.GetOutfitType(currentOutfit)));
                         }
                         WorldComp.PawnOutfits.Add(p, po);
                     }
@@ -113,12 +113,17 @@ namespace ChangeDresser.UI
                         {
                             bool removed = WorldComp.OutfitsForBattle.Remove(o);
                         }
+
+                        foreach(PawnOutfitTracker po in WorldComp.PawnOutfits.Values)
+                        {
+                            po.UpdateOutfitType(o, (use) ? OutfitType.Battle : OutfitType.Civilian);
+                        }
                     }
                 }
                 y += HEIGHT + Y_BUFFER * 2;
 
                 // Table of pawns and assigned outfits
-                foreach (PawnOutfits po in WorldComp.PawnOutfits.Values)
+                foreach (PawnOutfitTracker po in WorldComp.PawnOutfits.Values)
                 {
                     x = 0;
                     Widgets.Label(new Rect(x, y, NAME_WIDTH, HEIGHT), po.Pawn.NameStringShort);
@@ -126,7 +131,7 @@ namespace ChangeDresser.UI
 
                     foreach (Outfit o in allOutfits)
                     {
-                        bool assign = po.Outfits.Contains(o);
+                        bool assign = po.Contains(o);
                         bool assignNoChange = assign;
                         Widgets.Checkbox(x + 10, y, ref assign);
                         x += CHECKBOX_WIDTH + X_BUFFER;
@@ -156,27 +161,26 @@ namespace ChangeDresser.UI
             }
         }
 
-        private void HandleOutfitAssign(bool assign, Outfit outfit, PawnOutfits po)
+        private void HandleOutfitAssign(bool assign, Outfit outfit, PawnOutfitTracker po)
         {
             Pawn pawn = po.Pawn;
             if (assign)
             {
-                po.Outfits.Add(outfit);
+                po.DefinedOutfits.Add(new DefinedOutfit(outfit, WorldComp.GetOutfitType(outfit)));
             }
             else
             {
-                po.Outfits.Remove(outfit);
+                po.Remove(outfit);
                 if (pawn.outfits.CurrentOutfit.Equals(outfit))
                 {
-                    Outfit newOutfit = null;
                     bool newOutfitFound;
                     if (pawn.Drafted)
                     {
-                        newOutfitFound = !po.TryGetBattleOutfit(out newOutfit);
+                        newOutfitFound = !po.ChangeToBattleOutfit();
                     }
                     else
                     {
-                        newOutfitFound = !po.TryGetCivilianOutfit(out newOutfit);
+                        newOutfitFound = !po.ChangeToCivilianOutfit();
                     }
 
                     if (!newOutfitFound)
@@ -187,9 +191,19 @@ namespace ChangeDresser.UI
                     }
                     else
                     {
-                        Messages.Message(
-                                pawn.NameStringShort + " will no longer wear " + outfit.label +
-                                " and will instead be assigned to wear " + newOutfit.label, MessageTypeDefOf.CautionInput);
+                        IDresserOutfit o = po.CurrentOutfit;
+                        if (o != null)
+                        {
+                            Messages.Message(
+                                    pawn.NameStringShort + " will no longer wear " + outfit.label +
+                                    " and will instead be assigned to wear " + o.Label, MessageTypeDefOf.CautionInput);
+                        }
+                        else
+                        {
+                            Messages.Message(
+                                    pawn.NameStringShort + " will no longer wear " + outfit.label +
+                                    " but could not be assigned anything else to wear.", MessageTypeDefOf.CautionInput);
+                        }
                     }
                 }
             }

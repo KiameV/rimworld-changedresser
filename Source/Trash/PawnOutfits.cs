@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Verse;
 
-namespace ChangeDresser
+namespace ChangeDresser.Trash
 {
     public class PawnOutfits : IExposable
     {

@@ -27,6 +27,7 @@ namespace ChangeDresser
                 "    Dialog_FormCaravan.PostOpen" + Environment.NewLine +
                 "    CaravanExitMapUtility.ExitMapAndCreateCaravan(IEnumerable<Pawn>, Faction, int)" + Environment.NewLine +
                 "    CaravanExitMapUtility.ExitMapAndCreateCaravan(IEnumerable<Pawn>, Faction, int, int)" + Environment.NewLine + 
+                "    Pawn.Kill - Priority First" + Environment.NewLine +
                 "  Postfix:" + Environment.NewLine +
                 "    Pawn.GetGizmos" + Environment.NewLine +
                 "    Pawn_ApparelTracker.Notify_ApparelAdded" + Environment.NewLine +
@@ -36,7 +37,8 @@ namespace ChangeDresser
                 "    ReservationManager.CanReserve" + Environment.NewLine + 
                 "    OutfitDatabase.TryDelete" + Environment.NewLine +
                 "    CaravanFormingUtility.StopFormingCaravan" + Environment.NewLine +
-                "    WealthWatcher.ForceRecount");
+                "    WealthWatcher.ForceRecount" + Environment.NewLine +
+                "    Pawn.Kill - Priority First");
         }
 
         public static Texture2D GetIcon(ThingDef td)
@@ -249,10 +251,10 @@ namespace ChangeDresser
 
         internal static void ColorApparel(Pawn pawn, Apparel apparel)
         {
-            PawnOutfits outfits;
+            PawnOutfitTracker outfits;
             if (WorldComp.PawnOutfits.TryGetValue(pawn, out outfits))
             {
-                outfits.ColorApparel(apparel);
+                outfits.ApplyApparelColor(apparel);
             }
         }
     }
@@ -273,7 +275,7 @@ namespace ChangeDresser
                 if (i == WAIT)
                     Log.Warning("DraftController.Postfix: Pawn is Drafted");
 #endif
-                PawnOutfits outfits;
+                PawnOutfitTracker outfits;
                 if (WorldComp.PawnOutfits.TryGetValue(__instance, out outfits))
                 {
                     List<Gizmo> l = new List<Gizmo>(__result);
@@ -281,55 +283,55 @@ namespace ChangeDresser
                     if (i == WAIT)
                         Log.Warning("DraftController.Postfix: Sets found! Pre Gizmo Count: " + l.Count);
 #endif
-                    foreach (Outfit o in outfits.Outfits)
+                    foreach (IDresserOutfit o in outfits.CivilianOutfits)
                     {
-                        if (o == null)
+                        if (o == null || !o.IsValid())
                             continue;
-                        bool forBattle = WorldComp.OutfitsForBattle.Contains(o);
-#if DEBUG
-                        if (i == WAIT)
-                            Log.Warning("DraftController.Postfix: Set: " + o.label + ", forBattle: " + forBattle + ", Cuurent Oufit: " + __instance.outfits.CurrentOutfit.label);
+#if DEBUG && DRESSER_OUTFIT
+                        string msg = "Patch_Pawn_GetGizmos Outfit: " + o.Label;
+                        Log.ErrorOnce(msg, msg.GetHashCode());
 #endif
-                        if (!forBattle)
+                        Command_Action a = new Command_Action();
+                        ThingDef icon = o.Icon;
+                        if (icon != null)
                         {
-                            Command_Action a = new Command_Action();
-                            List<ThingDef> tdList = new List<ThingDef>(o.filter.AllowedThingDefs);
-                            if (tdList.Count > 0)
-                            {
-                                a.icon = HarmonyPatches.GetIcon(tdList[0]);
-                            }
-                            else
-                            {
-                                a.icon = WidgetUtil.noneTexture;
-                            }
-                            StringBuilder sb = new StringBuilder();
-                            if (!__instance.outfits.CurrentOutfit.Equals(o))
-                            {
-                                sb.Append("ChangeDresser.ChangeTo".Translate());
-                                a.defaultDesc = "ChangeDresser.ChangeToDesc".Translate();
-                            }
-                            else
-                            {
-                                sb.Append("ChangeDresser.Wearing".Translate());
-                                a.defaultDesc = "ChangeDresser.WearingDesc".Translate();
-                            }
-                            sb.Append(" ");
-                            sb.Append(o.label);
-                            a.defaultLabel = sb.ToString();
-                            a.activateSound = SoundDef.Named("Click");
-                            a.action = delegate
-                            {
-                                HarmonyPatches.SwapApparel(__instance, o);
-                                //outfits.ColorApparel(__instance);
-                            };
-                            l.Add(a);
+                            a.icon = HarmonyPatches.GetIcon(icon);
                         }
+                        else
+                        {
+                            a.icon = WidgetUtil.noneTexture;
+                        }
+                        StringBuilder sb = new StringBuilder();
+                        if (!o.IsBeingWorn)
+                        {
+                            sb.Append("ChangeDresser.ChangeTo".Translate());
+                            a.defaultDesc = "ChangeDresser.ChangeToDesc".Translate();
+                        }
+                        else
+                        {
+                            sb.Append("ChangeDresser.Wearing".Translate());
+                            a.defaultDesc = "ChangeDresser.WearingDesc".Translate();
+                        }
+                        sb.Append(" ");
+                        sb.Append(o.Label);
+                        a.defaultLabel = sb.ToString();
+                        a.activateSound = SoundDef.Named("Click");
+                        a.action = delegate
+                        {
+#if DRESSER_OUTFIT
+                            Log.Warning("Patch_Pawn_GetGizmos click for " + o.Label);
+#endif
+                            outfits.ChangeTo(o);
+                            //HarmonyPatches.SwapApparel(pawn, o);
+                            //outfits.ColorApparel(__instance);
+                        };
+                        l.Add(a);
                     }
 #if DEBUG
                     if (i == WAIT)
                         Log.Warning("Post Gizmo Count: " + l.Count);
 #endif
-                    __result = l;
+                        __result = l;
                 }
             }
 #if DEBUG
@@ -363,7 +365,7 @@ namespace ChangeDresser
                 if (i == WAIT)
                     Log.Warning("DraftController.Postfix: Pawn is Drafted");
 #endif
-                PawnOutfits outfits;
+                PawnOutfitTracker outfits;
                 if (WorldComp.PawnOutfits.TryGetValue(pawn, out outfits))
                 {
                     List<Gizmo> l = new List<Gizmo>(__result);
@@ -371,49 +373,53 @@ namespace ChangeDresser
                     if (i == WAIT)
                         Log.Warning("DraftController.Postfix: Sets found! Pre Gizmo Count: " + l.Count);
 #endif
-                    foreach (Outfit o in outfits.Outfits)
+                    foreach (IDresserOutfit o in outfits.BattleOutfits)
                     {
-                        if (o == null)
+                        if (o == null || !o.IsValid())
                             continue;
-                        bool forBattle = WorldComp.OutfitsForBattle.Contains(o);
+#if DEBUG && DRESSER_OUTFIT
+                        string msg = "Patch_Pawn_DraftController_GetGizmos Outfit: " + o.Label;
+                        Log.ErrorOnce(msg, msg.GetHashCode());
+#endif
 #if DEBUG
                         if (i == WAIT)
                             Log.Warning("DraftController.Postfix: Set: " + o.label + ", forBattle: " + forBattle + ", Current Oufit: " + pawn.outfits.CurrentOutfit.label);
 #endif
-                        if (forBattle)
+                        Command_Action a = new Command_Action();
+                        ThingDef icon = o.Icon;
+                        if (icon != null)
                         {
-                            Command_Action a = new Command_Action();
-                            List<ThingDef> tdList = new List<ThingDef>(o.filter.AllowedThingDefs);
-                            if (tdList.Count > 0)
-                            {
-                                a.icon = HarmonyPatches.GetIcon(tdList[0]);
-                            }
-                            else
-                            {
-                                a.icon = WidgetUtil.noneTexture;
-                            }
-                            StringBuilder sb = new StringBuilder();
-                            if (!pawn.outfits.CurrentOutfit.Equals(o))
-                            {
-                                sb.Append("ChangeDresser.ChangeTo".Translate());
-                                a.defaultDesc = "ChangeDresser.ChangeToDesc".Translate();
-                            }
-                            else
-                            {
-                                sb.Append("ChangeDresser.Wearing".Translate());
-                                a.defaultDesc = "ChangeDresser.WearingDesc".Translate();
-                            }
-                            sb.Append(" ");
-                            sb.Append(o.label);
-                            a.defaultLabel = sb.ToString();
-                            a.activateSound = SoundDef.Named("Click");
-                            a.action = delegate
-                            {
-                                HarmonyPatches.SwapApparel(pawn, o);
+                            a.icon = HarmonyPatches.GetIcon(icon);
+                        }
+                        else
+                        {
+                            a.icon = WidgetUtil.noneTexture;
+                        }
+                        StringBuilder sb = new StringBuilder();
+                        if (!pawn.outfits.CurrentOutfit.Equals(o))
+                        {
+                            sb.Append("ChangeDresser.ChangeTo".Translate());
+                            a.defaultDesc = "ChangeDresser.ChangeToDesc".Translate();
+                        }
+                        else
+                        {
+                            sb.Append("ChangeDresser.Wearing".Translate());
+                            a.defaultDesc = "ChangeDresser.WearingDesc".Translate();
+                        }
+                        sb.Append(" ");
+                        sb.Append(o.Label);
+                        a.defaultLabel = sb.ToString();
+                        a.activateSound = SoundDef.Named("Click");
+                        a.action = delegate
+                        {
+#if DRESSER_OUTFIT
+                                Log.Warning("Patch_Pawn_DraftController_GetGizmos click for " + o.Label);
+#endif
+                                outfits.ChangeTo(o);
+                                //HarmonyPatches.SwapApparel(pawn, o);
                                 //outfits.ColorApparel(pawn);
                             };
-                            l.Add(a);
-                        }
+                        l.Add(a);
                     }
 #if DEBUG
                     if (i == WAIT)
@@ -442,26 +448,16 @@ namespace ChangeDresser
         static void Postfix(Pawn_DraftController __instance)
         {
             Pawn pawn = __instance.pawn;
-            PawnOutfits outfits;
+            PawnOutfitTracker outfits;
             if (WorldComp.PawnOutfits.TryGetValue(pawn, out outfits))
             {
-                Outfit outfitToWear;
-                bool found = false;
                 if (pawn.Drafted)
                 {
-                    outfits.LastCivilianOutfit = pawn.outfits.CurrentOutfit;
-                    found = outfits.TryGetBattleOutfit(out outfitToWear);
+                    outfits.ChangeToBattleOutfit();
                 }
                 else
                 {
-                    outfits.LastBattleOutfit = pawn.outfits.CurrentOutfit;
-                    found = outfits.TryGetCivilianOutfit(out outfitToWear);
-                }
-
-                if (found)
-                {
-                    HarmonyPatches.SwapApparel(pawn, outfitToWear);
-                    //outfits.ColorApparel(pawn);
+                    outfits.ChangeToCivilianOutfit();
                 }
             }
         }
@@ -478,30 +474,36 @@ namespace ChangeDresser
             }
 
             Thing thing = null;
-            if (__result != null)
+            float baseApparelScore = 0f;
+            if (__result != null && __result.targetA.Thing is Apparel)
             {
                 thing = __result.targetA.Thing;
+                baseApparelScore = JobGiver_OptimizeApparel.ApparelScoreGain(pawn, thing as Apparel);
+#if BETTER_OUTFIT
+                Log.Warning(">>POSTFIX Game Found Better Apparel: " + ((thing == null) ? "<null>" : thing.Label) + "    Score: " + baseApparelScore);
+#endif
             }
 
+            Apparel a = null;
             Building_Dresser containingDresser = null;
-            float baseApparelScore = 0f;
 
             foreach (Building_Dresser dresser in WorldComp.DressersToUse)
             {
                 float score = baseApparelScore;
-                Apparel a = dresser.FindBetterApparel(ref score, pawn, pawn.outfits.CurrentOutfit);
-
-                if (score > baseApparelScore && a != null)
+                if (dresser.FindBetterApparel(ref score, ref a, pawn, pawn.outfits.CurrentOutfit))
                 {
                     thing = a;
                     baseApparelScore = score;
                     containingDresser = dresser;
                 }
-                
+
             }
-            if (thing != null && containingDresser != null)
+#if BETTER_OUTFIT
+            Log.Warning(">>POSTFIX Dresser Found Better Apparel: " + ((a == null) ? "<null>" : a.Label) + "    Score: " + baseApparelScore);
+#endif
+            if (a != null && containingDresser != null)
             {
-                __result = new Job(containingDresser.wearApparelFromStorageJobDef, containingDresser, thing);
+                __result = new Job(containingDresser.wearApparelFromStorageJobDef, containingDresser, a);
             }
         }
 
@@ -743,6 +745,41 @@ namespace ChangeDresser
                         if (bill.Map == d.Map)
                         {
                             __result += d.GetApparelCount(def, bill.ingredientFilter);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    #endregion
+
+    #region Pawn Death
+    [HarmonyPatch(typeof(Pawn), "Kill")]
+    static class Patch_Pawn_Kill
+    {
+        private static Map map;
+
+        [HarmonyPriority(Priority.First)]
+        static void Prefix(Pawn __instance)
+        {
+            map = __instance.Map;
+        }
+
+        [HarmonyPriority(Priority.First)]
+        static void Postfix(Pawn __instance)
+        {
+            if (__instance.Dead)
+            {
+                PawnOutfitTracker po;
+                if (WorldComp.PawnOutfits.TryGetValue(__instance, out po))
+                {
+                    WorldComp.PawnOutfits.Remove(__instance);
+
+                    foreach (Apparel a in po.CustomApparel)
+                    {
+                        if (!WorldComp.AddApparel(a))
+                        {
+                            BuildingUtil.DropThing(a, __instance.Position, map, true);
                         }
                     }
                 }

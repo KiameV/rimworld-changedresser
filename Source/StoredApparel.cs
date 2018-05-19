@@ -319,57 +319,17 @@ namespace ChangeDresser
             return removed;
         }
 
-        public Apparel FindBetterApparel(ref float baseApparelScore, Pawn pawn, Outfit currentOutfit, Building dresser)
+        public bool FindBetterApparel(ref float baseApparelScore, ref Apparel betterApparel, Pawn pawn, Outfit currentOutfit, Building dresser)
         {
-            Apparel betterApparel = null;
+            bool result = false; ;
             foreach (LinkedList<Apparel> ll in this.StoredApparelLookup.Values)
             {
-                foreach (Apparel apparel in ll)
+                if (ApparelUtil.FindBetterApparel(ref baseApparelScore, ref betterApparel, pawn, currentOutfit, ll, dresser))
                 {
-                    if (!currentOutfit.filter.Allows(apparel.def))
-                    {
-                        break;
-                    }
-                    if (!currentOutfit.filter.Allows(apparel) ||
-                        apparel.IsForbidden(pawn))
-                    {
-                        continue;
-                    }
-
-                    if (Settings.KeepForcedApparel)
-                    {
-                        bool skipApparelType = false;
-                        List<Apparel> wornApparel = pawn.apparel.WornApparel;
-                        for (int i = 0; i < wornApparel.Count; i++)
-                        {
-                            if (!ApparelUtility.CanWearTogether(wornApparel[i].def, apparel.def, pawn.RaceProps.body) &&
-                                !pawn.outfits.forcedHandler.IsForced(wornApparel[i]))
-                            {
-                                skipApparelType = true;
-                                break;
-                            }
-                        }
-                        if (skipApparelType)
-                        {
-                            break;
-                        }
-                    }
-
-                    float gain = JobGiver_OptimizeApparel.ApparelScoreGain(pawn, apparel);
-                    if (gain >= 0.05f && gain > baseApparelScore)
-                    {
-                        if (ApparelUtility.HasPartsToWear(pawn, apparel.def))
-                        {
-                            if (ReservationUtility.CanReserveAndReach(pawn, dresser, PathEndMode.OnCell, pawn.NormalMaxDanger(), 1))
-                            {
-                                betterApparel = apparel;
-                                baseApparelScore = gain;
-                            }
-                        }
-                    }
+                    result = true;
                 }
             }
-            return betterApparel;
+            return result;
             /*
             Apparel betterApparel = null;
             foreach (LinkedList<Apparel> ll in this.StoredApparelLookup.Values)

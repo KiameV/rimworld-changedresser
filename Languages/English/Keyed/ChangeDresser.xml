@@ -9,6 +9,10 @@
 	<ChangeDresser.ManageApparelDesc>Manage the apparel in the dresser.</ChangeDresser.ManageApparelDesc>
 	<ChangeDresser.AssignOutfits>Assign Outfits</ChangeDresser.AssignOutfits>
 	<ChangeDresser.AssignOutfitsDesc>Assign Outfits to Pawns for both battle and civilian needs.</ChangeDresser.AssignOutfitsDesc>
+	<ChangeDresser.AssignOutfits>Custom Outfits</ChangeDresser.AssignOutfits>
+	<ChangeDresser.AssignOutfitsDesc>Create Pawn-Specific Outfits for both battle and civilian needs.</ChangeDresser.AssignOutfitsDesc>
+	<ChangeDresser.New>New</ChangeDresser.New>
+	<ChangeDresser.Close>Close</ChangeDresser.Close>
 	<ChangeDresser.Empty>Empty</ChangeDresser.Empty>
 	<ChangeDresser.EmptyDesc>Empty the dresser's contents. Does not include storage group apparel.</ChangeDresser.EmptyDesc>
 	<ChangeDresser.Collect>Collect</ChangeDresser.Collect>
@@ -23,10 +27,7 @@
 	<!-- Common Strings -->
 	<ChangeDresser.Worn>Worn</ChangeDresser.Worn>
 	<ChangeDresser.Storage>Storage</ChangeDresser.Storage>
-	<ChangeDresser.Save>Save</ChangeDresser.Save>
-	<ChangeDresser.Reset>Reset</ChangeDresser.Reset>
 	<ChangeDresser.Cancel>Cancel</ChangeDresser.Cancel>
-	<ChangeDresser.Delete>Delete</ChangeDresser.Delete>
 	<ChangeDresser.SelectAll>Select All</ChangeDresser.SelectAll>
 	<ChangeDresser.DeselectAll>Deselect All</ChangeDresser.DeselectAll>
 	<ChangeDresser.SelectPawn>Select Pawn</ChangeDresser.SelectPawn>
@@ -54,6 +55,12 @@
 	<!-- Assign Outfits UI -->
 	<ChangeDresser.ManageOutfits>Manage Outfits</ChangeDresser.ManageOutfits>
 	<ChangeDresser.UseForBattle>Use In Battle</ChangeDresser.UseForBattle>
+	<ChangeDresser.AvailableApparel>Available Apparel</ChangeDresser.AvailableApparel>
+	<ChangeDresser.CustomOutfitApparel>Custom Outfit Apparel</ChangeDresser.CustomOutfitApparel>
+	
+	<!-- Custom Outfit UI -->
+	<ChangeDresser.CustomOutfit>Custom Outfits</ChangeDresser.CustomOutfit>
+	<ChangeDresser.OutfitName>Name</ChangeDresser.OutfitName>
 	
 	<!-- Game UI -->
 	<ChangeDresser.StoragePriority>Storage Priority</ChangeDresser.StoragePriority>

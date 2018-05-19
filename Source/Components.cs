@@ -10,8 +10,20 @@ namespace ChangeDresser
     {
         public static LinkedList<Building_Dresser> DressersToUse { get; private set; }
 
-        public static Dictionary<Pawn, PawnOutfits> PawnOutfits { get; private set; }
+        public static Dictionary<Pawn, PawnOutfitTracker> PawnOutfits { get; private set; }
         public static List<Outfit> OutfitsForBattle { get; private set; }
+        public static OutfitType GetOutfitType(Outfit outfit) { return OutfitsForBattle.Contains(outfit) ? OutfitType.Battle : OutfitType.Civilian; }
+
+        private static int nextDresserOutfitId = 0;
+        public static int NextDresserOutfitId
+        {
+            get
+            {
+                int id = nextDresserOutfitId;
+                ++nextDresserOutfitId;
+                return id;
+            }
+        }
 
         public WorldComp(World world) : base(world)
         {
@@ -30,7 +42,7 @@ namespace ChangeDresser
             }
             else
             {
-                PawnOutfits = new Dictionary<Pawn, PawnOutfits>();
+                PawnOutfits = new Dictionary<Pawn, PawnOutfitTracker>();
             }
 
             if (OutfitsForBattle != null)
@@ -124,19 +136,20 @@ namespace ChangeDresser
             DressersToUse = l;
         }
 
-        private List<PawnOutfits> tempPawnOutfits = null;
+        private List<PawnOutfitTracker> tempPawnOutfits = null;
         public override void ExposeData()
         {
             if (Scribe.mode == LoadSaveMode.Saving)
             {
-                this.tempPawnOutfits = new List<PawnOutfits>(PawnOutfits.Count);
-                foreach (PawnOutfits po in PawnOutfits.Values)
+                this.tempPawnOutfits = new List<PawnOutfitTracker>(PawnOutfits.Count);
+                foreach (PawnOutfitTracker po in PawnOutfits.Values)
                 {
                     if (po != null)
                         this.tempPawnOutfits.Add(po);
                 }
             }
 
+            Scribe_Values.Look<int>(ref nextDresserOutfitId, "nextDresserOutfitId", 0);
             Scribe_Collections.Look(ref this.tempPawnOutfits, "pawnOutfits", LookMode.Deep, new object[0]);
 
             List<Outfit> ofb = OutfitsForBattle;
@@ -147,7 +160,7 @@ namespace ChangeDresser
             {
                 if (PawnOutfits == null)
                 {
-                    PawnOutfits = new Dictionary<Pawn, PawnOutfits>();
+                    PawnOutfits = new Dictionary<Pawn, PawnOutfitTracker>();
                 }
 
                 if (OutfitsForBattle == null)
@@ -158,7 +171,7 @@ namespace ChangeDresser
                 PawnOutfits.Clear();
                 if (this.tempPawnOutfits != null)
                 {
-                    foreach (PawnOutfits po in this.tempPawnOutfits)
+                    foreach (PawnOutfitTracker po in this.tempPawnOutfits)
                     {
                         if (po != null && po.Pawn != null && !po.Pawn.Dead)
                         {

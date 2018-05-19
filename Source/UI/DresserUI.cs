@@ -223,12 +223,12 @@ namespace ChangeDresser.UI
                 Text.Anchor = TextAnchor.MiddleCenter;
                 Text.Font = GameFont.Small;
                 GUI.color = Color.white;
-                if (Widgets.ButtonText(new Rect(0, 0, 60, WidgetUtil.SelectionRowHeight), "ChangeDresser.Reset".Translate()))
+                if (Widgets.ButtonText(new Rect(0, 0, 60, WidgetUtil.SelectionRowHeight), "Reset".Translate()))
                 {
                     this.ResetToDefault();
                     this.ApparelWithColorChange.Clear();
                 }
-                if (Widgets.ButtonText(new Rect(90, 0, 60, WidgetUtil.SelectionRowHeight), "ChangeDresser.Save".Translate()))
+                if (Widgets.ButtonText(new Rect(90, 0, 60, WidgetUtil.SelectionRowHeight), "Save".Translate()))
                 {
                     this.saveChangedOnExit = true;
                     this.Close();
@@ -334,7 +334,7 @@ namespace ChangeDresser.UI
 #endif
                     foreach(Apparel a in this.ApparelWithColorChange)
                     {
-                        PawnOutfits po;
+                        PawnOutfitTracker po;
                         if (WorldComp.PawnOutfits.TryGetValue(this.dresserDto.Pawn, out po))
                         {
 #if DEBUG
@@ -345,7 +345,7 @@ namespace ChangeDresser.UI
 #if DEBUG
                                 Log.Warning("  color change for " + a.Label);
 #endif
-                                po.SetColorFor(a, a.DrawColor);
+                                po.SetApparelColor(a, a.DrawColor);
                             //}
                         }
                     }
