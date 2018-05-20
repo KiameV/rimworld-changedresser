@@ -370,7 +370,7 @@ namespace ChangeDresser
                 SlotColor slotColor = this.ApparelColors[(int)layer];
                 slotColor.IsAssigned = true;
                 slotColor.Color = color;
-                //this.ApparelColors[(int)layer] = slotColor;
+                this.ApparelColors[(int)layer] = slotColor;
             }
         }
 

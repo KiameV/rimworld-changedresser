@@ -4,7 +4,7 @@ using Verse;
 
 namespace ChangeDresser
 {
-    public enum OutfitType {  Battle, Civilian };
+    public enum OutfitType { Battle, Civilian };
 
     public interface IDresserOutfit : IExposable
     {
@@ -257,86 +257,85 @@ namespace ChangeDresser
 #endif
         }
 
-public void Undress(Pawn pawn, List<Apparel> customApparel)
-{
+        public void Undress(Pawn pawn, List<Apparel> customApparel)
+        {
 #if DRESSER_OUTFIT
 Log.Warning("Begin DefinedOutfit.Undress(Pawn: " + pawn.Name.ToStringShort + ")");
 #endif
-List<Apparel> wornApparel = new List<Apparel>(pawn.apparel.WornApparel);
-pawn.outfits.forcedHandler.ForcedApparel.Clear();
+            List<Apparel> wornApparel = new List<Apparel>(pawn.apparel.WornApparel);
+            pawn.outfits.forcedHandler.ForcedApparel.Clear();
 #if DRESSER_OUTFIT
 Log.Warning("    Remove Apparel:");
 #endif
-foreach (Apparel a in wornApparel)
-{
+            foreach (Apparel a in wornApparel)
+            {
 #if DRESSER_OUTFIT
     Log.Warning("        " + a.Label);
 #endif
-    pawn.apparel.Remove(a);
-    if (!customApparel.Contains(a))
-    {
+                pawn.apparel.Remove(a);
+                if (!customApparel.Contains(a))
+                {
 #if DRESSER_OUTFIT
         Log.Warning("            -- Not a custom piece of apparel. Storing in Dresser.");
 #endif
-        WorldComp.AddApparel(a);
-    }
-}
-this.isBeingWorn = false;
+                    WorldComp.AddApparel(a);
+                }
+            }
+            this.isBeingWorn = false;
 #if DRESSER_OUTFIT
 Log.Warning("End DefinedOutfit.Undress");
 #endif
-}
-
-public void ExposeData()
-{
-Scribe_Values.Look<bool>(ref this.isBeingWorn, "isBeingWorn", false, false);
-Scribe_Values.Look<OutfitType>(ref this.outfitType, "type");
-Scribe_References.Look<Outfit>(ref this.Outfit, "outfit");
-Scribe_Values.Look<string>(ref this.uniqueId, "uniqueId");
-}
-
-public bool IsValid()
-{
-return this.Outfit != null;
-}
-
-public string GetUniqueLoadID()
-{
-return this.uniqueId;
-}
-
-public OutfitType OutfitType { get { return this.outfitType; } set { this.outfitType = value; } }
-public string UniqueId { get { return this.uniqueId; } set { this.uniqueId = value; } }
-public string Label
-{
-get
-{
-    if (this.Outfit != null)
-    {
-        return this.Outfit.label;
-    }
-    else
-    {
-        return "[Deleted Outfit]";
-    }
-}
-}
-public ThingDef Icon
-{
-get
-{
-    if (this.Outfit != null)
-    {
-        List<ThingDef> d = new List<ThingDef>(this.Outfit.filter.AllowedThingDefs);
-        if (d.Count > 0)
-        {
-            return d[0];
         }
+
+        public void ExposeData()
+        {
+            Scribe_Values.Look<bool>(ref this.isBeingWorn, "isBeingWorn", false, false);
+            Scribe_Values.Look<OutfitType>(ref this.outfitType, "type");
+            Scribe_References.Look<Outfit>(ref this.Outfit, "outfit");
+            Scribe_Values.Look<string>(ref this.uniqueId, "uniqueId");
+        }
+
+        public bool IsValid()
+        {
+            return this.Outfit != null;
+        }
+
+        public string GetUniqueLoadID()
+        {
+            return this.uniqueId;
+        }
+
+        public OutfitType OutfitType { get { return this.outfitType; } set { this.outfitType = value; } }
+        public string UniqueId { get { return this.uniqueId; } set { this.uniqueId = value; } }
+        public string Label
+        {
+            get
+            {
+                if (this.Outfit != null)
+                {
+                    return this.Outfit.label;
+                }
+                else
+                {
+                    return "[Deleted Outfit]";
+                }
+            }
+        }
+        public ThingDef Icon
+        {
+            get
+            {
+                if (this.Outfit != null)
+                {
+                    List<ThingDef> d = new List<ThingDef>(this.Outfit.filter.AllowedThingDefs);
+                    if (d.Count > 0)
+                    {
+                        return d[0];
+                    }
+                }
+                return null;
+            }
+        }
+        public bool IsBeingWorn { get { return this.isBeingWorn; } }
     }
-    return null;
 }
-}
-public bool IsBeingWorn { get { return this.isBeingWorn; } }
-}
-}
- 
