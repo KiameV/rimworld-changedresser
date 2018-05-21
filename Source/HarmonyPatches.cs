@@ -640,18 +640,6 @@ namespace ChangeDresser
         }
     }
 
-    [HarmonyPatch(typeof(OutfitDatabase), "TryDelete")]
-    static class Patch_OutfitDatabase_TryDelete
-    {
-        static void Postfix(ref AcceptanceReport __result, Outfit outfit)
-        {
-            if (__result.Accepted)
-            {
-                WorldComp.OutfitsForBattle.Remove(outfit);
-            }
-        }
-    }
-
     #region Caravan Forming
     [HarmonyPatch(typeof(Dialog_FormCaravan), "PostOpen")]
     static class Patch_Dialog_FormCaravan_PostOpen
@@ -787,4 +775,20 @@ namespace ChangeDresser
         }
     }
     #endregion
+
+    [HarmonyPatch(typeof(OutfitDatabase), "TryDelete")]
+    static class Patch_OutfitDatabase_TryDelete
+    {
+        static void Postfix(AcceptanceReport __result, Outfit outfit)
+        {
+            if (__result.Accepted)
+            {
+                WorldComp.OutfitsForBattle.Remove(outfit);
+                foreach (PawnOutfitTracker po in WorldComp.PawnOutfits.Values)
+                {
+                    po.Remove(outfit);
+                }
+            }
+        }
+    }
 }
