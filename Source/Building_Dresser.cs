@@ -241,7 +241,7 @@ namespace ChangeDresser
                 {
                     if (t is Apparel)
                     {
-                        this.AddApparel((Apparel)t);
+                        WorldComp.AddApparel((Apparel)t);
                     }
                 }
                 l.Clear();
@@ -600,8 +600,8 @@ namespace ChangeDresser
 
             a = new Command_Action();
             a.icon = WidgetUtil.customapparelTexture;
-            a.defaultDesc = "ChangeDresser.CustomOutfitDesc".Translate();
-            a.defaultLabel = "ChangeDresser.CustomOutfit".Translate();
+            a.defaultDesc = "ChangeDresser.CustomOutfitsDesc".Translate();
+            a.defaultLabel = "ChangeDresser.CustomOutfits".Translate();
             a.activateSound = SoundDef.Named("Click");
             a.action = delegate { Find.WindowStack.Add(new UI.CustomOutfitUI(this)); };
             a.groupKey = groupKey;

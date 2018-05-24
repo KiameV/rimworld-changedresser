@@ -9,8 +9,8 @@
 	<ChangeDresser.ManageApparelDesc>Manage the apparel in the dresser.</ChangeDresser.ManageApparelDesc>
 	<ChangeDresser.AssignOutfits>Assign Outfits</ChangeDresser.AssignOutfits>
 	<ChangeDresser.AssignOutfitsDesc>Assign Outfits to Pawns for both battle and civilian needs.</ChangeDresser.AssignOutfitsDesc>
-	<ChangeDresser.AssignOutfits>Custom Outfits</ChangeDresser.AssignOutfits>
-	<ChangeDresser.AssignOutfitsDesc>Create Pawn-Specific Outfits for both battle and civilian needs.</ChangeDresser.AssignOutfitsDesc>
+	<ChangeDresser.CustomOutfits>Custom Outfits</ChangeDresser.CustomOutfits>
+	<ChangeDresser.CustomOutfitsDesc>Create Pawn-Specific Outfits for both battle and civilian needs.</ChangeDresser.CustomOutfitsDesc>
 	<ChangeDresser.New>New</ChangeDresser.New>
 	<ChangeDresser.Close>Close</ChangeDresser.Close>
 	<ChangeDresser.Empty>Empty</ChangeDresser.Empty>
@@ -59,7 +59,6 @@
 	<ChangeDresser.CustomOutfitApparel>Custom Outfit Apparel</ChangeDresser.CustomOutfitApparel>
 	
 	<!-- Custom Outfit UI -->
-	<ChangeDresser.CustomOutfit>Custom Outfits</ChangeDresser.CustomOutfit>
 	<ChangeDresser.OutfitName>Name</ChangeDresser.OutfitName>
 	
 	<!-- Game UI -->

@@ -70,7 +70,8 @@ namespace ChangeDresser.UI
 #if CUSTOM_OUTFIT_UI
                 Log.Message("        " + p.Name.ToStringShort + " " + p.Faction + " " + p.def.defName);
 #endif
-                if (p.Faction == Faction.OfPlayer && p.def.defName.Equals("Human"))
+                if (p.Faction == Faction.OfPlayer && 
+                    (p.def.defName.Equals("Human") || p.def.defName.StartsWith("Alien_")))
                 {
 #if CUSTOM_OUTFIT_UI
                     Log.Message("            -- Added");
@@ -100,7 +101,7 @@ namespace ChangeDresser.UI
             {
                 Text.Font = GameFont.Small;
                 GUI.color = Color.white;
-                Widgets.Label(new Rect(0, 0, 200, 50), "ChangeDresser.CustomOutfit".Translate());
+                Widgets.Label(new Rect(0, 0, 200, 50), "ChangeDresser.CustomOutfits".Translate());
                 int y = HEIGHT + Y_BUFFER;
                 int x = 0;
                 
