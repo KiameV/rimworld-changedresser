@@ -89,6 +89,39 @@ namespace ChangeDresser
 #endif
         }
 
+        public Color GetLayerColor(ApparelLayer layer, bool getFromWorn = false)
+        {
+            if (this.ApparelColors != null && this.ApparelColors.Count > (int)layer)
+            {
+                SlotColor sc = this.ApparelColors[(int)layer];
+                if (sc.IsAssigned)
+                {
+                    return sc.Color;
+                }
+            }
+            if (getFromWorn)
+            {
+                foreach (Apparel a in this.Pawn.apparel.WornApparel)
+                {
+                    if (a.def.apparel.LastLayer == layer)
+                        return a.DrawColor;
+                }
+            }
+            return Color.white;
+        }
+
+        public void SetLayerColor(ApparelLayer layer, Color c)
+        {
+            this.InitApparelColor();
+            if (this.ApparelColors != null && this.ApparelColors.Count > (int)layer)
+            {
+                SlotColor sc = this.ApparelColors[(int)layer];
+                sc.Color = c;
+                sc.IsAssigned = true;
+                this.ApparelColors[(int)layer] = sc;
+            }
+        }
+
         private void ApplyUniqueId(IDresserOutfit outfit)
         {
 #if DRESSER_OUTFIT
@@ -328,7 +361,7 @@ namespace ChangeDresser
             }
         }
 
-        private ApparelLayer GetOuterMostLayer(Apparel a)
+        public ApparelLayer GetOuterMostLayer(Apparel a)
         {
             ApparelLayer layer = ApparelLayer.OnSkin;
             foreach (ApparelLayer l in a.def.apparel.layers)
@@ -350,7 +383,8 @@ namespace ChangeDresser
             if (this.ApparelColors != null && this.ApparelColors.Count > (int)layer)
             {
                 SlotColor slotColor = this.ApparelColors[(int)layer];
-                a.DrawColor = slotColor.Color;
+                //a.DrawColor = slotColor.Color;
+                CompColorableUtility.SetColor(a, slotColor.Color, true);
                 /*foreach (ApparelLayer layer in a.def.apparel.layers)
                 {
                     SlotColor slotColor = this.ApparelColors[(int)layer];

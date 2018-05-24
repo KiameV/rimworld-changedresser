@@ -94,6 +94,7 @@ namespace ChangeDresser.UI.Util
         private static Vector2 scrollPos = new Vector2(0, 0);
         private static Vector2 hairScrollPos = new Vector2(0, 0);
         private static readonly Texture2D ColorPreset = new Texture2D(20, 20);
+        private static readonly Texture2D LayerColor = new Texture2D(50, 30);
 
         public static float SelectionRowHeight { get { return NavButtonSize.y; } }
 
@@ -501,7 +502,7 @@ namespace ChangeDresser.UI.Util
             Text.Anchor = TextAnchor.UpperLeft;
         }
 
-        public static void AddAppararelColorSelectionWidget(float left, float top, float width, ApparelSelectionsContainer apparelSelectionsContainer)
+        public static void AddAppararelColorSelectionWidget(float left, float top, float width, ApparelColorSelectionsContainer apparelSelectionsContainer)
         {
             Text.Anchor = TextAnchor.MiddleCenter;
             if (apparelSelectionsContainer.Count == 0)
@@ -576,6 +577,92 @@ namespace ChangeDresser.UI.Util
                 else
                 {*/
                 AddColorSelectorWidget(left, top + apparelListRect.height + 10f, width, apparelSelectionsContainer.SelectedApparel, apparelSelectionsContainer.ColorPresetsDTO);
+                //}
+            }
+            Text.Anchor = TextAnchor.UpperLeft;
+        }
+
+        public static void AddAppararelColorByLayerSelectionWidget(float left, float top, float width, ApparelLayerSelectionsContainer layerSelectionsContainer)
+        {
+            Text.Anchor = TextAnchor.MiddleCenter;
+            if (layerSelectionsContainer.Count == 0)
+            {
+                GUI.Label(new Rect(left, top, width, SelectionRowHeight), "ChangeDresser.NoClothingIsWorn".Translate(), MiddleCenter);
+            }
+            else
+            {
+                const float cellHeight = 38f;
+                float colorSampleHeight = (cellHeight - LayerColor.height) * 0.5f;
+                Rect apparelListRect = new Rect(left, top, width, 250f);
+                Rect apparelScrollRect = new Rect(0f, 0f, width - 16f, layerSelectionsContainer.Count * cellHeight + SelectionRowHeight);
+
+                GUI.BeginGroup(apparelListRect);
+                scrollPos = GUI.BeginScrollView(new Rect(GenUI.AtZero(apparelListRect)), scrollPos, apparelScrollRect);
+
+                GUI.color = Color.white;
+                Text.Font = GameFont.Small;
+                if (Widgets.ButtonText(new Rect(20, 0, 100, SelectionRowHeight), "ChangeDresser.SelectAll".Translate()))
+                {
+                    layerSelectionsContainer.SelectAll();
+                }
+                if (Widgets.ButtonText(new Rect(apparelScrollRect.width - 120, 0, 100, SelectionRowHeight), "ChangeDresser.DeselectAll".Translate()))
+                {
+                    layerSelectionsContainer.DeselectAll();
+                }
+                Text.Font = GameFont.Medium;
+
+                for (int i = 0; i < layerSelectionsContainer.Count; ++i)
+                {
+                    ApparelLayerColorSelectionDTO dto = layerSelectionsContainer[i];
+                    ApparelLayer layer = dto.ApparelLayer;
+                    GUI.BeginGroup(new Rect(0, SelectionRowHeight + 3f + i * cellHeight, apparelListRect.width, cellHeight));
+                    
+                    GUI.color = dto.PawnOutfitTracker.GetLayerColor(dto.ApparelLayer);
+                    Rect rect = new Rect(0f, colorSampleHeight, LayerColor.width, LayerColor.height);
+                    GUI.Label(rect, new GUIContent(LayerColor));
+                    GUI.color = Color.white;
+                    //Widgets.DrawBox(rect, 1);
+                    
+                    Text.Font = GameFont.Small;
+                    Text.Anchor = TextAnchor.MiddleCenter;
+                    Rect textRect = new Rect(rect.width + 5f, 0f, apparelScrollRect.width - 90f, cellHeight);
+                    if (layerSelectionsContainer.IsSelected(dto))
+                    {
+                        GUI.color = Color.white;
+                    }
+                    else
+                    {
+                        GUI.color = Color.gray;
+                    }
+                    Widgets.Label(textRect, new GUIContent(dto.ApparelLayer.ToString().Translate(), "ChangeDresser.SelectMultipleApparel".Translate()));
+                    if (Widgets.ButtonInvisible(textRect, false))
+                    {
+                        layerSelectionsContainer.Select(dto, Event.current.shift);
+                    }
+                    GUI.color = Color.white;
+                    if (Widgets.ButtonImage(new Rect(apparelScrollRect.width - 40f, 0, 32f, 16f), copyIconTexture))
+                    {
+                        layerSelectionsContainer.CopyColor = dto.PawnOutfitTracker.GetLayerColor(dto.ApparelLayer);
+                    }
+                    if (layerSelectionsContainer.CopyColorSelected)
+                    {
+                        if (Widgets.ButtonImage(new Rect(apparelScrollRect.width - 40f, 16f, 32f, 16f), pasteIconTexture))
+                        {
+                            dto.SelectedColor = layerSelectionsContainer.CopyColor;
+                        }
+                    }
+                    GUI.EndGroup();
+                }
+                GUI.EndScrollView();
+                GUI.EndGroup();
+
+                /*if (Settings.UseColorPickerV2)
+                {
+                    AddColorSelectorV2Widget(left, top + apparelListRect.height + 10f, width, apparelSelectionsContainer.SelectedApparel, apparelSelectionsContainer.ColorPresetsDTO);
+                }
+                else
+                {*/
+                AddColorSelectorWidget(left, top + apparelListRect.height + 10f, width, layerSelectionsContainer.SelectedApparel, layerSelectionsContainer.ColorPresetsDTO);
                 //}
             }
             Text.Anchor = TextAnchor.UpperLeft;

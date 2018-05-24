@@ -16,6 +16,7 @@ namespace ChangeDresser
         public const long THIRTY_SECONDS = TimeSpan.TicksPerMinute / 2;
 
         public readonly JobDef changeApparelColorJobDef = DefDatabase<JobDef>.GetNamed("ChangeApparelColor", true);
+        public readonly JobDef changeApparelColorByLayerJobDef = DefDatabase<JobDef>.GetNamed("ChangeApparelColorByLayer", true);
         public readonly JobDef changeHairStyleJobDef = DefDatabase<JobDef>.GetNamed("ChangeHairStyle", true);
         public readonly JobDef changeBodyJobDef = DefDatabase<JobDef>.GetNamed("ChangeBody", true);
         public readonly JobDef storeApparelJobDef = DefDatabase<JobDef>.GetNamed("StoreApparel", true);
@@ -40,15 +41,17 @@ namespace ChangeDresser
         static Building_Dresser()
         {
             SupportedEditors.Add(CurrentEditorEnum.ChangeDresserApparelColor);
+            if (Settings.IncludeColorByLayer)
+                SupportedEditors.Add(CurrentEditorEnum.ChangeDresserApparelLayerColor);
             SupportedEditors.Add(CurrentEditorEnum.ChangeDresserHair);
             SupportedEditors.Add(CurrentEditorEnum.ChangeDresserBody);
         }
 
         public Building_Dresser()
         {
-            this.StoredApparel = new StoredApparel();
-
             WEAR_APPAREL_FROM_DRESSER_JOB_DEF = this.wearApparelFromStorageJobDef;
+
+            this.StoredApparel = new StoredApparel();
 
             this.AllowAdds = true;
         }
@@ -514,9 +517,19 @@ namespace ChangeDresser
                     "ChangeDresser.ChangeApparelColors".Translate(),
                     delegate
                     {
-                        Job job = new Job(this.changeApparelColorJobDef, this);
+                        Job job = new Job(changeApparelColorJobDef, this);
                         pawn.jobs.TryTakeOrderedJob(job);
                     }));
+                if (Settings.IncludeColorByLayer)
+                {
+                    list.Add(new FloatMenuOption(
+                        "ChangeDresser.ChangeApparelColorsByLayer".Translate(),
+                        delegate
+                        {
+                            Job job = new Job(changeApparelColorByLayerJobDef, this);
+                            pawn.jobs.TryTakeOrderedJob(job);
+                        }));
+                }
             }
             if (!isAlien || AlienRaceUtil.HasHair(pawn))
             {
@@ -524,7 +537,7 @@ namespace ChangeDresser
                     "ChangeDresser.ChangeHair".Translate(),
                     delegate
                     {
-                        Job job = new Job(this.changeHairStyleJobDef, this);
+                        Job job = new Job(changeHairStyleJobDef, this);
                         pawn.jobs.TryTakeOrderedJob(job);
                     }));
             }
@@ -534,7 +547,7 @@ namespace ChangeDresser
                     "ChangeDresser.ChangeBody".Translate(),
                     delegate
                     {
-                        Job job = new Job(this.changeBodyJobDef, this);
+                        Job job = new Job(changeBodyJobDef, this);
                         pawn.jobs.TryTakeOrderedJob(job);
                     }));
 
@@ -544,7 +557,7 @@ namespace ChangeDresser
                         "ChangeDresser.ChangeAlienBodyColor".Translate(),
                         delegate
                         {
-                            Job job = new Job(this.changeBodyAlienColor, this);
+                            Job job = new Job(changeBodyAlienColor, this);
                             pawn.jobs.TryTakeOrderedJob(job);
                         }));
                 }
@@ -553,7 +566,7 @@ namespace ChangeDresser
                 "ChangeDresser.StoreApparel".Translate(),
                 delegate
                 {
-                    Job job = new Job(this.storeApparelJobDef, this);
+                    Job job = new Job(storeApparelJobDef, this);
                     pawn.jobs.TryTakeOrderedJob(job);
                 }));
             return list;

@@ -18,6 +18,8 @@ namespace ChangeDresser
         static Building_ChangeMirror()
         {
             SupportedEditors.Add(CurrentEditorEnum.ChangeDresserApparelColor);
+            if (Settings.IncludeColorByLayer)
+                SupportedEditors.Add(CurrentEditorEnum.ChangeDresserApparelLayerColor);
             SupportedEditors.Add(CurrentEditorEnum.ChangeDresserHair);
             SupportedEditors.Add(CurrentEditorEnum.ChangeDresserBody);
         }

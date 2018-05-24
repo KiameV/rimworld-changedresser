@@ -92,6 +92,9 @@ namespace ChangeDresser.UI
                     case CurrentEditorEnum.ChangeDresserApparelColor:
                         WidgetUtil.AddAppararelColorSelectionWidget(editorLeft, editorTop, editorWidth, this.dresserDto.ApparelSelectionsContainer);
                         break;
+                    case CurrentEditorEnum.ChangeDresserApparelLayerColor:
+                        WidgetUtil.AddAppararelColorByLayerSelectionWidget(editorLeft, editorTop, editorWidth, this.dresserDto.ApparelLayerSelectionsContainer);
+                        break;
                     case CurrentEditorEnum.ChangeDresserBody:
                         bool isShowing = false;
                         float top = editorTop;
@@ -376,18 +379,37 @@ namespace ChangeDresser.UI
 
                 if (sender is ApparelColorSelectionDTO)
                 {
-                    if (this.ApparelWithColorChange != null)
-                    {
-                        ApparelColorSelectionDTO dto = (ApparelColorSelectionDTO)sender;
-                        CompColorableUtility.SetColor(dto.Apparel, dto.SelectedColor, true);
+                    if (this.ApparelWithColorChange == null)
+                        this.ApparelWithColorChange = new List<Apparel>();
 
-                        if (!this.ApparelWithColorChange.Contains(dto.Apparel))
+                    ApparelColorSelectionDTO dto = (ApparelColorSelectionDTO)sender;
+                    CompColorableUtility.SetColor(dto.Apparel, dto.SelectedColor, true);
+
+                    if (!this.ApparelWithColorChange.Contains(dto.Apparel))
+                    {
+                        this.ApparelWithColorChange.Add(dto.Apparel);
+                    }
+                }
+                else if (sender is ApparelLayerColorSelectionDTO)
+                {
+                    if (this.ApparelWithColorChange == null)
+                        this.ApparelWithColorChange = new List<Apparel>();
+
+                    ApparelLayerColorSelectionDTO dto = (ApparelLayerColorSelectionDTO)sender;
+                    dto.PawnOutfitTracker.SetLayerColor(dto.ApparelLayer, dto.SelectedColor);
+
+                    foreach (Apparel a in this.dresserDto.Pawn.apparel.WornApparel)
+                    {
+                        Color c = a.DrawColor;
+                        dto.PawnOutfitTracker.ApplyApparelColor(a);
+                        if (a.DrawColor != c &&
+                            !this.ApparelWithColorChange.Contains(a))
                         {
-                            this.ApparelWithColorChange.Add(dto.Apparel);
+                            this.ApparelWithColorChange.Add(a);
                         }
                     }
                 }
-                if (sender is BodyTypeSelectionDTO)
+                else if (sender is BodyTypeSelectionDTO)
                 {
                     pawn.story.bodyType = (BodyType)value;
                 }
@@ -405,7 +427,7 @@ namespace ChangeDresser.UI
                 }
                 else if (sender is HeadTypeSelectionDTO)
                 {
-                    if (value.ToString().IndexOf("Narrow") >= 0 || 
+                    if (value.ToString().IndexOf("Narrow") >= 0 ||
                         value.ToString().IndexOf("narrow") >= 0)
                     {
                         dresserDto.Pawn.story.crownType = CrownType.Narrow;

@@ -27,7 +27,32 @@ using UnityEngine;
 
 namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
 {
-    class ApparelSelectionsContainer
+    class ApparelColorSelectionDTO : SelectionColorWidgetDTO
+    {
+        public readonly Apparel Apparel;
+
+        public ApparelColorSelectionDTO(Apparel apparel) : base((apparel != null) ? apparel.DrawColor : Color.white)
+        {
+            this.Apparel = apparel;
+        }
+
+        public override bool Equals(object o)
+        {
+            if (o != null &&
+                o is ApparelColorSelectionDTO)
+            {
+                return this.Apparel.Label.Equals(((ApparelColorSelectionDTO)o).Apparel.Label);
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Apparel.Label.GetHashCode();
+        }
+    }
+
+    class ApparelColorSelectionsContainer
     {
         public List<ApparelColorSelectionDTO> ApparelColorSelections { get; private set; }
         public List<SelectionColorWidgetDTO> SelectedApparel { get; private set; }
@@ -35,7 +60,7 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
         public ColorPresetsDTO ColorPresetsDTO { get; private set; }
         private Color copyColor = Color.white;
 
-        public ApparelSelectionsContainer(List<Apparel> apparel, ColorPresetsDTO presetsDto)
+        public ApparelColorSelectionsContainer(List<Apparel> apparel, ColorPresetsDTO presetsDto)
         {
             this.ApparelColorSelections = new List<ApparelColorSelectionDTO>(apparel.Count);
             foreach (Apparel a in apparel)

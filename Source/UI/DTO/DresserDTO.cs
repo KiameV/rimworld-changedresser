@@ -45,7 +45,8 @@ namespace ChangeDresser.UI.DTO
         public GenderSelectionDTO GenderSelectionDto { get; protected set; }
         public HairStyleSelectionDTO HairStyleSelectionDto { get; protected set; }
         public HairColorSelectionDTO HairColorSelectionDto { get; protected set; }
-        public ApparelSelectionsContainer ApparelSelectionsContainer { get; protected set; }
+        public ApparelColorSelectionsContainer ApparelSelectionsContainer { get; protected set; }
+        public ApparelLayerSelectionsContainer ApparelLayerSelectionsContainer { get; protected set; }
         public SliderWidgetDTO SkinColorSliderDto { get; protected set; }
         public HeadTypeSelectionDTO HeadTypeSelectionDto { get; protected set; }
 
@@ -89,7 +90,12 @@ namespace ChangeDresser.UI.DTO
 
             if (this.EditorTypeSelectionDto.Contains(CurrentEditorEnum.ChangeDresserApparelColor))
             {
-                this.ApparelSelectionsContainer = new ApparelSelectionsContainer(this.Pawn.apparel.WornApparel, IOUtil.LoadColorPresets(ColorPresetType.Apparel));
+                this.ApparelSelectionsContainer = new ApparelColorSelectionsContainer(this.Pawn.apparel.WornApparel, IOUtil.LoadColorPresets(ColorPresetType.Apparel));
+            }
+
+            if (this.EditorTypeSelectionDto.Contains(CurrentEditorEnum.ChangeDresserApparelLayerColor))
+            {
+                this.ApparelLayerSelectionsContainer = new ApparelLayerSelectionsContainer(this.Pawn, IOUtil.LoadColorPresets(ColorPresetType.Apparel));
             }
 
             this.Initialize();
@@ -129,11 +135,23 @@ namespace ChangeDresser.UI.DTO
 
         public void SetUpdatePawnListeners(UpdatePawnListener updatePawn)
         {
+            if (this.ApparelLayerSelectionsContainer != null)
+            {
+                foreach (ApparelLayerColorSelectionDTO dto in this.ApparelLayerSelectionsContainer.ApparelLayerSelections)
+                {
+                    dto.UpdatePawnListener += updatePawn;
+                }
+            }
+
             if (this.ApparelSelectionsContainer != null)
             {
                 foreach (ApparelColorSelectionDTO dto in this.ApparelSelectionsContainer.ApparelColorSelections)
                 {
                     dto.UpdatePawnListener += updatePawn;
+                    if (this.ApparelLayerSelectionsContainer != null)
+                    {
+                        dto.UpdatePawnListener += this.ApparelLayerSelectionsContainer.UpdatePawn;
+                    }
                 }
             }
 
@@ -176,6 +194,8 @@ namespace ChangeDresser.UI.DTO
                 this.HairColorSelectionDto.ResetToDefault();
             if (this.ApparelSelectionsContainer != null)
                 this.ApparelSelectionsContainer.ResetToDefault();
+            if (this.ApparelLayerSelectionsContainer != null)
+                this.ApparelLayerSelectionsContainer.ResetToDefault();
             if (this.SkinColorSliderDto != null)
                 this.SkinColorSliderDto.ResetToDefault();
             if (this.HeadTypeSelectionDto != null)

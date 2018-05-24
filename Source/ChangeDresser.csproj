@@ -57,6 +57,7 @@
     <Compile Include="Building_Dresser.cs" />
     <Compile Include="Building_RepairChangeDresser.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeApparelColor.cs" />
+    <Compile Include="DresserJobDriver\JobDriver_ChangeApparelColorByLayer.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeBodyAlienColor.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeBody.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeHairStyle.cs" />
@@ -80,8 +81,8 @@
     <Compile Include="UI\DTO\ColorPresetsDTO.cs" />
     <Compile Include="UI\DTO\DresserDTO.cs" />
     <Compile Include="UI\DTO\DresserDtoFactory.cs" />
-    <Compile Include="UI\DTO\SelectionWidgetDTOs\ApparelColorSelectionDTO.cs" />
-    <Compile Include="UI\DTO\SelectionWidgetDTOs\ApparelSelectionsContainer.cs" />
+    <Compile Include="UI\DTO\SelectionWidgetDTOs\ApparelLayerSelectionsContainer.cs" />
+    <Compile Include="UI\DTO\SelectionWidgetDTOs\ApparelColorSelectionsContainer.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\ASelectionWidgetDTO.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\BodyTypeSelectionDTO.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\EditorTypeSelectionDTO.cs" />

@@ -27,6 +27,7 @@ namespace ChangeDresser.UI.Enums
     {
         ChangeDresserHair,
         ChangeDresserApparelColor,
+        ChangeDresserApparelLayerColor,
         ChangeDresserBody,
         ChangeDresserAlienSkinColor,
         //ChangeDresserAlienHairColor,
