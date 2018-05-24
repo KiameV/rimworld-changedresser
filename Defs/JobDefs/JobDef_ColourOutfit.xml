@@ -6,6 +6,11 @@
     <reportString>Getting changed.</reportString>
   </JobDef>
   <JobDef>
+    <defName>ChangeApparelColorByLayer</defName>
+    <driverClass>ChangeDresser.DresserJobDriver.JobDriver_ChangeApparelColorByLayer</driverClass>
+    <reportString>Getting changed.</reportString>
+  </JobDef>
+  <JobDef>
     <defName>ChangeHairColor</defName>
     <driverClass>ChangeDresser.DresserJobDriver.JobDriver_ChangeHairStyle</driverClass>
     <reportString>Change hair style and/or color.</reportString>

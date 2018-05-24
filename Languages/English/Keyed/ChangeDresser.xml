@@ -35,6 +35,7 @@
 	<!-- Editor Names (top selection bar in the Dresser window) -->
 	<ChangeDresserHair>Hair Style/Color</ChangeDresserHair>
 	<ChangeDresserApparelColor>Apparel Color</ChangeDresserApparelColor>
+	<ChangeDresserApparelLayerColor>Layer Color</ChangeDresserApparelLayerColor>
 	<ChangeDresserBody>Body</ChangeDresserBody>
 	<ChangeDresserAlienSkinColor>Alien Skin Color</ChangeDresserAlienSkinColor>
 	<ChangeDresserAlienHairColor>Alien Hair Color</ChangeDresserAlienHairColor>
@@ -88,6 +89,7 @@
 	
 	<!-- Job Toils -->
 	<ChangeDresser.ChangeApparelColors>Change apparel colors</ChangeDresser.ChangeApparelColors>
+	<ChangeDresser.ChangeApparelColorsByLayer>Change layer colors</ChangeDresser.ChangeApparelColorsByLayer>
 	<ChangeDresser.ChangeHair>Change hair style/color</ChangeDresser.ChangeHair>
 	<ChangeDresser.ChangeBody>Change body attributes</ChangeDresser.ChangeBody>
 	<ChangeDresser.StoreApparel>Store apparel</ChangeDresser.StoreApparel>
@@ -106,4 +108,12 @@
 	<ChangeDresser.KeepForcedApparel>Keep Forced Apparel</ChangeDresser.KeepForcedApparel>
 	<ChangeDresser.ShowBodyChange>Allow Body Change</ChangeDresser.ShowBodyChange>
 	<ChangeDresser.ShowGenderAgeChange>Allow Gender and Age Change</ChangeDresser.ShowGenderAgeChange>
+	<ChangeDresser.IncludeColorByLayer>Include Color By Apparel Layer</ChangeDresser.IncludeColorByLayer>
+	
+	<!-- Layers -->
+	<OnSkin>On Skin</OnSkin>
+	<Middle>Middle</Middle>
+	<Shell>Shell</Shell>
+	<Belt>Belt</Belt>
+	<Overhead>Overhead</Overhead>
 </LanguageData>
