@@ -328,14 +328,30 @@ namespace ChangeDresser
             }
         }
 
+        private ApparelLayer GetOuterMostLayer(Apparel a)
+        {
+            ApparelLayer layer = ApparelLayer.OnSkin;
+            foreach (ApparelLayer l in a.def.apparel.layers)
+            {
+                if (l > layer)
+                {
+                    layer = l;
+                }
+            }
+            return layer;
+        }
+
         public void ApplyApparelColor(Apparel a)
         {
 #if DEBUG || DEBUG_APPAREL_COLOR
             Log.Warning("Start PawnOutfitTracker.ApplyApparelColor (Apparel: " + a.Label + ")");
 #endif
-            if (this.ApparelColors != null && this.ApparelColors.Count > 0)
+            ApparelLayer layer = this.GetOuterMostLayer(a);
+            if (this.ApparelColors != null && this.ApparelColors.Count > (int)layer)
             {
-                foreach (ApparelLayer layer in a.def.apparel.layers)
+                SlotColor slotColor = this.ApparelColors[(int)layer];
+                a.DrawColor = slotColor.Color;
+                /*foreach (ApparelLayer layer in a.def.apparel.layers)
                 {
                     SlotColor slotColor = this.ApparelColors[(int)layer];
                     if (slotColor.IsAssigned)
@@ -352,8 +368,11 @@ namespace ChangeDresser
                         Log.Warning("    No color assigned for layer " + layer);
                     }
 #endif
-                }
+                }*/
             }
+#if DEBUG || DEBUG_APPAREL_COLOR
+            Log.Warning("End PawnOutfitTracker.ApplyApparelColor (Apparel: " + a.Label + ")");
+#endif
         }
 
         public void SetApparelColor(Apparel a, Color color)
@@ -362,7 +381,12 @@ namespace ChangeDresser
             Log.Warning("Start PawnOutfitTracker.SetApparelColor (Apparel: " + a.Label + " Color: " + color + ")");
 #endif
             this.InitApparelColor();
-            foreach (ApparelLayer layer in a.def.apparel.layers)
+            ApparelLayer layer = this.GetOuterMostLayer(a);
+            SlotColor slotColor = this.ApparelColors[(int)layer];
+            slotColor.IsAssigned = true;
+            slotColor.Color = color;
+            this.ApparelColors[(int)layer] = slotColor;
+            /*foreach (ApparelLayer layer in a.def.apparel.layers)
             {
 #if DEBUG || DEBUG_APPAREL_COLOR
                 Log.Warning("    Setting layer " + layer);
@@ -371,7 +395,10 @@ namespace ChangeDresser
                 slotColor.IsAssigned = true;
                 slotColor.Color = color;
                 this.ApparelColors[(int)layer] = slotColor;
-            }
+            }*/
+#if DEBUG || DEBUG_APPAREL_COLOR
+            Log.Warning("End PawnOutfitTracker.SetApparelColor (Apparel: " + a.Label + " Color: " + color + ")");
+#endif
         }
 
         public bool Contains(Outfit outfit)
