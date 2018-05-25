@@ -9,6 +9,10 @@
   <ChangeDresser.ManageApparelDesc>ドレッサーに収納されている衣服を管理します。</ChangeDresser.ManageApparelDesc>
   <ChangeDresser.AssignOutfits>衣装を割り当てます</ChangeDresser.AssignOutfits>
   <ChangeDresser.AssignOutfitsDesc>戦闘時と通常時の両方の必要に合わせて、入植者に服装を割り当てます。</ChangeDresser.AssignOutfitsDesc>
+  <ChangeDresser.CustomOutfits>カスタム衣装</ChangeDresser.CustomOutfits>
+  <ChangeDresser.CustomOutfitsDesc>戦闘時と通常時の両方の需要に対応したポーン独自の服装を作成します。</ChangeDresser.CustomOutfitsDesc>
+  <ChangeDresser.New>新規</ChangeDresser.New>
+  <ChangeDresser.Close>閉じる</ChangeDresser.Close>
   <ChangeDresser.Empty>空にする</ChangeDresser.Empty>
   <ChangeDresser.EmptyDesc>ドレッサーの中身を空にします。服装グループの在庫は含まれません。</ChangeDresser.EmptyDesc>
   <ChangeDresser.Collect>収納する</ChangeDresser.Collect>
@@ -23,10 +27,7 @@
   <!-- Common Strings -->
   <ChangeDresser.Worn>装備中</ChangeDresser.Worn>
   <ChangeDresser.Storage>在庫</ChangeDresser.Storage>
-  <ChangeDresser.Save>保存</ChangeDresser.Save>
-  <ChangeDresser.Reset>初期化</ChangeDresser.Reset>
   <ChangeDresser.Cancel>中止</ChangeDresser.Cancel>
-  <ChangeDresser.Delete>削除</ChangeDresser.Delete>
   <ChangeDresser.SelectAll>全て選択</ChangeDresser.SelectAll>
   <ChangeDresser.DeselectAll>全て取り消す</ChangeDresser.DeselectAll>
   <ChangeDresser.SelectPawn>選択ポーン</ChangeDresser.SelectPawn>
@@ -34,6 +35,7 @@
   <!-- Editor Names (top selection bar in the Dresser window) -->
   <ChangeDresserHair>髪型/髪の色</ChangeDresserHair>
   <ChangeDresserApparelColor>服装の色</ChangeDresserApparelColor>
+  <ChangeDresserApparelLayerColor>Layer Color</ChangeDresserApparelLayerColor>
   <ChangeDresserBody>身体特徴</ChangeDresserBody>
   <ChangeDresserAlienSkinColor>追加種族の肌色</ChangeDresserAlienSkinColor>
   <ChangeDresserAlienHairColor>追加種族の髪色</ChangeDresserAlienHairColor>
@@ -54,6 +56,11 @@
   <!-- Assign Outfits UI -->
   <ChangeDresser.ManageOutfits>衣装の管理</ChangeDresser.ManageOutfits>
   <ChangeDresser.UseForBattle>戦闘で使用</ChangeDresser.UseForBattle>
+  <ChangeDresser.AvailableApparel>利用可能な衣装</ChangeDresser.AvailableApparel>
+  <ChangeDresser.CustomOutfitApparel>カスタム衣装セット</ChangeDresser.CustomOutfitApparel>
+
+  <!-- Custom Outfit UI -->
+  <ChangeDresser.OutfitName>名前</ChangeDresser.OutfitName>
 
   <!-- Game UI -->
   <ChangeDresser.StoragePriority>在庫の優先順位</ChangeDresser.StoragePriority>
@@ -82,6 +89,7 @@
 
   <!-- Job Toils -->
   <ChangeDresser.ChangeApparelColors>服の色を変更</ChangeDresser.ChangeApparelColors>
+  <ChangeDresser.ChangeApparelColorsByLayer>レイヤーの色を変更</ChangeDresser.ChangeApparelColorsByLayer>
   <ChangeDresser.ChangeHair>髪型や髪色を変更</ChangeDresser.ChangeHair>
   <ChangeDresser.ChangeBody>体型を変更</ChangeDresser.ChangeBody>
   <ChangeDresser.StoreApparel>服装の在庫</ChangeDresser.StoreApparel>
@@ -100,5 +108,13 @@
   <ChangeDresser.KeepForcedApparel>衣装を強制する</ChangeDresser.KeepForcedApparel>
   <ChangeDresser.ShowBodyChange>体型の変更を許可する</ChangeDresser.ShowBodyChange>
   <ChangeDresser.ShowGenderAgeChange>性別と年齢の変更を許可する</ChangeDresser.ShowGenderAgeChange>
+  <ChangeDresser.IncludeColorByLayer>衣装レイヤーによる色を含める</ChangeDresser.IncludeColorByLayer>
+
+  <!-- Layers -->
+  <OnSkin>下着</OnSkin>
+  <Middle>中間</Middle>
+  <Shell>上着</Shell>
+  <Belt>装飾品</Belt>
+  <Overhead>帽子</Overhead>
 
 </LanguageData>
