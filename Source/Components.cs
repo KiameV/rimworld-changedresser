@@ -59,7 +59,7 @@ namespace ChangeDresser
         {
             foreach (Building_Dresser d in DressersToUse)
             {
-                if ((map == null || d.Map == map) && 
+                if ((map == null || d.Map == map) && apparel != null &&
                     d.settings.AllowedToAccept(apparel))
                 {
                     d.AddApparel(apparel);

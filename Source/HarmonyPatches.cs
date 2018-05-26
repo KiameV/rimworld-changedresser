@@ -468,6 +468,9 @@ namespace ChangeDresser
     {
         static void Postfix(Pawn pawn, ref Job __result)
         {
+#if BETTER_OUTFIT
+            Log.Warning("Begin JobGiver_OptimizeApparel.Postfix(Pawn: " + pawn.Name.ToStringShort + "     Job: " + ((__result == null) ? "<null>" : __result.ToString()) + ")");
+#endif
             if (!DoDressersHaveApparel())
             {
                 return;
@@ -479,32 +482,50 @@ namespace ChangeDresser
             {
                 thing = __result.targetA.Thing;
                 baseApparelScore = JobGiver_OptimizeApparel.ApparelScoreGain(pawn, thing as Apparel);
+                if (thing == null)
+                {
+                    baseApparelScore = 0f;
+                }
+                else
+                {
 #if BETTER_OUTFIT
-                Log.Warning(">>POSTFIX Game Found Better Apparel: " + ((thing == null) ? "<null>" : thing.Label) + "    Score: " + baseApparelScore);
+                    Log.Message("    Game Found Better Apparel: " + ((thing == null) ? "<null>" : thing.Label) + "    Score: " + baseApparelScore);
 #endif
+                }
             }
 
             Apparel a = null;
             Building_Dresser containingDresser = null;
 
+#if BETTER_OUTFIT
+            Log.Message("    Loop Through Dressers:");
+#endif
             foreach (Building_Dresser dresser in WorldComp.DressersToUse)
             {
+#if TRACE && BETTER_OUTFIT
+                Log.Message("        Dresser: " + dresser.Label);
+#endif
                 float score = baseApparelScore;
                 if (dresser.FindBetterApparel(ref score, ref a, pawn, pawn.outfits.CurrentOutfit))
                 {
                     thing = a;
                     baseApparelScore = score;
                     containingDresser = dresser;
+#if BETTER_OUTFIT
+                    Log.Message("    Dresser Found Better Apparel: " + ((a == null) ? "<null>" : a.Label) + "    Score: " + baseApparelScore);
+#endif
                 }
-
             }
 #if BETTER_OUTFIT
-            Log.Warning(">>POSTFIX Dresser Found Better Apparel: " + ((a == null) ? "<null>" : a.Label) + "    Score: " + baseApparelScore);
+            Log.Message("    Best Apparel: " + ((a == null) ? "<null>" : a.Label) + "    Score: " + baseApparelScore);
 #endif
             if (a != null && containingDresser != null)
             {
                 __result = new Job(containingDresser.wearApparelFromStorageJobDef, containingDresser, a);
             }
+#if BETTER_OUTFIT
+            Log.Warning("End JobGiver_OptimizeApparel.Postfix");
+#endif
         }
 
         private static bool DoDressersHaveApparel()
@@ -640,7 +661,7 @@ namespace ChangeDresser
         }
     }
 
-    #region Caravan Forming
+#region Caravan Forming
     [HarmonyPatch(typeof(Dialog_FormCaravan), "PostOpen")]
     static class Patch_Dialog_FormCaravan_PostOpen
     {
@@ -714,9 +735,9 @@ namespace ChangeDresser
             }
         }
     }
-    #endregion
+#endregion
 
-    #region Handle "Do until X" for stored weapons
+#region Handle "Do until X" for stored weapons
     [HarmonyPatch(typeof(RecipeWorkerCounter), "CountProducts")]
     static class Patch_RecipeWorkerCounter_CountProducts
     {
@@ -739,9 +760,9 @@ namespace ChangeDresser
             }
         }
     }
-    #endregion
+#endregion
 
-    #region Pawn Death
+#region Pawn Death
     [HarmonyPatch(typeof(Pawn), "Kill")]
     static class Patch_Pawn_Kill
     {
@@ -774,7 +795,7 @@ namespace ChangeDresser
             }
         }
     }
-    #endregion
+#endregion
 
     [HarmonyPatch(typeof(OutfitDatabase), "TryDelete")]
     static class Patch_OutfitDatabase_TryDelete

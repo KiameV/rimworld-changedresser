@@ -321,14 +321,34 @@ namespace ChangeDresser
 
         public bool FindBetterApparel(ref float baseApparelScore, ref Apparel betterApparel, Pawn pawn, Outfit currentOutfit, Building dresser)
         {
-            bool result = false; ;
+#if BETTER_OUTFIT
+            Log.Warning("Begin StoredApparel.FindBetterApparel");
+#endif
+            bool result = false;
+#if TRACE && BETTER_OUTFIT
+            Log.Message("    Stored Apparel:");
+#endif
             foreach (LinkedList<Apparel> ll in this.StoredApparelLookup.Values)
             {
+#if TRACE && BETTER_OUTFIT
+                if (ll != null)
+                {
+                    if (ll.Count > 0 && ll.First != null)
+                        Log.Message("        Count: " + ll.Count + "    Of Type: " + ll.First.Value.def.defName);
+                    else
+                        Log.Message("        Count: 0");
+                }
+                else
+                    Log.Message("        <null> list");
+#endif
                 if (ApparelUtil.FindBetterApparel(ref baseApparelScore, ref betterApparel, pawn, currentOutfit, ll, dresser))
                 {
                     result = true;
                 }
             }
+#if BETTER_OUTFIT
+            Log.Warning("End StoredApparel.FindBetterApparel    Found Better:" + result);
+#endif
             return result;
             /*
             Apparel betterApparel = null;

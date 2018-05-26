@@ -118,19 +118,39 @@ namespace ChangeDresser
         public static bool FindBetterApparel(
             ref float baseApparelScore, ref Apparel betterApparel, Pawn pawn, Outfit currentOutfit, IEnumerable<Apparel> apparelToCheck, Building dresser)
         {
+            if (betterApparel == null)
+                baseApparelScore = 0f;
+#if BETTER_OUTFIT
+            Log.Warning("Begin ApparelUtil.FindBetterApparel(Score: " + baseApparelScore + "    Apparel: " + ((betterApparel == null) ? "<null>" : betterApparel.Label));
+#endif
             bool result = false;
+#if TRACE && BETTER_OUTFIT
+            Log.Message("    Apparel:");
+#endif
             foreach (Apparel apparel in apparelToCheck)
             {
+#if TRACE && BETTER_OUTFIT
+                Log.Message("        " + ((apparel == null) ? "<null>" : apparel.Label));
+#endif
                 if (!currentOutfit.filter.Allows(apparel.def))
                 {
+#if TRACE && BETTER_OUTFIT
+                    Log.Message("        Filters does not allow");
+#endif
                     break;
                 }
                 if (!currentOutfit.filter.Allows(apparel) ||
                     apparel.IsForbidden(pawn))
                 {
+#if TRACE && BETTER_OUTFIT
+                    Log.Message("        Current Outfit Does Not Allow: " + !currentOutfit.filter.Allows(apparel) + "    or     Is Forbidden: " + apparel.IsForbidden(pawn));
+#endif
                     continue;
                 }
 
+#if TRACE && BETTER_OUTFIT
+                Log.Message("        Keep Forced Apparel: " + Settings.KeepForcedApparel);
+#endif
                 if (Settings.KeepForcedApparel)
                 {
                     bool skipApparelType = false;
@@ -140,6 +160,9 @@ namespace ChangeDresser
                         if (!ApparelUtility.CanWearTogether(wornApparel[i].def, apparel.def, pawn.RaceProps.body) &&
                             !pawn.outfits.forcedHandler.IsForced(wornApparel[i]))
                         {
+#if TRACE && BETTER_OUTFIT
+                            Log.Message("        Cannot wear together");
+#endif
                             skipApparelType = true;
                             break;
                         }
@@ -151,13 +174,25 @@ namespace ChangeDresser
                 }
 
                 float gain = JobGiver_OptimizeApparel.ApparelScoreGain(pawn, apparel);
+#if TRACE && BETTER_OUTFIT
+                Log.Message("    Gain: " + gain + "     Base Score: " + baseApparelScore);
+#endif
                 if (gain >= 0.05f && gain > baseApparelScore)
                 {
+#if TRACE && BETTER_OUTFIT
+                    Log.Message("    Gain is better");
+#endif
                     if (ApparelUtility.HasPartsToWear(pawn, apparel.def))
                     {
+#if TRACE && BETTER_OUTFIT
+                        Log.Message("    Has parts to wear");
+#endif
                         if (dresser == null || 
                             ReservationUtility.CanReserveAndReach(pawn, dresser, PathEndMode.OnCell, pawn.NormalMaxDanger(), 1))
                         {
+#if TRACE && BETTER_OUTFIT
+                            Log.Message("    Can reach dresser");
+#endif
                             betterApparel = apparel;
                             baseApparelScore = gain;
                             result = true;
@@ -165,6 +200,9 @@ namespace ChangeDresser
                     }
                 }
             }
+#if BETTER_OUTFIT
+            Log.Warning("End ApparelUtil.FindBetterApparel    result = " + result);
+#endif
             return result;
         }
         /*
