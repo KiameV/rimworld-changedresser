@@ -70,8 +70,7 @@ namespace ChangeDresser.UI
 #if CUSTOM_OUTFIT_UI
                 Log.Message("        " + p.Name.ToStringShort + " " + p.Faction + " " + p.def.defName);
 #endif
-                if (p.Faction == Faction.OfPlayer && 
-                    (p.def.defName.Equals("Human") || p.def.defName.StartsWith("Alien_")))
+                if (p.Faction == Faction.OfPlayer && p.def.race.Humanlike)
                 {
 #if CUSTOM_OUTFIT_UI
                     Log.Message("            -- Added");
