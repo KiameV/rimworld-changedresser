@@ -488,6 +488,10 @@ namespace ChangeDresser
 
             foreach (Building_Dresser dresser in WorldComp.DressersToUse)
             {
+                if (thing == null)
+                {
+                    baseApparelScore = 0f;
+                }
                 float score = baseApparelScore;
                 Apparel a = dresser.FindBetterApparel(ref score, pawn, pawn.outfits.CurrentOutfit);
 
