@@ -41,8 +41,6 @@ namespace ChangeDresser
             Scribe_Values.Look<bool>(ref showGenderAgeChange, "ChangeDresser.ShowGenderAgeChange", true, true);
             Scribe_Values.Look<bool>(ref showBodyChange, "ChangeDresser.ShowBodyChange", true, true);
             Scribe_Values.Look<bool>(ref includeColorByLayer, "ChangeDresser.IncludeColorByLayer", true, true);
-
-            VerifySupportedEditors(showBodyChange);
         }
 
         public static void DoSettingsWindowContents(Rect rect)
@@ -64,22 +62,6 @@ namespace ChangeDresser
                 l.Gap(48);
             }
             l.End();
-
-            VerifySupportedEditors(showBodyChange);
-        }
-
-        private static void VerifySupportedEditors(bool showBodyChange)
-        {
-            if (showBodyChange && Building_Dresser.SupportedEditors.Count == 2)
-            {
-                Building_Dresser.SupportedEditors.Add(UI.Enums.CurrentEditorEnum.ChangeDresserBody);
-                Building_ChangeMirror.SupportedEditors.Add(UI.Enums.CurrentEditorEnum.ChangeDresserBody);
-            }
-            else if (!showBodyChange && Building_Dresser.SupportedEditors.Count == 3)
-            {
-                Building_Dresser.SupportedEditors.Remove(UI.Enums.CurrentEditorEnum.ChangeDresserBody);
-                Building_ChangeMirror.SupportedEditors.Remove(UI.Enums.CurrentEditorEnum.ChangeDresserBody);
-            }
         }
     }
 }

@@ -55,12 +55,12 @@ namespace ChangeDresser.UI.DTO
         //public HairColorSelectionDTO AlienHairColorPrimary { get; protected set; }
         //public HairColorSelectionDTO AlienHairColorSecondary { get; protected set; }
 
-        public DresserDTO(Pawn pawn, CurrentEditorEnum currentEditorEnum, List<CurrentEditorEnum> editors)
+        public DresserDTO(Pawn pawn, CurrentEditorEnum currentEditorEnum, IEnumerable<CurrentEditorEnum> editors)
         {
             this.Pawn = pawn;
 
             this.CurrentEditorEnum = currentEditorEnum;
-            this.EditorTypeSelectionDto = new EditorTypeSelectionDTO(this.CurrentEditorEnum, editors);
+            this.EditorTypeSelectionDto = new EditorTypeSelectionDTO(this.CurrentEditorEnum, new List<CurrentEditorEnum>(editors));
             this.EditorTypeSelectionDto.SelectionChangeListener += delegate (object sender)
             {
                 this.CurrentEditorEnum = (CurrentEditorEnum)this.EditorTypeSelectionDto.SelectedItem;

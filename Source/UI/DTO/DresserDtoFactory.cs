@@ -32,33 +32,14 @@ namespace ChangeDresser.UI.DTO
     {
         public static DresserDTO Create(Pawn pawn, Job job, CurrentEditorEnum selectedEditor)
         {
-            List<CurrentEditorEnum> editors;
+            IEnumerable<CurrentEditorEnum> editors;
             if (job.targetA.Thing is Building_Dresser)
             {
-                editors = Building_Dresser.SupportedEditors;
+                editors = Building_Dresser.GetSupportedEditors(pawn);
             }
             else
             {
-                editors = Building_ChangeMirror.SupportedEditors;
-            }
-
-            if (AlienRaceUtil.IsAlien(pawn))
-            {
-                List<CurrentEditorEnum> alienEditors = new List<CurrentEditorEnum>(editors.Count + 2);
-                foreach (CurrentEditorEnum ed in editors)
-                {
-                    alienEditors.Add(ed);
-                    if (ed == CurrentEditorEnum.ChangeDresserBody)
-                    {
-                        alienEditors.Add(CurrentEditorEnum.ChangeDresserAlienSkinColor);
-                    }
-                    /*else if (ed == CurrentEditorEnum.ChangeDresserHair)
-                    {
-                        alienEditors.Add(CurrentEditorEnum.ChangeDresserAlienHairColor);
-                    }*/
-                }
-                editors = alienEditors;
-                return new AlienDresserDTO(pawn, selectedEditor, editors);
+                editors = Building_ChangeMirror.GetSupportedEditors(pawn);
             }
 
             return new DresserDTO(pawn, selectedEditor, editors);

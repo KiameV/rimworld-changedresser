@@ -25,8 +25,6 @@ namespace ChangeDresser
 
         public static JobDef WEAR_APPAREL_FROM_DRESSER_JOB_DEF { get; private set; }
 
-        public static readonly List<CurrentEditorEnum> SupportedEditors = new List<CurrentEditorEnum>(3);
-
         public const StoragePriority DefaultStoragePriority = StoragePriority.Low;
 
         public bool AllowAdds { get; set; }
@@ -37,15 +35,6 @@ namespace ChangeDresser
 
         private bool includeInTradeDeals = true;
         public bool IncludeInTradeDeals { get { return this.includeInTradeDeals; } }
-
-        static Building_Dresser()
-        {
-            SupportedEditors.Add(CurrentEditorEnum.ChangeDresserApparelColor);
-            if (Settings.IncludeColorByLayer)
-                SupportedEditors.Add(CurrentEditorEnum.ChangeDresserApparelLayerColor);
-            SupportedEditors.Add(CurrentEditorEnum.ChangeDresserHair);
-            SupportedEditors.Add(CurrentEditorEnum.ChangeDresserBody);
-        }
 
         public Building_Dresser()
         {
@@ -80,6 +69,32 @@ namespace ChangeDresser
                             BuildingUtil.DropThing(a, this, this.CurrentMap, false);
                         }
                     }
+                }
+            }
+        }
+
+        public static IEnumerable<CurrentEditorEnum> GetSupportedEditors(Pawn pawn)
+        {
+            bool isAlien = AlienRaceUtil.IsAlien(pawn);
+
+            yield return CurrentEditorEnum.ChangeDresserApparelColor;
+
+            if (Settings.IncludeColorByLayer)
+            {
+                yield return CurrentEditorEnum.ChangeDresserApparelLayerColor;
+            }
+
+            yield return CurrentEditorEnum.ChangeDresserHair;
+
+            if (Settings.ShowBodyChange)
+            {
+                if (isAlien)
+                {
+                    yield return CurrentEditorEnum.ChangeDresserAlienSkinColor;
+                }
+                else
+                {
+                    yield return CurrentEditorEnum.ChangeDresserBody;
                 }
             }
         }

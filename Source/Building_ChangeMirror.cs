@@ -13,15 +13,30 @@ namespace ChangeDresser
         private JobDef changeBodyJobDef = DefDatabase<JobDef>.GetNamed("ChangeBody", true);
         public readonly JobDef changeBodyAlienColor = DefDatabase<JobDef>.GetNamed("ChangeBodyAlienColor", true);
 
-        public static readonly List<CurrentEditorEnum> SupportedEditors = new List<CurrentEditorEnum>(3);
-
-        static Building_ChangeMirror()
+        public static IEnumerable<CurrentEditorEnum> GetSupportedEditors(Pawn pawn)
         {
-            SupportedEditors.Add(CurrentEditorEnum.ChangeDresserApparelColor);
+            bool isAlien = AlienRaceUtil.IsAlien(pawn);
+
+            yield return CurrentEditorEnum.ChangeDresserApparelColor;
+
             if (Settings.IncludeColorByLayer)
-                SupportedEditors.Add(CurrentEditorEnum.ChangeDresserApparelLayerColor);
-            SupportedEditors.Add(CurrentEditorEnum.ChangeDresserHair);
-            SupportedEditors.Add(CurrentEditorEnum.ChangeDresserBody);
+            {
+                yield return CurrentEditorEnum.ChangeDresserApparelLayerColor;
+            }
+
+            yield return CurrentEditorEnum.ChangeDresserHair;
+
+            if (Settings.ShowBodyChange)
+            {
+                if (isAlien)
+                {
+                    yield return CurrentEditorEnum.ChangeDresserAlienSkinColor;
+                }
+                else
+                {
+                    yield return CurrentEditorEnum.ChangeDresserBody;
+                }
+            }
         }
 
         [DebuggerHidden]
