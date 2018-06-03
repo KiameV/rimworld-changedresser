@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlienRaceUtil.cs" />
+    <Compile Include="ApparelColorTracker.cs" />
     <Compile Include="BuildingUtil.cs" />
     <Compile Include="Building_ChangeMirror.cs" />
     <Compile Include="Building_Dresser.cs" />

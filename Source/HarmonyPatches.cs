@@ -3,6 +3,7 @@ using Harmony;
 using RimWorld;
 using RimWorld.Planet;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
@@ -20,7 +21,6 @@ namespace ChangeDresser
         {
             var harmony = HarmonyInstance.Create("com.changedresser.rimworld.mod");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
-            
             Log.Message(
                 "ChangeDresser Harmony Patches:" + Environment.NewLine +
                 "  Prefix:" + Environment.NewLine +
@@ -28,6 +28,7 @@ namespace ChangeDresser
                 "    CaravanExitMapUtility.ExitMapAndCreateCaravan(IEnumerable<Pawn>, Faction, int)" + Environment.NewLine +
                 "    CaravanExitMapUtility.ExitMapAndCreateCaravan(IEnumerable<Pawn>, Faction, int, int)" + Environment.NewLine + 
                 "    Pawn.Kill - Priority First" + Environment.NewLine +
+                "    Pawn_ApparelTracker.Notify_ApparelAdded" + Environment.NewLine +
                 "  Postfix:" + Environment.NewLine +
                 "    Pawn.GetGizmos" + Environment.NewLine +
                 "    Pawn_ApparelTracker.Notify_ApparelAdded" + Environment.NewLine +
@@ -38,7 +39,17 @@ namespace ChangeDresser
                 "    OutfitDatabase.TryDelete" + Environment.NewLine +
                 "    CaravanFormingUtility.StopFormingCaravan" + Environment.NewLine +
                 "    WealthWatcher.ForceRecount" + Environment.NewLine +
-                "    Pawn.Kill - Priority First");
+                "    Pawn.Kill - Priority First" + Environment.NewLine +
+                "    Pawn_ApparelTracker.Notify_ApparelRemoved");
+
+            /*if (ModsConfig.ActiveModsInLoadOrder.Any(m => "Mending".Equals(m.Name)))
+            {
+                Log.Message(
+                    "ChangeDresser (Mending) Harmony Patches:" + Environment.NewLine +
+                    "  Postfix:" + Environment.NewLine +
+                    "    WorkGiver_DoBill.TryFindBestBillIngredients - Priority Last" + Environment.NewLine +
+                    "    Game.Game_FinalizeInit - Priority Last");
+            }*/
         }
 
         public static Texture2D GetIcon(ThingDef td)
@@ -87,7 +98,7 @@ namespace ChangeDresser
                 {
                     continue;
                 }
-                    
+
                 pawn.apparel.Remove(a);
 #if DEBUG
                 Log.Warning(" Apparel " + a.LabelShort + " removed");
@@ -246,6 +257,7 @@ namespace ChangeDresser
     {
         static void Prefix(Pawn_ApparelTracker __instance, Apparel apparel)
         {
+            WorldComp.ApparelColorTracker.PersistColor(apparel);
             ColorApparel(__instance.pawn, apparel);
         }
 
@@ -256,6 +268,15 @@ namespace ChangeDresser
             {
                 outfits.ApplyApparelColor(apparel);
             }
+        }
+    }
+
+    [HarmonyPatch(typeof(Pawn_ApparelTracker), "Notify_ApparelRemoved")]
+    static class Patch_Pawn_ApparelTracker_Notify_ApparelRemoved
+    {
+        static void Postfix(Apparel apparel)
+        {
+            WorldComp.ApparelColorTracker.ResetColor(apparel);
         }
     }
 

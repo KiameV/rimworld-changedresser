@@ -13,6 +13,7 @@ namespace ChangeDresser
         public static Dictionary<Pawn, PawnOutfitTracker> PawnOutfits { get; private set; }
         public static List<Outfit> OutfitsForBattle { get; private set; }
         public static OutfitType GetOutfitType(Outfit outfit) { return OutfitsForBattle.Contains(outfit) ? OutfitType.Battle : OutfitType.Civilian; }
+        public static ApparelColorTracker ApparelColorTracker = new ApparelColorTracker();
 
         private static int nextDresserOutfitId = 0;
         public static int NextDresserOutfitId
@@ -151,6 +152,7 @@ namespace ChangeDresser
 
             Scribe_Values.Look<int>(ref nextDresserOutfitId, "nextDresserOutfitId", 0);
             Scribe_Collections.Look(ref this.tempPawnOutfits, "pawnOutfits", LookMode.Deep, new object[0]);
+            Scribe_Deep.Look(ref ApparelColorTracker, "apparelColorTrack");
 
             List<Outfit> ofb = OutfitsForBattle;
             Scribe_Collections.Look(ref ofb, "outfitsForBattle", LookMode.Reference, new object[0]);
@@ -187,6 +189,13 @@ namespace ChangeDresser
                         OutfitsForBattle.RemoveAt(i);
                     }
                 }
+
+                if (ApparelColorTracker == null)
+                {
+                    ApparelColorTracker = new ApparelColorTracker();
+                }
+
+                ApparelColorTracker.PersistWornColors();
             }
 
             if (this.tempPawnOutfits != null &&
