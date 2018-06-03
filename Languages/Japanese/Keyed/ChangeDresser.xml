@@ -105,6 +105,7 @@
 
   <!-- Mod Settings -->
   <ChangeDresser>Change Dresser</ChangeDresser>
+  <ChangeDresser.PersistApparelOriginalColor>衣装の元の色を保持する</ChangeDresser.PersistApparelOriginalColor>
   <ChangeDresser.KeepForcedApparel>衣装を強制する</ChangeDresser.KeepForcedApparel>
   <ChangeDresser.ShowBodyChange>体型の変更を許可する</ChangeDresser.ShowBodyChange>
   <ChangeDresser.ShowGenderAgeChange>性別と年齢の変更を許可する</ChangeDresser.ShowGenderAgeChange>
