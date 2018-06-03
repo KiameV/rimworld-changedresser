@@ -266,7 +266,7 @@ namespace ChangeDresser
             }
         }
 
-        public bool TryGetFilteredApparel(Bill bill, ThingFilter filter, out List<Apparel> gotten)
+        public bool TryGetFilteredApparel(Bill bill, ThingFilter filter, out List<Apparel> gotten, bool getOne = false)
         {
             gotten = null;
             foreach (KeyValuePair<ThingDef, LinkedList<Apparel>> kv in this.StoredApparel.StoredApparelLookup)
@@ -282,6 +282,9 @@ namespace ChangeDresser
                                 gotten = new List<Apparel>();
                             }
                             gotten.Add(t);
+
+                            if (getOne)
+                                return true;
                         }
                     }
                 }
