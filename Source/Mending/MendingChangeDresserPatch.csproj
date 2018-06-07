@@ -42,10 +42,6 @@
       <HintPath>D:\Steam\steamapps\common\RimWorld\RimWorldWin_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="ChangeDresser">
-      <HintPath>D:\Steam\steamapps\common\RimWorld\Mods\ChangeDresser\Assemblies\ChangeDresser.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Mending">
       <HintPath>.\Mending.dll</HintPath>
       <Private>False</Private>
@@ -64,6 +60,12 @@
   <ItemGroup>
     <Compile Include="HarmonyPatches.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ChangeDresser.csproj">
+      <Project>{0fe64e9a-217a-4cee-8c5e-ce6cacb933ec}</Project>
+      <Name>ChangeDresser</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -23,8 +23,7 @@ namespace MendingChangeDresserPatch
                 Log.Message(
                     "MendingChangeDresserPatch Harmony Patches:" + Environment.NewLine +
                     "  Postfix:" + Environment.NewLine +
-                    "    WorkGiver_DoBill.TryFindBestBillIngredients - Priority Last" + Environment.NewLine +
-                    "    Game.Game_FinalizeInit - Priority Last");
+                    "    WorkGiver_DoBill.TryFindBestBillIngredients - Priority Last");
             }
         }
     }
