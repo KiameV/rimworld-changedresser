@@ -18,7 +18,7 @@ namespace ChangeDresser.UI.DTO
 
         private ThingComp alienComp = null;
 
-        public AlienDresserDTO(Pawn pawn, CurrentEditorEnum currentEditorEnum, List<CurrentEditorEnum> editors) : base(pawn, currentEditorEnum, editors)
+        public AlienDresserDTO(Pawn pawn, CurrentEditorEnum currentEditorEnum, IEnumerable<CurrentEditorEnum> editors) : base(pawn, currentEditorEnum, editors)
         {
             base.EditorTypeSelectionDto.SetSelectedEditor(currentEditorEnum);
         }

@@ -81,7 +81,7 @@ namespace ChangeDresser
                     if (this.CountReached(l))
                     {
 #if DEBUG
-                        Log.Warning("Count [" + Count + "] reached with: " + l[0].Thing.def.label);
+                        Log.Warning("Count [" + Count + "] reached with: " + l[0].Apparel.def.label);
 #endif
                         return l;
                     }
@@ -104,7 +104,7 @@ namespace ChangeDresser
                 if (__result == true || !WorldComp.HasDressers(bill.Map) || bill.Map != pawn.Map)
                     return;
 
-#if DEBUG || DROP_DEBUG || BILL_DEBUG
+#if DEBUG && (DROP_DEBUG || BILL_DEBUG)
             Log.Warning("TryFindBestBillIngredients.Postfix __result: " + __result);
 #endif
                 Dictionary<ThingDef, int> chosenAmounts = new Dictionary<ThingDef, int>();
@@ -122,7 +122,7 @@ namespace ChangeDresser
                     chosenAmounts[c.thing.def] = count;
                 }
 
-#if DEBUG || DROP_DEBUG || BILL_DEBUG
+#if DEBUG && (DROP_DEBUG || BILL_DEBUG)
             Log.Warning("    ChosenAmounts:");
             foreach (KeyValuePair<ThingLookup, int> kv in chosenAmounts)
             {
@@ -138,12 +138,12 @@ namespace ChangeDresser
                     {
                         if ((int)ing.GetBaseCount() == kv.Value)
                         {
-#if DEBUG || DROP_DEBUG || BILL_DEBUG
+#if DEBUG && (DROP_DEBUG || BILL_DEBUG)
                         Log.Warning("    Needed Ing population count is the same");
 #endif
                             if (ing.filter.Allows(kv.Key))
                             {
-#if DEBUG || DROP_DEBUG || BILL_DEBUG
+#if DEBUG && (DROP_DEBUG || BILL_DEBUG)
                             Log.Warning("    Needed Ing population found: " + kv.Key.Def.label + " count: " + kv.Value);
 #endif
                                 found = true;
@@ -153,14 +153,14 @@ namespace ChangeDresser
                     }
                     if (!found)
                     {
-#if DEBUG || DROP_DEBUG || BILL_DEBUG
+#if DEBUG && (DROP_DEBUG || BILL_DEBUG)
                     Log.Warning("    Needed Ing population not found");
 #endif
                         neededIngs.AddLast(new NeededIngrediants(ing.filter, (int)ing.GetBaseCount()));
                     }
                 }
 
-#if DEBUG || DROP_DEBUG || BILL_DEBUG
+#if DEBUG && (DROP_DEBUG || BILL_DEBUG)
             Log.Warning("    Needed Ings:");
             foreach (NeededIngrediants ings in neededIngs)
             {
@@ -198,7 +198,7 @@ namespace ChangeDresser
                     }
                 }
 
-#if DEBUG || DROP_DEBUG || BILL_DEBUG
+#if DEBUG && (DROP_DEBUG || BILL_DEBUG)
             Log.Warning("    neededIngs.count: " + neededIngs.Count);
 #endif
 

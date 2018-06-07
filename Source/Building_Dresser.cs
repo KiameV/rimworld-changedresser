@@ -73,10 +73,8 @@ namespace ChangeDresser
             }
         }
 
-        public static IEnumerable<CurrentEditorEnum> GetSupportedEditors(Pawn pawn)
+        public static IEnumerable<CurrentEditorEnum> GetSupportedEditors(bool isAlien)
         {
-            bool isAlien = AlienRaceUtil.IsAlien(pawn);
-
             yield return CurrentEditorEnum.ChangeDresserApparelColor;
 
             if (Settings.IncludeColorByLayer)
@@ -249,8 +247,8 @@ namespace ChangeDresser
         internal void ReclaimApparel()
         {
 #if DEBUG
-            List<Apparel> l = new List<Apparel>(BuildingUtil.FindThingsOfTypeNextTo<Apparel>(base.Map, base.Position, 1));
-            Log.Warning("Apparel found: " + l.Count);
+            List<Apparel> ll = new List<Apparel>(BuildingUtil.FindThingsOfTypeNextTo<Apparel>(base.Map, base.Position, 1));
+            Log.Warning("Apparel found: " + ll.Count);
 #endif
             List <Thing> l = BuildingUtil.FindThingsNextTo(base.Map, base.Position, 1);
             if (l.Count > 0)

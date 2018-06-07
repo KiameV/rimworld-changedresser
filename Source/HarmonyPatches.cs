@@ -404,7 +404,7 @@ namespace ChangeDresser
 #endif
 #if DEBUG
                         if (i == WAIT)
-                            Log.Warning("DraftController.Postfix: Set: " + o.label + ", forBattle: " + forBattle + ", Current Oufit: " + pawn.outfits.CurrentOutfit.label);
+                            Log.Warning("DraftController.Postfix: Set: " + o.Label + ", Current Oufit: " + pawn.outfits.CurrentOutfit.label);
 #endif
                         Command_Action a = new Command_Action();
                         ThingDef icon = o.Icon;

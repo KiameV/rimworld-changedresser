@@ -13,10 +13,8 @@ namespace ChangeDresser
         private JobDef changeBodyJobDef = DefDatabase<JobDef>.GetNamed("ChangeBody", true);
         public readonly JobDef changeBodyAlienColor = DefDatabase<JobDef>.GetNamed("ChangeBodyAlienColor", true);
 
-        public static IEnumerable<CurrentEditorEnum> GetSupportedEditors(Pawn pawn)
+        public static IEnumerable<CurrentEditorEnum> GetSupportedEditors(bool isAlien)
         {
-            bool isAlien = AlienRaceUtil.IsAlien(pawn);
-
             yield return CurrentEditorEnum.ChangeDresserApparelColor;
 
             if (Settings.IncludeColorByLayer)

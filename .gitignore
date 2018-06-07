@@ -1,4 +1,5 @@
-/obj/
+obj/
+/obj
 Source/obj/
 /Assemblies/
 /Source/.vs/
