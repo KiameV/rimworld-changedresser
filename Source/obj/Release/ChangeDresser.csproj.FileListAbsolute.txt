@@ -5,4 +5,3 @@ C:\Users\Travisty\Documents\Visual Studio 2017\Projects\RimWorld\ChangeDresser\S
 C:\Users\Travisty\Documents\Visual Studio 2017\Projects\RimWorld\ChangeDresser\Source\obj\Release\ChangeDresser.csprojResolveAssemblyReference.cache
 C:\Users\tofft\Documents\Visual Studio 2017\Projects\RimWorld\ChangeDresser\Source\obj\Release\ChangeDresser.csproj.CoreCompileInputs.cache
 C:\Users\tofft\Documents\Visual Studio 2017\Projects\RimWorld\ChangeDresser\Source\obj\Release\ChangeDresser.dll
-C:\Users\tofft\Documents\Visual Studio 2017\Projects\RimWorld\ChangeDresser\Source\obj\Release\ChangeDresser.csprojResolveAssemblyReference.cache

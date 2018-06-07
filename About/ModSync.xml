@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModSyncNinjaData>
-	<ID>477e8a45-5513-4d39-9d56-f9125b736f8f</ID>
-	<ModName>Change Dresser</ModName>
-	<Version>0.18.3.1</Version>
-	<SaveBreaking>false</SaveBreaking>
+  <ID>477e8a45-5513-4d39-9d56-f9125b736f8f</ID>
+  <ModName>Change Dresser</ModName>
+  <Version>0.18.3.1</Version>
+  <SaveBreaking>False</SaveBreaking>
+  <Host name="Github">
+    <Owner>KiameV</Owner>
+    <Project>rimworld-changedresser</Project>
+    <DownloadFrom>ModSyncReleases</DownloadFrom>
+    <Branch>A18_final</Branch>
+  </Host>
 </ModSyncNinjaData>
