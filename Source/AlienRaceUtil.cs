@@ -177,8 +177,7 @@ namespace ChangeDresser
                 {
                     foreach(ThingDef def in DefDatabase<ThingDef>.AllDefsListForReading)
                     {
-                        if (def.defName.StartsWith("Alien") || 
-                            def.defName.StartsWith("alien"))
+                        if (def.GetType().GetField("alienRace") != null)
                         {
 #if ALIEN_DEBUG && DEBUG
                             Log.Warning("Def: " + def.defName);
