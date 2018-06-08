@@ -1,4 +1,0 @@
-C:\Users\tofft\Documents\Visual Studio 2017\Projects\RimWorld\ChangeDresser\Source\Mending\obj\Release\MendingChangeDresserPatch.csprojResolveAssemblyReference.cache
-C:\Users\tofft\Documents\Visual Studio 2017\Projects\RimWorld\ChangeDresser\Source\Mending\obj\Release\MendingChangeDresserPatch.csproj.CoreCompileInputs.cache
-D:\Steam\steamapps\common\RimWorld\Mods\ChangeDresser\Assemblies\MendingChangeDresserPatch.dll
-C:\Users\tofft\Documents\Visual Studio 2017\Projects\RimWorld\ChangeDresser\Source\Mending\obj\Release\MendingChangeDresserPatch.dll
