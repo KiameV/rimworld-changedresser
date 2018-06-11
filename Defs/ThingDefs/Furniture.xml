@@ -102,6 +102,7 @@
 		<passability>Standable</passability>
 		<fillPercent>0.4</fillPercent>
 		<castEdgeShadows>false</castEdgeShadows>
+		<clearBuildingArea>false</clearBuildingArea>
 		<stuffCategories>
 			<li>Metallic</li>
 			<li>Woody</li>
