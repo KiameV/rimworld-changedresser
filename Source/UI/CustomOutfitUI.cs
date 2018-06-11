@@ -37,6 +37,7 @@ namespace ChangeDresser.UI
         private Pawn pawn = null;
         private PawnOutfitTracker outfitTracker = null;
         private CustomOutfit customOutfit;
+        private string searchText = "";
 
         private Vector2 scrollPosLeft = new Vector2(0, 0);
         private Vector2 scrollPosRight = new Vector2(0, 0);
@@ -223,13 +224,14 @@ namespace ChangeDresser.UI
 #endif
         }
 
-        private void DrawAvailableApparel(float x, int y, float width, float height)
+        private void DrawAvailableApparel(float x, float y, float width, float height)
         {
 #if TRACE && CUSTOM_OUTFIT_UI
             Log.Warning("Begin CustomOutfitUI.DrawAvailableApparel " + x + " " + y);
 #endif
             // Apparel Selection Titles
             Widgets.Label(new Rect(x, y, 150, 30), "ChangeDresser.AvailableApparel".Translate());
+            searchText = Widgets.TextArea(new Rect(x + 160, y, 100, 30), searchText).ToLower();
             y += HEIGHT + Y_BUFFER;
             
             Rect apparelListRect = new Rect(x, y, width - 10, height);
@@ -238,33 +240,38 @@ namespace ChangeDresser.UI
             GUI.BeginGroup(apparelListRect);
             this.scrollPosLeft = GUI.BeginScrollView(new Rect(GenUI.AtZero(apparelListRect)), this.scrollPosLeft, apparelScrollRect);
             
-            for (int i = 0; i < this.availableApparel.Count; ++i)
+            for (int i = 0, count = 0; i < this.availableApparel.Count; ++i)
             {
                 Apparel apparel = this.availableApparel[i];
-                Rect rowRect = new Rect(0, 2f + i * CELL_HEIGHT, apparelListRect.width, CELL_HEIGHT);
-                GUI.BeginGroup(rowRect);
-
-                Widgets.ThingIcon(new Rect(0f, 0f, CELL_HEIGHT, CELL_HEIGHT), apparel);
-                
-                Widgets.Label(new Rect(CELL_HEIGHT + 5f, 0f, rowRect.width - 40f - CELL_HEIGHT, CELL_HEIGHT), apparel.Label);
-
-                if (this.customOutfit != null)
+                if (searchText.Trim().Length == 0 || 
+                    apparel.Label.ToLower().Contains(searchText))
                 {
-                    Rect buttonRect = new Rect(rowRect.width - 35f, 10, 20, 20);
-                    if (this.CanWear(apparel))
+                    Rect rowRect = new Rect(0, 2f + count * CELL_HEIGHT, apparelListRect.width, CELL_HEIGHT);
+                    ++count;
+                    GUI.BeginGroup(rowRect);
+
+                    Widgets.ThingIcon(new Rect(0f, 0f, CELL_HEIGHT, CELL_HEIGHT), apparel);
+
+                    Widgets.Label(new Rect(CELL_HEIGHT + 5f, 0f, rowRect.width - 40f - CELL_HEIGHT, CELL_HEIGHT), apparel.Label);
+
+                    if (this.customOutfit != null)
                     {
-                        if (Widgets.ButtonImage(buttonRect, WidgetUtil.nextTexture))
+                        Rect buttonRect = new Rect(rowRect.width - 35f, 10, 20, 20);
+                        if (this.CanWear(apparel))
                         {
-                            this.AddApparelToOutfit(apparel);
-                            break;
+                            if (Widgets.ButtonImage(buttonRect, WidgetUtil.nextTexture))
+                            {
+                                this.AddApparelToOutfit(apparel);
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            Widgets.ButtonImage(buttonRect, WidgetUtil.cantTexture);
                         }
                     }
-                    else
-                    {
-                        Widgets.ButtonImage(buttonRect, WidgetUtil.cantTexture);
-                    }
+                    GUI.EndGroup();
                 }
-                GUI.EndGroup();
             }
             Widgets.EndScrollView();
             GUI.EndGroup();

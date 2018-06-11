@@ -78,10 +78,9 @@ namespace ChangeDresser
 
         public static void SwapApparel(Pawn pawn, Outfit toWear)
         {
-#if DEBUG
-            Log.Message(
-                Environment.NewLine + 
-                "Start Main.SwapApparel Pawn: " + pawn.Name.ToStringShort + " toWear: " + toWear.label);
+#if SWAP_APPAREL
+            Log.Warning(
+                "Begin Main.SwapApparel Pawn: " + pawn.Name.ToStringShort + " toWear: " + toWear.label);
 #endif
             if (!WorldComp.HasDressers())
             {
@@ -89,6 +88,9 @@ namespace ChangeDresser
                 return;
             }
 
+#if TRACE && SWAP_APPAREL
+            Log.Message("    Remove Apparel:");
+#endif
             // Remove apparel from pawn
             List<Apparel> worn = new List<Apparel>(pawn.apparel.WornApparel);
             foreach (Apparel a in worn)
@@ -96,14 +98,16 @@ namespace ChangeDresser
                 if (Settings.KeepForcedApparel && 
                     pawn.outfits.forcedHandler.ForcedApparel.Contains(a))
                 {
-                    continue;
-                }
-
-                pawn.apparel.Remove(a);
-#if DEBUG
-                Log.Warning(" Apparel " + a.LabelShort + " removed");
+#if TRACE && SWAP_APPAREL
+                    Log.Warning("        Is Forced, Not removing: " + a.LabelShort);
 #endif
 
+                    continue;
+                }
+#if TRACE && SWAP_APPAREL
+                Log.Warning("        Removed: " + a.LabelShort);
+#endif
+                pawn.apparel.Remove(a);
                 /*bool handled = false;
                 foreach (Building_Dresser d in WorldComp.DressersToUse)
                 {
@@ -128,8 +132,8 @@ namespace ChangeDresser
                 }*/
                 if (!WorldComp.AddApparel(a))
                 {
-#if DEBUG
-                    Log.Warning("  Apparel " + a.LabelShort + " was not handled");
+#if TRACE && SWAP_APPAREL
+                    Log.Warning("        Apparel " + a.LabelShort + " was not added to any change dresser. Drop on floor");
 #endif
                     Thing t;
                     if (!a.Spawned)
@@ -143,9 +147,15 @@ namespace ChangeDresser
                 }
             }
 
+#if TRACE && SWAP_APPAREL
+            Log.Warning("    Previous Outfit was: " + pawn.outfits.CurrentOutfit.label);
+#endif
             pawn.outfits.CurrentOutfit = toWear;
+#if TRACE && SWAP_APPAREL
+            Log.Warning("    Current Outfit is now: " + pawn.outfits.CurrentOutfit.label);
+#endif
 
-            typeof (JobGiver_OptimizeApparel)
+            typeof(JobGiver_OptimizeApparel)
                 .GetField("neededWarmth", BindingFlags.Static | BindingFlags.NonPublic)
                 .SetValue(null, PawnApparelGenerator.CalculateNeededWarmth(pawn, pawn.Map.Tile, GenLocalDate.Twelfth(pawn)));
 
@@ -153,35 +163,41 @@ namespace ChangeDresser
 
             JobGiver_OptimizeApparel apparelOptimizer = new JobGiver_OptimizeApparel();
             object[] param = new object[] { pawn };
+#if TRACE && SWAP_APPAREL
+            Log.Warning("    Optimize Apparel:");
+#endif
             for (int i = 0; i < 10; ++i)
             {
-#if DEBUG
-                Log.Warning(i + " start equip for loop");
-#endif
                 Job job = mi.Invoke(apparelOptimizer, param) as Job;
-#if DEBUG
-                Log.Warning(i + " job is null: " + (string)((job == null) ? "yes" : "no"));
+#if TRACE && SWAP_APPAREL
+                Log.Warning("        Optimize Job Loop: " + i + ". Is null: " + (string)((job == null) ? "yes" : "no"));
 #endif
                 if (job == null)
                     break;
-#if DEBUG
-                Log.Warning(job.def.defName);
+#if TRACE && SWAP_APPAREL
+                Log.Warning("        Job is: " + job.def.defName);
 #endif
                 if (job.def == JobDefOf.Wear)
                 {
+#if TRACE && SWAP_APPAREL
+#endif
                     Apparel a = ((job.targetB != null) ? job.targetB.Thing : null) as Apparel;
                     if (a == null)
                     {
                         Log.Warning("ChangeDresser: Problem equiping pawn. Apparel is null.");
                         break;
                     }
-#if DEBUG
-                    Log.Warning("Wear from ground " + a.Label);
+#if TRACE && SWAP_APPAREL
+                    Log.Warning("        Chosen Apparel: " + a.Label);
+                    Log.Warning("        Wear from ground");
 #endif
                     pawn.apparel.Wear(a);
                 }
                 else if (job.def == Building_Dresser.WEAR_APPAREL_FROM_DRESSER_JOB_DEF)
                 {
+#if TRACE && SWAP_APPAREL
+                    Log.Warning("        Get from Change Dresser");
+#endif
                     Building_Dresser d = ((job.targetA != null) ? job.targetA.Thing : null) as Building_Dresser;
                     Apparel a = ((job.targetB != null) ? job.targetB.Thing : null) as Apparel;
 
@@ -190,65 +206,67 @@ namespace ChangeDresser
                         Log.Warning("ChangeDresser: Problem equiping pawn. Dresser or Apparel is null.");
                         break;
                     }
-#if DEBUG
-                    Log.Warning("Wear from dresser " + d.Label + " " + a.Label);
+#if TRACE && SWAP_APPAREL
+                    Log.Warning("        Chosen Apparel: " + a.Label);
+                    Log.Warning("        Wear from dresser " + d.Label);
 #endif
                     d.RemoveNoDrop(a);
                     pawn.apparel.Wear(a);
                 }
-#if DEBUG
-                Log.Warning(i + " end equip for loop");
-#endif
             }
 
             if (pawn.apparel.WornApparelCount == 0)
             {
+#if TRACE && SWAP_APPAREL
+                Log.Warning("    Pawn has no cloths. Trying a different method.");
+                Log.Warning("    Trying different defs:");
+#endif
                 // When pawns are not on the home map they will not get dressed using the game's normal method
 
                 // This logic works but pawns will run back to the dresser to change cloths
                 foreach (ThingDef def in toWear.filter.AllowedThingDefs)
                 {
-    #if DEBUG
-                    Log.Warning("  Try Find Def " + def.label);
-    #endif
+#if TRACE && SWAP_APPAREL
+                    Log.Warning("        Try Find Def " + def.label);
+#endif
                     if (pawn.apparel.CanWearWithoutDroppingAnything(def))
                     {
-    #if DEBUG
-                        Log.Warning("   Can wear");
-    #endif
+#if TRACE && SWAP_APPAREL
+                        Log.Warning("        Can Wear. Check Dressers for apparel:");
+#endif
                         foreach (Building_Dresser d in WorldComp.DressersToUse)
                         {
-    #if DEBUG
-                            Log.Warning("   Check dresser " + d.Label);
-    #endif
+#if TRACE && SWAP_APPAREL
+                            Log.Warning("            " + d.Label);
+#endif
                             Apparel apparel;
                             if (d.TryRemoveBestApparel(def, toWear.filter, out apparel))
                             {
-    #if DEBUG
-                                Log.Warning("    Found " + apparel.LabelShort);
-    #endif
+#if TRACE && SWAP_APPAREL
+                                Log.Warning("            Found : " + apparel.Label);
+#endif
                                 pawn.apparel.Wear(apparel);
                                 break;
                             }
-    #if DEBUG
+#if TRACE && SWAP_APPAREL
                             else
-                                Log.Warning("    No matching apparel found");
-    #endif
+                                Log.Warning("            No matching apparel found");
+#endif
                         }
                     }
-    #if DEBUG
+#if TRACE && SWAP_APPAREL
                     else
-                        Log.Warning("  Can't wear");
-    #endif
+                        Log.Warning("        Can't wear");
+#endif
                 }
             }
-#if DEBUG
-            Log.Message("End Main.SwapApparel" + Environment.NewLine);
-#endif
             foreach (Apparel a in pawn.apparel.WornApparel)
             {
                 Patch_Pawn_ApparelTracker_Notify_ApparelAdded.ColorApparel(pawn, a);
             }
+#if SWAP_APPAREL
+            Log.Message("End Main.SwapApparel" + Environment.NewLine);
+#endif
         }
     }
 

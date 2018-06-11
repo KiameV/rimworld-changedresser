@@ -56,6 +56,49 @@ namespace ChangeDresser
 
         public static void OptimizeApparel(Pawn pawn)
         {
+            if (!WorldComp.HasDressers(pawn.Map))
+            {
+                // When pawns are not on the home map they will not get dressed using the game's normal method
+
+                // This logic works but pawns will run back to the dresser to change cloths
+                foreach (ThingDef def in pawn.outfits.CurrentOutfit.filter.AllowedThingDefs)
+                {
+#if TRACE && SWAP_APPAREL
+                    Log.Warning("        Try Find Def " + def.label);
+#endif
+                    if (pawn.apparel.CanWearWithoutDroppingAnything(def))
+                    {
+#if TRACE && SWAP_APPAREL
+                        Log.Warning("        Can Wear. Check Dressers for apparel:");
+#endif
+                        foreach (Building_Dresser d in WorldComp.DressersToUse)
+                        {
+#if TRACE && SWAP_APPAREL
+                            Log.Warning("            " + d.Label);
+#endif
+                            Apparel apparel;
+                            if (d.TryRemoveBestApparel(def, pawn.outfits.CurrentOutfit.filter, out apparel))
+                            {
+#if TRACE && SWAP_APPAREL
+                                Log.Warning("            Found : " + apparel.Label);
+#endif
+                                pawn.apparel.Wear(apparel);
+                                break;
+                            }
+#if TRACE && SWAP_APPAREL
+                            else
+                                Log.Warning("            No matching apparel found");
+#endif
+                        }
+                    }
+#if TRACE && SWAP_APPAREL
+                    else
+                        Log.Warning("        Can't wear");
+#endif
+                }
+                return;
+            }
+
 #if DRESSER_OUTFIT
             Log.Warning("Begin OptimizeApparelUtil.OptimizeApparel(Pawn: " + pawn.Name + ")");
 #endif
