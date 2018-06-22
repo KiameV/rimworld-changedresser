@@ -89,11 +89,12 @@ namespace ChangeDresser
 #endif
         }
 
-        public Color GetLayerColor(ApparelLayer layer, bool getFromWorn = false)
+        public Color GetLayerColor(ApparelLayerDef layer, bool getFromWorn = false)
         {
-            if (this.ApparelColors != null && this.ApparelColors.Count > (int)layer)
+            int layerInt = Util.ToInt(layer);
+            if (this.ApparelColors != null && this.ApparelColors.Count > layerInt)
             {
-                SlotColor sc = this.ApparelColors[(int)layer];
+                SlotColor sc = this.ApparelColors[layerInt];
                 if (sc.IsAssigned)
                 {
                     return sc.Color;
@@ -110,15 +111,16 @@ namespace ChangeDresser
             return Color.white;
         }
 
-        public void SetLayerColor(ApparelLayer layer, Color c)
+        public void SetLayerColor(ApparelLayerDef layer, Color c)
         {
+            int layerInt = Util.ToInt(layer);
             this.InitApparelColor();
-            if (this.ApparelColors != null && this.ApparelColors.Count > (int)layer)
+            if (this.ApparelColors != null && this.ApparelColors.Count > layerInt)
             {
-                SlotColor sc = this.ApparelColors[(int)layer];
+                SlotColor sc = this.ApparelColors[layerInt];
                 sc.Color = c;
                 sc.IsAssigned = true;
-                this.ApparelColors[(int)layer] = sc;
+                this.ApparelColors[layerInt] = sc;
             }
         }
 
@@ -352,7 +354,7 @@ namespace ChangeDresser
         {
             if (this.ApparelColors == null || this.ApparelColors.Count == 0)
             {
-                int size = Enum.GetValues(typeof(ApparelLayer)).Length;
+                int size = Util.LayerCount;
                 this.ApparelColors = new List<SlotColor>(size);
                 for (int i = 0; i < size; ++i)
                 {
@@ -361,17 +363,18 @@ namespace ChangeDresser
             }
         }
 
-        public ApparelLayer GetOuterMostLayer(Apparel a)
+        public ApparelLayerDef GetOuterMostLayer(Apparel a)
         {
-            ApparelLayer layer = ApparelLayer.OnSkin;
-            foreach (ApparelLayer l in a.def.apparel.layers)
+            int layer = Util.ToInt(ApparelLayerDefOf.OnSkin);
+            foreach (ApparelLayerDef l in a.def.apparel.layers)
             {
-                if (l > layer)
+                int i = Util.ToInt(l);
+                if (i > layer)
                 {
-                    layer = l;
+                    layer = i;
                 }
             }
-            return layer;
+            return Util.ToLayer(layer);
         }
 
         public void ApplyApparelColor(Apparel a)
@@ -379,13 +382,13 @@ namespace ChangeDresser
 #if DEBUG || DEBUG_APPAREL_COLOR
             Log.Warning("Start PawnOutfitTracker.ApplyApparelColor (Apparel: " + a.Label + ")");
 #endif
-            ApparelLayer layer = this.GetOuterMostLayer(a);
-            if (this.ApparelColors != null && this.ApparelColors.Count > (int)layer)
+            int layer = Util.ToInt(this.GetOuterMostLayer(a));
+            if (this.ApparelColors != null && this.ApparelColors.Count > layer)
             {
-                SlotColor slotColor = this.ApparelColors[(int)layer];
+                SlotColor slotColor = this.ApparelColors[layer];
                 //a.DrawColor = slotColor.Color;
                 CompColorableUtility.SetColor(a, slotColor.Color, true);
-                /*foreach (ApparelLayer layer in a.def.apparel.layers)
+                /*foreach (ApparelLayerDef layer in a.def.apparel.layers)
                 {
                     SlotColor slotColor = this.ApparelColors[(int)layer];
                     if (slotColor.IsAssigned)
@@ -415,12 +418,12 @@ namespace ChangeDresser
             Log.Warning("Start PawnOutfitTracker.SetApparelColor (Apparel: " + a.Label + " Color: " + color + ")");
 #endif
             this.InitApparelColor();
-            ApparelLayer layer = this.GetOuterMostLayer(a);
+            int layer = Util.ToInt(this.GetOuterMostLayer(a));
             SlotColor slotColor = this.ApparelColors[(int)layer];
             slotColor.IsAssigned = true;
             slotColor.Color = color;
             this.ApparelColors[(int)layer] = slotColor;
-            /*foreach (ApparelLayer layer in a.def.apparel.layers)
+            /*foreach (ApparelLayerDef layer in a.def.apparel.layers)
             {
 #if DEBUG || DEBUG_APPAREL_COLOR
                 Log.Warning("    Setting layer " + layer);

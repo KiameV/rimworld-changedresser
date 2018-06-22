@@ -16,14 +16,14 @@ namespace ChangeDresser.UI
         {
             this.Dresser = dresser;
 
-            this.closeOnEscapeKey = true;
+            this.closeOnClickedOutside = true;
             this.doCloseButton = true;
             this.doCloseX = true;
             this.absorbInputAroundWindow = true;
             this.forcePause = true;
             this.closeOnClickedOutside = false;
             
-            foreach (Pawn p in PawnsFinder.AllMapsCaravansAndTravelingTransportPods_Colonists)
+            foreach (Pawn p in PawnsFinder.AllMapsCaravansAndTravelingTransportPods_Alive_Colonists)
             {
                 if (p.Faction == Faction.OfPlayer && p.def.race.Humanlike)
                 {
@@ -126,7 +126,7 @@ namespace ChangeDresser.UI
                 foreach (PawnOutfitTracker po in WorldComp.PawnOutfits.Values)
                 {
                     x = 0;
-                    Widgets.Label(new Rect(x, y, NAME_WIDTH, HEIGHT), po.Pawn.NameStringShort);
+                    Widgets.Label(new Rect(x, y, NAME_WIDTH, HEIGHT), po.Pawn.Name.ToStringShort);
                     x += NAME_WIDTH + X_BUFFER;
 
                     foreach (Outfit o in allOutfits)
@@ -186,7 +186,7 @@ namespace ChangeDresser.UI
                     if (!newOutfitFound)
                     {
                         Messages.Message(
-                                pawn.NameStringShort + " will no longer wear " + outfit.label +
+                                pawn.Name.ToStringShort + " will no longer wear " + outfit.label +
                                 ". Could not find another Outfit for them to wear. Please fix this manually.", MessageTypeDefOf.CautionInput);
                     }
                     else
@@ -195,13 +195,13 @@ namespace ChangeDresser.UI
                         if (o != null)
                         {
                             Messages.Message(
-                                    pawn.NameStringShort + " will no longer wear " + outfit.label +
+                                    pawn.Name.ToStringShort + " will no longer wear " + outfit.label +
                                     " and will instead be assigned to wear " + o.Label, MessageTypeDefOf.CautionInput);
                         }
                         else
                         {
                             Messages.Message(
-                                    pawn.NameStringShort + " will no longer wear " + outfit.label +
+                                    pawn.Name.ToStringShort + " will no longer wear " + outfit.label +
                                     " but could not be assigned anything else to wear.", MessageTypeDefOf.CautionInput);
                         }
                     }

@@ -76,7 +76,8 @@ namespace ChangeDresser
             return tex;
         }
 
-        public static void SwapApparel(Pawn pawn, Outfit toWear)
+        #region Old SwapApparel
+        /*public static void SwapApparel(Pawn pawn, Outfit toWear)
         {
 #if SWAP_APPAREL
             Log.Warning(
@@ -129,7 +130,7 @@ namespace ChangeDresser
                         Log.Warning("   Does Not Handle");
                     }
 #endif
-                }*/
+                }* /
                 if (!WorldComp.AddApparel(a))
                 {
 #if TRACE && SWAP_APPAREL
@@ -267,7 +268,8 @@ namespace ChangeDresser
 #if SWAP_APPAREL
             Log.Message("End Main.SwapApparel" + Environment.NewLine);
 #endif
-        }
+        }*/
+        #endregion
     }
 
     [HarmonyPatch(typeof(Pawn_ApparelTracker), "Notify_ApparelAdded")]
@@ -734,11 +736,11 @@ namespace ChangeDresser
 
     [HarmonyPatch(
         typeof(CaravanExitMapUtility), "ExitMapAndCreateCaravan",
-        new Type[] { typeof(IEnumerable<Pawn>), typeof(Faction), typeof(int), typeof(int) })]
-    static class Patch_CaravanExitMapUtility_ExitMapAndCreateCaravan_1
+        new Type[] { typeof(IEnumerable<Pawn>), typeof(Faction), typeof(int), typeof(int), typeof(int), typeof(bool) })]
+    static class Patch_CaravanExitMapUtility_ExitMapAndCreateCaravan
     {
         [HarmonyPriority(Priority.First)]
-        static void Prefix(IEnumerable<Pawn> pawns, Faction faction, int exitFromTile, int directionTile)
+        static void Prefix(IEnumerable<Pawn> pawns, Faction faction, int exitFromTile, int directionTile, int destinationTile, bool sendMessage)
         {
             if (faction == Faction.OfPlayer)
             {
@@ -754,7 +756,7 @@ namespace ChangeDresser
         }
     }
 
-    [HarmonyPatch(
+    /*[HarmonyPatch(
         typeof(CaravanExitMapUtility), "ExitMapAndCreateCaravan",
         new Type[] { typeof(IEnumerable<Pawn>), typeof(Faction), typeof(int) })]
     static class Patch_CaravanExitMapUtility_ExitMapAndCreateCaravan_2
@@ -773,7 +775,7 @@ namespace ChangeDresser
                 }
             }
         }
-    }
+    }*/
 #endregion
 
 #region Handle "Do until X" for stored weapons
@@ -782,10 +784,10 @@ namespace ChangeDresser
     {
         static void Postfix(ref int __result, RecipeWorkerCounter __instance, Bill_Production bill)
         {
-            List<ThingCountClass> products = __instance.recipe.products;
+            List<ThingDefCountClass> products = __instance.recipe.products;
             if (WorldComp.DressersToUse.Count > 0 && products != null)
             {
-                foreach (ThingCountClass product in products)
+                foreach (ThingDefCountClass product in products)
                 {
                     ThingDef def = product.thingDef;
                     foreach (Building_Dresser d in WorldComp.DressersToUse)

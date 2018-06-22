@@ -57,7 +57,7 @@ namespace ChangeDresser.UI
 #endif
             this.Dresser = dresser;
 
-            this.closeOnEscapeKey = false;
+            this.closeOnClickedOutside = false;
             this.doCloseButton = false;
             this.doCloseX = false;
             this.absorbInputAroundWindow = true;
@@ -66,7 +66,7 @@ namespace ChangeDresser.UI
 #if CUSTOM_OUTFIT_UI
             Log.Message("    Populate Selectable Pawns:");
 #endif
-            foreach (Pawn p in PawnsFinder.AllMapsCaravansAndTravelingTransportPods_Colonists)
+            foreach (Pawn p in PawnsFinder.AllMapsCaravansAndTravelingTransportPods_Alive_Colonists)
             {
 #if CUSTOM_OUTFIT_UI
                 Log.Message("        " + p.Name.ToStringShort + " " + p.Faction + " " + p.def.defName);

@@ -54,7 +54,7 @@ namespace ChangeDresser
 
         public static bool DropThing(Thing toDrop, Building from, Map map, bool makeForbidden = true)
         {
-            return DropThing(toDrop, from.Position, map, makeForbidden);
+            return DropThing(toDrop, from.InteractionCell, map, makeForbidden);
         }
 
         public static bool DropThing(Thing toDrop, IntVec3 from, Map map, bool makeForbidden = true)
@@ -71,26 +71,7 @@ namespace ChangeDresser
                     }
                 }
 
-                IntVec3 pos = from;
-                for (int i = 0; i < 4; ++i)
-                {
-                    pos = Transform(i, from);
-
-                    bool canDropHere = true;
-                    foreach (Thing temp in map.thingGrid.ThingsAt(pos))
-                    {
-                        if (temp.def.passability == Traversability.Impassable)
-                        {
-                            canDropHere = false;
-                            break;
-                        }
-                    }
-
-                    if (canDropHere)
-                        break;
-                }
-
-                toDrop.Position = pos;
+                toDrop.Position = from;
 
                 return toDrop.Spawned;
             }
@@ -102,27 +83,6 @@ namespace ChangeDresser
                     e.StackTrace);
             }
             return false;
-        }
-
-        private static IntVec3 Transform(int i, IntVec3 from)
-        {
-            IntVec3 result = from;
-            switch (i)
-            {
-                case 0:
-                    result.x = result.x + 1;
-                    break;
-                case 1:
-                    result.x = result.x - 1;
-                    break;
-                case 2:
-                    result.z = result.z + 1;
-                    break;
-                default:
-                    result.z = result.z - 1;
-                    break;
-            }
-            return result;
         }
     }
 }

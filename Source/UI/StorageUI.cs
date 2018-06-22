@@ -33,7 +33,7 @@ namespace ChangeDresser.UI
             this.Dresser = dresser;
             this.Pawn = pawn;
 
-            this.closeOnEscapeKey = true;
+            this.closeOnClickedOutside = true;
             this.doCloseButton = true;
             this.doCloseX = true;
             this.absorbInputAroundWindow = true;

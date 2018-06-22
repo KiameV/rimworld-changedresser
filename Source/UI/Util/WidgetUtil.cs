@@ -614,10 +614,10 @@ namespace ChangeDresser.UI.Util
                 for (int i = 0; i < layerSelectionsContainer.Count; ++i)
                 {
                     ApparelLayerColorSelectionDTO dto = layerSelectionsContainer[i];
-                    ApparelLayer layer = dto.ApparelLayer;
+                    ApparelLayerDef layer = dto.ApparelLayerDef;
                     GUI.BeginGroup(new Rect(0, SelectionRowHeight + 3f + i * cellHeight, apparelListRect.width, cellHeight));
                     
-                    GUI.color = dto.PawnOutfitTracker.GetLayerColor(dto.ApparelLayer);
+                    GUI.color = dto.PawnOutfitTracker.GetLayerColor(dto.ApparelLayerDef);
                     Rect rect = new Rect(0f, colorSampleHeight, LayerColor.width, LayerColor.height);
                     GUI.Label(rect, new GUIContent(LayerColor));
                     GUI.color = Color.white;
@@ -634,7 +634,7 @@ namespace ChangeDresser.UI.Util
                     {
                         GUI.color = Color.gray;
                     }
-                    Widgets.Label(textRect, new GUIContent(dto.ApparelLayer.ToString().Translate(), "ChangeDresser.SelectMultipleApparel".Translate()));
+                    Widgets.Label(textRect, new GUIContent(dto.ApparelLayerDef.ToString().Translate(), "ChangeDresser.SelectMultipleApparel".Translate()));
                     if (Widgets.ButtonInvisible(textRect, false))
                     {
                         layerSelectionsContainer.Select(dto, Event.current.shift);
@@ -642,7 +642,7 @@ namespace ChangeDresser.UI.Util
                     GUI.color = Color.white;
                     if (Widgets.ButtonImage(new Rect(apparelScrollRect.width - 40f, 0, 32f, 16f), copyIconTexture))
                     {
-                        layerSelectionsContainer.CopyColor = dto.PawnOutfitTracker.GetLayerColor(dto.ApparelLayer);
+                        layerSelectionsContainer.CopyColor = dto.PawnOutfitTracker.GetLayerColor(dto.ApparelLayerDef);
                     }
                     if (layerSelectionsContainer.CopyColorSelected)
                     {

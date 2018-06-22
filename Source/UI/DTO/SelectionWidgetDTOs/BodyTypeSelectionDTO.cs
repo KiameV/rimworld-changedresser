@@ -30,58 +30,57 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
 {
     class BodyTypeSelectionDTO : ASelectionWidgetDTO
     {
-        public readonly BodyType OriginalBodyType;
+        public readonly BodyTypeDef OriginalBodyType;
 
-        private List<BodyType> bodyTypes;
-        private List<BodyType> maleBodyTypes;
-        private List<BodyType> femaleBodyTypes;
+        private List<BodyTypeDef> bodyTypes;
+        private List<BodyTypeDef> maleBodyTypes;
+        private List<BodyTypeDef> femaleBodyTypes;
 
-        public BodyTypeSelectionDTO(BodyType bodyType, Gender gender) : base()
+        public BodyTypeSelectionDTO(BodyTypeDef bodyType, Gender gender) : base()
         {
             this.OriginalBodyType = bodyType;
-
-            Array a = Enum.GetValues(typeof(BodyType));
-            this.maleBodyTypes = new List<BodyType>(a.Length - 1);
-            this.femaleBodyTypes = new List<BodyType>(a.Length - 1);
-            foreach (BodyType bt in a)
+            
+            this.maleBodyTypes = new List<BodyTypeDef>()
             {
-                if (bt != BodyType.Undefined)
-                {
-                    if (bt != BodyType.Female)
-                        this.maleBodyTypes.Add(bt);
-                    if (bt != BodyType.Male)
-                        this.femaleBodyTypes.Add(bt);
-                }
-            }
+                BodyTypeDefOf.Male,
+                BodyTypeDefOf.Thin,
+                BodyTypeDefOf.Hulk,
+                BodyTypeDefOf.Fat
+            };
+            this.femaleBodyTypes = new List<BodyTypeDef>()
+            {
+                BodyTypeDefOf.Female,
+                BodyTypeDefOf.Thin,
+                BodyTypeDefOf.Hulk,
+                BodyTypeDefOf.Fat
+            };
 
             this.bodyTypes = (gender == Gender.Male) ? this.maleBodyTypes : this.femaleBodyTypes;
             this.FindIndex(bodyType);
         }
 
         public BodyTypeSelectionDTO(
-            BodyType bodyType, Gender gender, List<BodyType> possibleBodyTypes) : base()
+            BodyTypeDef bodyType, Gender gender, List<BodyTypeDef> possibleBodyTypes) : base()
         {
             this.OriginalBodyType = bodyType;
             
-            this.maleBodyTypes = new List<BodyType>(possibleBodyTypes.Count - 1);
-            this.femaleBodyTypes = new List<BodyType>(possibleBodyTypes.Count - 1);
-            foreach (BodyType bt in possibleBodyTypes)
+            this.maleBodyTypes = new List<BodyTypeDef>(possibleBodyTypes.Count - 1);
+            this.femaleBodyTypes = new List<BodyTypeDef>(possibleBodyTypes.Count - 1);
+            foreach (BodyTypeDef bt in possibleBodyTypes)
             {
-                if (bt != BodyType.Undefined)
-                {
-                    if (bt != BodyType.Female)
-                        this.maleBodyTypes.Add(bt);
-                    if (bt != BodyType.Male)
-                        this.femaleBodyTypes.Add(bt);
-                }
+                if (bt != BodyTypeDefOf.Female)
+                    this.maleBodyTypes.Add(bt);
+                if (bt != BodyTypeDefOf.Male)
+                    this.femaleBodyTypes.Add(bt);
             }
 
             this.bodyTypes = (gender == Gender.Male) ? this.maleBodyTypes : this.femaleBodyTypes;
             this.FindIndex(bodyType);
         }
 
-        private void FindIndex(BodyType bodyType)
+        private void FindIndex(BodyTypeDef bodyType)
         {
+            base.index = 0;
             for (int i = 0; i < this.bodyTypes.Count; ++i)
             {
                 if (this.bodyTypes[i] == bodyType)
@@ -96,21 +95,21 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
         {
             set
             {
-                BodyType bodyType = (BodyType)this.SelectedItem;
+                BodyTypeDef bodyType = (BodyTypeDef)this.SelectedItem;
                 if (value == Gender.Female)
                 {
                     this.bodyTypes = this.femaleBodyTypes;
-                    if (bodyType == BodyType.Male)
+                    if (bodyType == BodyTypeDefOf.Male)
                     {
-                        bodyType = BodyType.Female;
+                        bodyType = BodyTypeDefOf.Female;
                     }
                 }
                 else // Male
                 {
                     this.bodyTypes = this.maleBodyTypes;
-                    if (bodyType == BodyType.Female)
+                    if (bodyType == BodyTypeDefOf.Female)
                     {
-                        bodyType = BodyType.Male;
+                        bodyType = BodyTypeDefOf.Male;
                     }
                 }
 

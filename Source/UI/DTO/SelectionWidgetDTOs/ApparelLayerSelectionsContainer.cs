@@ -31,12 +31,12 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
 {
     class ApparelLayerColorSelectionDTO : SelectionColorWidgetDTO
     {
-        public readonly ApparelLayer ApparelLayer;
+        public readonly ApparelLayerDef ApparelLayerDef;
         public readonly PawnOutfitTracker PawnOutfitTracker;
 
-        public ApparelLayerColorSelectionDTO(ApparelLayer layer, PawnOutfitTracker po) : base((po != null) ? po.GetLayerColor(layer, true) : Color.white)
+        public ApparelLayerColorSelectionDTO(ApparelLayerDef layer, PawnOutfitTracker po) : base((po != null) ? po.GetLayerColor(layer, true) : Color.white)
         {
-            this.ApparelLayer = layer;
+            this.ApparelLayerDef = layer;
             this.PawnOutfitTracker = po;
         }
 
@@ -45,14 +45,14 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
             if (o != null &&
                 o is ApparelLayerColorSelectionDTO)
             {
-                return this.ApparelLayer == ((ApparelLayerColorSelectionDTO)o).ApparelLayer;
+                return this.ApparelLayerDef == ((ApparelLayerColorSelectionDTO)o).ApparelLayerDef;
             }
             return false;
         }
 
         public override int GetHashCode()
         {
-            return ("ApparelLayerColorSelectionDTO" + this.ApparelLayer + this.PawnOutfitTracker.Pawn.ThingID).GetHashCode();
+            return ("ApparelLayerColorSelectionDTO" + this.ApparelLayerDef + this.PawnOutfitTracker.Pawn.ThingID).GetHashCode();
         }
     }
 
@@ -74,12 +74,12 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
                 WorldComp.PawnOutfits.Add(pawn, po);
             }
             this.PawnOutfitTracker = po;
-
-            Array layers = Enum.GetValues(typeof(ApparelLayer));
-            this.ApparelLayerSelections = new List<ApparelLayerColorSelectionDTO>(layers.Length);
-            for (int i = 0; i < layers.Length; ++i)
+            
+            this.ApparelLayerSelections = new List<ApparelLayerColorSelectionDTO>(ChangeDresser.Util.LayerCount);
+            IEnumerable<ApparelLayerDef> layers = ChangeDresser.Util.Layers;
+            foreach (ApparelLayerDef layer in layers)
             {
-                this.ApparelLayerSelections.Add(new ApparelLayerColorSelectionDTO((ApparelLayer)layers.GetValue(i), this.PawnOutfitTracker));
+                this.ApparelLayerSelections.Add(new ApparelLayerColorSelectionDTO(layer, this.PawnOutfitTracker));
             }
             this.SelectedApparel = new List<SelectionColorWidgetDTO>();
             this.ColorPresetsDTO = presetsDto;
@@ -157,12 +157,12 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
             {
                 ApparelColorSelectionDTO apparelColorSelectDto = (ApparelColorSelectionDTO)sender;
                 Apparel a = apparelColorSelectDto.Apparel;
-                ApparelLayer layer = this.PawnOutfitTracker.GetOuterMostLayer(a);
+                ApparelLayerDef layer = this.PawnOutfitTracker.GetOuterMostLayer(a);
                 foreach (ApparelLayerColorSelectionDTO dto in ApparelLayerSelections)
                 {
-                    if (dto.ApparelLayer == layer)
+                    if (dto.ApparelLayerDef == layer)
                         dto.SelectedColor = a.DrawColor;
-                    //if (a.def.apparel.layers.Contains(dto.ApparelLayer))
+                    //if (a.def.apparel.layers.Contains(dto.ApparelLayerDef))
                 }
             }
         }

@@ -30,7 +30,7 @@ namespace ChangeDresser
                     this.colors = new Dictionary<Apparel, ApparelColor>();
                 }
 
-                foreach (Pawn p in PawnsFinder.AllMapsCaravansAndTravelingTransportPods_Colonists)
+                foreach (Pawn p in PawnsFinder.AllMapsCaravansAndTravelingTransportPods_Alive_Colonists)
                 {
                     if (p.Faction == Faction.OfPlayer && p.def.race.Humanlike)
                     {

@@ -93,7 +93,7 @@ namespace ChangeDresser
         [HarmonyPatch(typeof(WorkGiver_DoBill), "TryFindBestBillIngredients")]
         static class Patch_WorkGiver_DoBill_TryFindBestBillIngredients
         {
-            static void Postfix(ref bool __result, Bill bill, Pawn pawn, Thing billGiver, List<ThingAmount> chosen)
+            static void Postfix(ref bool __result, Bill bill, Pawn pawn, Thing billGiver, List<ThingCount> chosen)
             {
                 if (bill.Map == null)
                 {
@@ -108,18 +108,18 @@ namespace ChangeDresser
             Log.Warning("TryFindBestBillIngredients.Postfix __result: " + __result);
 #endif
                 Dictionary<ThingDef, int> chosenAmounts = new Dictionary<ThingDef, int>();
-                foreach (ThingAmount c in chosen)
+                foreach (ThingCount c in chosen)
                 {
                     int count;
-                    if (chosenAmounts.TryGetValue(c.thing.def, out count))
+                    if (chosenAmounts.TryGetValue(c.Thing.def, out count))
                     {
-                        count += c.count;
+                        count += c.Count;
                     }
                     else
                     {
-                        count = c.count;
+                        count = c.Count;
                     }
-                    chosenAmounts[c.thing.def] = count;
+                    chosenAmounts[c.Thing.def] = count;
                 }
 
 #if DEBUG && (DROP_DEBUG || BILL_DEBUG)
@@ -216,7 +216,7 @@ namespace ChangeDresser
                             if (sa.Dresser.TryRemove(sa.Apparel, false))
                             {
                                 count -= sa.Apparel.stackCount;
-                                chosen.Add(new ThingAmount(sa.Apparel, sa.Apparel.stackCount));
+                                chosen.Add(new ThingCount(sa.Apparel, sa.Apparel.stackCount));
                             }
                         }
                     }

@@ -152,12 +152,12 @@ namespace ChangeDresser
             }
         }
 
-        public override void DeSpawn()
+        public override void DeSpawn(DestroyMode mode = DestroyMode.Vanish)
         {
             try
             {
                 this.Dispose();
-                base.DeSpawn();
+                base.DeSpawn(mode);
             }
             catch (Exception e)
             {
@@ -686,7 +686,7 @@ namespace ChangeDresser
             ++groupKey;
             l.Add(a);
 
-            return SaveStorageSettingsUtil.SaveStorageSettingsGizmoUtil.AddSaveLoadGizmos(l, SaveStorageSettingsUtil.SaveTypeEnum.Apparel_Management, this.settings.filter);
+            return SaveStorageSettingsUtil.AddSaveLoadGizmos(l, SaveTypeEnum.Apparel_Management, this.settings.filter);
         }
 #endregion
 

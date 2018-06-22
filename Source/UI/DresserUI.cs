@@ -27,7 +27,7 @@ namespace ChangeDresser.UI
 
         public DresserUI(DresserDTO dresserDto)
         {
-            this.closeOnEscapeKey = true;
+            this.closeOnClickedOutside = true;
             this.doCloseButton = false;
             this.doCloseX = true;
             this.absorbInputAroundWindow = true;
@@ -343,7 +343,7 @@ namespace ChangeDresser.UI
 #if DEBUG
                             Log.Warning("  po found ");
 #endif
-                            //foreach (ApparelLayer l in a.def.apparel.layers)
+                            //foreach (ApparelLayerDef l in a.def.apparel.layers)
                             //{
 #if DEBUG
                                 Log.Warning("  color change for " + a.Label);
@@ -396,7 +396,7 @@ namespace ChangeDresser.UI
                         this.ApparelWithColorChange = new List<Apparel>();
 
                     ApparelLayerColorSelectionDTO dto = (ApparelLayerColorSelectionDTO)sender;
-                    dto.PawnOutfitTracker.SetLayerColor(dto.ApparelLayer, dto.SelectedColor);
+                    dto.PawnOutfitTracker.SetLayerColor(dto.ApparelLayerDef, dto.SelectedColor);
 
                     foreach (Apparel a in this.dresserDto.Pawn.apparel.WornApparel)
                     {
@@ -411,7 +411,7 @@ namespace ChangeDresser.UI
                 }
                 else if (sender is BodyTypeSelectionDTO)
                 {
-                    pawn.story.bodyType = (BodyType)value;
+                    pawn.story.bodyType = (BodyTypeDef)value;
                 }
                 else if (sender is GenderSelectionDTO)
                 {

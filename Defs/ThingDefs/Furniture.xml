@@ -173,7 +173,7 @@
 		</stuffCategories>
 		<costStuffCount>20</costStuffCount>
 		<costList>
-			<Component>6</Component>
+			<ComponentIndustrial>6</ComponentIndustrial>
 			<Steel>250</Steel>
 		</costList>
 		<defaultPlacingRot>South</defaultPlacingRot>
@@ -199,7 +199,6 @@
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>1000</basePowerConsumption>
 				<shortCircuitInRain>true</shortCircuitInRain>
-				<startElectricalFires>true</startElectricalFires>
 			</li>
 			<li Class="CompProperties_Facility">
 				<maxSimultaneous>1</maxSimultaneous>
