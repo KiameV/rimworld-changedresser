@@ -309,7 +309,7 @@ namespace ChangeDresser
 #endif
         static void Postfix(Pawn __instance, ref IEnumerable<Gizmo> __result)
         {
-            if (!__instance.Drafted)
+            if (!__instance.Drafted && WorldComp.HasDressers())
             {
 #if DEBUG
                 ++i;
@@ -399,7 +399,7 @@ namespace ChangeDresser
         static void Postfix(Pawn_DraftController __instance, ref IEnumerable<Gizmo> __result)
         {
             Pawn pawn = __instance.pawn;
-            if (pawn.Drafted)
+            if (pawn.Drafted && WorldComp.HasDressers())
             {
 #if DEBUG
                 ++i;
@@ -488,17 +488,20 @@ namespace ChangeDresser
     {
         static void Postfix(Pawn_DraftController __instance)
         {
-            Pawn pawn = __instance.pawn;
-            PawnOutfitTracker outfits;
-            if (WorldComp.PawnOutfits.TryGetValue(pawn, out outfits))
+            if (WorldComp.HasDressers())
             {
-                if (pawn.Drafted)
+                Pawn pawn = __instance.pawn;
+                PawnOutfitTracker outfits;
+                if (WorldComp.PawnOutfits.TryGetValue(pawn, out outfits))
                 {
-                    outfits.ChangeToBattleOutfit();
-                }
-                else
-                {
-                    outfits.ChangeToCivilianOutfit();
+                    if (pawn.Drafted)
+                    {
+                        outfits.ChangeToBattleOutfit();
+                    }
+                    else
+                    {
+                        outfits.ChangeToCivilianOutfit();
+                    }
                 }
             }
         }
