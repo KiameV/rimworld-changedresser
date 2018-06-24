@@ -152,7 +152,16 @@ namespace ChangeDresser
                 }
             }
 
-            Scribe_Collections.Look(ref this.l, "ApparelColors", LookMode.Deep, new object[0]);
+            try
+            {
+                Scribe_Collections.Look(ref this.l, "ApparelColors", LookMode.Deep, new object[0]);
+            }
+            catch (System.Exception e)
+            {
+                Log.Warning(
+                "Unable to persist original apparel colors." + System.Environment.NewLine +
+                e.GetType().Name + " " + e.Message);
+            }
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
@@ -175,14 +184,23 @@ namespace ChangeDresser
 #endif
                         foreach (ApparelColor ac in this.l)
                         {
-                            if (ac != null && ac.Apparel != null))
+                            try
                             {
+                                if (ac != null && ac.Apparel != null)
+                                {
 #if TRACE && APPAREL_COLOR_TRACKER
                                 Log.Message("        " + ac.Apparel.Label + " " + ac.Color);
 #endif
-                                this.colors.Add(ac.Apparel, ac);
+                                    this.colors.Add(ac.Apparel, ac);
+                                }
                             }
-                        }
+                            catch (System.Exception e)
+                            {
+                                Log.Warning(
+                                "Unable to persist an original apparel's color." + System.Environment.NewLine +
+                                e.GetType().Name + " " + e.Message);
+                            }
+                            }
                     }
 #if TRACE && APPAREL_COLOR_TRACKER
                     else
