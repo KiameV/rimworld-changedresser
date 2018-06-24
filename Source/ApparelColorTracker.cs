@@ -32,14 +32,20 @@ namespace ChangeDresser
 
                 foreach (Pawn p in PawnsFinder.AllMapsCaravansAndTravelingTransportPods_Colonists)
                 {
-                    if (p.Faction == Faction.OfPlayer && p.def.race.Humanlike)
+                    if (p != null && 
+                        p.apparel != null &&
+                        p.Faction == Faction.OfPlayer &&
+                        p.def.race.Humanlike)
                     {
 #if APPAREL_COLOR_TRACKER
                         Log.Message("    Pawn: " + p.Name.ToStringShort);
 #endif
                         foreach (Apparel a in p.apparel.WornApparel)
                         {
-                            this.PersistColor(a);
+                            if (a != null)
+                            {
+                                this.PersistColor(a);
+                            }
                         }
                     }
                 }
