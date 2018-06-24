@@ -175,7 +175,7 @@ namespace ChangeDresser
 #endif
                         foreach (ApparelColor ac in this.l)
                         {
-                            if (ac != null)
+                            if (ac != null && ac.Apparel != null))
                             {
 #if TRACE && APPAREL_COLOR_TRACKER
                                 Log.Message("        " + ac.Apparel.Label + " " + ac.Color);
