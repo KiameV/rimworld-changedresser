@@ -307,7 +307,7 @@ namespace ChangeDresser
 #endif
         static void Postfix(Pawn __instance, ref IEnumerable<Gizmo> __result)
         {
-            if (!__instance.Drafted)
+            if (!__instance.Drafted && WorldComp.HasDressers())
             {
 #if DEBUG
                 ++i;
@@ -396,26 +396,28 @@ namespace ChangeDresser
 #endif
         static void Postfix(Pawn_DraftController __instance, ref IEnumerable<Gizmo> __result)
         {
-            Pawn pawn = __instance.pawn;
-            if (pawn.Drafted)
+            if (WorldComp.HasDressers())
             {
+                Pawn pawn = __instance.pawn;
+                if (pawn.Drafted)
+                {
 #if DEBUG
                 ++i;
                 if (i == WAIT)
                     Log.Warning("DraftController.Postfix: Pawn is Drafted");
 #endif
-                PawnOutfitTracker outfits;
-                if (WorldComp.PawnOutfits.TryGetValue(pawn, out outfits))
-                {
-                    List<Gizmo> l = new List<Gizmo>(__result);
+                    PawnOutfitTracker outfits;
+                    if (WorldComp.PawnOutfits.TryGetValue(pawn, out outfits))
+                    {
+                        List<Gizmo> l = new List<Gizmo>(__result);
 #if DEBUG
                     if (i == WAIT)
                         Log.Warning("DraftController.Postfix: Sets found! Pre Gizmo Count: " + l.Count);
 #endif
-                    foreach (IDresserOutfit o in outfits.BattleOutfits)
-                    {
-                        if (o == null || !o.IsValid())
-                            continue;
+                        foreach (IDresserOutfit o in outfits.BattleOutfits)
+                        {
+                            if (o == null || !o.IsValid())
+                                continue;
 #if DEBUG && DRESSER_OUTFIT
                         string msg = "Patch_Pawn_DraftController_GetGizmos Outfit: " + o.Label;
                         Log.ErrorOnce(msg, msg.GetHashCode());
@@ -424,49 +426,49 @@ namespace ChangeDresser
                         if (i == WAIT)
                             Log.Warning("DraftController.Postfix: Set: " + o.Label + ", Current Oufit: " + pawn.outfits.CurrentOutfit.label);
 #endif
-                        Command_Action a = new Command_Action();
-                        ThingDef icon = o.Icon;
-                        if (icon != null)
-                        {
-                            a.icon = HarmonyPatches.GetIcon(icon);
-                        }
-                        else
-                        {
-                            a.icon = WidgetUtil.noneTexture;
-                        }
-                        StringBuilder sb = new StringBuilder();
-                        if (!pawn.outfits.CurrentOutfit.Equals(o))
-                        {
-                            sb.Append("ChangeDresser.ChangeTo".Translate());
-                            a.defaultDesc = "ChangeDresser.ChangeToDesc".Translate();
-                        }
-                        else
-                        {
-                            sb.Append("ChangeDresser.Wearing".Translate());
-                            a.defaultDesc = "ChangeDresser.WearingDesc".Translate();
-                        }
-                        sb.Append(" ");
-                        sb.Append(o.Label);
-                        a.defaultLabel = sb.ToString();
-                        a.activateSound = SoundDef.Named("Click");
-                        a.action = delegate
-                        {
+                            Command_Action a = new Command_Action();
+                            ThingDef icon = o.Icon;
+                            if (icon != null)
+                            {
+                                a.icon = HarmonyPatches.GetIcon(icon);
+                            }
+                            else
+                            {
+                                a.icon = WidgetUtil.noneTexture;
+                            }
+                            StringBuilder sb = new StringBuilder();
+                            if (!pawn.outfits.CurrentOutfit.Equals(o))
+                            {
+                                sb.Append("ChangeDresser.ChangeTo".Translate());
+                                a.defaultDesc = "ChangeDresser.ChangeToDesc".Translate();
+                            }
+                            else
+                            {
+                                sb.Append("ChangeDresser.Wearing".Translate());
+                                a.defaultDesc = "ChangeDresser.WearingDesc".Translate();
+                            }
+                            sb.Append(" ");
+                            sb.Append(o.Label);
+                            a.defaultLabel = sb.ToString();
+                            a.activateSound = SoundDef.Named("Click");
+                            a.action = delegate
+                            {
 #if DRESSER_OUTFIT
                                 Log.Warning("Patch_Pawn_DraftController_GetGizmos click for " + o.Label);
 #endif
                                 outfits.ChangeTo(o);
-                                //HarmonyPatches.SwapApparel(pawn, o);
-                                //outfits.ColorApparel(pawn);
-                            };
-                        l.Add(a);
-                    }
+                            //HarmonyPatches.SwapApparel(pawn, o);
+                            //outfits.ColorApparel(pawn);
+                        };
+                            l.Add(a);
+                        }
 #if DEBUG
                     if (i == WAIT)
                         Log.Warning("Post Gizmo Count: " + l.Count);
 #endif
-                    __result = l;
+                        __result = l;
+                    }
                 }
-            }
 #if DEBUG
             else
             {
@@ -478,6 +480,7 @@ namespace ChangeDresser
             if (i == WAIT)
                 i = 0;
 #endif
+            }
         }
     }
 
@@ -490,7 +493,7 @@ namespace ChangeDresser
             PawnOutfitTracker outfits;
             if (WorldComp.PawnOutfits.TryGetValue(pawn, out outfits))
             {
-                if (pawn.Drafted)
+                if (pawn.Drafted && WorldComp.HasDressers())
                 {
                     outfits.ChangeToBattleOutfit();
                 }
