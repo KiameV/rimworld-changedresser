@@ -28,6 +28,7 @@ namespace ChangeDresser
         private static bool showBodyChange = true;
         private static bool includeColorByLayer = true;
         private static bool persistApparelOriginalColor = true;
+        private static bool shareHairAcrossGenders = false;
 
         public static bool ShowGenderAgeChange { get { return showGenderAgeChange; } }
         public static bool ShowBodyChange { get { return showBodyChange; } }
@@ -35,6 +36,7 @@ namespace ChangeDresser
         public static bool IncludeColorByLayer { get { return includeColorByLayer; } }
         public static int RepairAttachmentDistance { get { return 6; } }
         public static bool PersistApparelOriginalColor { get { return persistApparelOriginalColor; } }
+        public static bool ShareHairAcrossGenders { get { return shareHairAcrossGenders; } }
 
         public override void ExposeData()
         {
@@ -44,6 +46,7 @@ namespace ChangeDresser
             Scribe_Values.Look<bool>(ref showBodyChange, "ChangeDresser.ShowBodyChange", true, true);
             Scribe_Values.Look<bool>(ref includeColorByLayer, "ChangeDresser.IncludeColorByLayer", true, true);
             Scribe_Values.Look<bool>(ref persistApparelOriginalColor, "ChangeDresser.PersistApparelOriginalColor", false, true);
+            Scribe_Values.Look<bool>(ref persistApparelOriginalColor, "ChangeDresser.ShareHairAcrossGenders", false, false);
         }
 
         public static void DoSettingsWindowContents(Rect rect)
@@ -56,6 +59,8 @@ namespace ChangeDresser
             l.CheckboxLabeled("ChangeDresser.IncludeColorByLayer".Translate(), ref includeColorByLayer);
             l.Gap(4);
             l.CheckboxLabeled("ChangeDresser.PersistApparelOriginalColor".Translate(), ref persistApparelOriginalColor);
+            l.Gap(4);
+            l.CheckboxLabeled("ChangeDresser.ShareHairAcrossGenders".Translate(), ref shareHairAcrossGenders);
             l.Gap(4);
             l.CheckboxLabeled("ChangeDresser.ShowBodyChange".Translate(), ref showBodyChange);
             if (showBodyChange)

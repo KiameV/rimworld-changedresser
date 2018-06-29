@@ -43,18 +43,26 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
 
             foreach (HairDef def in DefDatabase<HairDef>.AllDefs)
             {
-                if (def.hairGender == HairGender.Male ||
-                    def.hairGender == HairGender.MaleUsually ||
-                    def.hairGender == HairGender.Any)
+                if (Settings.ShareHairAcrossGenders)
                 {
                     this.maleHairDefs.Add(def);
-                }
-
-                if (def.hairGender == HairGender.Female ||
-                    def.hairGender == HairGender.FemaleUsually ||
-                    def.hairGender == HairGender.Any)
-                {
                     this.femaleHairDefs.Add(def);
+                }
+                else
+                {
+                    if (def.hairGender == HairGender.Male ||
+                        def.hairGender == HairGender.MaleUsually ||
+                        def.hairGender == HairGender.Any)
+                    {
+                        this.maleHairDefs.Add(def);
+                    }
+
+                    if (def.hairGender == HairGender.Female ||
+                        def.hairGender == HairGender.FemaleUsually ||
+                        def.hairGender == HairGender.Any)
+                    {
+                        this.femaleHairDefs.Add(def);
+                    }
                 }
             }
 

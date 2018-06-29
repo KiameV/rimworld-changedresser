@@ -110,6 +110,7 @@
 	<ChangeDresser.ShowBodyChange>Allow Body Change</ChangeDresser.ShowBodyChange>
 	<ChangeDresser.ShowGenderAgeChange>Allow Gender and Age Change</ChangeDresser.ShowGenderAgeChange>
 	<ChangeDresser.IncludeColorByLayer>Include Color By Apparel Layer</ChangeDresser.IncludeColorByLayer>
+	<ChangeDresser.ShareHairAcrossGenders>Share Hair Across Genders</ChangeDresser.ShareHairAcrossGenders>
 	
 	<!-- Layers -->
 	<OnSkin>On Skin</OnSkin>

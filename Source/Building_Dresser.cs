@@ -3,7 +3,6 @@ using ChangeDresser.UI.Util;
 using RimWorld;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using Verse;
