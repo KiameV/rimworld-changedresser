@@ -33,9 +33,18 @@ namespace ChangeDresser
             sb.Append("ChangeDresser.IsMending".Translate());
             sb.Append(": ");
             if (BeingRepaird == null)
+            {
                 sb.Append(Boolean.FalseString);
+            }
             else
+            {
                 sb.Append(BeingRepaird.Label);
+                sb.Append(Environment.NewLine);
+                sb.Append("    ");
+                sb.Append(BeingRepaird.HitPoints.ToString());
+                sb.Append("/");
+                sb.Append(BeingRepaird.MaxHitPoints);
+            }
             return sb.ToString();
         }
 
@@ -115,13 +124,18 @@ namespace ChangeDresser
                 // Power is on
                 // Repairing something
                 // Apparel is fully repaired
+                this.BeingRepaird.HitPoints = this.BeingRepaird.MaxHitPoints;
                 this.StopRepairing();
                 this.StartRepairing();
             }
             
             if (this.BeingRepaird != null)
             {
-                this.BeingRepaird.HitPoints += 1;
+                this.BeingRepaird.HitPoints += Settings.MendingAttachmentMendingSpeed;
+                if (this.BeingRepaird.HitPoints > this.BeingRepaird.MaxHitPoints)
+                {
+                    this.BeingRepaird.HitPoints = this.BeingRepaird.MaxHitPoints;
+                }
 
                 float generatedHeat = GenTemperature.ControlTemperatureTempChange(
                     base.Position, base.Map, 10, float.MaxValue);

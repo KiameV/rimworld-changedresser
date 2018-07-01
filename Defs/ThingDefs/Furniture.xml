@@ -16,20 +16,21 @@
 				<cornerBR>Damage/Corner</cornerBR>
 			</damageData>
 		</graphicData>
-		<altitudeLayer>FloorEmplacement</altitudeLayer>
+		<altitudeLayer>Building</altitudeLayer>
 		<passability>PassThroughOnly</passability>
 		<fillPercent>0.4</fillPercent>
 		<castEdgeShadows>true</castEdgeShadows>
+		<pathCost>60</pathCost>
 		<stuffCategories>
 			<li>Metallic</li>
 			<li>Woody</li>
 			<li>Stony</li>
 		</stuffCategories>
 		<costStuffCount>40</costStuffCount>
+		<defaultPlacingRot>South</defaultPlacingRot>
 		<costList>
 			<Steel>40</Steel>
 		</costList>
-		<defaultPlacingRot>South</defaultPlacingRot>
 		<statBases>
 			<MaxHitPoints>100</MaxHitPoints>
 			<Mass>15</Mass>
@@ -45,8 +46,14 @@
 		<placeWorkers>
 			<li>PlaceWorker_ShowFacilitiesConnections</li>
 		</placeWorkers>
+		<researchPrerequisites>
+			<li>ComplexFurniture</li>
+		</researchPrerequisites>
 		<comps>
 			<li Class="CompProperties_Facility">
+				<statOffsets>
+					<Comfort>0.05</Comfort>
+				</statOffsets>
 				<maxSimultaneous>1</maxSimultaneous>
 				<maxDistance>6</maxDistance>
 			</li>

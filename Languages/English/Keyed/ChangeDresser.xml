@@ -111,6 +111,7 @@
 	<ChangeDresser.ShowGenderAgeChange>Allow Gender and Age Change</ChangeDresser.ShowGenderAgeChange>
 	<ChangeDresser.IncludeColorByLayer>Include Color By Apparel Layer</ChangeDresser.IncludeColorByLayer>
 	<ChangeDresser.ShareHairAcrossGenders>Share Hair Across Genders</ChangeDresser.ShareHairAcrossGenders>
+	<ChangeDresser.MendingAttachmentMendingSpeed>Mending-Attachment Speed</ChangeDresser.MendingAttachmentMendingSpeed>
 	
 	<!-- Layers -->
 	<OnSkin>On Skin</OnSkin>

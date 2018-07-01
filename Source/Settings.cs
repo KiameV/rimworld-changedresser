@@ -24,11 +24,15 @@ namespace ChangeDresser
 
     public class Settings : ModSettings
     {
+        private const int DEFAULT_MENDING_SPEED = 1;
+
         private static bool showGenderAgeChange = true;
         private static bool showBodyChange = true;
         private static bool includeColorByLayer = true;
         private static bool persistApparelOriginalColor = true;
         private static bool shareHairAcrossGenders = false;
+        private static int mendingAttachmentMendingSpeed = DEFAULT_MENDING_SPEED;
+        private static string mendingAttachmentMendingSpeedBuffer = DEFAULT_MENDING_SPEED.ToString();
 
         public static bool ShowGenderAgeChange { get { return showGenderAgeChange; } }
         public static bool ShowBodyChange { get { return showBodyChange; } }
@@ -37,6 +41,7 @@ namespace ChangeDresser
         public static int RepairAttachmentDistance { get { return 6; } }
         public static bool PersistApparelOriginalColor { get { return persistApparelOriginalColor; } }
         public static bool ShareHairAcrossGenders { get { return shareHairAcrossGenders; } }
+        public static int MendingAttachmentMendingSpeed { get { return mendingAttachmentMendingSpeed; } }
 
         public override void ExposeData()
         {
@@ -47,6 +52,8 @@ namespace ChangeDresser
             Scribe_Values.Look<bool>(ref includeColorByLayer, "ChangeDresser.IncludeColorByLayer", true, true);
             Scribe_Values.Look<bool>(ref persistApparelOriginalColor, "ChangeDresser.PersistApparelOriginalColor", false, true);
             Scribe_Values.Look<bool>(ref persistApparelOriginalColor, "ChangeDresser.ShareHairAcrossGenders", false, false);
+            Scribe_Values.Look<int>(ref mendingAttachmentMendingSpeed, "ChangeDresser.MendingAttachmentMendingSpeed", DEFAULT_MENDING_SPEED, false);
+            mendingAttachmentMendingSpeedBuffer = mendingAttachmentMendingSpeed.ToString();
         }
 
         public static void DoSettingsWindowContents(Rect rect)
@@ -60,6 +67,13 @@ namespace ChangeDresser
             l.Gap(4);
             l.CheckboxLabeled("ChangeDresser.PersistApparelOriginalColor".Translate(), ref persistApparelOriginalColor);
             l.Gap(4);
+            l.TextFieldNumericLabeled<int>("ChangeDresser.MendingAttachmentMendingSpeed".Translate(), ref mendingAttachmentMendingSpeed, ref mendingAttachmentMendingSpeedBuffer, 1, 100);
+            if (l.ButtonText("ResetButton".Translate()))
+            {
+                mendingAttachmentMendingSpeed = DEFAULT_MENDING_SPEED;
+                mendingAttachmentMendingSpeedBuffer = DEFAULT_MENDING_SPEED.ToString();
+            }
+            l.Gap(6);
             l.CheckboxLabeled("ChangeDresser.ShareHairAcrossGenders".Translate(), ref shareHairAcrossGenders);
             l.Gap(4);
             l.CheckboxLabeled("ChangeDresser.ShowBodyChange".Translate(), ref showBodyChange);
