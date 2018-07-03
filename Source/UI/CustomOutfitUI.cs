@@ -273,7 +273,7 @@ namespace ChangeDresser.UI
                     GUI.EndGroup();
                 }
             }
-            Widgets.EndScrollView();
+            GUI.EndScrollView();
             GUI.EndGroup();
 #if TRACE && CUSTOM_OUTFIT_UI
             Log.Warning("End CustomOutfitUI.DrawAvailableApparel " + x + " " + y);
@@ -314,7 +314,7 @@ namespace ChangeDresser.UI
 
                     GUI.EndGroup();
                 }
-                Widgets.EndScrollView();
+                GUI.EndScrollView();
                 GUI.EndGroup();
             }
 #if TRACE && CUSTOM_OUTFIT_UI
