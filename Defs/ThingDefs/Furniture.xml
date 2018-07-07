@@ -214,7 +214,7 @@
 		</building>
 		<hasInteractionCell>false</hasInteractionCell>
 		<designationCategory>Misc</designationCategory>
-		<tickerType>Long</tickerType>
+		<tickerType>Normal</tickerType>
 		<researchPrerequisites>
 			<li>Mending</li>
 			<li>MultiAnalyzer</li>

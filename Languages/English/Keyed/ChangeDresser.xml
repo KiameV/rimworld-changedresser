@@ -111,7 +111,9 @@
 	<ChangeDresser.ShowGenderAgeChange>Allow Gender and Age Change</ChangeDresser.ShowGenderAgeChange>
 	<ChangeDresser.IncludeColorByLayer>Include Color By Apparel Layer</ChangeDresser.IncludeColorByLayer>
 	<ChangeDresser.ShareHairAcrossGenders>Share Hair Across Genders</ChangeDresser.ShareHairAcrossGenders>
-	<ChangeDresser.MendingAttachmentMendingSpeed>Mending-Attachment Speed</ChangeDresser.MendingAttachmentMendingSpeed>
+	<ChangeDresser.MendingAttachmentSettings>Mending-Attachment Settings</ChangeDresser.MendingAttachmentSettings>
+	<ChangeDresser.SecondsBetweenTicks>Seconds Between Ticks</ChangeDresser.SecondsBetweenTicks>
+	<ChangeDresser.HPPerTick>HP Per Tick</ChangeDresser.HPPerTick>
 	
 	<!-- Layers -->
 	<OnSkin>On Skin</OnSkin>

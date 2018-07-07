@@ -1,7 +1,6 @@
 ﻿using RimWorld;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Verse;
 
@@ -10,7 +9,6 @@ namespace ChangeDresser
     class Building_RepairChangeDresser : Building
     {
         private const int LOW_POWER_COST = 10;
-        //private const int RARE_TICKS_PER_HP = 4;
 
         private static LinkedList<Apparel> AllApparelBeingRepaired = new LinkedList<Apparel>();
         private LinkedList<Building_Dresser> AttachedDressers = new LinkedList<Building_Dresser>();
@@ -18,7 +16,6 @@ namespace ChangeDresser
 
         private Apparel BeingRepaird = null;
         private Map CurrentMap;
-        //private int rareTickCount = 0;
 
         public override string GetInspectString()
         {
@@ -102,50 +99,68 @@ namespace ChangeDresser
             this.AttachedDressers.Clear();
         }
 
-        public override void TickLong()
+        // Normal Tick: 1 / 60 seconds
+        // Rare Tick: 4 seconds (.6 on fast)
+        // Long Tick: 30 seconds (2.2 on fast)
+
+        private const long THIRTY_SECONDS = 30 * TimeSpan.TicksPerSecond;
+        private long lastTick = DateTime.Now.Ticks;
+        private long lastSearch = DateTime.Now.Ticks;
+        public override void Tick()
         {
-            if (!this.compPowerTrader.PowerOn)
+            base.TickRare();
+            long now = DateTime.Now.Ticks;
+            if (now - lastTick > Settings.MendingAttachmentUpdateIntervalTicks)
             {
-                // Power is off
-                if (BeingRepaird != null)
+                //Log.Warning("Tick: [" + (int)((now - lastTick) / TimeSpan.TicksPerMillisecond) + "] milliseconds");
+                lastTick = DateTime.Now.Ticks;
+                if (!this.compPowerTrader.PowerOn)
                 {
-                    this.StopRepairing();
+                    // Power is off
+                    if (BeingRepaird != null)
+                    {
+                        this.StopRepairing();
+                    }
                 }
-            }
-            else if (this.BeingRepaird == null)
-            {
-                // Power is on and not repairing anything
-                this.StartRepairing();
-            }
-            else if (
-                this.BeingRepaird != null && 
-                this.BeingRepaird.HitPoints == this.BeingRepaird.MaxHitPoints)
-            {
-                // Power is on
-                // Repairing something
-                // Apparel is fully repaired
-                this.BeingRepaird.HitPoints = this.BeingRepaird.MaxHitPoints;
-                this.StopRepairing();
-                this.StartRepairing();
-            }
-            
-            if (this.BeingRepaird != null)
-            {
-                this.BeingRepaird.HitPoints += Settings.MendingAttachmentMendingSpeed;
-                if (this.BeingRepaird.HitPoints > this.BeingRepaird.MaxHitPoints)
+                else if (this.BeingRepaird == null)
                 {
+                    // Power is on and not repairing anything
+                    if (now - lastSearch > THIRTY_SECONDS)
+                    {
+                        lastSearch = now;
+                        this.StartRepairing();
+                    }
+                }
+                else if (
+                    this.BeingRepaird != null &&
+                    this.BeingRepaird.HitPoints == this.BeingRepaird.MaxHitPoints)
+                {
+                    // Power is on
+                    // Repairing something
+                    // Apparel is fully repaired
                     this.BeingRepaird.HitPoints = this.BeingRepaird.MaxHitPoints;
+                    this.StopRepairing();
+                    this.StartRepairing();
                 }
 
-                float generatedHeat = GenTemperature.ControlTemperatureTempChange(
-                    base.Position, base.Map, 10, float.MaxValue);
-                this.GetRoomGroup().Temperature += generatedHeat;
-                
-                this.compPowerTrader.PowerOutput = -this.compPowerTrader.Props.basePowerConsumption;
-            }
-            else
-            {
-                this.compPowerTrader.PowerOutput = LOW_POWER_COST;
+                if (this.BeingRepaird != null)
+                {
+                    this.BeingRepaird.HitPoints += Settings.MendingAttachmentMendingSpeed;
+                    if (this.BeingRepaird.HitPoints > this.BeingRepaird.MaxHitPoints)
+                    {
+                        this.BeingRepaird.HitPoints = this.BeingRepaird.MaxHitPoints;
+                    }
+
+                    float generatedHeat = GenTemperature.ControlTemperatureTempChange(
+                        base.Position, base.Map, 10, float.MaxValue);
+                    this.GetRoomGroup().Temperature += generatedHeat;
+
+                    this.compPowerTrader.PowerOutput = -this.compPowerTrader.Props.basePowerConsumption;
+                }
+                else
+                {
+                    this.compPowerTrader.PowerOutput = LOW_POWER_COST;
+                }
             }
         }
 
