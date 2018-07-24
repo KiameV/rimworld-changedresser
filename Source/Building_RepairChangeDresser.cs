@@ -140,6 +140,7 @@ namespace ChangeDresser
                     // Apparel is fully repaired
                     this.BeingRepaird.HitPoints = this.BeingRepaird.MaxHitPoints;
                     this.StopRepairing();
+                    lastSearch = now;
                     this.StartRepairing();
                 }
 

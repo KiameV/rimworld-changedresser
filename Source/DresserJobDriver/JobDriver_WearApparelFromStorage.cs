@@ -7,7 +7,7 @@ namespace ChangeDresser.DresserJobDriver
 {
     internal class JobDriver_WearApparelFromStorage : JobDriver
     {
-        public override bool TryMakePreToilReservations()
+        public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
             return true;
         }
