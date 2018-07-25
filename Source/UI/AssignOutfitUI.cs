@@ -72,13 +72,13 @@ namespace ChangeDresser.UI
                 List<Outfit> allOutfits = Current.Game.outfitDatabase.AllOutfits;
                 int y = 50 + HEIGHT + Y_BUFFER;
 
-
-                this.scrollPosition = GUI.BeginScrollView(
-                    new Rect(0, y, inRect.width, inRect.height - y - 50),
+                GUI.BeginScrollView(
+                    new Rect(0, y, inRect.width - 32, HEIGHT * 2 + Y_BUFFER * 3),
                     this.scrollPosition,
-                    new Rect(0, y, 
-                        NAME_WIDTH + X_BUFFER + ((CHECKBOX_WIDTH + X_BUFFER) * allOutfits.Count), 
-                        (HEIGHT + Y_BUFFER) * WorldComp.PawnOutfits.Count + y));
+                    new Rect(0, y,
+                        NAME_WIDTH + X_BUFFER + ((CHECKBOX_WIDTH + X_BUFFER) * allOutfits.Count),
+                        HEIGHT * 2 + Y_BUFFER * 3),
+                    GUIStyle.none, GUIStyle.none);
 
                 // Header - Lists the Outfit names
                 int x = NAME_WIDTH + X_BUFFER;
@@ -121,14 +121,37 @@ namespace ChangeDresser.UI
                     }
                 }
                 y += HEIGHT + Y_BUFFER * 2;
+                Widgets.DrawLineHorizontal(NAME_WIDTH + X_BUFFER, y - 4, NAME_WIDTH + X_BUFFER + ((CHECKBOX_WIDTH + X_BUFFER) * allOutfits.Count));
+                GUI.EndScrollView();
+
+                // Pawn Names
+                GUI.BeginScrollView(
+                    new Rect(0, y, NAME_WIDTH, inRect.height - y - 82),
+                    this.scrollPosition,
+                    new Rect(0, y, NAME_WIDTH, (HEIGHT + Y_BUFFER) * WorldComp.PawnOutfits.Values.Count),
+                    GUIStyle.none, GUIStyle.none);
+                x = 0;
+                int py = y;
+                foreach (PawnOutfitTracker po in WorldComp.PawnOutfits.Values)
+                {
+                    Widgets.Label(new Rect(x, py, NAME_WIDTH, HEIGHT), po.Pawn.Name.ToStringShort);
+                    py += HEIGHT + Y_BUFFER;
+                }
+                Widgets.DrawLineVertical(NAME_WIDTH + 2, y, (HEIGHT + Y_BUFFER) * WorldComp.PawnOutfits.Values.Count);
+                GUI.EndScrollView();
+
+                int mainScrollXMin = NAME_WIDTH + X_BUFFER + 4;
+                this.scrollPosition = GUI.BeginScrollView(
+                    new Rect(mainScrollXMin, y, inRect.width - mainScrollXMin, inRect.height - y - 50),
+                    this.scrollPosition,
+                    new Rect(0, y,
+                        NAME_WIDTH + X_BUFFER + ((CHECKBOX_WIDTH + X_BUFFER) * allOutfits.Count) - mainScrollXMin,
+                        (HEIGHT + Y_BUFFER) * WorldComp.PawnOutfits.Values.Count));
 
                 // Table of pawns and assigned outfits
                 foreach (PawnOutfitTracker po in WorldComp.PawnOutfits.Values)
                 {
                     x = 0;
-                    Widgets.Label(new Rect(x, y, NAME_WIDTH, HEIGHT), po.Pawn.Name.ToStringShort);
-                    x += NAME_WIDTH + X_BUFFER;
-
                     foreach (Outfit o in allOutfits)
                     {
                         bool assign = po.Contains(o);
