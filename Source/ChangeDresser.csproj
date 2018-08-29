@@ -32,8 +32,8 @@
     <LangVersion>5</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath>..\Source\0Harmony.dll</HintPath>
+    <Reference Include="0Harmony, Version=1.2.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Lib.Harmony.1.2.0.1\lib\net35\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>D:\Steam\steamapps\common\RimWorld\RimWorldWin_Data\Managed\Assembly-CSharp.dll</HintPath>
@@ -96,7 +96,9 @@
     <Compile Include="UI\Util\WidgetUtil.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(ProjectDir)..\About\About.xml" "$(OutDir)..\About\" /Y /I
