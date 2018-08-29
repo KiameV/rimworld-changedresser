@@ -14,7 +14,7 @@ namespace MendingChangeDresserPatch
     {
         static HarmonyPatches()
         {
-            if (ModsConfig.ActiveModsInLoadOrder.Any(m => "Mending".Equals(m.Name)))
+            if (ModsConfig.ActiveModsInLoadOrder.Any(m => "MendAndRecycle".Equals(m.Name)))
             {
                 var harmony = HarmonyInstance.Create("com.mendingchangedresserpatch.rimworld.mod");
 
@@ -25,11 +25,15 @@ namespace MendingChangeDresserPatch
                     "  Postfix:" + Environment.NewLine +
                     "    WorkGiver_DoBill.TryFindBestBillIngredients - Priority Last");
             }
+            else
+            {
+                Log.Message("MendingChangeDresserPatch did not find MendAndRecycle. Will not load patch.");
+            }
         }
     }
 
     [HarmonyPriority(Priority.Last)]
-    [HarmonyPatch(typeof(Mending.WorkGiver_DoBill), "TryFindBestBillIngredients")]
+    [HarmonyPatch(typeof(MendAndRecycle.WorkGiver_DoBill), "TryFindBestBillIngredients")]
     static class Patch_WorkGiver_DoBill_TryFindBestBillIngredients
     {
         static void Postfix(ref bool __result, Bill bill, Pawn pawn, Thing billGiver, bool ignoreHitPoints, ref Thing chosen)
@@ -51,7 +55,7 @@ namespace MendingChangeDresserPatch
                     if ((float)(dresser.Position - billGiver.Position).LengthHorizontalSquared < bill.ingredientSearchRadius * bill.ingredientSearchRadius)
                     {
                         List<Apparel> gotten;
-                        if (dresser.TryGetFilteredApparel(bill, bill.recipe.fixedIngredientFilter, out gotten))
+                        if (dresser.TryGetFilteredApparel(bill, bill.ingredientFilter, out gotten, true, true))
                         {
                             Apparel a = gotten[0];
                             dresser.Remove(a, false);

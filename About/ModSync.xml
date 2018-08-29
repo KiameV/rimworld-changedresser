@@ -1,8 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ModSyncNinjaData>
-  <ID>477e8a45-5513-4d39-9d56-f9125b736f8f</ID>
   <ModName>Change Dresser</ModName>
-  <Version>1.0.0.9</Version>
+  <Version>0.19.0.1</Version>
   <SaveBreaking>False</SaveBreaking>
   <Host name="Github">
     <Owner>KiameV</Owner>

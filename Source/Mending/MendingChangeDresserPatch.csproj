@@ -42,16 +42,11 @@
       <HintPath>D:\Steam\steamapps\common\RimWorld\RimWorldWin_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Mending">
-      <HintPath>D:\Steam\steamapps\common\RimWorld\Mods\Mending\Assemblies\Mending.dll</HintPath>
+    <Reference Include="MendAndRecycle">
+      <HintPath>D:\Steam\steamapps\common\RimWorld\Mods\MendAndRecycle\Assemblies\MendAndRecycle.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
       <HintPath>D:\Steam\steamapps\common\RimWorld\RimWorldWin_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>

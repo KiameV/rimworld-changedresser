@@ -263,7 +263,7 @@ namespace ChangeDresser
             }
         }
 
-        public bool TryGetFilteredApparel(Bill bill, ThingFilter filter, out List<Apparel> gotten, bool getOne = false)
+        public bool TryGetFilteredApparel(Bill bill, ThingFilter filter, out List<Apparel> gotten, bool getOne = false, bool isForMending = false)
         {
             gotten = null;
             foreach (KeyValuePair<ThingDef, LinkedList<Apparel>> kv in this.StoredApparel.StoredApparelLookup)
@@ -274,6 +274,11 @@ namespace ChangeDresser
                     {
                         if (bill.IsFixedOrAllowedIngredient(t) && filter.Allows(t))
                         {
+                            if (isForMending && t.HitPoints == t.MaxHitPoints)
+                            {
+                                continue;
+                            }
+
                             if (gotten == null)
                             {
                                 gotten = new List<Apparel>();
@@ -281,7 +286,9 @@ namespace ChangeDresser
                             gotten.Add(t);
 
                             if (getOne)
+                            {
                                 return true;
+                            }
                         }
                     }
                 }
