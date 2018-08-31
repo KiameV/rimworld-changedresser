@@ -42,7 +42,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="MendAndRecycle">
-      <HintPath>D:\Steam\steamapps\common\RimWorld\Mods\MendAndRecycle\Assemblies\MendAndRecycle.dll</HintPath>
+      <HintPath>D:\Steam\steamapps\workshop\content\294100\735241897\Assemblies\MendAndRecycle.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
