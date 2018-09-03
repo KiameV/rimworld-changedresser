@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <!-- Window Labels -->
   <ChangeDresser.DresserLabel>ドレッサー</ChangeDresser.DresserLabel>
@@ -110,6 +110,10 @@
   <ChangeDresser.ShowBodyChange>体型の変更を許可する</ChangeDresser.ShowBodyChange>
   <ChangeDresser.ShowGenderAgeChange>性別と年齢の変更を許可する</ChangeDresser.ShowGenderAgeChange>
   <ChangeDresser.IncludeColorByLayer>衣装レイヤーによる色を含める</ChangeDresser.IncludeColorByLayer>
+  <ChangeDresser.ShareHairAcrossGenders>性別無関係に髪型を共有</ChangeDresser.ShareHairAcrossGenders>
+  <ChangeDresser.MendingAttachmentSettings>修理付属品の設定</ChangeDresser.MendingAttachmentSettings>
+  <ChangeDresser.SecondsBetweenTicks>ティック間の秒数</ChangeDresser.SecondsBetweenTicks>
+  <ChangeDresser.HPPerTick>ティック毎のHP</ChangeDresser.HPPerTick>
 
   <!-- Layers -->
   <OnSkin>下着</OnSkin>
