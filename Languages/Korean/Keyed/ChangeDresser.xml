@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- Window Labels -->
+  <ChangeDresser.DresserLabel>드레서 설정</ChangeDresser.DresserLabel>
+  <ChangeDresser.ApparelStorageLabel>의상 설정</ChangeDresser.ApparelStorageLabel>
+
+  <!-- Gizmo (Command Button) -->
+  <ChangeDresser.ManageApparel>복장 관리</ChangeDresser.ManageApparel>
+  <ChangeDresser.ManageApparelDesc>복장대의 복장을 관리합니다.</ChangeDresser.ManageApparelDesc>
+  <ChangeDresser.AssignOutfits>아웃핏 배치</ChangeDresser.AssignOutfits>
+  <ChangeDresser.AssignOutfitsDesc>전투용 및 민간용이 필요함에 따라 폰들에게 아웃핏을 배치합니다.</ChangeDresser.AssignOutfitsDesc>
+  <ChangeDresser.Empty>비움</ChangeDresser.Empty>
+  <ChangeDresser.EmptyDesc>복장대의 내용물을 비웁니다.복장 보관 정책은 포함되지 않습니다.</ChangeDresser.EmptyDesc>
+  <ChangeDresser.Collect>모으기</ChangeDresser.Collect>
+  <ChangeDresser.CollectDesc>옷을 옷장 주위로 모아서 보관합니다.</ChangeDresser.CollectDesc>
+  <ChangeDresser.ChangeTo>이거로 변경</ChangeDresser.ChangeTo>
+  <ChangeDresser.ChangeToDesc>이 아웃핏으로 갈아입습니다.</ChangeDresser.ChangeToDesc>
+  <ChangeDresser.Wearing>입고 있는것</ChangeDresser.Wearing>
+  <ChangeDresser.WearingDesc>현재 이 옷을 입고 있습니다.</ChangeDresser.WearingDesc>
+  <ChangeDresser.IncludeInTradeDeals>복장 팔기</ChangeDresser.IncludeInTradeDeals>
+  <ChangeDresser.IncludeInTradeDealsDesc>저장된 복장들을 거래 내역에 포함시킬지 여부를 전환합니다.</ChangeDresser.IncludeInTradeDealsDesc>
+
+  <!-- Common Strings -->
+  <ChangeDresser.Worn>현재의상</ChangeDresser.Worn>
+  <ChangeDresser.Storage>복장대 안</ChangeDresser.Storage>
+  <ChangeDresser.Save>저장</ChangeDresser.Save>
+  <ChangeDresser.Reset>초기화</ChangeDresser.Reset>
+  <ChangeDresser.Cancel>취소</ChangeDresser.Cancel>
+  <ChangeDresser.Delete>삭제</ChangeDresser.Delete>
+  <ChangeDresser.SelectAll>모두 선택</ChangeDresser.SelectAll>
+  <ChangeDresser.DeselectAll>모두 선택해제</ChangeDresser.DeselectAll>
+  <ChangeDresser.SelectPawn>Pawn 선택</ChangeDresser.SelectPawn>
+
+  <!-- Editor Names (top selection bar in the Dresser window) -->
+  <ChangeDresserHair>헤어 스타일/색상</ChangeDresserHair>
+  <ChangeDresserApparelColor>복장 색상</ChangeDresserApparelColor>
+  <ChangeDresserBody>신체 특성</ChangeDresserBody>
+  <ChangeDresserAlienSkinColor>외계인 피부 색상</ChangeDresserAlienSkinColor>
+  <ChangeDresserAlienHairColor>외계인 헤어 색상</ChangeDresserAlienHairColor>
+
+  <!-- Dresser UI -->
+  <ChangeDresser.BodyType>체형</ChangeDresser.BodyType>
+  <ChangeDresser.HeadType>얼굴 유형</ChangeDresser.HeadType>
+  <ChangeDresser.SkinColor>피부 색상</ChangeDresser.SkinColor>
+  <ChangeDresser.Gender>성별</ChangeDresser.Gender>
+  <ChangeDresser.HairStyle>헤어 스타일</ChangeDresser.HairStyle>
+  <ChangeDresser.AgeBiological>실제 나이</ChangeDresser.AgeBiological>
+  <ChangeDresser.AgeChronological>생체적 나이</ChangeDresser.AgeChronological>
+  <ChangeDresser.AlienPrimarySkinColor>기본 피부 색상</ChangeDresser.AlienPrimarySkinColor>
+  <ChangeDresser.AlienSecondarySkinColor>보조 피부 색상</ChangeDresser.AlienSecondarySkinColor>
+  <ChangeDresser.AlienPrimaryHairColor>기본 헤어 색상</ChangeDresser.AlienPrimaryHairColor>
+  <ChangeDresser.AlienSecondaryHairColor>보조 헤어 색상</ChangeDresser.AlienSecondaryHairColor>
+
+  <!-- Assign Outfits UI -->
+  <ChangeDresser.ManageOutfits>복장 정책 관리</ChangeDresser.ManageOutfits>
+  <ChangeDresser.UseForBattle>전투 시 사용</ChangeDresser.UseForBattle>
+
+  <!-- Game UI -->
+  <ChangeDresser.StoragePriority>저장함 우선순위</ChangeDresser.StoragePriority>
+  <ChangeDresser.ApparelCount>의류 수</ChangeDresser.ApparelCount>
+  <!-- Repair UI -->
+  <ChangeDresser.AttachedDressers>첨부된 복장</ChangeDresser.AttachedDressers>
+  <ChangeDresser.IsMending>수선 중</ChangeDresser.IsMending>
+
+  <!-- Color Selection -->
+  <!-- These refer to the Red (R), Green (G), and Blue (B) values for the selected color -->
+  <ChangeDresser.R>R</ChangeDresser.R>
+  <ChangeDresser.G>G</ChangeDresser.G>
+  <ChangeDresser.B>B</ChangeDresser.B>
+  <!-- These refer to the Hue (H), Saturation (S), and Lightness (L) values for the selected color -->
+  <ChangeDresser.H>색상</ChangeDresser.H>
+  <ChangeDresser.S>채도</ChangeDresser.S>
+  <ChangeDresser.L>명도</ChangeDresser.L>
+
+  <!-- Help Text -->
+  <ChangeDresser.RemoveToEnableDelete>삭제를 사용하여 모든 의상을 제거하세요</ChangeDresser.RemoveToEnableDelete>
+  <ChangeDresser.GenderChangeWarning>성별을 변경하면 부작용이 발생할 수 있습니다.\n알아서 판단하세요</ChangeDresser.GenderChangeWarning>
+  <ChangeDresser.SelectMultipleApparel>Shift키를 누른 채 클릭하세요. \n그러면 여러 항목을 선택해집니다</ChangeDresser.SelectMultipleApparel>
+  <ChangeDresser.ColorPresetHelp>변경: Shift키를 누른 채 프리셋을 선택합니다. \n선택 해제: Shift키를 누른 채 현재 프리셋을 선택합니다</ChangeDresser.ColorPresetHelp>
+  <ChangeDresser.NoClothingIsWorn>의상를 입지 않았습니다</ChangeDresser.NoClothingIsWorn>
+  <ChangeDresser.NoEditableAttributes>이 외계인 종족에 관한 것들을 변경할 수 없습니다.</ChangeDresser.NoEditableAttributes>
+
+  <!-- Job Toils -->
+  <ChangeDresser.ChangeApparelColors>의상 색상 변경</ChangeDresser.ChangeApparelColors>
+  <ChangeDresser.ChangeHair>헤어 스타일/색상 변경</ChangeDresser.ChangeHair>
+  <ChangeDresser.ChangeBody>신체 특성 변경</ChangeDresser.ChangeBody>
+  <ChangeDresser.StoreApparel>의상 저장 및 설정</ChangeDresser.StoreApparel>
+  <ChangeDresser.ChangeAlienBodyColor>외계인의 몸 색깔 변경</ChangeDresser.ChangeAlienBodyColor>
+
+  <!-- Error Messages -->
+  <!-- The text after this string is either Hair Color or Apparel Color -->
+  <ChangeDresser.ProblemSavingPreset>색상 프리셋 저장 중 오류 발생</ChangeDresser.ProblemSavingPreset>
+  <!-- The text after this string is either Hair Color or Apparel Color -->
+  <ChangeDresser.ProblemLoadingPreset>색상 프리셋 불러오던 중 오류 발생</ChangeDresser.ProblemLoadingPreset>
+  <!-- The text before this string is the pawn's name. -->
+  <ChangeDresser.AlreadyHasCombatApparel>이미 전투복장을 입고 있습니다.</ChangeDresser.AlreadyHasCombatApparel>
+
+  <!-- Mod Settings -->
+  <ChangeDresser>복장대</ChangeDresser>
+  <ChangeDresser.KeepForcedApparel>강제로 복장 유지</ChangeDresser.KeepForcedApparel>
+  <ChangeDresser.ShowBodyChange>체형 변경 허용</ChangeDresser.ShowBodyChange>
+  <ChangeDresser.ShowGenderAgeChange>성별 및 연령 변경 허용</ChangeDresser.ShowGenderAgeChange>
+
+</LanguageData>
