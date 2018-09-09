@@ -101,7 +101,10 @@ namespace ChangeDresser
                 Log.Message("    Resetting Color to " + ac.Color);
 #endif
                     this.colors.Remove(a);
-                    a.DrawColor = ac.Color;
+                    if (a.TryGetComp<CompColorable>() != null)
+                    {
+                        a.DrawColor = ac.Color;
+                    }
                 }
             }
 #if APPAREL_COLOR_TRACKER

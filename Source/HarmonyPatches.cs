@@ -3,7 +3,6 @@ using Harmony;
 using RimWorld;
 using RimWorld.Planet;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
