@@ -214,8 +214,8 @@ namespace ChangeDresser.UI
                 }
 
                 Text.Anchor = TextAnchor.MiddleLeft;
-                Text.Font = GameFont.Small;
-                GUI.Label(new Rect(0, 75, this.InitialSize.y / 2f, 50f), GUI.tooltip);
+                Text.Font = GameFont.Tiny;
+                GUI.Label(new Rect(0, 400, 250, 100f), GUI.tooltip);
                 Text.Font = GameFont.Medium;
                 Text.Anchor = TextAnchor.UpperLeft;
 

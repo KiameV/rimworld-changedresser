@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <ChangeApparelColor.reportString>Cambiándose.</ChangeApparelColor.reportString>
+  <ChangeHairColor.reportString>Cambiar estilo de cabello o color.</ChangeHairColor.reportString>
+  <ChangeHairStyle.reportString>Cambiar estilo de cabello o color.</ChangeHairStyle.reportString>
+  <ChangeBody.reportString>Modificar atributos del cuerpo.</ChangeBody.reportString>
+  <StoreApparel.reportString>Almacenar ropa.</StoreApparel.reportString>
+  <WearApparelGroup.reportString>Equipar un conjunto.</WearApparelGroup.reportString>
+  <WearApparelFromStorage.reportString>Vistiendo TargetA.</WearApparelFromStorage.reportString>
+
+</LanguageData>

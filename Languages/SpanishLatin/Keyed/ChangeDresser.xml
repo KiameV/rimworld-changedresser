@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	<!-- Window Labels -->
+	<ChangeDresser.DresserLabel>Vestidor</ChangeDresser.DresserLabel>
+	<ChangeDresser.ApparelStorageLabel>Almacén de ropa</ChangeDresser.ApparelStorageLabel>
+	
+	<!-- Gizmo (Command Button) -->
+	<ChangeDresser.ManageApparel>Gestionar apariencia</ChangeDresser.ManageApparel>
+	<ChangeDresser.ManageApparelDesc>Gestionar apariencia en el vestidor</ChangeDresser.ManageApparelDesc>
+	<ChangeDresser.AssignOutfits>Asignar trajes</ChangeDresser.AssignOutfits>
+	<ChangeDresser.AssignOutfitsDesc>Asignar trajes a colonos para la batalla o necesidades civiles.</ChangeDresser.AssignOutfitsDesc>
+	<ChangeDresser.CustomOutfits>Trajes personalizados</ChangeDresser.CustomOutfits>
+	<ChangeDresser.CustomOutfitsDesc>Crear trajes específicos para colonos para la batalla o necesidades civiles.</ChangeDresser.CustomOutfitsDesc>
+	<ChangeDresser.New>Nuevo</ChangeDresser.New>
+	<ChangeDresser.Close>Cerrar</ChangeDresser.Close>
+	<ChangeDresser.Empty>Vaciar</ChangeDresser.Empty>
+	<ChangeDresser.EmptyDesc>Vacía el contenido del vestidor. No incluye el grupo de almacenamiento de trajes.</ChangeDresser.EmptyDesc>
+	<ChangeDresser.Collect>Recoger</ChangeDresser.Collect>
+	<ChangeDresser.CollectDesc>Recoge los trajes al rededor del vestidor y los almacena.</ChangeDresser.CollectDesc>
+	<ChangeDresser.ChangeTo>Cambiar a</ChangeDresser.ChangeTo>
+	<ChangeDresser.ChangeToDesc>Cambiar a este traje.</ChangeDresser.ChangeToDesc>
+	<ChangeDresser.Wearing>Vistiendo</ChangeDresser.Wearing>
+	<ChangeDresser.WearingDesc>Actualmente vistiendo este traje.</ChangeDresser.WearingDesc>
+	<ChangeDresser.IncludeInTradeDeals>Vender ropa</ChangeDresser.IncludeInTradeDeals>
+	<ChangeDresser.IncludeInTradeDealsDesc>Cambia si se incluye la ropa almacenada en los intercambios comerciales.</ChangeDresser.IncludeInTradeDealsDesc>
+	
+	<!-- Common Strings -->
+	<ChangeDresser.Worn>Usado</ChangeDresser.Worn>
+	<ChangeDresser.Storage>Almacenamiento</ChangeDresser.Storage>
+	<ChangeDresser.Cancel>Cancelar</ChangeDresser.Cancel>
+	<ChangeDresser.SelectAll>Seleccionar todo</ChangeDresser.SelectAll>
+	<ChangeDresser.DeselectAll>Deseleccionar todo</ChangeDresser.DeselectAll>
+	<ChangeDresser.SelectPawn>Seleccionar colono</ChangeDresser.SelectPawn>
+	
+	<!-- Editor Names (top selection bar in the Dresser window) -->
+	<ChangeDresserHair>Cambiar estilo/color de cabello</ChangeDresserHair>
+	<ChangeDresserApparelColor>Color de trajes</ChangeDresserApparelColor>
+	<ChangeDresserApparelLayerColor>Color de capas</ChangeDresserApparelLayerColor>
+	<ChangeDresserBody>Cuerpo</ChangeDresserBody>
+	<ChangeDresserAlienSkinColor>Color de piel alienígena</ChangeDresserAlienSkinColor>
+	<ChangeDresserAlienHairColor>Color del cabello alienígena</ChangeDresserAlienHairColor>
+	
+	<!-- Dresser UI -->
+	<ChangeDresser.BodyType>Tipo de cuerpo</ChangeDresser.BodyType>
+	<ChangeDresser.HeadType>Tipo de cabeza</ChangeDresser.HeadType>
+	<ChangeDresser.SkinColor>Color de piel</ChangeDresser.SkinColor>
+	<ChangeDresser.Gender>Género</ChangeDresser.Gender>
+	<ChangeDresser.HairStyle>Estilo de cabello</ChangeDresser.HairStyle>
+	<ChangeDresser.AgeBiological>Edad biológica</ChangeDresser.AgeBiological>
+	<ChangeDresser.AgeChronological>Edad cronológica</ChangeDresser.AgeChronological>
+	<ChangeDresser.AlienPrimarySkinColor>Color de piel principal</ChangeDresser.AlienPrimarySkinColor>
+	<ChangeDresser.AlienSecondarySkinColor>Color de piel secundario</ChangeDresser.AlienSecondarySkinColor>
+	<ChangeDresser.AlienPrimaryHairColor>Color de cabello principal</ChangeDresser.AlienPrimaryHairColor>
+	<ChangeDresser.AlienSecondaryHairColor>Color de cabello secundario</ChangeDresser.AlienSecondaryHairColor>
+		
+	<!-- Assign Outfits UI -->
+	<ChangeDresser.ManageOutfits>Gestionar trajes</ChangeDresser.ManageOutfits>
+	<ChangeDresser.UseForBattle>Usar en batalla</ChangeDresser.UseForBattle>
+	<ChangeDresser.AvailableApparel>Ropa disponible</ChangeDresser.AvailableApparel>
+	<ChangeDresser.CustomOutfitApparel>Traje personalizado</ChangeDresser.CustomOutfitApparel>
+	
+	<!-- Custom Outfit UI -->
+	<ChangeDresser.OutfitName>Nombre</ChangeDresser.OutfitName>
+	
+	<!-- Game UI -->
+	<ChangeDresser.StoragePriority>Prioridad de almacenamiento</ChangeDresser.StoragePriority>
+	<ChangeDresser.ApparelCount>Piezas de ropa</ChangeDresser.ApparelCount>
+	<!-- Repair UI -->
+	<ChangeDresser.AttachedDressers>Vestidores anexados</ChangeDresser.AttachedDressers>
+	<ChangeDresser.IsMending>Está reparando</ChangeDresser.IsMending>
+	
+	<!-- Color Selection -->
+	<!-- These refer to the Red (R), Green (G), and Blue (B) values for the selected color -->
+	<ChangeDresser.R>R</ChangeDresser.R>
+	<ChangeDresser.G>G</ChangeDresser.G>
+	<ChangeDresser.B>B</ChangeDresser.B>
+	<!-- These refer to the Hue (H), Saturation (S), and Lightness (L) values for the selected color -->
+	<ChangeDresser.H>Tono</ChangeDresser.H>
+	<ChangeDresser.S>Saturación</ChangeDresser.S>
+	<ChangeDresser.L>Luminosidad</ChangeDresser.L>
+	
+	<!-- Help Text -->
+	<ChangeDresser.RemoveToEnableDelete>Remueve toda la ropa para habilitar la eliminación</ChangeDresser.RemoveToEnableDelete>
+	<ChangeDresser.GenderChangeWarning>Cambiar estos valores puede tener efectos negativos.\nUsalo bajo tu propio riesgo.</ChangeDresser.GenderChangeWarning>
+	<ChangeDresser.SelectMultipleApparel>Mantén presionada la tecla Shift \ny selecciona otro objeto para \nseleccionar múltiples.</ChangeDresser.SelectMultipleApparel>
+	<ChangeDresser.ColorPresetHelp>Cambia: Mantén presionada la tecla Shift y selecciona una pre configuración.\nDeseleccionar: Mantén presionada la tecla Shift y selecciona la misma pre configuración.</ChangeDresser.ColorPresetHelp>
+	<ChangeDresser.NoClothingIsWorn>No se está usando ropa.</ChangeDresser.NoClothingIsWorn>
+	<ChangeDresser.NoEditableAttributes>No hay atributos cambiables para esta raza alienígena</ChangeDresser.NoEditableAttributes>
+	
+	<!-- Job Toils -->
+	<ChangeDresser.ChangeApparelColors>Cambiar color de ropa</ChangeDresser.ChangeApparelColors>
+	<ChangeDresser.ChangeApparelColorsByLayer>Cambiar color de capas</ChangeDresser.ChangeApparelColorsByLayer>
+	<ChangeDresser.ChangeHair>Cambiar estilo/color de cabello</ChangeDresser.ChangeHair>
+	<ChangeDresser.ChangeBody>Cambiar atributos del cuerpo</ChangeDresser.ChangeBody>
+	<ChangeDresser.StoreApparel>Almacenar ropa</ChangeDresser.StoreApparel>
+	<ChangeDresser.ChangeAlienBodyColor>Cambiar color de cuerpo alienígena</ChangeDresser.ChangeAlienBodyColor>
+	
+	<!-- Error Messages -->
+	<!-- The text after this string is either Hair Color or Apparel Color -->
+	<ChangeDresser.ProblemSavingPreset>Hubo un problema mientras se guardaba la pre configuración</ChangeDresser.ProblemSavingPreset>
+	<!-- The text after this string is either Hair Color or Apparel Color -->
+	<ChangeDresser.ProblemLoadingPreset>Hubo un problema mientras se cargaba la pre configuración</ChangeDresser.ProblemLoadingPreset>
+	<!-- The text before this string is the pawn's name. -->
+	<ChangeDresser.AlreadyHasCombatApparel>Ya tiene traje de batalla.</ChangeDresser.AlreadyHasCombatApparel>
+	
+	<!-- Mod Settings -->
+	<ChangeDresser>Vestidor</ChangeDresser>
+	<ChangeDresser.PersistApparelOriginalColor>Mantener el color original de la ropa</ChangeDresser.PersistApparelOriginalColor>
+	<ChangeDresser.KeepForcedApparel>Mantener ropa forzada</ChangeDresser.KeepForcedApparel>
+	<ChangeDresser.ShowBodyChange>Permitir cambio de cuerpo</ChangeDresser.ShowBodyChange>
+	<ChangeDresser.ShowGenderAgeChange>Permitir cambio de edad y género</ChangeDresser.ShowGenderAgeChange>
+	<ChangeDresser.IncludeColorByLayer>Incluir color por capa de vestimenta</ChangeDresser.IncludeColorByLayer>
+	<ChangeDresser.ShareHairAcrossGenders>Compartir cabello a través de géneros</ChangeDresser.ShareHairAcrossGenders>
+	<ChangeDresser.MendingAttachmentSettings>Configuraciones del accesorio de reparación</ChangeDresser.MendingAttachmentSettings>
+	<ChangeDresser.SecondsBetweenTicks>Segundos entre ticks</ChangeDresser.SecondsBetweenTicks>
+	<ChangeDresser.HPPerTick>Salud por tick</ChangeDresser.HPPerTick>
+	
+	<!-- Layers -->
+	<OnSkin>En la piel</OnSkin>
+	<Middle>Mitad</Middle>
+	<Shell>Caparazón</Shell>
+	<Belt>Cinturón</Belt>
+	<Overhead>Superior</Overhead>
+</LanguageData>

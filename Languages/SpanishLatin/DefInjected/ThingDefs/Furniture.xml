@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <ChangeDresser.label>Vestidor</ChangeDresser.label>
+  <ChangeDresser.description>Un lugar donde almacenar y modificar ropa, también para prepararse en la mañana.</ChangeDresser.description>
+
+  <ChangeMirror.label>Espejo</ChangeMirror.label>
+  <ChangeMirror.description>Aplica maquillaje, corta y tiñe el cabello.</ChangeMirror.description>
+
+</LanguageData>
