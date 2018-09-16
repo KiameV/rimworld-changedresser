@@ -190,6 +190,7 @@ namespace ChangeDresser
 
         private bool DropThing(Thing t, bool makeForbidden = true)
         {
+            WorldComp.ApparelColorTracker.RemoveApparel(t as Apparel);
             return BuildingUtil.DropThing(t, this, this.CurrentMap, makeForbidden);
         }
 
@@ -201,6 +202,7 @@ namespace ChangeDresser
                 {
                     foreach (T t in things)
                     {
+                        WorldComp.ApparelColorTracker.RemoveApparel(t as Apparel);
                         this.DropThing(t, makeForbidden);
                     }
                 }
@@ -233,6 +235,7 @@ namespace ChangeDresser
                     ll.Clear();
                 }
                 this.StoredApparel.StoredApparelLookup.Clear();
+                WorldComp.ApparelColorTracker.Clear();
             }
             finally
             {
@@ -481,6 +484,7 @@ namespace ChangeDresser
 
         public bool RemoveNoDrop(Apparel a)
         {
+            WorldComp.ApparelColorTracker.RemoveApparel(a);
             return this.StoredApparel.RemoveApparel(a);
         }
 

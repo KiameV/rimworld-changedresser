@@ -181,7 +181,7 @@ namespace ChangeDresser
                         {
                             this.colors = new Dictionary<Apparel, ApparelColor>();
                         }
-                        
+
 #if TRACE && APPAREL_COLOR_TRACKER
                         Log.Message("    ApparelColors to add: " + this.l.Count);
 #endif
@@ -203,7 +203,7 @@ namespace ChangeDresser
                                 "Unable to persist an original apparel's color." + System.Environment.NewLine +
                                 e.GetType().Name + " " + e.Message);
                             }
-                            }
+                        }
                     }
 #if TRACE && APPAREL_COLOR_TRACKER
                     else
@@ -215,7 +215,7 @@ namespace ChangeDresser
             Log.Message("        Colors: " + ((this.colors == null) ? "<null>" : this.colors.Count.ToString()));
 #endif
 
-            if (Scribe.mode == LoadSaveMode.Saving || 
+            if (Scribe.mode == LoadSaveMode.Saving ||
                 Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 if (l != null)
@@ -227,6 +227,12 @@ namespace ChangeDresser
 #if APPAREL_COLOR_TRACKER
             Log.Warning("End ApparelColorTracker.Expose");
 #endif
+        }
+
+        public void RemoveApparel(Apparel a)
+        {
+            if (this.colors != null && a != null)
+                this.colors.Remove(a);
         }
 
         private class ApparelColor : IExposable
