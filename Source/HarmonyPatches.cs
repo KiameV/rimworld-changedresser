@@ -796,7 +796,7 @@ namespace ChangeDresser
                     {
                         if (bill.Map == d.Map)
                         {
-                            __result += d.GetApparelCount(def, bill.ingredientFilter);
+                            __result += d.GetApparelCount(def, bill.qualityRange, bill.hpRange, (bill.limitToAllowedStuff) ? bill.ingredientFilter : null);
                         }
                     }
                 }

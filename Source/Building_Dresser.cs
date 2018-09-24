@@ -95,7 +95,12 @@ namespace ChangeDresser
 
         internal int GetApparelCount(ThingDef def, ThingFilter ingredientFilter)
         {
-            return this.StoredApparel.GetApparelCount(def, ingredientFilter);
+            return this.GetApparelCount(def, ingredientFilter.AllowedQualityLevels, ingredientFilter.AllowedHitPointsPercents, ingredientFilter);
+        }
+
+        internal int GetApparelCount(ThingDef def, QualityRange qualityRange, FloatRange hpRange, ThingFilter ingredientFilter)
+        {
+            return this.StoredApparel.GetApparelCount(def, qualityRange, hpRange, ingredientFilter);
         }
 
         internal bool TryRemoveApparel(ThingDef def, out Apparel apparel)

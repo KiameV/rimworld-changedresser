@@ -121,7 +121,7 @@ namespace ChangeDresser
             */
         }
 
-        internal int GetApparelCount(ThingDef expectedDef, ThingFilter ingredientFilter)
+        internal int GetApparelCount(ThingDef expectedDef, QualityRange qualityRange, FloatRange hpRange, ThingFilter filter)
         {
             LinkedList<Apparel> l;
             if (this.StoredApparelLookup.TryGetValue(expectedDef, out l))
@@ -129,7 +129,7 @@ namespace ChangeDresser
                 int count = 0;
                 foreach (Apparel a in l)
                 {
-                    if (this.Allows(a, expectedDef, ingredientFilter))
+                    if (this.Allows(a, expectedDef, qualityRange, hpRange, filter))
                     {
                         ++count;
                     }
@@ -139,50 +139,60 @@ namespace ChangeDresser
             return 0;
         }
 
-        private bool Allows(Thing t, ThingDef expectedDef, ThingFilter filter)
+        private bool Allows(Thing t, ThingDef expectedDef, QualityRange qualityRange, FloatRange hpRange, ThingFilter filter)
         {
-            if (filter == null)
-            {
-                return true;
-            }
-
 #if DEBUG || DEBUG_DO_UNTIL_X
             Log.Warning("StoredApparel.Allows Begin [" + t.Label + "]");
 #endif
             if (t.def != expectedDef)
             {
 #if DEBUG || DEBUG_DO_UNTIL_X
-                Log.Warning("    StoredApparel.Allows End Def Does Not Match [False]");
+                Log.Warning("StoredApparel.Allows End Def Does Not Match [False]");
 #endif
                 return false;
             }
+#if DEBUG || DEBUG_DO_UNTIL_X
+            Log.Message("    def uses HP: " + expectedDef.useHitPoints + " filter: " + hpRange.min + " " + hpRange.max);
+#endif
             if (expectedDef.useHitPoints &&
-                filter.AllowedHitPointsPercents.min != 0f && filter.AllowedHitPointsPercents.max != 100f)
+                hpRange != null && 
+                hpRange.min != 0f && hpRange.max != 100f)
             {
                 float num = (float)t.HitPoints / (float)t.MaxHitPoints;
                 num = GenMath.RoundedHundredth(num);
-                if (!filter.AllowedHitPointsPercents.IncludesEpsilon(Mathf.Clamp01(num)))
+                if (!hpRange.IncludesEpsilon(Mathf.Clamp01(num)))
                 {
 #if DEBUG || DEBUG_DO_UNTIL_X
-                    Log.Warning("    StoredApparel.Allows End Hit Points [False]");
+                    Log.Warning("StoredApparel.Allows End Hit Points [False - HP]");
 #endif
                     return false;
                 }
             }
-            if (filter.AllowedQualityLevels != QualityRange.All && t.def.FollowQualityThingFilter())
+#if DEBUG || DEBUG_DO_UNTIL_X
+            Log.Message("    def follows quality: " + t.def.FollowQualityThingFilter() + " filter quality levels: " + qualityRange.min + " " + qualityRange.max);
+#endif
+            if (qualityRange != null && qualityRange != QualityRange.All && t.def.FollowQualityThingFilter())
             {
                 QualityCategory p;
                 if (!t.TryGetQuality(out p))
                 {
                     p = QualityCategory.Normal;
                 }
-                if (!filter.AllowedQualityLevels.Includes(p))
+                if (!qualityRange.Includes(p))
                 {
 #if DEBUG || DEBUG_DO_UNTIL_X
-                    Log.Warning("    StoredApparel.Allows End Quality [False]");
+                    Log.Warning("StoredApparel.Allows End Quality [False - Quality]");
 #endif
                     return false;
                 }
+            }
+
+            if (filter != null && !filter.Allows(t.Stuff))
+            {
+#if DEBUG || DEBUG_DO_UNTIL_X
+                Log.Warning("StoredApparel.Allows End Quality [False - filters.Allows]");
+#endif
+                return false;
             }
 #if DEBUG || DEBUG_DO_UNTIL_X
             Log.Warning("    StoredApparel.Allows End [True]");
