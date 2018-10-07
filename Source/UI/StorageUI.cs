@@ -85,8 +85,13 @@ namespace ChangeDresser.UI
 
                         Widgets.ThingIcon(new Rect(0f, 0f, cellHeight, cellHeight), apparel);
 
+                        if (Widgets.InfoCardButton(40, 0, apparel))
+                        {
+                            Find.WindowStack.Add(new Dialog_InfoCard(apparel));
+                        }
+
                         Text.Font = GameFont.Small;
-                        Widgets.Label(new Rect(cellHeight + 5f, 0f, rowRect.width - 40f - cellHeight, cellHeight), apparel.Label);
+                        Widgets.Label(new Rect(70 + cellHeight + 5f, 0f, rowRect.width - 40f - cellHeight, cellHeight), apparel.Label);
 
                         GUI.color = Color.white;
                         if (Widgets.ButtonImage(new Rect(rowRect.width - 35f, 10, 20, 20), WidgetUtil.nextTexture))
@@ -156,9 +161,15 @@ namespace ChangeDresser.UI
                     }
 
                     Widgets.ThingIcon(new Rect(35f, 0f, cellHeight, cellHeight), apparel);
+
+                    if (Widgets.InfoCardButton(75, 0, apparel))
+                    {
+                        Find.WindowStack.Add(new Dialog_InfoCard(apparel));
+                    }
+
                     Text.Font = GameFont.Small;
                     Text.Anchor = TextAnchor.MiddleCenter;
-                    Widgets.Label(new Rect(cellHeight + 45f, 0f, rowRect.width - cellHeight - 90f, cellHeight), apparel.Label);
+                    Widgets.Label(new Rect(30 + cellHeight + 45f, 0f, rowRect.width - cellHeight - 90f, cellHeight), apparel.Label);
 
                     if (Widgets.ButtonImage(new Rect(rowRect.width - 45f, 0f, cellHeight, cellHeight), WidgetUtil.dropTexture))
                     {

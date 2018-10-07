@@ -252,7 +252,12 @@ namespace ChangeDresser.UI
 
                     Widgets.ThingIcon(new Rect(0f, 0f, CELL_HEIGHT, CELL_HEIGHT), apparel);
 
-                    Widgets.Label(new Rect(CELL_HEIGHT + 5f, 0f, rowRect.width - 40f - CELL_HEIGHT, CELL_HEIGHT), apparel.Label);
+                    if (Widgets.InfoCardButton(40, 0, apparel))
+                    {
+                        Find.WindowStack.Add(new Dialog_InfoCard(apparel));
+                    }
+
+                    Widgets.Label(new Rect(30 + CELL_HEIGHT + 5f, 0f, rowRect.width - 40f - CELL_HEIGHT, CELL_HEIGHT), apparel.Label);
 
                     if (this.customOutfit != null)
                     {
@@ -309,7 +314,13 @@ namespace ChangeDresser.UI
                     }
 
                     Widgets.ThingIcon(new Rect(35f, 0f, CELL_HEIGHT, CELL_HEIGHT), apparel);
-                    Widgets.Label(new Rect(CELL_HEIGHT + 45f, 0f, rowRect.width - CELL_HEIGHT - 45f, CELL_HEIGHT), apparel.Label);
+
+                    if (Widgets.InfoCardButton(75, 0, apparel))
+                    {
+                        Find.WindowStack.Add(new Dialog_InfoCard(apparel));
+                    }
+
+                    Widgets.Label(new Rect(30 + CELL_HEIGHT + 45f, 0f, rowRect.width - CELL_HEIGHT - 45f, CELL_HEIGHT), apparel.Label);
                     this.UpdateAvailableApparel();
 
                     GUI.EndGroup();
