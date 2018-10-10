@@ -28,6 +28,7 @@ namespace ChangeDresser
                 "    CaravanExitMapUtility.ExitMapAndCreateCaravan(IEnumerable<Pawn>, Faction, int, int)" + Environment.NewLine + 
                 "    Pawn.Kill - Priority First" + Environment.NewLine +
                 "    Pawn_ApparelTracker.Notify_ApparelAdded" + Environment.NewLine +
+                "    ScribeSaver.InitSaving" + Environment.NewLine +
                 "  Postfix:" + Environment.NewLine +
                 "    Pawn.GetGizmos" + Environment.NewLine +
                 "    Pawn_ApparelTracker.Notify_ApparelAdded" + Environment.NewLine +
@@ -852,6 +853,18 @@ namespace ChangeDresser
                 {
                     po.Remove(outfit);
                 }
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(ScribeSaver), "InitSaving")]
+    static class Patch_ScribeSaver_InitSaving
+    {
+        static void Prefix()
+        {
+            foreach (Building_Dresser d in WorldComp.GetDressers(null))
+            {
+                d.ReclaimApparel();
             }
         }
     }

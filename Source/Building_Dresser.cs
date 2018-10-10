@@ -254,7 +254,7 @@ namespace ChangeDresser
             List<Apparel> ll = new List<Apparel>(BuildingUtil.FindThingsOfTypeNextTo<Apparel>(base.Map, base.Position, 1));
             Log.Warning("Apparel found: " + ll.Count);
 #endif
-            List <Thing> l = BuildingUtil.FindThingsNextTo(base.Map, base.Position, 1);
+            List<Thing> l = BuildingUtil.FindThingsNextTo(base.Map, base.Position, 1);
             if (l.Count > 0)
             {
                 foreach (Thing t in l)

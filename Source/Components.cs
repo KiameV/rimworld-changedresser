@@ -82,7 +82,8 @@ namespace ChangeDresser
         {
             foreach (Building_Dresser d in DressersToUse)
             {
-                if (d.Spawned && d.Map == map)
+                if (map == null || 
+                    (d.Spawned && d.Map == map))
                 {
                     yield return d;
                 }
