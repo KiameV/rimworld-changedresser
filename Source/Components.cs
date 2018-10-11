@@ -80,15 +80,18 @@ namespace ChangeDresser
 
         public static IEnumerable<Building_Dresser> GetDressers(Map map)
         {
-            foreach (Building_Dresser d in DressersToUse)
+            if (DressersToUse != null)
             {
-                if (map == null || 
-                    (d.Spawned && d.Map == map))
+                foreach (Building_Dresser d in DressersToUse)
                 {
-                    yield return d;
+                    if (map == null ||
+                        (d.Spawned && d.Map == map))
+                    {
+                        yield return d;
+                    }
                 }
             }
-        }
+        }        
 
         public static bool HasDressers()
         {
