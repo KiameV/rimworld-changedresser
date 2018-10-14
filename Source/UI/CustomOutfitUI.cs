@@ -37,7 +37,7 @@ namespace ChangeDresser.UI
         private Pawn pawn = null;
         private PawnOutfitTracker outfitTracker = null;
         private CustomOutfit customOutfit;
-        private string searchText = "";
+        //private string searchText = "";
 
         private Vector2 scrollPosLeft = new Vector2(0, 0);
         private Vector2 scrollPosRight = new Vector2(0, 0);
@@ -49,6 +49,9 @@ namespace ChangeDresser.UI
         private const int X_BUFFER = 10;
         private const int Y_BUFFER = 5;
         private const float CELL_HEIGHT = 40f;
+
+        private CDApparelFilters apparelFilter = new CDApparelFilters();
+        private Vector2 filterScrollPosition = new Vector2(0, 0);
 
         public CustomOutfitUI(Building_Dresser dresser)
         {
@@ -91,7 +94,7 @@ namespace ChangeDresser.UI
         {
             get
             {
-                return new Vector2(750f, 600f);
+                return new Vector2(1100f, 600f);
             }
         }
 
@@ -133,11 +136,86 @@ namespace ChangeDresser.UI
                 height -= HEIGHT * 3;
                 height -= Y_BUFFER * 2;
 
-                this.DrawAvailableApparel(0, y, inRect.width * 0.5f, height);
-                this.DrawOutfitApparel(inRect.width * 0.5f, y, inRect.width * 0.5f, height);
+                this.DrawAvailableApparel(0, y, 350, height);
+                this.DrawOutfitApparel(360, y, 710, height);
                 y += (int)height;
 
                 this.DrawBottomButtons(x, (int)inRect.yMax - 40, inRect.width);
+
+                // Filter start
+                y = 50;
+                
+                Widgets.Label(new Rect(750, y, 100, 32), "Filter".Translate());
+                y += 40;
+
+                Widgets.Label(new Rect(775, y, 75, 32), "ChangeDresser.Name".Translate());
+                this.apparelFilter.Name = Widgets.TextField(new Rect(855, y - 3, 120, 32), this.apparelFilter.Name);
+                y += 35;
+
+                if (Widgets.ButtonText(new Rect(775, y, 200, 32), this.apparelFilter.LayerString))
+                {
+                    List<FloatMenuOption> options = new List<FloatMenuOption>();
+                    options.Add(new FloatMenuOption(this.apparelFilter.GetLayerLabel("ChangeDresser.All".Translate()), delegate
+                    {
+                        this.apparelFilter.Layer = null;
+                        this.apparelFilter.LayerString = this.apparelFilter.GetLayerLabel("ChangeDresser.All".Translate());
+                    }, MenuOptionPriority.Default, null, null, 0f, null, null));
+                    foreach (ApparelLayerDef d in DefDatabase<ApparelLayerDef>.AllDefs)
+                    {
+                        options.Add(new FloatMenuOption(d.defName.Translate(), delegate
+                        {
+                            this.apparelFilter.Layer = d;
+                            this.apparelFilter.LayerString = this.apparelFilter.GetLayerLabel(d.defName.Translate());
+                        }, MenuOptionPriority.Default, null, null, 0f, null, null));
+                    }
+                    Find.WindowStack.Add(new FloatMenu(options));
+                }
+                y += 35;
+
+                if (Widgets.ButtonText(new Rect(775, y, 200, 32), this.apparelFilter.QualityString))
+                {
+                    List<FloatMenuOption> options = new List<FloatMenuOption>();
+                    options.Add(new FloatMenuOption(this.apparelFilter.GetQualityLabel("ChangeDresser.All".Translate()), delegate
+                    {
+                        this.apparelFilter.Quality = QualityRange.All;
+                        this.apparelFilter.QualityString = this.apparelFilter.GetQualityLabel("ChangeDresser.All".Translate());
+                    }, MenuOptionPriority.Default, null, null, 0f, null, null));
+                    foreach (QualityCategory q in Enum.GetValues(typeof(QualityCategory)))
+                    {
+                        options.Add(new FloatMenuOption(q.ToString(), delegate
+                        {
+                            this.apparelFilter.Quality.min = q;
+                            this.apparelFilter.QualityString = this.apparelFilter.GetQualityLabel(q.GetLabel());
+                        }, MenuOptionPriority.Default, null, null, 0f, null, null));
+                    }
+                    Find.WindowStack.Add(new FloatMenu(options));
+                }
+                y += 35;
+
+                Listing_Standard ls = new Listing_Standard();
+                ls.Begin(new Rect(775, y, 216, inRect.height - y ));
+                Rect view = new Rect(0, 0, 200, 64 * this.apparelFilter.StatDefs.Count);
+                ls.BeginScrollView(
+                    new Rect(0, 0, 216, inRect.height - y ), ref filterScrollPosition, ref view);
+                
+                ls.Label("HitPointsBasic".ToString() + " " + (int)this.apparelFilter.HP);
+                this.apparelFilter.HP = ls.Slider(this.apparelFilter.HP, 0, 100);
+
+                for (int i = 0; i < this.apparelFilter.StatDefs.Count; ++i)
+                {
+                    StatDefValue sdv = this.apparelFilter.StatDefs[i];
+                    ls.Label(sdv.Def.label + " " + sdv.Value.ToString("n2"), 28);
+                    float f = sdv.Value;
+                    f = ls.Slider(f, 0, sdv.Max);
+                    if (sdv.Value != f)
+                    {
+                        sdv.Value = f;
+                        this.apparelFilter.StatDefs[i] = sdv;
+                    }
+                }
+
+                ls.EndScrollView(ref view);
+                ls.End();
             }
             catch (Exception e)
             {
@@ -230,9 +308,9 @@ namespace ChangeDresser.UI
             Log.Warning("Begin CustomOutfitUI.DrawAvailableApparel " + x + " " + y);
 #endif
             // Apparel Selection Titles
-            Widgets.Label(new Rect(x, y, 150, 30), "ChangeDresser.AvailableApparel".Translate());
+            /*Widgets.Label(new Rect(x, y, 150, 30), "ChangeDresser.AvailableApparel".Translate());
             searchText = Widgets.TextArea(new Rect(x + 160, y, 100, 30), searchText).ToLower();
-            y += HEIGHT + Y_BUFFER;
+            y += HEIGHT + Y_BUFFER;*/
             
             Rect apparelListRect = new Rect(x, y, width - 10, height);
             Rect apparelScrollRect = new Rect(0f, 0f, apparelListRect.width - 16f, this.availableApparel.Count * CELL_HEIGHT);
@@ -243,8 +321,9 @@ namespace ChangeDresser.UI
             for (int i = 0, count = 0; i < this.availableApparel.Count; ++i)
             {
                 Apparel apparel = this.availableApparel[i];
-                if (searchText.Trim().Length == 0 || 
-                    apparel.Label.ToLower().Contains(searchText))
+                //if (searchText.Trim().Length == 0 || 
+                //    apparel.Label.ToLower().Contains(searchText))
+                if (this.apparelFilter.IncludeAppareL(apparel))
                 {
                     Rect rowRect = new Rect(0, 2f + count * CELL_HEIGHT, apparelListRect.width, CELL_HEIGHT);
                     ++count;
@@ -516,6 +595,131 @@ namespace ChangeDresser.UI
                 }
             }
             return true;
+        }
+    }
+
+    public struct StatDefValue
+    {
+        public readonly StatDef Def;
+        public float Value;
+        public readonly float Max;
+        public StatDefValue(StatDef def, float max, float value = 0)
+        {
+            this.Def = def;
+            this.Max = max;
+            this.Value = value;
+        }
+    }
+
+    public class CDApparelFilters
+    {
+        public string Name = "";
+
+        public ApparelLayerDef Layer = null;
+        public string LayerString;
+
+        public QualityRange Quality = QualityRange.All;
+        public string QualityString;
+
+        public float HP = 0;
+
+        public readonly List<StatDefValue> StatDefs = new List<StatDefValue>();
+
+        public CDApparelFilters()
+        {
+            this.LayerString = this.GetLayerLabel("ChangeDresser.All".Translate());
+            this.QualityString = this.GetQualityLabel("ChangeDresser.All".Translate());
+
+            this.StatDefs.Add(new StatDefValue(StatDefOf.ArmorRating_Blunt, 2));
+            this.StatDefs.Add(new StatDefValue(StatDefOf.ArmorRating_Sharp, 2));
+            this.StatDefs.Add(new StatDefValue(StatDefOf.ArmorRating_Heat, 2));
+
+            this.StatDefs.Add(new StatDefValue(StatDefOf.Insulation_Cold, 20));
+            this.StatDefs.Add(new StatDefValue(StatDefOf.Insulation_Heat, 20));
+
+            /*
+            this.StatDefs.Add(new StatDefValue(StatDefOf.CarryingCapacity, 20));
+            this.StatDefs.Add(new StatDefValue(StatDefOf.GlobalLearningFactor, 1));
+
+            this.StatDefs.Add(new StatDefValue(StatDefOf.MeleeDodgeChance, 1));
+            this.StatDefs.Add(new StatDefValue(StatDefOf.MeleeHitChance, 1));
+
+            this.StatDefs.Add(new StatDefValue(StatDefOf.MoveSpeed, 10));
+
+            this.StatDefs.Add(new StatDefValue(StatDefOf.WorkSpeedGlobal, 1));
+
+            this.StatDefs.Add(new StatDefValue(StatDefOf.AimingDelayFactor, 1));
+            this.StatDefs.Add(new StatDefValue(StatDefOf.AnimalGatherSpeed, 1));
+            this.StatDefs.Add(new StatDefValue(StatDefOf.AnimalGatherYield, 2));
+
+            this.StatDefs.Add(new StatDefValue(StatDefOf.MiningSpeed, 1));
+            this.StatDefs.Add(new StatDefValue(StatDefOf.MiningYield, 1));
+            
+            this.StatDefs.Add(new StatDefValue(StatDefOf.PlantWorkSpeed, 1));
+            this.StatDefs.Add(new StatDefValue(StatDefOf.PlantHarvestYield, 1));
+
+            this.StatDefs.Add(new StatDefValue(StatDefOf.PsychicSensitivity, 1));
+
+            this.StatDefs.Add(new StatDefValue(StatDefOf.SocialImpact, 1));
+
+            this.StatDefs.Add(new StatDefValue(StatDefOf.TameAnimalChance, 1));
+            this.StatDefs.Add(new StatDefValue(StatDefOf.TrainAnimalChance, 1));*/
+        }
+
+        public bool IncludeAppareL(Apparel a)
+        {
+            if (this.Name.Length > 0)
+            {
+                if (a.Label.ToLower().IndexOf(this.Name) == -1 &&
+                    a.def.defName.ToLower().IndexOf(this.Name) == -1)
+                    return false;
+            }
+
+            if (this.Layer != null)
+            {
+                if (!a.def.apparel.layers.Contains(this.Layer))
+                    return false;
+            }
+
+            if (this.Quality != QualityRange.All)
+            {
+                QualityCategory q;
+                if (a.TryGetQuality(out q))
+                {
+                    if (this.Quality.min > q || this.Quality.max < q)
+                        return false;
+                }
+            }
+
+            if (this.HP > 0)
+            {
+                float percent = (float)a.HitPoints / a.MaxHitPoints;
+                float filter = this.HP * 0.01f;
+                if (percent < filter)
+                    return false;
+            }
+
+            foreach(StatDefValue sdv in this.StatDefs)
+            {
+                if (sdv.Value > 0)
+                {
+                    float v = Math.Abs(a.GetStatValue(sdv.Def));
+                    if (sdv.Value > v)
+                        return false;
+                }
+            }
+
+            return true;
+        }
+
+        public string GetLayerLabel(string layer)
+        {
+            return "Layer".Translate() + ": " + layer;
+        }
+
+        public string GetQualityLabel(string q)
+        {
+            return "Quality".Translate() + ": " + q;
         }
     }
 }
