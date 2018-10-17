@@ -1,33 +1,9 @@
-﻿/*
- * MIT License
- * 
- * Copyright (c) [2017] [Travis Offtermatt]
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
-using ChangeDresser.UI.DTO;
+﻿using ChangeDresser.UI.DTO;
 using ChangeDresser.UI.DTO.SelectionWidgetDTOs;
 using RimWorld;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
-using System;
 using System.Text.RegularExpressions;
 using System.IO;
 
@@ -35,6 +11,7 @@ namespace ChangeDresser.UI.Util
 {
     delegate void SelectionChangeListener(object sender);
     delegate void UpdatePawnListener(object sender, object value);
+    delegate void ClearColorLayers();
 
     [StaticConstructorOnStartup]
     static class WidgetUtil
@@ -506,7 +483,7 @@ namespace ChangeDresser.UI.Util
             Text.Anchor = TextAnchor.UpperLeft;
         }
 
-        public static void AddAppararelColorSelectionWidget(float left, float top, float width, ApparelColorSelectionsContainer apparelSelectionsContainer)
+        public static void AddAppararelColorSelectionWidget(float left, float top, float width, ApparelColorSelectionsContainer apparelSelectionsContainer, ClearColorLayers clearColorLayers)
         {
             Text.Anchor = TextAnchor.MiddleCenter;
             if (apparelSelectionsContainer.Count == 0)
@@ -524,13 +501,18 @@ namespace ChangeDresser.UI.Util
 
                 GUI.color = Color.white;
                 Text.Font = GameFont.Small;
-                if (Widgets.ButtonText(new Rect(20, 0, 100, SelectionRowHeight), "ChangeDresser.SelectAll".Translate()))
+                if (Widgets.ButtonText(new Rect(10, 0, 100, SelectionRowHeight), "ChangeDresser.SelectAll".Translate()))
                 {
                     apparelSelectionsContainer.SelectAll();
                 }
-                if (Widgets.ButtonText(new Rect(apparelScrollRect.width - 120, 0, 100, SelectionRowHeight), "ChangeDresser.DeselectAll".Translate()))
+                if (Widgets.ButtonText(new Rect(apparelScrollRect.width - 140, 0, 100, SelectionRowHeight), "ChangeDresser.DeselectAll".Translate()))
                 {
                     apparelSelectionsContainer.DeselectAll();
+                }
+                if (clearColorLayers != null &&
+                    Widgets.ButtonText(new Rect(apparelScrollRect.width - SelectionRowHeight, 0, SelectionRowHeight, SelectionRowHeight), "X"))
+                {
+                    clearColorLayers();
                 }
                 Text.Font = GameFont.Medium;
 
@@ -586,7 +568,8 @@ namespace ChangeDresser.UI.Util
             Text.Anchor = TextAnchor.UpperLeft;
         }
 
-        public static void AddAppararelColorByLayerSelectionWidget(float left, float top, float width, ApparelLayerSelectionsContainer layerSelectionsContainer)
+        public static void AddAppararelColorByLayerSelectionWidget(
+            float left, float top, float width, ApparelLayerSelectionsContainer layerSelectionsContainer, ClearColorLayers clearColorLayers)
         {
             Text.Anchor = TextAnchor.MiddleCenter;
             if (layerSelectionsContainer.Count == 0)
@@ -605,14 +588,20 @@ namespace ChangeDresser.UI.Util
 
                 GUI.color = Color.white;
                 Text.Font = GameFont.Small;
-                if (Widgets.ButtonText(new Rect(20, 0, 100, SelectionRowHeight), "ChangeDresser.SelectAll".Translate()))
+                if (Widgets.ButtonText(new Rect(10, 0, 100, SelectionRowHeight), "ChangeDresser.SelectAll".Translate()))
                 {
                     layerSelectionsContainer.SelectAll();
                 }
-                if (Widgets.ButtonText(new Rect(apparelScrollRect.width - 120, 0, 100, SelectionRowHeight), "ChangeDresser.DeselectAll".Translate()))
+                if (Widgets.ButtonText(new Rect(apparelScrollRect.width - 140, 0, 100, SelectionRowHeight), "ChangeDresser.DeselectAll".Translate()))
                 {
                     layerSelectionsContainer.DeselectAll();
                 }
+                if (clearColorLayers != null &&
+                    Widgets.ButtonText(new Rect(apparelScrollRect.width - SelectionRowHeight, 0, SelectionRowHeight, SelectionRowHeight), "X"))
+                {
+                    clearColorLayers();
+                }
+                
                 Text.Font = GameFont.Medium;
 
                 for (int i = 0; i < layerSelectionsContainer.Count; ++i)

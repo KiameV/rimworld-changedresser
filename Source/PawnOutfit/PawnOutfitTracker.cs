@@ -1,8 +1,8 @@
 ﻿using RimWorld;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
+using System;
 
 namespace ChangeDresser
 {
@@ -680,6 +680,20 @@ namespace ChangeDresser
             {
                 return this.GetOutfit(this.currentlyWorn);
             }
+        }
+
+        public void ClearApparelColors()
+        {
+            if (this.ApparelColors != null)
+            {
+                this.ApparelColors.Clear();
+                this.ApparelColors = null;
+            }
+        }
+
+        public bool HasApparelColors()
+        {
+            return this.ApparelColors != null && this.ApparelColors.Count > 0;
         }
     }
 }

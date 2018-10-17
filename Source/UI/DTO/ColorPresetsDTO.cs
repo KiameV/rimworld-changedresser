@@ -97,5 +97,10 @@ namespace ChangeDresser.UI.DTO
                 this.SetColor(i, value);
             }
         }
+
+        public void ClearModified()
+        {
+            this.IsModified = false;
+        }
     }
 }

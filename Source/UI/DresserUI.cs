@@ -90,10 +90,10 @@ namespace ChangeDresser.UI
                 switch ((CurrentEditorEnum)this.dresserDto.EditorTypeSelectionDto.SelectedItem)
                 {
                     case CurrentEditorEnum.ChangeDresserApparelColor:
-                        WidgetUtil.AddAppararelColorSelectionWidget(editorLeft, editorTop, editorWidth, this.dresserDto.ApparelSelectionsContainer);
+                        WidgetUtil.AddAppararelColorSelectionWidget(editorLeft, editorTop, editorWidth, this.dresserDto.ApparelSelectionsContainer, this.GetClearColorCallback());
                         break;
                     case CurrentEditorEnum.ChangeDresserApparelLayerColor:
-                        WidgetUtil.AddAppararelColorByLayerSelectionWidget(editorLeft, editorTop, editorWidth, this.dresserDto.ApparelLayerSelectionsContainer);
+                        WidgetUtil.AddAppararelColorByLayerSelectionWidget(editorLeft, editorTop, editorWidth, this.dresserDto.ApparelLayerSelectionsContainer, this.GetClearColorCallback());
                         break;
                     case CurrentEditorEnum.ChangeDresserBody:
                         bool isShowing = false;
@@ -249,6 +249,26 @@ namespace ChangeDresser.UI
                 Text.Anchor = TextAnchor.UpperLeft;
                 GUI.color = Color.white;
             }
+        }
+
+        private ClearColorLayers GetClearColorCallback()
+        {
+            ClearColorLayers callback = null;
+            PawnOutfitTracker t;
+            if (WorldComp.PawnOutfits.TryGetValue(this.dresserDto.Pawn, out t) && 
+                t.HasApparelColors())
+            {
+                callback = delegate ()
+                {
+                    if (this.dresserDto.ApparelSelectionsContainer != null &&
+                        this.dresserDto.ApparelSelectionsContainer.ColorPresetsDTO != null)
+                    {
+                        this.dresserDto.ApparelSelectionsContainer.ColorPresetsDTO.ClearModified();
+                    }
+                    t.ClearApparelColors();
+                };
+            }
+            return callback;
         }
 
         private bool AddLongInput(float labelLeft, float top, float inputLeft, float inputWidth, string label, ref long value, long maxValue, long factor = 1)
