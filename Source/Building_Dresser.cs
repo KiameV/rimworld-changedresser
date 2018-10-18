@@ -254,17 +254,24 @@ namespace ChangeDresser
             List<Apparel> ll = new List<Apparel>(BuildingUtil.FindThingsOfTypeNextTo<Apparel>(base.Map, base.Position, 1));
             Log.Warning("Apparel found: " + ll.Count);
 #endif
-            List<Thing> l = BuildingUtil.FindThingsNextTo(base.Map, base.Position, 1);
-            if (l.Count > 0)
+            try
             {
-                foreach (Thing t in l)
+                List<Thing> l = BuildingUtil.FindThingsNextTo(base.Map, base.Position, 1);
+                if (l.Count > 0)
                 {
-                    if (t is Apparel)
+                    foreach (Thing t in l)
                     {
-                        WorldComp.AddApparel((Apparel)t);
+                        if (t is Apparel)
+                        {
+                            WorldComp.AddApparel((Apparel)t);
+                        }
                     }
+                    l.Clear();
                 }
-                l.Clear();
+            }
+            catch
+            {
+                // Ignore
             }
         }
 

@@ -26,6 +26,11 @@ namespace ChangeDresser
             }
         }
 
+        static WorldComp ()
+        {
+            DressersToUse = new LinkedList<Building_Dresser>();
+        }
+
         public WorldComp(World world) : base(world)
         {
             if (DressersToUse != null)
