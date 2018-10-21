@@ -16,14 +16,21 @@ namespace MendingChangeDresserPatch
         {
             if (ModsConfig.ActiveModsInLoadOrder.Any(m => "MendAndRecycle".Equals(m.Name)))
             {
-                var harmony = HarmonyInstance.Create("com.mendingchangedresserpatch.rimworld.mod");
+                try
+                {
+                    var harmony = HarmonyInstance.Create("com.mendingchangedresserpatch.rimworld.mod");
 
-                harmony.PatchAll(Assembly.GetExecutingAssembly());
+                    harmony.PatchAll(Assembly.GetExecutingAssembly());
 
-                Log.Message(
-                    "MendingChangeDresserPatch Harmony Patches:" + Environment.NewLine +
-                    "  Postfix:" + Environment.NewLine +
-                    "    WorkGiver_DoBill.TryFindBestBillIngredients - Priority Last");
+                    Log.Message(
+                        "MendingChangeDresserPatch Harmony Patches:" + Environment.NewLine +
+                        "  Postfix:" + Environment.NewLine +
+                        "    WorkGiver_DoBill.TryFindBestBillIngredients - Priority Last");
+                }
+                catch (Exception e)
+                {
+                    Log.Error("Failed to patch Mending & Recycling." + Environment.NewLine + e.Message);
+                }
             }
             else
             {
