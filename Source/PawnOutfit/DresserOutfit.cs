@@ -99,7 +99,10 @@ namespace ChangeDresser
 #if DRESSER_OUTFIT
                     Log.Warning("            -- Not a custom piece of apparel. Storing in Dresser.");
 #endif
-                    WorldComp.AddApparel(a);
+                    if (!WorldComp.AddApparel(a))
+                    {
+                        BuildingUtil.DropThing(a, pawn.Position, pawn.Map, false);
+                    }
                 }
             }
             this.isBeingWorn = false;
@@ -278,7 +281,10 @@ Log.Warning("    Remove Apparel:");
 #if DRESSER_OUTFIT
         Log.Warning("            -- Not a custom piece of apparel. Storing in Dresser.");
 #endif
-                    WorldComp.AddApparel(a);
+                    if (!WorldComp.AddApparel(a))
+                    {
+                        BuildingUtil.DropThing(a, pawn.Position, pawn.Map, false);
+                    }
                 }
             }
             this.isBeingWorn = false;
