@@ -29,6 +29,7 @@ namespace ChangeDresser
                 "    Pawn.Kill - Priority First" + Environment.NewLine +
                 "    Pawn_ApparelTracker.Notify_ApparelAdded" + Environment.NewLine +
                 "    ScribeSaver.InitSaving" + Environment.NewLine +
+                "    SettlementAbandonUtility.Abandon" + Environment.NewLine +
                 "  Postfix:" + Environment.NewLine +
                 "    Pawn.GetGizmos" + Environment.NewLine +
                 "    Pawn_ApparelTracker.Notify_ApparelAdded" + Environment.NewLine +
@@ -866,6 +867,16 @@ namespace ChangeDresser
             {
                 d.ReclaimApparel();
             }
+        }
+    }
+
+    [HarmonyPatch(typeof(SettlementAbandonUtility), "Abandon")]
+    static class Patch_SettlementAbandonUtility_Abandon
+    {
+        [HarmonyPriority(Priority.First)]
+        static void Prefix(MapParent settlement)
+        {
+            WorldComp.RemoveDressers(settlement.Map);
         }
     }
 }

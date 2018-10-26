@@ -77,6 +77,12 @@ namespace ChangeDresser
 
         public static void AddDresser(Building_Dresser dresser)
         {
+            if (dresser == null || dresser.Map == null)
+            {
+                Log.Error("Cannot add ChangeDresser that is either null or has a null map.");
+                return;
+            }
+
             if (!DressersToUse.Contains(dresser))
             {
                 DressersToUse.AddLast(dresser);
@@ -111,6 +117,21 @@ namespace ChangeDresser
                     return true;
             }
             return false;
+        }
+
+        public static void RemoveDressers(Map map)
+        {
+            LinkedListNode<Building_Dresser> n = DressersToUse.First;
+            while (n != null)
+            {
+                var next = n.Next;
+                Building_Dresser d = n.Value;
+                if (d.Map == null)
+                {
+                    DressersToUse.Remove(n);
+                }
+                n = next;
+            }
         }
 
         public static bool RemoveDesser(Building_Dresser dresser)
