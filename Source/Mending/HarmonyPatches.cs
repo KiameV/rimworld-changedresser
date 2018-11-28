@@ -40,12 +40,13 @@ namespace MendingChangeDresserPatch
     }
 
     [HarmonyPriority(Priority.Last)]
-    [HarmonyPatch(typeof(MendAndRecycle.WorkGiver_DoBill), "TryFindBestBillIngredients")]
+    [HarmonyPatch(typeof(WorkGiver_DoBill), "TryFindBestBillIngredients")]
     static class Patch_WorkGiver_DoBill_TryFindBestBillIngredients
     {
-        static void Postfix(ref bool __result, Bill bill, Pawn pawn, Thing billGiver, bool ignoreHitPoints, ref Thing chosen)
+        static void Postfix(ref bool __result, WorkGiver_DoBill __instance, Bill bill, Pawn pawn, Thing billGiver, List<ThingCount> chosen)
         {
-            if (__result == false && 
+            if (__instance is MendAndRecycle.WorkGiver_DoBill &&
+				__result == false && 
                 pawn != null && bill != null && bill.recipe != null && 
                 bill.Map == pawn.Map &&
                 bill.recipe.defName.IndexOf("Apparel") != -1)
@@ -75,8 +76,8 @@ namespace MendingChangeDresserPatch
                             else
                             {
                                 __result = true;
-                                chosen = a;
-                            }
+								chosen.Add(new ThingCount(a, 1));
+							}
                             return;
                         }
                     }
