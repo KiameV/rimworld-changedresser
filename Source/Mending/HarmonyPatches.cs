@@ -45,9 +45,8 @@ namespace MendingChangeDresserPatch
     {
         static void Postfix(ref bool __result, WorkGiver_DoBill __instance, Bill bill, Pawn pawn, Thing billGiver, List<ThingCount> chosen)
         {
-            if (__instance is MendAndRecycle.WorkGiver_DoBill &&
-				__result == false && 
-                pawn != null && bill != null && bill.recipe != null && 
+            if (__result == false &&
+				pawn != null && bill != null && bill.recipe != null && 
                 bill.Map == pawn.Map &&
                 bill.recipe.defName.IndexOf("Apparel") != -1)
             {
