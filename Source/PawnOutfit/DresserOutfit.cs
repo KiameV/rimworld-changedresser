@@ -1,6 +1,7 @@
 ﻿using RimWorld;
 using System.Collections.Generic;
 using Verse;
+using System;
 
 namespace ChangeDresser
 {
@@ -29,7 +30,17 @@ namespace ChangeDresser
 
         public CustomOutfit() { }
 
-        public void Dress(Pawn pawn)
+		public void Clean()
+		{
+			for (int i = this.Apparel.Count - 1; i >= 0; --i)
+			{
+				Apparel a = this.Apparel[i];
+				if (a == null || a.Destroyed || a.HitPoints <= 0)
+					this.Apparel.RemoveAt(i);
+			}
+		}
+
+		public void Dress(Pawn pawn)
         {
 #if DRESSER_OUTFIT
             Log.Warning("Begin CustomOutfit.Dress(Pawn: " + pawn.Name.ToStringShort + ")");
@@ -167,7 +178,7 @@ namespace ChangeDresser
 #endif
         }
 
-        public void ExposeData()
+		public void ExposeData()
         {
             Scribe_Values.Look<string>(ref this.Name, "name");
             Scribe_Values.Look<OutfitType>(ref this.outfitType, "type");

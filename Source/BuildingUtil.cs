@@ -54,30 +54,40 @@ namespace ChangeDresser
 
         public static bool DropThing(Thing toDrop, Building from, Map map, bool makeForbidden = true)
         {
-            return DropThing(toDrop, from.InteractionCell, map, makeForbidden);
-        }
+			try
+			{
+				return DropThing(toDrop, from.InteractionCell, map, makeForbidden);
+			}
+			catch (Exception e)
+			{
+				Log.Warning(
+					"ChangeDresser:BuildingUtil.DropApparel\n" +
+					e.GetType().Name + " " + e.Message + "\n" +
+					e.StackTrace);
+			}
+			return false;
+		}
 
         public static bool DropThing(Thing toDrop, IntVec3 from, Map map, bool makeForbidden = true)
         {
             try
             {
-                Thing t;
-                if (!toDrop.Spawned)
-                {
-                    GenThing.TryDropAndSetForbidden(toDrop, from, map, ThingPlaceMode.Near, out t, makeForbidden);
-                    if (!toDrop.Spawned)
-                    {
-                        GenPlace.TryPlaceThing(toDrop, from, map, ThingPlaceMode.Near);
-                    }
-                }
+				if (!toDrop.Spawned)
+				{
+					GenThing.TryDropAndSetForbidden(toDrop, from, map, ThingPlaceMode.Near, out Thing t, makeForbidden);
+					if (!toDrop.Spawned)
+					{
+						GenPlace.TryPlaceThing(toDrop, from, map, ThingPlaceMode.Near);
+					}
+				}
 
-                toDrop.Position = from;
+				toDrop.Position = from;
 
                 return toDrop.Spawned;
             }
             catch (Exception e)
             {
-                Log.Error(
+                Log.Warning(
                     "ChangeDresser:BuildingUtil.DropApparel\n" +
                     e.GetType().Name + " " + e.Message + "\n" +
                     e.StackTrace);

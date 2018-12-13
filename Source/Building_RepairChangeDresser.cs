@@ -133,7 +133,7 @@ namespace ChangeDresser
                 }
                 else if (
                     this.BeingRepaird != null &&
-                    this.BeingRepaird.HitPoints == this.BeingRepaird.MaxHitPoints)
+                    this.BeingRepaird.HitPoints >= this.BeingRepaird.MaxHitPoints)
                 {
                     // Power is on
                     // Repairing something

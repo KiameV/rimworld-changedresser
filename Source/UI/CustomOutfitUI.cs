@@ -65,6 +65,8 @@ namespace ChangeDresser.UI
             this.doCloseX = false;
             this.absorbInputAroundWindow = true;
             this.forcePause = true;
+
+			WorldComp.CleanupCustomOutfits();
             
 #if CUSTOM_OUTFIT_UI
             Log.Message("    Populate Selectable Pawns:");

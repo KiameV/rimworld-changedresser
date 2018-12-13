@@ -10,7 +10,7 @@ namespace ChangeDresser
     {
         public Pawn Pawn = null;
         private List<Apparel> customApparel = new List<Apparel>();
-        public IEnumerable<Apparel> CustomApparel { get { return this.customApparel; } }
+		public IEnumerable<Apparel> CustomApparel => customApparel;
 
         public List<DefinedOutfit> DefinedOutfits = new List<DefinedOutfit>();
         public List<CustomOutfit> CustomOutfits = new List<CustomOutfit>();
@@ -89,7 +89,27 @@ namespace ChangeDresser
 #endif
         }
 
-        public Color GetLayerColor(ApparelLayerDef layer, bool getFromWorn = false)
+		public void Clean()
+		{
+			bool found = false;
+			for (int i = this.customApparel.Count - 1; i >= 0; --i)
+			{
+				Apparel a = this.customApparel[i];
+				if (a == null || a.Destroyed || a.HitPoints <= 0)
+				{
+					found = true;
+					customApparel.RemoveAt(i);
+				}
+			}
+
+			if (!found)
+				return;
+
+			foreach (CustomOutfit c in CustomOutfits)
+				c.Clean();
+		}
+
+		public Color GetLayerColor(ApparelLayerDef layer, bool getFromWorn = false)
         {
             int layerInt = Util.ToInt(layer);
             if (this.ApparelColors != null && this.ApparelColors.Count > layerInt)
@@ -596,34 +616,32 @@ namespace ChangeDresser
             {
                 foreach (Apparel a in this.Pawn.apparel.WornApparel)
                     this.customApparel.Remove(a);
-            }
 
-            Scribe_References.Look(ref this.Pawn, "pawn");
+				this.Clean();
+			}
+
+			Scribe_References.Look(ref this.Pawn, "pawn");
             Scribe_Collections.Look(ref this.DefinedOutfits, "definedOutfits", LookMode.Deep, new object[0]);
             Scribe_Collections.Look(ref this.CustomOutfits, "customOutfits", LookMode.Deep, new object[0]);
             Scribe_Collections.Look(ref this.ApparelColors, "apparelColors", LookMode.Deep, new object[0]);
-            Scribe_Collections.Look(ref this.customApparel, "customApparel", LookMode.Deep, new object[0]);
+            Scribe_Collections.Look(ref this.customApparel, false, "customApparel", LookMode.Deep, new object[0]);
 
             Scribe_Values.Look(ref this.currentlyWorn, "currentlyWorn");
             Scribe_Values.Look(ref this.lastBattleOutfit, "lastBattleOutfit");
             Scribe_Values.Look(ref this.lastCivilianOutfit, "lastCivilianOutfit");
-
-            /*if (Scribe.mode == LoadSaveMode.PostLoadInit)
-            {
-                foreach (IDresserOutfit o in this.DefinedOutfits)
-                    if (string.IsNullOrEmpty(o.UniqueId))
-                        this.ApplyUniqueId(o);
-                foreach (IDresserOutfit o in this.CustomOutfits)
-                    if (string.IsNullOrEmpty(o.UniqueId))
-                        this.ApplyUniqueId(o);
-            }*/
-
+			
             if (Scribe.mode == LoadSaveMode.Saving || 
                 Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 this.UpdateCustomApparel(null);
             }
-        }
+
+			if (Scribe.mode == LoadSaveMode.PostLoadInit)
+			{
+				this.Clean();
+			}
+
+		}
 
         public IEnumerable<IDresserOutfit> AllOutfits
         {

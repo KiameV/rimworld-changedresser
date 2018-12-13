@@ -61,25 +61,24 @@ namespace MendingChangeDresserPatch
                 {
                     if ((float)(dresser.Position - billGiver.Position).LengthHorizontalSquared < bill.ingredientSearchRadius * bill.ingredientSearchRadius)
                     {
-                        List<Apparel> gotten;
-                        if (dresser.TryGetFilteredApparel(bill, bill.ingredientFilter, out gotten, true, true))
-                        {
-                            Apparel a = gotten[0];
-                            dresser.Remove(a, false);
-                            if (a.Spawned == false)
-                            {
-                                Log.Error("Failed to spawn apparel-to-mend [" + a.Label + "] from dresser [" + dresser.Label + "].");
-                                __result = false;
-                                chosen = null;
-                            }
-                            else
-                            {
-                                __result = true;
+						if (dresser.TryGetFilteredApparel(bill, bill.ingredientFilter, out List<Apparel> gotten, true, true))
+						{
+							Apparel a = gotten[0];
+							dresser.Remove(a, false);
+							if (a.Spawned == false)
+							{
+								Log.Error("Failed to spawn apparel-to-mend [" + a.Label + "] from dresser [" + dresser.Label + "].");
+								__result = false;
+								chosen = null;
+							}
+							else
+							{
+								__result = true;
 								chosen.Add(new ThingCount(a, 1));
 							}
-                            return;
-                        }
-                    }
+							return;
+						}
+					}
                 }
             }
         }

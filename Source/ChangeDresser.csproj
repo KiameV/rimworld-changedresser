@@ -26,10 +26,11 @@
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>D:\Steam\steamapps\common\RimWorld\Mods\ChangeDresser\Assemblies\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <LangVersion>5</LangVersion>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony, Version=1.2.0.1, Culture=neutral, processorArchitecture=MSIL">

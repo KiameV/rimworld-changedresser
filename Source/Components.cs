@@ -102,9 +102,15 @@ namespace ChangeDresser
                     }
                 }
             }
-        }        
+        }
 
-        public static bool HasDressers()
+		public static void CleanupCustomOutfits()
+		{
+			foreach (PawnOutfitTracker t in PawnOutfits.Values)
+				t.Clean();
+		}
+
+		public static bool HasDressers()
         {
             return DressersToUse.Count > 0;
         }

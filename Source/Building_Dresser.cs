@@ -282,26 +282,34 @@ namespace ChangeDresser
             {
                 if (bill.IsFixedOrAllowedIngredient(kv.Key) && filter.Allows(kv.Key))
                 {
-                    foreach (Apparel t in kv.Value)
+                    var n = kv.Value.First;
+					while (n != null)
                     {
-                        if (bill.IsFixedOrAllowedIngredient(t) && filter.Allows(t))
-                        {
-                            if (isForMending && t.HitPoints == t.MaxHitPoints)
-                            {
-                                continue;
-                            }
+						var next = n.Next;
+						Apparel t = n.Value;
+						if (t == null || t.Destroyed || t.HitPoints == 0)
+						{
+							kv.Value.Remove(n);
+						}
+						else if (bill.IsFixedOrAllowedIngredient(t) && filter.Allows(t))
+						{
+							if (isForMending && t.HitPoints == t.MaxHitPoints)
+							{
+								continue;
+							}
 
-                            if (gotten == null)
-                            {
-                                gotten = new List<Apparel>();
-                            }
-                            gotten.Add(t);
+							if (gotten == null)
+							{
+								gotten = new List<Apparel>();
+							}
+							gotten.Add(t);
 
-                            if (getOne)
-                            {
-                                return true;
-                            }
-                        }
+							if (getOne)
+							{
+								return true;
+							}
+						}
+						n = next;
                     }
                 }
             }
@@ -382,7 +390,7 @@ namespace ChangeDresser
 #if DEBUG
             Log.Warning(" Scribe_Collections.Look tempApparelList");
 #endif
-            Scribe_Collections.Look(ref this.tempApparelList, "apparel", LookMode.Deep, new object[0]);
+            Scribe_Collections.Look(ref this.tempApparelList, false, "apparel", LookMode.Deep, new object[0]);
             Scribe_Values.Look(ref this.includeInTradeDeals, "includeInTradeDeals", true);
 #if DEBUG
             if (this.tempApparelList != null)
@@ -398,7 +406,7 @@ namespace ChangeDresser
 #endif
                 foreach (Apparel apparel in this.tempApparelList)
                 {
-                    if (apparel != null)
+                    if (apparel != null && !apparel.Destroyed && apparel.HitPoints > 0.01)
                     {
                         this.StoredApparel.AddApparel(apparel);
                     }
