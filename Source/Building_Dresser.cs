@@ -35,6 +35,8 @@ namespace ChangeDresser
         private bool includeInTradeDeals = true;
         public bool IncludeInTradeDeals { get { return this.includeInTradeDeals; } }
 
+		private List<Thing> forceAddedApparel = null;
+
         public Building_Dresser()
         {
             WEAR_APPAREL_FROM_DRESSER_JOB_DEF = this.wearApparelFromStorageJobDef;
@@ -248,7 +250,7 @@ namespace ChangeDresser
             }
         }
 
-        internal void ReclaimApparel()
+		internal void ReclaimApparel(bool force = false)
         {
 #if DEBUG
             List<Apparel> ll = new List<Apparel>(BuildingUtil.FindThingsOfTypeNextTo<Apparel>(base.Map, base.Position, 1));
@@ -261,12 +263,28 @@ namespace ChangeDresser
                 {
                     foreach (Thing t in l)
                     {
-                        if (t is Apparel)
-                        {
-                            WorldComp.AddApparel((Apparel)t);
-                        }
+						try
+						{
+							if (t is Apparel)
+							{
+								if (!WorldComp.AddApparel((Apparel)t) &&
+									force &&
+									t.Spawned)
+								{
+									t.DeSpawn();
+									if (this.forceAddedApparel == null)
+										this.forceAddedApparel = new List<Thing>();
+									this.forceAddedApparel.Add(t);
+								}
+							}
+						}
+						catch
+						{
+							// Ignore
+						}
                     }
                     l.Clear();
+					l = null;
                 }
             }
             catch
@@ -385,13 +403,16 @@ namespace ChangeDresser
             if (Scribe.mode == LoadSaveMode.Saving)
             {
                 this.tempApparelList = new List<Apparel>(this.StoredApparel.Apparel);
-            }
+				if (this.forceAddedApparel == null)
+					this.forceAddedApparel = new List<Thing>();
+			}
 
 #if DEBUG
             Log.Warning(" Scribe_Collections.Look tempApparelList");
 #endif
             Scribe_Collections.Look(ref this.tempApparelList, false, "apparel", LookMode.Deep, new object[0]);
             Scribe_Values.Look(ref this.includeInTradeDeals, "includeInTradeDeals", true);
+			Scribe_Collections.Look(ref this.forceAddedApparel, false, "forceAddedApparel", LookMode.Deep, new object[0]);
 #if DEBUG
             if (this.tempApparelList != null)
                 Log.Warning(" tempApparelList Count: " + this.tempApparelList.Count);
@@ -428,6 +449,9 @@ namespace ChangeDresser
 #endif
                 this.tempApparelList.Clear();
                 this.tempApparelList = null;
+
+				if (this.forceAddedApparel != null && this.forceAddedApparel.Count == 0)
+					this.forceAddedApparel = null;
             }
 
 #if DEBUG
@@ -540,6 +564,14 @@ namespace ChangeDresser
                     this.AllowAdds = true;
                 }
             }
+
+			if (this.forceAddedApparel != null && this.forceAddedApparel.Count > 0)
+			{
+				foreach (Thing t in this.forceAddedApparel)
+					this.DropApparel(this.forceAddedApparel, false);
+				this.forceAddedApparel.Clear();
+				this.forceAddedApparel = null;
+			}
 
             /*long now = DateTime.Now.Millisecond;
             if (now - this.lastAutoCollect > THIRTY_SECONDS)

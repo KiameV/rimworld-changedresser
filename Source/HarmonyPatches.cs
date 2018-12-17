@@ -865,7 +865,7 @@ namespace ChangeDresser
         {
             foreach (Building_Dresser d in WorldComp.GetDressers(null))
             {
-                d.ReclaimApparel();
+                d.ReclaimApparel(true);
             }
         }
     }
