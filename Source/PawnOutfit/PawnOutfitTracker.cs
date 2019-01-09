@@ -389,7 +389,7 @@ namespace ChangeDresser
             foreach (ApparelLayerDef l in a.def.apparel.layers)
             {
                 int i = Util.ToInt(l);
-                if (i > layer)
+                if (i >= layer)
                 {
                     layer = i;
                 }

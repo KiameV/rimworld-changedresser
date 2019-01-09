@@ -252,6 +252,8 @@ namespace ChangeDresser
 
 		internal void ReclaimApparel(bool force = false)
         {
+			if (base.Map == null)
+				return;
 #if DEBUG
             List<Apparel> ll = new List<Apparel>(BuildingUtil.FindThingsOfTypeNextTo<Apparel>(base.Map, base.Position, 1));
             Log.Warning("Apparel found: " + ll.Count);
