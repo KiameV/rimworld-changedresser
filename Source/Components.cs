@@ -63,10 +63,36 @@ namespace ChangeDresser
 
         public static bool AddApparel(Apparel apparel, Map map = null)
         {
+            if (apparel == null)
+                return true;
+            if (map == null || apparel.Map == null)
+                return AddApparelAnyDresser(apparel);
+            
             foreach (Building_Dresser d in DressersToUse)
             {
-                if ((map == null || d.Map == map) && apparel != null &&
-                    d.settings.AllowedToAccept(apparel))
+                if (d.Map == map && d.settings.AllowedToAccept(apparel))
+                {
+                    d.AddApparel(apparel);
+                    return true;
+                }
+            }
+
+            foreach (Building_Dresser d in DressersToUse)
+            {
+                if (d.Map != map && d.settings.AllowedToAccept(apparel))
+                {
+                    d.AddApparel(apparel);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private static bool AddApparelAnyDresser(Apparel apparel)
+        {
+            foreach (Building_Dresser d in DressersToUse)
+            {
+                if (d.settings.AllowedToAccept(apparel))
                 {
                     d.AddApparel(apparel);
                     return true;

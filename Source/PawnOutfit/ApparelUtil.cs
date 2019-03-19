@@ -56,7 +56,68 @@ namespace ChangeDresser
 
         public static void OptimizeApparel(Pawn pawn)
         {
-            if (!WorldComp.HasDressers(pawn.Map))
+            if (WorldComp.HasDressers(pawn.Map))
+            {
+#if DRESSER_OUTFIT
+            Log.Warning("Begin OptimizeApparelUtil.OptimizeApparel(Pawn: " + pawn.Name + ")");
+#endif
+                MethodInfo mi = typeof(JobGiver_OptimizeApparel).GetMethod("TryGiveJob", BindingFlags.Instance | BindingFlags.NonPublic);
+                JobGiver_OptimizeApparel apparelOptimizer = new JobGiver_OptimizeApparel();
+                object[] param = new object[] { pawn };
+
+                for (int i = 0; i < 10; ++i)
+                {
+#if TRACE && DRESSER_OUTFIT
+                Log.Message(i + " start equip for loop");
+#endif
+                    Job job = mi.Invoke(apparelOptimizer, param) as Job;
+#if TRACE && DRESSER_OUTFIT
+                Log.Message(i + " job is null: " + (string)((job == null) ? "yes" : "no"));
+#endif
+                    if (job == null)
+                        break;
+#if TRACE && DRESSER_OUTFIT
+                Log.Message(job.def.defName);
+#endif
+                    if (job.def == JobDefOf.Wear)
+                    {
+                        Apparel a = ((job.targetB != null) ? job.targetB.Thing : null) as Apparel;
+                        if (a == null)
+                        {
+                            Log.Warning("ChangeDresser: OptimizeApparelUtil.OptimizeApparel: Problem equiping pawn. Apparel is null.");
+                            break;
+                        }
+#if TRACE && DRESSER_OUTFIT
+                    Log.Message("Wear from ground " + a.Label);
+#endif
+                        pawn.apparel.Wear(a);
+                    }
+                    else if (job.def == Building_Dresser.WEAR_APPAREL_FROM_DRESSER_JOB_DEF)
+                    {
+                        Building_Dresser d = ((job.targetA != null) ? job.targetA.Thing : null) as Building_Dresser;
+                        Apparel a = ((job.targetB != null) ? job.targetB.Thing : null) as Apparel;
+
+                        if (d == null || a == null)
+                        {
+                            Log.Warning("ChangeDresser: OptimizeApparelUtil.OptimizeApparel: Problem equiping pawn. Dresser or Apparel is null.");
+                            break;
+                        }
+#if TRACE && DRESSER_OUTFIT
+                    Log.Message("Wear from dresser " + d.Label + " " + a.Label);
+#endif
+                        d.RemoveNoDrop(a);
+                        pawn.apparel.Wear(a);
+                    }
+#if TRACE && DRESSER_OUTFIT
+                Log.Message(i + " end equip for loop");
+#endif
+                }
+#if DRESSER_OUTFIT
+            Log.Warning("End OptimizeApparelUtil.OptimizeApparel");
+#endif
+            }
+
+            if (pawn.apparel.WornApparel.Count == 0)
             {
                 // When pawns are not on the home map they will not get dressed using the game's normal method
 
@@ -76,8 +137,7 @@ namespace ChangeDresser
 #if TRACE && SWAP_APPAREL
                             Log.Warning("            " + d.Label);
 #endif
-                            Apparel apparel;
-                            if (d.TryRemoveBestApparel(def, pawn.outfits.CurrentOutfit.filter, out apparel))
+                            if (d.TryRemoveBestApparel(def, pawn.outfits.CurrentOutfit.filter, out Apparel apparel))
                             {
                                 WorldComp.ApparelColorTracker.RemoveApparel(apparel);
 #if TRACE && SWAP_APPAREL
@@ -97,66 +157,7 @@ namespace ChangeDresser
                         Log.Warning("        Can't wear");
 #endif
                 }
-                return;
             }
-
-#if DRESSER_OUTFIT
-            Log.Warning("Begin OptimizeApparelUtil.OptimizeApparel(Pawn: " + pawn.Name + ")");
-#endif
-            MethodInfo mi = typeof(JobGiver_OptimizeApparel).GetMethod("TryGiveJob", BindingFlags.Instance | BindingFlags.NonPublic);
-            JobGiver_OptimizeApparel apparelOptimizer = new JobGiver_OptimizeApparel();
-            object[] param = new object[] { pawn };
-
-            for (int i = 0; i < 10; ++i)
-            {
-#if TRACE && DRESSER_OUTFIT
-                Log.Message(i + " start equip for loop");
-#endif
-                Job job = mi.Invoke(apparelOptimizer, param) as Job;
-#if TRACE && DRESSER_OUTFIT
-                Log.Message(i + " job is null: " + (string)((job == null) ? "yes" : "no"));
-#endif
-                if (job == null)
-                    break;
-#if TRACE && DRESSER_OUTFIT
-                Log.Message(job.def.defName);
-#endif
-                if (job.def == JobDefOf.Wear)
-                {
-                    Apparel a = ((job.targetB != null) ? job.targetB.Thing : null) as Apparel;
-                    if (a == null)
-                    {
-                        Log.Warning("ChangeDresser: OptimizeApparelUtil.OptimizeApparel: Problem equiping pawn. Apparel is null.");
-                        break;
-                    }
-#if TRACE && DRESSER_OUTFIT
-                    Log.Message("Wear from ground " + a.Label);
-#endif
-                    pawn.apparel.Wear(a);
-                }
-                else if (job.def == Building_Dresser.WEAR_APPAREL_FROM_DRESSER_JOB_DEF)
-                {
-                    Building_Dresser d = ((job.targetA != null) ? job.targetA.Thing : null) as Building_Dresser;
-                    Apparel a = ((job.targetB != null) ? job.targetB.Thing : null) as Apparel;
-
-                    if (d == null || a == null)
-                    {
-                        Log.Warning("ChangeDresser: OptimizeApparelUtil.OptimizeApparel: Problem equiping pawn. Dresser or Apparel is null.");
-                        break;
-                    }
-#if TRACE && DRESSER_OUTFIT
-                    Log.Message("Wear from dresser " + d.Label + " " + a.Label);
-#endif
-                    d.RemoveNoDrop(a);
-                    pawn.apparel.Wear(a);
-                }
-#if TRACE && DRESSER_OUTFIT
-                Log.Message(i + " end equip for loop");
-#endif
-            }
-#if DRESSER_OUTFIT
-            Log.Warning("End OptimizeApparelUtil.OptimizeApparel");
-#endif
         }
 
         public static bool FindBetterApparel(

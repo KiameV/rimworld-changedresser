@@ -179,8 +179,7 @@ namespace ChangeDresser
                             var next = n.Next;
                             NeededIngrediants neededIng = n.Value;
 
-                            List<Apparel> gotten;
-                            if (dresser.TryGetFilteredApparel(bill, neededIng.Filter, out gotten))
+                            if (dresser.TryGetFilteredApparel(bill, neededIng.Filter, out List<Apparel> gotten))
                             {
                                 foreach (Apparel got in gotten)
                                 {

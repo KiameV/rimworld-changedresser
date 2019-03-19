@@ -284,8 +284,7 @@ namespace ChangeDresser
 
         internal static void ColorApparel(Pawn pawn, Apparel apparel)
         {
-            PawnOutfitTracker outfits;
-            if (WorldComp.PawnOutfits.TryGetValue(pawn, out outfits))
+            if (WorldComp.PawnOutfits.TryGetValue(pawn, out PawnOutfitTracker outfits))
             {
                 outfits.ApplyApparelColor(apparel);
             }
@@ -317,8 +316,7 @@ namespace ChangeDresser
                 if (i == WAIT)
                     Log.Warning("DraftController.Postfix: Pawn is Drafted");
 #endif
-                PawnOutfitTracker outfits;
-                if (WorldComp.PawnOutfits.TryGetValue(__instance, out outfits))
+                if (WorldComp.PawnOutfits.TryGetValue(__instance, out PawnOutfitTracker outfits))
                 {
                     List<Gizmo> l = new List<Gizmo>(__result);
 #if DEBUG
@@ -407,8 +405,7 @@ namespace ChangeDresser
                 if (i == WAIT)
                     Log.Warning("DraftController.Postfix: Pawn is Drafted");
 #endif
-                PawnOutfitTracker outfits;
-                if (WorldComp.PawnOutfits.TryGetValue(pawn, out outfits))
+                if (WorldComp.PawnOutfits.TryGetValue(pawn, out PawnOutfitTracker outfits))
                 {
                     List<Gizmo> l = new List<Gizmo>(__result);
 #if DEBUG
@@ -457,10 +454,10 @@ namespace ChangeDresser
 #if DRESSER_OUTFIT
                                 Log.Warning("Patch_Pawn_DraftController_GetGizmos click for " + o.Label);
 #endif
-                                outfits.ChangeTo(o);
-                                //HarmonyPatches.SwapApparel(pawn, o);
-                                //outfits.ColorApparel(pawn);
-                            };
+                            outfits.ChangeTo(o);
+                            //HarmonyPatches.SwapApparel(pawn, o);
+                            //outfits.ColorApparel(pawn);
+                        };
                         l.Add(a);
                     }
 #if DEBUG
@@ -492,8 +489,7 @@ namespace ChangeDresser
             if (WorldComp.HasDressers())
             {
                 Pawn pawn = __instance.pawn;
-                PawnOutfitTracker outfits;
-                if (WorldComp.PawnOutfits.TryGetValue(pawn, out outfits))
+                if (WorldComp.PawnOutfits.TryGetValue(pawn, out PawnOutfitTracker outfits))
                 {
                     if (pawn.Drafted)
                     {
