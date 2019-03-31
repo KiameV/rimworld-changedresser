@@ -115,16 +115,11 @@ namespace ChangeDresser.UI.Util
 
         public static void AddColorSelectorWidget(float left, float top, float width, SelectionColorWidgetDTO selectionDto, ColorPresetsDTO presetsDto)
         {
-            List<SelectionColorWidgetDTO> l = new List<SelectionColorWidgetDTO>(1);
-            l.Add(selectionDto);
-            /*if (Settings.UseColorPickerV2)
+            List<SelectionColorWidgetDTO> l = new List<SelectionColorWidgetDTO>(1)
             {
-                AddColorSelectorV2Widget(left, top, width, l, presetsDto);
-            }
-            else
-            {*/
+                selectionDto
+            };
             AddColorSelectorWidget(left, top, width, l, presetsDto);
-            //}
         }
 
         public static void AddColorSelectorWidget(float left, float top, float width, List<SelectionColorWidgetDTO> selectionDtos, ColorPresetsDTO presetsDto)

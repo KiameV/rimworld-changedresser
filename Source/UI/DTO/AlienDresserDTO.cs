@@ -80,6 +80,18 @@ namespace ChangeDresser.UI.DTO
                     base.HairColorSelectionDto = new HairColorSelectionDTO(this.Pawn.story.hairColor, IOUtil.LoadColorPresets(ColorPresetType.Hair));
                     base.HairColorSelectionDto.SelectionChangeListener += this.PrimaryHairColorChange;
 
+                    ColorPresetsDTO hairColorPresets = IOUtil.LoadColorPresets(ColorPresetType.Hair);
+                    if (GradientHairColorUtil.IsGradientHairAvailable)
+                    {
+                        if (!GradientHairColorUtil.GetGradientHair(this.Pawn, out bool enabled, out Color color))
+                        {
+                            enabled = false;
+                            color = Color.white;
+                        }
+                        base.GradientHairColorSelectionDto = new HairColorSelectionDTO(color, hairColorPresets, enabled);
+                        base.GradientHairColorSelectionDto.SelectionChangeListener += this.GradientHairColorChange;
+                    }
+
                     /*if (SecondaryHairColorFieldInfo != null)
                     {
                         base.AlienHairColorSecondary = new HairColorSelectionDTO((Color)SecondarySkinColorFieldInfo.GetValue(this.alienComp), IOUtil.LoadColorPresets(ColorPresetType.Hair));
@@ -216,6 +228,11 @@ namespace ChangeDresser.UI.DTO
         private void PrimaryHairColorChange(object sender)
         {
             this.Pawn.story.hairColor = base.HairColorSelectionDto.SelectedColor;//base.AlienHairColorPrimary.SelectedColor;
+        }
+
+        private void GradientHairColorChange(object sender)
+        {
+            GradientHairColorUtil.SetGradientHair(base.Pawn, base.GradientHairColorSelectionDto.IsGradientEnabled, base.GradientHairColorSelectionDto.SelectedColor);
         }
 
         /*private void SecondaryHairColorChange(object sender)

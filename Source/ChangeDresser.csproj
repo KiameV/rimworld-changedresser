@@ -61,6 +61,7 @@
     <Compile Include="DresserJobDriver\JobDriver_StoreApparel.cs" />
     <Compile Include="Components.cs" />
     <Compile Include="DresserJobDriver\JobDriver_WearApparelFromStorage.cs" />
+    <Compile Include="GradientHairColorUtil.cs" />
     <Compile Include="HarmonyPatches.cs" />
     <Compile Include="HarmonyPatches_Bills.cs" />
     <Compile Include="HarmonyPatches_WealthWatcher.cs" />

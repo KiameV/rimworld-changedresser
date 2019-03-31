@@ -44,6 +44,8 @@ namespace ChangeDresser.UI
         {
             get
             {
+                if (this.dresserDto.GradientHairColorSelectionDto != null)
+                    return new Vector2(750f, 600f);
                 return new Vector2(650f, 600f);
             }
         }
@@ -77,15 +79,22 @@ namespace ChangeDresser.UI
 
                 Widgets.Label(new Rect(0f, 0f, this.InitialSize.y / 2f + 45f, 50f), "ChangeDresser.DresserLabel".Translate());
 
-                float portraitBuffer = 30f;
+                float x = 30f;
+                float y = 150f;
+                if (this.dresserDto.GradientHairColorSelectionDto != null)
+                {
+                    x += 100f;
+                    y = 90f;
+                }
+                //Rect portraitRect = WidgetUtil.AddPortraitWidget(x, 150f, this.dresserDto);
+                Rect portraitRect = WidgetUtil.AddPortraitWidget(x, y, this.dresserDto);
+                y += portraitRect.height;
 
-                Rect portraitRect = WidgetUtil.AddPortraitWidget(portraitBuffer, 150f, this.dresserDto);
-
-                float editorLeft = portraitRect.xMax + portraitBuffer;
+                float editorLeft = portraitRect.xMax + 30f;
                 float editorTop = 30f + WidgetUtil.SelectionRowHeight;
                 float editorWidth = 325f;
 
-                WidgetUtil.AddSelectorWidget(portraitRect.xMax + portraitBuffer, 10f, editorWidth, null, this.dresserDto.EditorTypeSelectionDto);
+                WidgetUtil.AddSelectorWidget(portraitRect.xMax + 30, 10f, editorWidth, null, this.dresserDto.EditorTypeSelectionDto);
 
                 switch ((CurrentEditorEnum)this.dresserDto.EditorTypeSelectionDto.SelectedItem)
                 {
@@ -165,6 +174,16 @@ namespace ChangeDresser.UI
                             //{
                             WidgetUtil.AddColorSelectorWidget(editorLeft, editorTop + listboxHeight + 10f, editorWidth, this.dresserDto.HairColorSelectionDto, this.dresserDto.HairColorSelectionDto.ColorPresetsDTO);
                             //}
+
+                            if (this.dresserDto.GradientHairColorSelectionDto != null)
+                            {
+                                Text.Font = GameFont.Tiny;
+                                Widgets.CheckboxLabeled(new Rect(15f, y + 5f, 120f, 24f), "GradientHairTitle".Translate(), ref this.dresserDto.GradientHairColorSelectionDto.IsGradientEnabled);
+                                if (this.dresserDto.GradientHairColorSelectionDto.IsGradientEnabled)
+                                {
+                                    WidgetUtil.AddColorSelectorWidget(15f, editorTop + listboxHeight + 10f, editorWidth, this.dresserDto.GradientHairColorSelectionDto, this.dresserDto.HairColorSelectionDto.ColorPresetsDTO);
+                                }
+                            }
                         }
                         break;
 
@@ -439,7 +458,14 @@ namespace ChangeDresser.UI
                 }
                 else if (sender is HairColorSelectionDTO)
                 {
-                    pawn.story.hairColor = (Color)value;
+                    if ((sender as HairColorSelectionDTO).IsGradientEnabled)
+                    {
+                        GradientHairColorUtil.SetGradientHair(pawn, true, (Color)value);
+                    }
+                    else
+                    {
+                        pawn.story.hairColor = (Color)value;
+                    }
                 }
                 else if (sender is HairStyleSelectionDTO)
                 {

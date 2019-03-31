@@ -26,6 +26,7 @@ using ChangeDresser.UI.Enums;
 using Verse;
 using ChangeDresser.UI.Util;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace ChangeDresser.UI.DTO
 {
@@ -45,6 +46,7 @@ namespace ChangeDresser.UI.DTO
         public GenderSelectionDTO GenderSelectionDto { get; protected set; }
         public HairStyleSelectionDTO HairStyleSelectionDto { get; protected set; }
         public HairColorSelectionDTO HairColorSelectionDto { get; protected set; }
+        public HairColorSelectionDTO GradientHairColorSelectionDto { get; protected set; }
         public ApparelColorSelectionsContainer ApparelSelectionsContainer { get; protected set; }
         public ApparelLayerSelectionsContainer ApparelLayerSelectionsContainer { get; protected set; }
         public SliderWidgetDTO SkinColorSliderDto { get; protected set; }
@@ -80,6 +82,7 @@ namespace ChangeDresser.UI.DTO
             this.GenderSelectionDto = null;
             this.HairStyleSelectionDto = null;
             this.HairColorSelectionDto = null;
+            this.GradientHairColorSelectionDto = null;
             this.SkinColorSliderDto = null;
             this.HeadTypeSelectionDto = null;
 
@@ -129,7 +132,18 @@ namespace ChangeDresser.UI.DTO
             if (this.EditorTypeSelectionDto.Contains(CurrentEditorEnum.ChangeDresserHair))
             {
                 this.HairStyleSelectionDto = new HairStyleSelectionDTO(this.Pawn.story.hairDef, this.Pawn.gender);
-                this.HairColorSelectionDto = new HairColorSelectionDTO(this.Pawn.story.hairColor, IOUtil.LoadColorPresets(ColorPresetType.Hair));
+
+                ColorPresetsDTO hairColorPresets = IOUtil.LoadColorPresets(ColorPresetType.Hair);
+                this.HairColorSelectionDto = new HairColorSelectionDTO(this.Pawn.story.hairColor, hairColorPresets);
+                if (GradientHairColorUtil.IsGradientHairAvailable)
+                {
+                    if (!GradientHairColorUtil.GetGradientHair(this.Pawn, out bool enabled, out Color color))
+                    {
+                        enabled = false;
+                        color = Color.white;
+                    }
+                    this.GradientHairColorSelectionDto = new HairColorSelectionDTO(color, hairColorPresets, enabled);
+                }
             }
         }
 
@@ -163,6 +177,8 @@ namespace ChangeDresser.UI.DTO
                 this.HairStyleSelectionDto.UpdatePawnListener += updatePawn;
             if (this.HairColorSelectionDto != null)
                 this.HairColorSelectionDto.UpdatePawnListener += updatePawn;
+            if (this.GradientHairColorSelectionDto != null)
+                this.GradientHairColorSelectionDto.UpdatePawnListener += updatePawn;
             if (this.SkinColorSliderDto != null)
                 this.SkinColorSliderDto.UpdatePawnListener += updatePawn;
             if (this.HeadTypeSelectionDto != null)
@@ -192,6 +208,8 @@ namespace ChangeDresser.UI.DTO
                 this.HairStyleSelectionDto.ResetToDefault();
             if (this.HairColorSelectionDto != null)
                 this.HairColorSelectionDto.ResetToDefault();
+            if (this.GradientHairColorSelectionDto != null)
+                this.GradientHairColorSelectionDto.ResetToDefault();
             if (this.ApparelSelectionsContainer != null)
                 this.ApparelSelectionsContainer.ResetToDefault();
             if (this.ApparelLayerSelectionsContainer != null)

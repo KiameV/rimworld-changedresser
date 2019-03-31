@@ -7,7 +7,7 @@ namespace ChangeDresser
 {
     class AlienRaceUtil
     {
-        private static Assembly alienRaceAssembly = null;
+        private static bool alienRaceEnabled = false;
         private static bool initialized = false;
         private static List<ThingDef> alienRaces = new List<ThingDef>(0);
 
@@ -151,7 +151,7 @@ namespace ChangeDresser
                                 assembly.GetType("AlienRace.ThingDef_AlienRace") != null)
                             {
                                 initialized = true;
-                                alienRaceAssembly = assembly;
+                                alienRaceEnabled = true;
                                 break;
                             }
                         }
@@ -165,7 +165,7 @@ namespace ChangeDresser
 #if ALIEN_DEBUG && DEBUG
                 Log.Warning("Aliens Exists: " + ((bool)(alienRaceAssembly != null)).ToString());
 #endif
-                return alienRaceAssembly != null;
+                return alienRaceEnabled;
             }
         }
 
