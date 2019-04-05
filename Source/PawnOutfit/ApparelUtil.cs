@@ -56,7 +56,8 @@ namespace ChangeDresser
 
         public static void OptimizeApparel(Pawn pawn)
         {
-            if (WorldComp.HasDressers(pawn.Map))
+            bool hasDressers = WorldComp.HasDressers(pawn.Map);
+            if (hasDressers)
             {
 #if DRESSER_OUTFIT
             Log.Warning("Begin OptimizeApparelUtil.OptimizeApparel(Pawn: " + pawn.Name + ")");
@@ -117,7 +118,7 @@ namespace ChangeDresser
 #endif
             }
 
-            if (pawn.apparel.WornApparel.Count == 0)
+            if (!hasDressers || pawn.apparel.WornApparel.Count == 0)
             {
                 // When pawns are not on the home map they will not get dressed using the game's normal method
 

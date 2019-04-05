@@ -30,6 +30,7 @@ namespace ChangeDresser
                 "    Pawn_ApparelTracker.Notify_ApparelAdded" + Environment.NewLine +
                 "    ScribeSaver.InitSaving" + Environment.NewLine +
                 "    SettlementAbandonUtility.Abandon" + Environment.NewLine +
+                "    Caravan.AddPawn - Priority First (undrafts any drafted pawns)" + Environment.NewLine +
                 "  Postfix:" + Environment.NewLine +
                 "    Pawn.GetGizmos" + Environment.NewLine +
                 "    Pawn_ApparelTracker.Notify_ApparelAdded" + Environment.NewLine +
@@ -887,6 +888,17 @@ namespace ChangeDresser
         static void Prefix(MapParent settlement)
         {
             WorldComp.RemoveDressers(settlement.Map);
+        }
+    }
+    
+    [HarmonyPatch(typeof(Caravan), "AddPawn")]
+    static class Patch_Caravan_AddPawn
+    {
+        [HarmonyPriority(Priority.First)]
+        static void Prefix(Pawn p, bool addCarriedPawnToWorldPawnsIfAny)
+        {
+            if (p != null && p.Drafted)
+                p.drafter.Drafted = false;
         }
     }
 }
