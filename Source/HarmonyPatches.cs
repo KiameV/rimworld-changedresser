@@ -897,8 +897,15 @@ namespace ChangeDresser
         [HarmonyPriority(Priority.First)]
         static void Prefix(Pawn p, bool addCarriedPawnToWorldPawnsIfAny)
         {
-            if (p != null && p.Drafted)
-                p.drafter.Drafted = false;
+            try
+            {
+                if (p != null && p.Drafted)
+                    p.drafter.Drafted = false;
+            }
+            catch(Exception e)
+            {
+                Log.Error("Exception thrown from ChangeDresser Patch_Caravan_AddPawn - " + e.GetType().Name + " " + e.Message);
+            }
         }
     }
 }
