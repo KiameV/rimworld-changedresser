@@ -203,12 +203,25 @@ namespace ChangeDresser
                     List<Apparel> wornApparel = pawn.apparel.WornApparel;
                     for (int i = 0; i < wornApparel.Count; i++)
                     {
-                        if (!ApparelUtility.CanWearTogether(wornApparel[i].def, apparel.def, pawn.RaceProps.body) &&
-                            !pawn.outfits.forcedHandler.IsForced(wornApparel[i]))
+                        try
                         {
+                            if (!pawn.outfits.forcedHandler.IsForced(wornApparel[i]) &&
+                                !ApparelUtility.CanWearTogether(wornApparel[i].def, apparel.def, pawn.RaceProps.body))
+                            {
 #if TRACE && BETTER_OUTFIT
                             Log.Message("        Cannot wear together");
 #endif
+                                skipApparelType = true;
+                                break;
+                            }
+                        }
+                        catch(Exception e)
+                        {
+                            try
+                            {
+                                Log.Warning("Problem when calling CanWearTogether (" + wornApparel[i]?.Label + ", " + apparel?.Label + ", " + pawn?.RaceProps?.body?.label + ") - " + e.GetType().Name + " " + e.Message);
+                            }
+                            catch { }
                             skipApparelType = true;
                             break;
                         }
