@@ -44,13 +44,16 @@ namespace ChangeDresser
         {
             if (apparel != null)
             {
-                LinkedList<Apparel> l;
-                if (!this.StoredApparelLookup.TryGetValue(apparel.def, out l))
+                if (!this.StoredApparelLookup.TryGetValue(apparel.def, out LinkedList<Apparel> l))
                 {
                     l = new LinkedList<Apparel>();
                     this.StoredApparelLookup.Add(apparel.def, l);
                 }
                 this.AddApparelToLinkedList(apparel, l);
+            }
+            else
+            {
+                Log.Error("Tried to add null apparel");
             }
         }
 

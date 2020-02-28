@@ -1,4 +1,4 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 using RimWorld;
 using System.Collections.Generic;
 using System.Reflection;
@@ -28,7 +28,7 @@ namespace ChangeDresser
                 {
                     foreach (Apparel a in dresser.Apparel)
                     {
-                        wealthItems += (float)a.stackCount + a.def.BaseMarketValue;
+                        wealthItems += (float)a.stackCount + a.MarketValue;
                     }
                 }
                 return wealthItems;

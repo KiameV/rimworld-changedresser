@@ -1,5 +1,5 @@
 ﻿using ChangeDresser;
-using Harmony;
+using HarmonyLib;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -18,7 +18,7 @@ namespace MendingChangeDresserPatch
             {
                 try
                 {
-                    var harmony = HarmonyInstance.Create("com.mendingchangedresserpatch.rimworld.mod");
+                    var harmony = new Harmony("com.mendingchangedresserpatch.rimworld.mod");
 
                     harmony.PatchAll(Assembly.GetExecutingAssembly());
 

@@ -1,5 +1,5 @@
 ﻿using ChangeDresser.UI.Util;
-using Harmony;
+using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
 using System;
@@ -18,7 +18,7 @@ namespace ChangeDresser
     {
         static HarmonyPatches()
         {
-            var harmony = HarmonyInstance.Create("com.changedresser.rimworld.mod");
+            var harmony = new Harmony("com.changedresser.rimworld.mod");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
             Log.Message(
                 "ChangeDresser Harmony Patches:" + Environment.NewLine +
@@ -906,6 +906,68 @@ namespace ChangeDresser
             {
                 Log.Error("Exception thrown from ChangeDresser Patch_Caravan_AddPawn - " + e.GetType().Name + " " + e.Message);
             }
+        }
+    }
+
+    [HarmonyPatch(typeof(JobGiver_OptimizeApparel), "ApparelScoreRaw")]
+    static class Patch_JobGiver_OptimizeApparel_ApparelScoreRaw
+    {
+        static SimpleCurve HitPointsPercentScoreFactorCurve = null;
+        static SimpleCurve InsulationColdScoreFactorCurve_NeedWarm = null;
+        static FieldInfo NeedWarmthFI = null;
+
+        [HarmonyPriority(Priority.First)]
+        static bool Prefix(ref float __result, JobGiver_OptimizeApparel __instance, Pawn pawn, Apparel ap)
+        {
+            Log.Message("1 pawn is " + ((pawn == null) ? "null" : "not null"));
+
+            if (pawn != null)
+                return true;
+            Log.Message("2");
+
+            if (HitPointsPercentScoreFactorCurve == null)
+            {
+                HitPointsPercentScoreFactorCurve = typeof(JobGiver_OptimizeApparel).GetField("HitPointsPercentScoreFactorCurve", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null) as SimpleCurve;
+                InsulationColdScoreFactorCurve_NeedWarm = typeof(JobGiver_OptimizeApparel).GetField("InsulationColdScoreFactorCurve_NeedWarm", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null) as SimpleCurve;
+                NeedWarmthFI = typeof(JobGiver_OptimizeApparel).GetField("neededWarmth", BindingFlags.Static | BindingFlags.NonPublic);
+            }
+            Log.Message("HitPointsPercentScoreFactorCurve is " + ((HitPointsPercentScoreFactorCurve == null) ? "null" : "not null"));
+            Log.Message("InsulationColdScoreFactorCurve_NeedWarm is " + ((InsulationColdScoreFactorCurve_NeedWarm == null) ? "null" : "not null"));
+            Log.Message("NeedWarmthFI is " + ((NeedWarmthFI == null) ? "null" : "not null"));
+            Log.Message("NeedWarmth is " + NeedWarmthFI.GetValue(null));
+
+            float result = 0.1f + ap.GetStatValue(StatDefOf.ArmorRating_Sharp) + ap.GetStatValue(StatDefOf.ArmorRating_Blunt);
+            if (ap.def.useHitPoints)
+            {
+                float x = (float)ap.HitPoints / (float)ap.MaxHitPoints;
+                result *= HitPointsPercentScoreFactorCurve.Evaluate(x);
+            }
+            result += ap.GetSpecialApparelScoreOffset();
+            float num3 = 1f;
+            if ((NeededWarmth)NeedWarmthFI.GetValue(null) == NeededWarmth.Warm)
+            {
+                float statValue = ap.GetStatValue(StatDefOf.Insulation_Cold);
+                num3 *= InsulationColdScoreFactorCurve_NeedWarm.Evaluate(statValue);
+            }
+            result *= num3;
+            if (ap.WornByCorpse)
+            {
+                result -= 0.5f;
+                if (result > 0f)
+                {
+                    result *= 0.1f;
+                }
+            }
+            if (ap.Stuff == ThingDefOf.Human.race.leatherDef)
+            {
+                result -= 0.5f;
+                if (result > 0f)
+                {
+                    result *= 0.1f;
+                }
+            }
+            __result = result;
+            return false;
         }
     }
 }

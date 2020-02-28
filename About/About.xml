@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
-    <name>[KV] Change Dresser - 1.0</name>
+    <name>[KV] Change Dresser - 1.1</name>
     <author>Kiame Vivacity</author>
 	<supportedVersions>
 		<li>1.0</li>
+		<li>1.1</li>
 	</supportedVersions>
+	<packageId>changedresser.kv.rw</packageId>
 	<url>https://ludeon.com/forums/index.php?topic=41483.0</url>
     <description>Adds a dresser and mirror which allow a pawn to change their apparal colors, hair color, skin color, hair style, body type, head type, and gender.
 

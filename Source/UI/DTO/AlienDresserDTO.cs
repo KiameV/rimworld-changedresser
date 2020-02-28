@@ -192,14 +192,31 @@ namespace ChangeDresser.UI.DTO
                                 }
                             }
 
-                            fi = alienPartGenerator.GetType().GetField("alienbodytypes");
-                            if (fi != null)
+                            try
                             {
-                                List<BodyTypeDef> alienbodytypes = (List<BodyTypeDef>)fi.GetValue(alienPartGenerator);
-                                if (alienbodytypes != null)
+                                fi = alienPartGenerator.GetType().GetField("alienbodytypes");
+                                if (fi != null)
                                 {
-                                    this.BodyTypeSelectionDto = new BodyTypeSelectionDTO(this.Pawn.story.bodyType, this.Pawn.gender, alienbodytypes);
+                                    Log.Warning("Get story");
+                                    Log.Warning(this.Pawn.story.bodyType.ToString());
+                                    List<BodyTypeDef> alienbodytypes = (List<BodyTypeDef>)fi.GetValue(alienPartGenerator);
+                                    if (alienbodytypes != null && alienbodytypes.Count > 0)
+                                    {
+                                        Log.Warning("Found body types");
+                                        this.BodyTypeSelectionDto = new BodyTypeSelectionDTO(this.Pawn.story.bodyType, this.Pawn.gender, alienbodytypes);
+                                        Log.Warning("Body Types loaded");
+                                    }
+                                    else
+                                    {
+                                        Log.Warning("No alien body types found. Defaulting to human.");
+                                        this.BodyTypeSelectionDto = new BodyTypeSelectionDTO(this.Pawn.story.bodyType, this.Pawn.gender);
+                                    }
                                 }
+                            }
+                            catch
+                            {
+                                Log.Warning("Problem getting alien body types. Defaulting to human.");
+                                this.BodyTypeSelectionDto = new BodyTypeSelectionDTO(this.Pawn.story.bodyType, this.Pawn.gender);
                             }
                         }
                     }
