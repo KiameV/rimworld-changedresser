@@ -3,11 +3,16 @@
   <!-- Window Labels -->
   <ChangeDresser.DresserLabel>梳妝檯</ChangeDresser.DresserLabel>
   <ChangeDresser.ApparelStorageLabel>服裝庫存</ChangeDresser.ApparelStorageLabel>
+
   <!-- Gizmo (Command Button) -->
   <ChangeDresser.ManageApparel>服裝管理</ChangeDresser.ManageApparel>
   <ChangeDresser.ManageApparelDesc>打開服裝庫存來進行管理。</ChangeDresser.ManageApparelDesc>
   <ChangeDresser.AssignOutfits>指定服裝</ChangeDresser.AssignOutfits>
   <ChangeDresser.AssignOutfitsDesc>為目標指定戰鬥或民用需求的服裝。</ChangeDresser.AssignOutfitsDesc>
+  <ChangeDresser.CustomOutfits>定制服裝</ChangeDresser.CustomOutfits>
+  <ChangeDresser.CustomOutfitsDesc>創建一個特定角色在戰鬥和工作中使用的服裝方案。</ChangeDresser.CustomOutfitsDesc>
+  <ChangeDresser.New>新建</ChangeDresser.New>
+  <ChangeDresser.Close>關閉</ChangeDresser.Close>
   <ChangeDresser.Empty>清空</ChangeDresser.Empty>
   <ChangeDresser.EmptyDesc>清空梳妝檯存儲的服裝，不包括記錄的服裝方案。</ChangeDresser.EmptyDesc>
   <ChangeDresser.Collect>收撿</ChangeDresser.Collect>
@@ -18,22 +23,23 @@
   <ChangeDresser.WearingDesc>當前正穿著該服裝方案。</ChangeDresser.WearingDesc>
   <ChangeDresser.IncludeInTradeDeals>出售</ChangeDresser.IncludeInTradeDeals>
   <ChangeDresser.IncludeInTradeDealsDesc>切換，是否讓已存儲的服裝出現在貿易目錄裡。</ChangeDresser.IncludeInTradeDealsDesc>
+
   <!-- Common Strings -->
   <ChangeDresser.Worn>已裝備</ChangeDresser.Worn>
   <ChangeDresser.Storage>庫存</ChangeDresser.Storage>
-  <ChangeDresser.Save>保存</ChangeDresser.Save>
-  <ChangeDresser.Reset>重置</ChangeDresser.Reset>
   <ChangeDresser.Cancel>取消</ChangeDresser.Cancel>
-  <ChangeDresser.Delete>刪除</ChangeDresser.Delete>
   <ChangeDresser.SelectAll>全選</ChangeDresser.SelectAll>
   <ChangeDresser.DeselectAll>取消全部</ChangeDresser.DeselectAll>
   <ChangeDresser.SelectPawn>選擇單位</ChangeDresser.SelectPawn>
+
   <!-- Editor Names (top selection bar in the Dresser window) -->
   <ChangeDresserHair>髮型/發色</ChangeDresserHair>
   <ChangeDresserApparelColor>裝備顏色</ChangeDresserApparelColor>
+  <ChangeDresserApparelLayerColor>著裝層顏色</ChangeDresserApparelLayerColor>
   <ChangeDresserBody>身體特徵</ChangeDresserBody>
   <ChangeDresserAlienSkinColor>外星人膚色</ChangeDresserAlienSkinColor>
   <ChangeDresserAlienHairColor>外星人發色</ChangeDresserAlienHairColor>
+
   <!-- Dresser UI -->
   <ChangeDresser.BodyType>體形</ChangeDresser.BodyType>
   <ChangeDresser.HeadType>臉型</ChangeDresser.HeadType>
@@ -46,15 +52,23 @@
   <ChangeDresser.AlienSecondarySkinColor>次要膚色</ChangeDresser.AlienSecondarySkinColor>
   <ChangeDresser.AlienPrimaryHairColor>主要發色</ChangeDresser.AlienPrimaryHairColor>
   <ChangeDresser.AlienSecondaryHairColor>次要發色</ChangeDresser.AlienSecondaryHairColor>
+
   <!-- Assign Outfits UI -->
   <ChangeDresser.ManageOutfits>管理服裝方案</ChangeDresser.ManageOutfits>
   <ChangeDresser.UseForBattle>戰鬥中使用</ChangeDresser.UseForBattle>
+  <ChangeDresser.AvailableApparel>可用服裝</ChangeDresser.AvailableApparel>
+  <ChangeDresser.CustomOutfitApparel>定制服裝</ChangeDresser.CustomOutfitApparel>
+
+  <!-- Custom Outfit UI -->
+  <ChangeDresser.OutfitName>名稱</ChangeDresser.OutfitName>
+
   <!-- Game UI -->
   <ChangeDresser.StoragePriority>存儲優先級</ChangeDresser.StoragePriority>
   <ChangeDresser.ApparelCount>服裝庫存數</ChangeDresser.ApparelCount>
   <!-- Repair UI -->
   <ChangeDresser.AttachedDressers>連接至梳妝檯</ChangeDresser.AttachedDressers>
   <ChangeDresser.IsMending>修補中</ChangeDresser.IsMending>
+
   <!-- Color Selection -->
   <!-- These refer to the Red (R), Green (G), and Blue (B) values for the selected color -->
   <ChangeDresser.R>R</ChangeDresser.R>
@@ -64,6 +78,7 @@
   <ChangeDresser.H>色調</ChangeDresser.H>
   <ChangeDresser.S>飽和度</ChangeDresser.S>
   <ChangeDresser.L>亮度</ChangeDresser.L>
+
   <!-- Help Text -->
   <ChangeDresser.RemoveToEnableDelete>移除所有服裝後才可刪除方案。</ChangeDresser.RemoveToEnableDelete>
   <ChangeDresser.GenderChangeWarning>改變性別和年齡可能有不利影響。\n請自行斟酌。</ChangeDresser.GenderChangeWarning>
@@ -71,12 +86,15 @@
   <ChangeDresser.ColorPresetHelp>修改：按住Shift並選擇一個預設。\n取消選擇：按住Shift並選擇當前預設。</ChangeDresser.ColorPresetHelp>
   <ChangeDresser.NoClothingIsWorn>沒有穿戴中的服裝。</ChangeDresser.NoClothingIsWorn>
   <ChangeDresser.NoEditableAttributes>該外星人種族無法改變任何屬性。</ChangeDresser.NoEditableAttributes>
+
   <!-- Job Toils -->
   <ChangeDresser.ChangeApparelColors>改變服裝顏色</ChangeDresser.ChangeApparelColors>
+  <ChangeDresser.ChangeApparelColorsByLayer>改變著裝層顏色</ChangeDresser.ChangeApparelColorsByLayer>
   <ChangeDresser.ChangeHair>改變髮型或發色</ChangeDresser.ChangeHair>
   <ChangeDresser.ChangeBody>改變身體特徵</ChangeDresser.ChangeBody>
   <ChangeDresser.StoreApparel>存取服裝</ChangeDresser.StoreApparel>
   <ChangeDresser.ChangeAlienBodyColor>改變外星人膚色</ChangeDresser.ChangeAlienBodyColor>
+
   <!-- Error Messages -->
   <!-- The text after this string is either Hair Color or Apparel Color -->
   <ChangeDresser.ProblemSavingPreset>存儲以下顏色預設方案時出錯：</ChangeDresser.ProblemSavingPreset>
@@ -84,11 +102,32 @@
   <ChangeDresser.ProblemLoadingPreset>加載以下顏色預設方案時出錯：</ChangeDresser.ProblemLoadingPreset>
   <!-- The text before this string is the pawn's name. -->
   <ChangeDresser.AlreadyHasCombatApparel>已經擁有戰鬥服裝。</ChangeDresser.AlreadyHasCombatApparel>
+
   <!-- Mod Settings -->
   <ChangeDresser>Change Dresser 梳妝檯</ChangeDresser>
+  <ChangeDresser.PersistApparelOriginalColor>維持服裝原色</ChangeDresser.PersistApparelOriginalColor>
   <ChangeDresser.KeepForcedApparel>保持強制著裝</ChangeDresser.KeepForcedApparel>
   <ChangeDresser.ShowBodyChange>允許改變身體特徵</ChangeDresser.ShowBodyChange>
   <ChangeDresser.ShowGenderAgeChange>允許改變性別和年齡</ChangeDresser.ShowGenderAgeChange>
+  <ChangeDresser.IncludeColorByLayer>按著裝層配色</ChangeDresser.IncludeColorByLayer>
+  <ChangeDresser.ShareHairAcrossGenders>男女共用髮型</ChangeDresser.ShareHairAcrossGenders>
+  <ChangeDresser.MendingAttachmentSettings>修補裝置設置</ChangeDresser.MendingAttachmentSettings>
+  <ChangeDresser.SecondsBetweenTicks>修補間隔（秒）</ChangeDresser.SecondsBetweenTicks>
+  <ChangeDresser.HPPerTick>每次修補耐久度</ChangeDresser.HPPerTick>
+
+  <!-- Layers -->
+  <OnSkin>貼身</OnSkin>
+  <Middle>夾層</Middle>
+  <Shell>外套</Shell>
+  <Belt>配件</Belt>
+  <Overhead>頭飾</Overhead>
+
+  <ChangeDresser.All>全部</ChangeDresser.All>
+  <ChangeDresser.Name>名稱</ChangeDresser.Name>
+
+  <!--<ChangeDresser.Save>保存</ChangeDresser.Save>-->
+  <!--<ChangeDresser.Reset>重置</ChangeDresser.Reset>-->
+  <!--<ChangeDresser.Delete>刪除</ChangeDresser.Delete>-->
   <!--<ChangeDresser.ApparelGroupLabel>服裝方案</ChangeDresser.ApparelGroupLabel>-->
   <!-- Apparel Group UI -->
   <!--<ChangeDresser.ApparelGroupOwner>擁有者</ChangeDresser.ApparelGroupOwner>-->
@@ -116,4 +155,5 @@
   <!--<ChangeDresser.LinkStorageGroupWithDresserDesc>注意：如果記錄服裝方案的梳妝檯不存在，在遊戲中途從不綁定更改至綁定會造成服裝方案丟失。</ChangeDresser.LinkStorageGroupWithDresserDesc>-->
   <!--<ChangeDresser.UseLeftRightHairSelect>Use Left &lt;-> Right Selection for Hair Styles</ChangeDresser.UseLeftRightHairSelect>-->
   <!--<ChangeDresser.UseRGBAndHSLSliders>Use RGB + HSL Sliders</ChangeDresser.UseRGBAndHSLSliders>-->
+
 </LanguageData>
