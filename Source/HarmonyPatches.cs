@@ -908,7 +908,7 @@ namespace ChangeDresser
             }
         }
     }
-
+    /*
     [HarmonyPatch(typeof(JobGiver_OptimizeApparel), "ApparelScoreRaw")]
     static class Patch_JobGiver_OptimizeApparel_ApparelScoreRaw
     {
@@ -969,5 +969,5 @@ namespace ChangeDresser
             __result = result;
             return false;
         }
-    }
+    }*/
 }
