@@ -26,7 +26,7 @@ namespace ChangeDresser.UI
             
             foreach (Pawn p in PawnsFinder.AllMapsCaravansAndTravelingTransportPods_Alive_Colonists)
             {
-                if (p.Faction == Faction.OfPlayer && p.def.race.Humanlike)
+                if (p.Faction == Faction.OfPlayer && p.def.race.Humanlike && p.apparel.LockedApparel?.Count == 0)
                 {
                     if (!WorldComp.PawnOutfits.ContainsKey(p))
                     {

@@ -513,7 +513,7 @@ namespace ChangeDresser
 #if BETTER_OUTFIT
             Log.Warning("Begin JobGiver_OptimizeApparel.Postfix(Pawn: " + pawn.Name.ToStringShort + "     Job: " + ((__result == null) ? "<null>" : __result.ToString()) + ")");
 #endif
-            if (!DoDressersHaveApparel())
+            if (!DoDressersHaveApparel() || pawn.apparel.LockedApparel?.Count > 0)
             {
                 return;
             }
@@ -819,10 +819,9 @@ namespace ChangeDresser
         [HarmonyPriority(Priority.First)]
         static void Postfix(Pawn __instance)
         {
-            if (__instance.Dead)
+            if (__instance.Dead && __instance.apparel.LockedApparel?.Count == 0)
             {
-                PawnOutfitTracker po;
-                if (WorldComp.PawnOutfits.TryGetValue(__instance, out po))
+                if (WorldComp.PawnOutfits.TryGetValue(__instance, out PawnOutfitTracker po))
                 {
                     WorldComp.PawnOutfits.Remove(__instance);
 

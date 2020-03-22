@@ -639,13 +639,16 @@ namespace ChangeDresser
                         }));
                 }
             }
-            list.Add(new FloatMenuOption(
-                "ChangeDresser.StoreApparel".Translate(),
-                delegate
-                {
-                    Job job = new Job(storeApparelJobDef, this);
-                    pawn.jobs.TryTakeOrderedJob(job);
-                }));
+            if (pawn.apparel.LockedApparel?.Count == 0)
+            {
+                list.Add(new FloatMenuOption(
+                    "ChangeDresser.StoreApparel".Translate(),
+                    delegate
+                    {
+                        Job job = new Job(storeApparelJobDef, this);
+                        pawn.jobs.TryTakeOrderedJob(job);
+                    }));
+            }
             return list;
         }
 #endregion
