@@ -23,6 +23,8 @@
 	<ChangeDresser.WearingDesc>Currently wearing this outfit.</ChangeDresser.WearingDesc>
 	<ChangeDresser.IncludeInTradeDeals>Sell Apparel</ChangeDresser.IncludeInTradeDeals>
 	<ChangeDresser.IncludeInTradeDealsDesc>Toggle whether to include the stored apparel in trade deals.</ChangeDresser.IncludeInTradeDealsDesc>
+	<ChangeDresser.UseDresserToDressFrom>Dress From</ChangeDresser.UseDresserToDressFrom>
+	<ChangeDresser.UseDresserToDressFromDesc>Allows pawns to remove apparel from this dresser (disable on dump dressers to improve performance)</ChangeDresser.UseDresserToDressFromDesc>
 	
 	<!-- Common Strings -->
 	<ChangeDresser.Worn>Worn</ChangeDresser.Worn>

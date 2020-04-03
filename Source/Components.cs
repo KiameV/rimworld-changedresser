@@ -109,7 +109,8 @@ namespace ChangeDresser
                 return;
             }
 
-            if (!DressersToUse.Contains(dresser))
+            if (dresser.UseDresserToDressFrom && 
+                !DressersToUse.Contains(dresser))
             {
                 DressersToUse.AddLast(dresser);
             }

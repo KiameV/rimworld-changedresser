@@ -20,7 +20,7 @@ namespace ChangeDresser
         {
             var harmony = new Harmony("com.changedresser.rimworld.mod");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
-            Log.Message(
+            /*Log.Message(
                 "ChangeDresser Harmony Patches:" + Environment.NewLine +
                 "  Prefix:" + Environment.NewLine +
                 "    Dialog_FormCaravan.PostOpen" + Environment.NewLine +
@@ -43,7 +43,7 @@ namespace ChangeDresser
                 "    WealthWatcher.ForceRecount" + Environment.NewLine +
                 "    Pawn.Kill - Priority First" + Environment.NewLine +
                 "    Pawn_ApparelTracker.Notify_ApparelRemoved");
-
+                */
             /*if (ModsConfig.ActiveModsInLoadOrder.Any(m => "Mending".Equals(m.Name)))
             {
                 Log.Message(
@@ -508,12 +508,43 @@ namespace ChangeDresser
     [HarmonyPatch(typeof(JobGiver_OptimizeApparel), "TryGiveJob", new Type[] { typeof(Pawn) })]
     static class Patch_JobGiver_OptimizeApparel
     {
+        private const long FIVE_SECONDS = 5 * TimeSpan.TicksPerSecond;
+        private const long MAX_COUNT = 7;
+        private class CountInTime
+        {
+            public int Count = 0;
+            public long StartTime = 0;
+            public int Increment()
+            {
+                ++this.Count;
+                return this.Count;
+            }
+            public bool CanIncrement(long now)
+            {
+                if (now - this.StartTime > FIVE_SECONDS)
+                {
+                    this.Count = 0;
+                    this.StartTime = now;
+                }
+                return this.Count < MAX_COUNT;
+            }
+        }
+        private static readonly Dictionary<Pawn, CountInTime> lastCheck = new Dictionary<Pawn, CountInTime>();
         static void Postfix(Pawn pawn, ref Job __result)
         {
+            long now = DateTime.Now.Ticks;
+            if (!lastCheck.TryGetValue(pawn, out CountInTime countInTime))
+                countInTime = new CountInTime();
+            
+            if (!countInTime.CanIncrement(now))
+            {
+                return;
+            }
+
 #if BETTER_OUTFIT
             Log.Warning("Begin JobGiver_OptimizeApparel.Postfix(Pawn: " + pawn.Name.ToStringShort + "     Job: " + ((__result == null) ? "<null>" : __result.ToString()) + ")");
 #endif
-            if (!DoDressersHaveApparel() || pawn.apparel.LockedApparel?.Count > 0)
+            if (!DoDressersHaveApparel() || pawn.apparel?.LockedApparel?.Count > 0)
             {
                 return;
             }
@@ -568,6 +599,7 @@ namespace ChangeDresser
 #if BETTER_OUTFIT
             Log.Warning("End JobGiver_OptimizeApparel.Postfix");
 #endif
+            countInTime.Increment();
         }
 
         private static bool DoDressersHaveApparel()
@@ -819,7 +851,7 @@ namespace ChangeDresser
         [HarmonyPriority(Priority.First)]
         static void Postfix(Pawn __instance)
         {
-            if (__instance.Dead && __instance.apparel.LockedApparel?.Count == 0)
+            if (__instance.Dead && __instance.apparel?.LockedApparel?.Count == 0)
             {
                 if (WorldComp.PawnOutfits.TryGetValue(__instance, out PawnOutfitTracker po))
                 {

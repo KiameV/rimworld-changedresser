@@ -53,7 +53,7 @@ namespace ChangeDresser.UI
 #if CUSTOM_OUTFIT_UI
                 Log.Message("        " + p.Name.ToStringShort + " " + p.Faction + " " + p.def.defName);
 #endif
-                if (p.Faction == Faction.OfPlayer && p.def.race.Humanlike && p.apparel.LockedApparel?.Count == 0)
+                if (p.Faction == Faction.OfPlayer && p.def.race.Humanlike && p.apparel?.LockedApparel?.Count == 0)
                 {
 #if CUSTOM_OUTFIT_UI
                     Log.Message("            -- Added");

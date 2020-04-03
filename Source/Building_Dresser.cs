@@ -37,6 +37,8 @@ namespace ChangeDresser
 
 		private List<Thing> forceAddedApparel = null;
 
+        public bool UseDresserToDressFrom = true;
+
         public Building_Dresser()
         {
             WEAR_APPAREL_FROM_DRESSER_JOB_DEF = this.wearApparelFromStorageJobDef;
@@ -415,6 +417,7 @@ namespace ChangeDresser
             Scribe_Collections.Look(ref this.tempApparelList, false, "apparel", LookMode.Deep, new object[0]);
             Scribe_Values.Look(ref this.includeInTradeDeals, "includeInTradeDeals", true);
 			Scribe_Collections.Look(ref this.forceAddedApparel, false, "forceAddedApparel", LookMode.Deep, new object[0]);
+            Scribe_Values.Look(ref this.UseDresserToDressFrom, "useDresserToDressFrom", true, false);
 #if DEBUG
             if (this.tempApparelList != null)
                 Log.Warning(" tempApparelList Count: " + this.tempApparelList.Count);
@@ -454,6 +457,12 @@ namespace ChangeDresser
 
 				if (this.forceAddedApparel != null && this.forceAddedApparel.Count == 0)
 					this.forceAddedApparel = null;
+            }
+
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                if (!this.UseDresserToDressFrom)
+                    WorldComp.RemoveDesser(this);
             }
 
 #if DEBUG
@@ -543,7 +552,7 @@ namespace ChangeDresser
                 this.HandleThingsOnTop();
             }
 
-            if (!this.AreStorageSettingsEqual())
+            /*if (!this.AreStorageSettingsEqual())
             {
                 try
                 {
@@ -565,12 +574,18 @@ namespace ChangeDresser
                 {
                     this.AllowAdds = true;
                 }
-            }
+            }*/
 
 			if (this.forceAddedApparel != null && this.forceAddedApparel.Count > 0)
 			{
-				foreach (Thing t in this.forceAddedApparel)
-					this.DropApparel(this.forceAddedApparel, false);
+                foreach (Thing t in this.forceAddedApparel)
+                {
+                    try
+                    {
+                        this.DropThing(t, false);
+                    }
+                    catch { }
+                }
 				this.forceAddedApparel.Clear();
 				this.forceAddedApparel = null;
 			}
@@ -639,7 +654,7 @@ namespace ChangeDresser
                         }));
                 }
             }
-            if (pawn.apparel.LockedApparel?.Count == 0)
+            if (pawn.apparel?.LockedApparel?.Count == 0)
             {
                 list.Add(new FloatMenuOption(
                     "ChangeDresser.StoreApparel".Translate(),
@@ -745,6 +760,31 @@ namespace ChangeDresser
                 delegate
                 {
                     this.includeInTradeDeals = !this.includeInTradeDeals;
+                };
+            a.groupKey = groupKey;
+            ++groupKey;
+            l.Add(a);
+
+            a = new Command_Action();
+            if (this.UseDresserToDressFrom)
+            {
+                a.icon = WidgetUtil.yesDressFromTexture;
+            }
+            else
+            {
+                a.icon = WidgetUtil.noDressFromTexture;
+            }
+            a.defaultDesc = "ChangeDresser.UseDresserToDressFromDesc".Translate();
+            a.defaultLabel = "ChangeDresser.UseDresserToDressFrom".Translate();
+            a.activateSound = SoundDef.Named("Click");
+            a.action =
+                delegate
+                {
+                    this.UseDresserToDressFrom = !this.UseDresserToDressFrom;
+                    if (this.UseDresserToDressFrom)
+                        WorldComp.AddDresser(this);
+                    else
+                        WorldComp.RemoveDesser(this);
                 };
             a.groupKey = groupKey;
             ++groupKey;
