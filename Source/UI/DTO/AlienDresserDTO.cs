@@ -177,7 +177,11 @@ namespace ChangeDresser.UI.DTO
                         object alienPartGenerator = fi.GetValue(generalSettings);
                         if (alienPartGenerator != null)
                         {
+                            Log.Warning($"{this.Pawn.def.defName} - {this.Pawn.story.crownType.ToString()}");
                             fi = alienPartGenerator.GetType().GetField("aliencrowntypes");
+                            Log.Warning("Crown Types:");
+                            foreach (var ct in (List<string>)fi.GetValue(alienPartGenerator))
+                                Log.Warning($"{ct}");
                             if (fi != null && alienComp != null)
                             {
                                 List<string> crownTypes = (List<string>)fi.GetValue(alienPartGenerator);
@@ -197,14 +201,14 @@ namespace ChangeDresser.UI.DTO
                                 fi = alienPartGenerator.GetType().GetField("alienbodytypes");
                                 if (fi != null)
                                 {
-                                    Log.Warning("Get story");
-                                    Log.Warning(this.Pawn.story.bodyType.ToString());
+                                    //Log.Warning("Get story");
+                                    //Log.Warning(this.Pawn.story.bodyType.ToString());
                                     List<BodyTypeDef> alienbodytypes = (List<BodyTypeDef>)fi.GetValue(alienPartGenerator);
                                     if (alienbodytypes != null && alienbodytypes.Count > 0)
                                     {
-                                        Log.Warning("Found body types");
+                                        //Log.Warning("Found body types");
                                         this.BodyTypeSelectionDto = new BodyTypeSelectionDTO(this.Pawn.story.bodyType, this.Pawn.gender, alienbodytypes);
-                                        Log.Warning("Body Types loaded");
+                                        //Log.Warning("Body Types loaded");
                                     }
                                     else
                                     {

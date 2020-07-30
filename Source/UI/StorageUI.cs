@@ -11,6 +11,8 @@ namespace ChangeDresser.UI
     {
         private readonly Building_Dresser Dresser;
         private Pawn Pawn;
+        private string Filter = "";
+        private float height = 2f;
         private Vector2 scrollPosLeft = new Vector2(0, 0);
         private Vector2 scrollPosRight = new Vector2(0, 0);
 
@@ -55,6 +57,7 @@ namespace ChangeDresser.UI
                 Text.Font = GameFont.Medium;
                 Text.Anchor = TextAnchor.MiddleCenter;
                 Widgets.Label(new Rect(0, 0, 200, 50), "ChangeDresser.ApparelStorageLabel".Translate());
+                this.Filter = Widgets.TextArea(new Rect(250, 0, 200, 40), this.Filter);
 
                 Text.Font = GameFont.Small;
 
@@ -114,17 +117,25 @@ namespace ChangeDresser.UI
                 float left = (wornApparel == null) ? 0 : inRect.width - apparelListWidth;
                 float width = (wornApparel == null) ? inRect.width : apparelListWidth;
                 apparelListRect = new Rect(left, 90, width, inRect.height - 130);
-                apparelScrollRect = new Rect(0f, 0f, width - 16f, this.Dresser.Count * cellHeight);
+                apparelScrollRect = new Rect(0f, 0f, width - 16f, this.height);
+                this.height = 2f;
 
                 GUI.BeginGroup(apparelListRect);
                 this.scrollPosRight = GUI.BeginScrollView(new Rect(GenUI.AtZero(apparelListRect)), this.scrollPosRight, apparelScrollRect);
+
+                string filter = this.Filter.Trim().ToLower();
 
                 GUI.color = Color.white;
                 Text.Font = GameFont.Medium;
                 for (int i = 0; i < this.CachedApparel.Count; ++i)
                 {
                     Apparel apparel = this.cachedApparel[i];
-                    Rect rowRect = new Rect(0, 2f + i * cellHeight, apparelScrollRect.width, cellHeight);
+
+                    if (filter != "" && apparel.Label.ToLower().IndexOf(filter) == -1)
+                        continue;
+
+                    Rect rowRect = new Rect(0, this.height, apparelScrollRect.width, cellHeight);
+                    this.height += cellHeight;
                     GUI.BeginGroup(rowRect);
 
                     if (this.Pawn != null)

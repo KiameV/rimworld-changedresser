@@ -4,7 +4,7 @@ using System.Reflection;
 using Verse;
 
 namespace ChangeDresser
-{
+{/*
     public enum SaveTypeEnum
     {
         Zone_Stockpile,
@@ -85,5 +85,5 @@ namespace ChangeDresser
             }
             return gizmos;
         }
-    }
+    }*/
 }

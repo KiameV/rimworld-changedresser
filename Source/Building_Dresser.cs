@@ -1,6 +1,7 @@
 ﻿using ChangeDresser.UI.Enums;
 using ChangeDresser.UI.Util;
 using RimWorld;
+using SaveStorageSettingsUtil;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -790,7 +791,7 @@ namespace ChangeDresser
             ++groupKey;
             l.Add(a);
 
-            return SaveStorageSettingsUtil.AddSaveLoadGizmos(l, SaveTypeEnum.Apparel_Management, this.settings.filter);
+            return SaveStorageSettingsGizmoUtil.AddSaveLoadGizmos(l, SaveTypeEnum.Apparel_Management, this.settings.filter);
         }
 #endregion
 
