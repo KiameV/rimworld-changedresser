@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
-    <name>[KV] Change Dresser - 1.1</name>
+    <name>[KV] Change Dresser</name>
     <author>Kiame Vivacity</author>
 	<supportedVersions>
 		<li>1.0</li>
 		<li>1.1</li>
+		<li>1.2</li>
 	</supportedVersions>
 	<packageId>changedresser.kv.rw</packageId>
 	<url>https://ludeon.com/forums/index.php?topic=41483.0</url>
