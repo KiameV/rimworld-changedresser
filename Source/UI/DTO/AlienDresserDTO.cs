@@ -6,16 +6,13 @@ using System.Reflection;
 using UnityEngine;
 using RimWorld;
 using System.Linq;
+using static AlienRace.AlienPartGenerator;
+using AlienRace;
 
 namespace ChangeDresser.UI.DTO
 {
     class AlienDresserDTO : DresserDTO
     {
-        private FieldInfo PrimarySkinColorFieldInfo = null;
-        private FieldInfo SecondarySkinColorFieldInfo = null;
-        private FieldInfo PrimaryHairColorFieldInfo = null;
-        private FieldInfo SecondaryHairColorFieldInfo = null;
-
         private ThingComp alienComp = null;
 
         public AlienDresserDTO(Pawn pawn, CurrentEditorEnum currentEditorEnum, IEnumerable<CurrentEditorEnum> editors) : base(pawn, currentEditorEnum, editors)
@@ -34,10 +31,9 @@ namespace ChangeDresser.UI.DTO
 #if ALIEN_DEBUG
                 Log.Warning(" comp: " + tc.GetType().Namespace + "." + tc.GetType().Name);
 #endif
-                if (tc.GetType().Namespace.EqualsIgnoreCase("AlienRace") &&
-                    tc.GetType().Name.EqualsIgnoreCase("AlienComp"))
+                if (tc is AlienComp ac)
                 {
-                    this.alienComp = tc;
+                    this.alienComp = ac;
 #if ALIEN_DEBUG
                     Log.Warning("Alien Comp found!");
 #endif
@@ -47,56 +43,39 @@ namespace ChangeDresser.UI.DTO
 
             if (this.EditorTypeSelectionDto.Contains(CurrentEditorEnum.ChangeDresserAlienSkinColor))
             {
-                if (PrimarySkinColorFieldInfo == null && SecondarySkinColorFieldInfo == null &&
-                PrimaryHairColorFieldInfo == null && SecondaryHairColorFieldInfo == null)
-                {
-                    PrimarySkinColorFieldInfo = alienComp.GetType().GetField("skinColor");
-                    SecondarySkinColorFieldInfo = alienComp.GetType().GetField("skinColorSecond");
-                    SecondaryHairColorFieldInfo = alienComp.GetType().GetField("hairColorSecond");
-#if ALIEN_DEBUG
-                    Log.Warning("Field Info for primary skin color found: " + (PrimarySkinColorFieldInfo != null).ToString());
-                    Log.Warning("Field Info for secondary skin color found: " + (SecondarySkinColorFieldInfo != null).ToString());
-                    Log.Warning("Field Info for secondary hair color found: " + (SecondaryHairColorFieldInfo != null).ToString());
-#endif
-                }
-
 #if ALIEN_DEBUG
                 Log.Warning("AlienDresserDTO.initialize - start");
 #endif
-                if (this.alienComp != null)
+                if (this.alienComp is AlienComp ac)
                 {
-                    if (PrimarySkinColorFieldInfo != null)
+                    var c = ac.GetChannel("skin");
+                    if (c != null)
                     {
-                        base.AlienSkinColorPrimary = new SelectionColorWidgetDTO((Color)PrimarySkinColorFieldInfo.GetValue(this.alienComp));
+                        base.AlienSkinColorPrimary = new SelectionColorWidgetDTO(c.first);
                         base.AlienSkinColorPrimary.SelectionChangeListener += this.PrimarySkinColorChange;
-                    }
 
-                    if (SecondarySkinColorFieldInfo != null)
-                    {
-                        base.AlienSkinColorSecondary = new SelectionColorWidgetDTO((Color)SecondarySkinColorFieldInfo.GetValue(this.alienComp));
+                        base.AlienSkinColorSecondary = new SelectionColorWidgetDTO(c.second);
                         base.AlienSkinColorPrimary.SelectionChangeListener += this.SecondarySkinColorChange;
                     }
 
-                    base.HairColorSelectionDto = new HairColorSelectionDTO(this.Pawn.story.hairColor, IOUtil.LoadColorPresets(ColorPresetType.Hair));
-                    base.HairColorSelectionDto.SelectionChangeListener += this.PrimaryHairColorChange;
-
-                    ColorPresetsDTO hairColorPresets = IOUtil.LoadColorPresets(ColorPresetType.Hair);
-                    if (GradientHairColorUtil.IsGradientHairAvailable)
+                    if (base.Pawn.def is ThingDef_AlienRace ar && 
+                        ar.alienRace.hairSettings.hasHair)
                     {
-                        if (!GradientHairColorUtil.GetGradientHair(this.Pawn, out bool enabled, out Color color))
+                        base.HairColorSelectionDto = new HairColorSelectionDTO(this.Pawn.story.hairColor, IOUtil.LoadColorPresets(ColorPresetType.Hair));
+                        base.HairColorSelectionDto.SelectionChangeListener += this.PrimaryHairColorChange;
+
+                        ColorPresetsDTO hairColorPresets = IOUtil.LoadColorPresets(ColorPresetType.Hair);
+                        if (GradientHairColorUtil.IsGradientHairAvailable)
                         {
-                            enabled = false;
-                            color = Color.white;
+                            if (!GradientHairColorUtil.GetGradientHair(this.Pawn, out bool enabled, out Color color))
+                            {
+                                enabled = false;
+                                color = Color.white;
+                            }
+                            base.GradientHairColorSelectionDto = new HairColorSelectionDTO(color, hairColorPresets, enabled);
+                            base.GradientHairColorSelectionDto.SelectionChangeListener += this.GradientHairColorChange;
                         }
-                        base.GradientHairColorSelectionDto = new HairColorSelectionDTO(color, hairColorPresets, enabled);
-                        base.GradientHairColorSelectionDto.SelectionChangeListener += this.GradientHairColorChange;
                     }
-
-                    /*if (SecondaryHairColorFieldInfo != null)
-                    {
-                        base.AlienHairColorSecondary = new HairColorSelectionDTO((Color)SecondarySkinColorFieldInfo.GetValue(this.alienComp), IOUtil.LoadColorPresets(ColorPresetType.Hair));
-                        base.AlienHairColorSecondary.SelectionChangeListener += this.SecondaryHairColorChange;
-                    }*/
                 }
             }
 
@@ -238,12 +217,16 @@ namespace ChangeDresser.UI.DTO
 
         private void PrimarySkinColorChange(object sender)
         {
-            PrimarySkinColorFieldInfo.SetValue(this.alienComp, base.AlienSkinColorPrimary.SelectedColor);
+            var c = (this.alienComp as AlienComp)?.GetChannel("skin");
+            if (c != null)
+                c.first = base.AlienSkinColorPrimary.SelectedColor;
         }
 
         private void SecondarySkinColorChange(object sender)
         {
-            SecondarySkinColorFieldInfo.SetValue(this.alienComp, base.AlienSkinColorSecondary.SelectedColor);
+            var c = (this.alienComp as AlienComp)?.GetChannel("skin");
+            if (c != null)
+                c.second = base.AlienSkinColorPrimary.SelectedColor;
         }
 
         private void PrimaryHairColorChange(object sender)
