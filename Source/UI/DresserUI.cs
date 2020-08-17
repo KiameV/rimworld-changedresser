@@ -473,16 +473,7 @@ namespace ChangeDresser.UI
                 }
                 else if (sender is HeadTypeSelectionDTO)
                 {
-                    if (value.ToString().IndexOf("Narrow") >= 0 ||
-                        value.ToString().IndexOf("narrow") >= 0)
-                    {
-                        dresserDto.Pawn.story.crownType = CrownType.Narrow;
-                    }
-                    else
-                    {
-                        dresserDto.Pawn.story.crownType = CrownType.Average;
-                    }
-                    typeof(Pawn_StoryTracker).GetField("headGraphicPath", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(dresserDto.Pawn.story, value);
+                    dresserDto.SetCrownType(value);
                 }
                 else if (sender is SliderWidgetDTO)
                 {

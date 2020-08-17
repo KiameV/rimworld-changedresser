@@ -27,6 +27,9 @@ using Verse;
 using ChangeDresser.UI.Util;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using RimWorld;
+using System.Reflection;
 
 namespace ChangeDresser.UI.DTO
 {
@@ -233,6 +236,20 @@ namespace ChangeDresser.UI.DTO
 #if TRACE
             Log.Warning("End DresserDTO.ResetToDefault" + System.Environment.NewLine);
 #endif
+        }
+
+        internal virtual void SetCrownType(object value)
+        {
+            if (value.ToString().IndexOf("Narrow") >= 0 ||
+                value.ToString().IndexOf("narrow") >= 0)
+            {
+                this.Pawn.story.crownType = CrownType.Narrow;
+            }
+            else
+            {
+                this.Pawn.story.crownType = CrownType.Average;
+            }
+            typeof(Pawn_StoryTracker).GetField("headGraphicPath", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(this.Pawn.story, value);
         }
     }
 }

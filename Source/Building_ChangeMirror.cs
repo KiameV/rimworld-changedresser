@@ -30,10 +30,7 @@ namespace ChangeDresser
                 {
                     yield return CurrentEditorEnum.ChangeDresserAlienSkinColor;
                 }
-                else
-                {
-                    yield return CurrentEditorEnum.ChangeDresserBody;
-                }
+                yield return CurrentEditorEnum.ChangeDresserBody;
             }
         }
 

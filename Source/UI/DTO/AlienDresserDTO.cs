@@ -8,13 +8,13 @@ using RimWorld;
 using System.Linq;
 using static AlienRace.AlienPartGenerator;
 using AlienRace;
+using static AlienRace.ThingDef_AlienRace;
+using System;
 
 namespace ChangeDresser.UI.DTO
 {
     class AlienDresserDTO : DresserDTO
     {
-        private ThingComp alienComp = null;
-
         public AlienDresserDTO(Pawn pawn, CurrentEditorEnum currentEditorEnum, IEnumerable<CurrentEditorEnum> editors) : base(pawn, currentEditorEnum, editors)
         {
             base.EditorTypeSelectionDto.SetSelectedEditor(currentEditorEnum);
@@ -22,32 +22,23 @@ namespace ChangeDresser.UI.DTO
 
         protected override void Initialize()
         {
-            object raceSettings = AlienRaceUtil.GetAlienRaceSettings(base.Pawn);
-            object generalSettings = AlienRaceUtil.GetGeneralSettings(base.Pawn);
-            object hairSettings = AlienRaceUtil.GetHairSettings(base.Pawn);
-
-            foreach (ThingComp tc in base.Pawn.GetComps<ThingComp>())
+            AlienComp ac = base.Pawn.TryGetComp<AlienComp>();
+            if (ac == null || !(base.Pawn.def is ThingDef_AlienRace ar))
             {
-#if ALIEN_DEBUG
-                Log.Warning(" comp: " + tc.GetType().Namespace + "." + tc.GetType().Name);
-#endif
-                if (tc is AlienComp ac)
-                {
-                    this.alienComp = ac;
-#if ALIEN_DEBUG
-                    Log.Warning("Alien Comp found!");
-#endif
-                    break;
-                }
+                Log.Error("Failed to get alien race for " + base.Pawn.Name.ToStringShort);
+                return;
             }
+            AlienSettings raceSettings = ar.alienRace;
+            GeneralSettings generalSettings = raceSettings?.generalSettings;
 
             if (this.EditorTypeSelectionDto.Contains(CurrentEditorEnum.ChangeDresserAlienSkinColor))
             {
 #if ALIEN_DEBUG
                 Log.Warning("AlienDresserDTO.initialize - start");
 #endif
-                if (this.alienComp is AlienComp ac)
+                if (raceSettings != null)
                 {
+                    HairSettings hairSettings = raceSettings.hairSettings;
                     var c = ac.GetChannel("skin");
                     if (c != null)
                     {
@@ -58,8 +49,7 @@ namespace ChangeDresser.UI.DTO
                         base.AlienSkinColorPrimary.SelectionChangeListener += this.SecondarySkinColorChange;
                     }
 
-                    if (base.Pawn.def is ThingDef_AlienRace ar && 
-                        ar.alienRace.hairSettings.hasHair)
+                    if (hairSettings?.hasHair == true)
                     {
                         base.HairColorSelectionDto = new HairColorSelectionDTO(this.Pawn.story.hairColor, IOUtil.LoadColorPresets(ColorPresetType.Hair));
                         base.HairColorSelectionDto.SelectionChangeListener += this.PrimaryHairColorChange;
@@ -83,13 +73,14 @@ namespace ChangeDresser.UI.DTO
             {
                 if (raceSettings != null)
                 {
-                    base.HasHair = AlienRaceUtil.HasHair(base.Pawn);
+                    HairSettings hairSettings = raceSettings.hairSettings;
+                    base.HasHair = hairSettings?.hasHair == true;
 #if ALIEN_DEBUG
                     Log.Warning("initialize - got hair settings: HasHair = " + base.HasHair);
 #endif
                     if (base.HasHair)
                     {
-                        List<string> hairTags = AlienRaceUtil.GetHairTags(base.Pawn);
+                        List<string> hairTags = hairSettings.hairTags;
                         if (hairTags != null)
                         {
                             IEnumerable<HairDef> hairDefs = from hair in DefDatabase<HairDef>.AllDefs
@@ -132,79 +123,32 @@ namespace ChangeDresser.UI.DTO
                     }
                 }
             }
-            
+
             if (this.EditorTypeSelectionDto.Contains(CurrentEditorEnum.ChangeDresserBody))
             {
-                float maleGenderProbability = 0.5f;
-                if (AlienRaceUtil.HasMaleGenderProbability(base.Pawn))
+                var apg = generalSettings?.alienPartGenerator;
+                if (apg != null)
                 {
-#if ALIEN_DEBUG
-                    Log.Warning("initialize - generalSettings found");
-#endif
-                    FieldInfo fi = generalSettings.GetType().GetField("MaleGenderProbability");
-                    if (fi != null)
+                    List<string> crownTypes = apg.aliencrowntypes;
+                    if (ac.crownType != null && ac.crownType != "" &&
+                        crownTypes?.Count > 1)
                     {
-                        maleGenderProbability = AlienRaceUtil.GetMaleGenderProbability(base.Pawn);
-#if ALIEN_DEBUG
-                        Log.Warning("initialize - male gender prob = " + maleGenderProbability);
-#endif
+                        this.HeadTypeSelectionDto = new HeadTypeSelectionDTO(ac.crownType, this.Pawn.gender, crownTypes);
                     }
 
-                    fi = generalSettings.GetType().GetField("alienPartGenerator");
-                    if (fi != null)
+                    List<BodyTypeDef> alienbodytypes = apg.alienbodytypes;
+                    if (alienbodytypes != null && alienbodytypes.Count > 1)
                     {
-                        object alienPartGenerator = fi.GetValue(generalSettings);
-                        if (alienPartGenerator != null)
-                        {
-                            Log.Warning($"{this.Pawn.def.defName} - {this.Pawn.story.crownType.ToString()}");
-                            fi = alienPartGenerator.GetType().GetField("aliencrowntypes");
-                            Log.Warning("Crown Types:");
-                            foreach (var ct in (List<string>)fi.GetValue(alienPartGenerator))
-                                Log.Warning($"{ct}");
-                            if (fi != null && alienComp != null)
-                            {
-                                List<string> crownTypes = (List<string>)fi.GetValue(alienPartGenerator);
-                                fi = alienComp.GetType().GetField("crownType");
-                                if (fi != null)
-                                {
-                                    string crownType = (string)fi.GetValue(alienComp);
-                                    if (crownTypes != null && crownType != null && crownTypes.Count > 1)
-                                    {
-                                        this.HeadTypeSelectionDto = new HeadTypeSelectionDTO(crownType, this.Pawn.gender, crownTypes);
-                                    }
-                                }
-                            }
-
-                            try
-                            {
-                                fi = alienPartGenerator.GetType().GetField("alienbodytypes");
-                                if (fi != null)
-                                {
-                                    //Log.Warning("Get story");
-                                    //Log.Warning(this.Pawn.story.bodyType.ToString());
-                                    List<BodyTypeDef> alienbodytypes = (List<BodyTypeDef>)fi.GetValue(alienPartGenerator);
-                                    if (alienbodytypes != null && alienbodytypes.Count > 0)
-                                    {
-                                        //Log.Warning("Found body types");
-                                        this.BodyTypeSelectionDto = new BodyTypeSelectionDTO(this.Pawn.story.bodyType, this.Pawn.gender, alienbodytypes);
-                                        //Log.Warning("Body Types loaded");
-                                    }
-                                    else
-                                    {
-                                        Log.Warning("No alien body types found. Defaulting to human.");
-                                        this.BodyTypeSelectionDto = new BodyTypeSelectionDTO(this.Pawn.story.bodyType, this.Pawn.gender);
-                                    }
-                                }
-                            }
-                            catch
-                            {
-                                Log.Warning("Problem getting alien body types. Defaulting to human.");
-                                this.BodyTypeSelectionDto = new BodyTypeSelectionDTO(this.Pawn.story.bodyType, this.Pawn.gender);
-                            }
-                        }
+                        this.BodyTypeSelectionDto = new BodyTypeSelectionDTO(this.Pawn.story.bodyType, this.Pawn.gender, alienbodytypes);
+                    }
+                    else
+                    {
+                        Log.Warning("No alien body types found. Defaulting to human.");
+                        this.BodyTypeSelectionDto = new BodyTypeSelectionDTO(this.Pawn.story.bodyType, this.Pawn.gender);
                     }
                 }
-                if (maleGenderProbability > 0f && maleGenderProbability < 1f)
+
+                if (generalSettings.maleGenderProbability > 0f && generalSettings.maleGenderProbability < 1f)
                 {
                     base.GenderSelectionDto = new GenderSelectionDTO(base.Pawn.gender);
                     base.GenderSelectionDto.SelectionChangeListener += GenderChange;
@@ -217,14 +161,14 @@ namespace ChangeDresser.UI.DTO
 
         private void PrimarySkinColorChange(object sender)
         {
-            var c = (this.alienComp as AlienComp)?.GetChannel("skin");
+            var c = base.Pawn.TryGetComp<AlienComp>()?.GetChannel("skin");
             if (c != null)
                 c.first = base.AlienSkinColorPrimary.SelectedColor;
         }
 
         private void SecondarySkinColorChange(object sender)
         {
-            var c = (this.alienComp as AlienComp)?.GetChannel("skin");
+            var c = base.Pawn.TryGetComp<AlienComp>()?.GetChannel("skin");
             if (c != null)
                 c.second = base.AlienSkinColorPrimary.SelectedColor;
         }
@@ -255,6 +199,20 @@ namespace ChangeDresser.UI.DTO
                 this.Pawn.gender == Gender.Female)
             {
                 this.Pawn.story.bodyType = BodyTypeDefOf.Male;
+            }
+        }
+        internal override void SetCrownType(object value)
+        {
+            //AlienPartGenerator apg = (base.Pawn.def as ThingDef_AlienRace)?.alienRace?.generalSettings?.alienPartGenerator;
+            AlienComp ac = base.Pawn.TryGetComp<AlienComp>();
+            if (ac != null)
+            {
+                var split = value.ToString().Split('/');
+                if (split.Count() > 0)
+                {
+                    ac.crownType = split.Last().Replace("Male_", "").Replace("Female_", "");
+                    typeof(Pawn_StoryTracker).GetField("headGraphicPath", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(this.Pawn.story, value);
+                }
             }
         }
     }
