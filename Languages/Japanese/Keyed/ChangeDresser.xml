@@ -25,6 +25,7 @@
   <ChangeDresser.IncludeInTradeDealsDesc>保存された衣装を取引の在庫に含めるかどうかを切り替えます。</ChangeDresser.IncludeInTradeDealsDesc>
   <ChangeDresser.UseDresserToDressFrom>衣服を検索</ChangeDresser.UseDresserToDressFrom>
   <ChangeDresser.UseDresserToDressFromDesc>ポーンがこのドレッサーに収納された衣服を検索することが可能かどうかを切替えます。(「衣装を売る」を無効にするとパフォーマンスが向上します)</ChangeDresser.UseDresserToDressFromDesc>
+  <ChangeDresser.UseDresser>ドレッサー を使用する</ChangeDresser.UseDresser>
 
   <!-- Common Strings -->
   <ChangeDresser.Worn>装備中</ChangeDresser.Worn>
