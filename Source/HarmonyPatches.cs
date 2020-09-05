@@ -493,35 +493,9 @@ namespace ChangeDresser
     [HarmonyPatch(typeof(JobGiver_OptimizeApparel), "TryGiveJob", new Type[] { typeof(Pawn) })]
     static class Patch_JobGiver_OptimizeApparel
     {
-        private const long FIVE_SECONDS = 5 * TimeSpan.TicksPerSecond;
-        private const long MAX_COUNT = 7;
-        private class CountInTime
-        {
-            public int Count = 0;
-            public long StartTime = 0;
-            public int Increment()
-            {
-                ++this.Count;
-                return this.Count;
-            }
-            public bool CanIncrement(long now)
-            {
-                if (now - this.StartTime > FIVE_SECONDS)
-                {
-                    this.Count = 0;
-                    this.StartTime = now;
-                }
-                return this.Count < MAX_COUNT;
-            }
-        }
-        private static readonly Dictionary<Pawn, CountInTime> lastCheck = new Dictionary<Pawn, CountInTime>();
         static void Postfix(Pawn pawn, ref Job __result)
         {
-            long now = DateTime.Now.Ticks;
-            if (!lastCheck.TryGetValue(pawn, out CountInTime countInTime))
-                countInTime = new CountInTime();
-            
-            if (!countInTime.CanIncrement(now))
+            if (Find.TickManager.TicksGame < pawn.mindState.nextApparelOptimizeTick)
             {
                 return;
             }
