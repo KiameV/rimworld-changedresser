@@ -9,7 +9,7 @@ namespace ChangeDresser.UI
 {
     class StorageUI : Window
     {
-        private readonly Building_Dresser Dresser;
+        private Building_Dresser Dresser;
         private Pawn Pawn;
         private string Filter = "";
         private float height = 2f;
@@ -30,6 +30,18 @@ namespace ChangeDresser.UI
             }
         }
 
+        public StorageUI(Pawn pawn)
+        {
+            this.Dresser = null;
+            this.Pawn = pawn;
+
+            this.closeOnClickedOutside = true;
+            this.doCloseButton = true;
+            this.doCloseX = true;
+            this.absorbInputAroundWindow = true;
+            this.forcePause = true;
+        }
+
         public StorageUI(Building_Dresser dresser, Pawn pawn)
         {
             this.Dresser = dresser;
@@ -46,7 +58,7 @@ namespace ChangeDresser.UI
         {
             get
             {
-                return new Vector2(650f, 600f);
+                return new Vector2(750f, 600f);
             }
         }
 
@@ -57,7 +69,27 @@ namespace ChangeDresser.UI
                 Text.Font = GameFont.Medium;
                 Text.Anchor = TextAnchor.MiddleCenter;
                 Widgets.Label(new Rect(0, 0, 200, 50), "ChangeDresser.ApparelStorageLabel".Translate());
-                this.Filter = Widgets.TextArea(new Rect(250, 0, 200, 40), this.Filter);
+
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                this.Filter = Widgets.TextArea(new Rect(250, 0, 150, 32), this.Filter);
+
+                Text.Anchor = TextAnchor.MiddleCenter;
+                if (Widgets.ButtonText(new Rect(425, 0, 250, 32), ((this.Dresser == null) ? (string)"ChangeDresser".Translate() : this.Dresser.Label)))
+                {
+                    List<FloatMenuOption> options = new List<FloatMenuOption>();
+                    foreach (Building_Dresser cd in WorldComp.GetDressers(null))
+                    {
+                        options.Add(new FloatMenuOption(cd.Label, delegate ()
+                        {
+                            this.Dresser = cd;
+                        }));
+                    }
+                    Find.WindowStack.Add(new FloatMenu(options));
+                }
+
+                if (this.Dresser == null)
+                    return;
 
                 Text.Font = GameFont.Small;
 
@@ -94,7 +126,7 @@ namespace ChangeDresser.UI
                         }
 
                         Text.Font = GameFont.Small;
-                        Widgets.Label(new Rect(70 + cellHeight + 5f, 0f, rowRect.width - 40f - cellHeight, cellHeight), apparel.Label);
+                        Widgets.Label(new Rect(35f + cellHeight, 0f, rowRect.width - 110f, cellHeight), apparel.Label);
 
                         GUI.color = Color.white;
                         if (Widgets.ButtonImage(new Rect(rowRect.width - 35f, 10, 20, 20), WidgetUtil.nextTexture))
@@ -180,9 +212,9 @@ namespace ChangeDresser.UI
 
                     Text.Font = GameFont.Small;
                     Text.Anchor = TextAnchor.MiddleCenter;
-                    Widgets.Label(new Rect(30 + cellHeight + 45f, 0f, rowRect.width - cellHeight - 90f, cellHeight), apparel.Label);
+                    Widgets.Label(new Rect(30 + cellHeight + 15f, 0f, rowRect.width - 110f, cellHeight), apparel.Label);
 
-                    if (Widgets.ButtonImage(new Rect(rowRect.width - 45f, 0f, cellHeight, cellHeight), WidgetUtil.dropTexture))
+                    if (Widgets.ButtonImage(new Rect(rowRect.width - 45f, 0f, 20, 20), WidgetUtil.dropTexture))
                     {
                         if (this.Dresser.TryRemove(apparel, false))
                         {

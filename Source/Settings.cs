@@ -56,7 +56,7 @@ namespace ChangeDresser
             Scribe_Values.Look<bool>(ref showBodyChange, "ChangeDresser.ShowBodyChange", true, true);
             Scribe_Values.Look<bool>(ref includeColorByLayer, "ChangeDresser.IncludeColorByLayer", true, true);
             Scribe_Values.Look<bool>(ref persistApparelOriginalColor, "ChangeDresser.PersistApparelOriginalColor", false, true);
-            Scribe_Values.Look<bool>(ref persistApparelOriginalColor, "ChangeDresser.ShareHairAcrossGenders", false, false);
+            Scribe_Values.Look<bool>(ref shareHairAcrossGenders, "ChangeDresser.ShareHairAcrossGenders", false, false);
             Scribe_Values.Look<int>(ref mendingAttachmentMendingSpeed, "ChangeDresser.MendingAttachmentHpPerTick", DEFAULT_MENDING_SPEED, false);
             mendingAttachmentMendingSpeedBuffer = mendingAttachmentMendingSpeed.ToString();
             Scribe_Values.Look<float>(ref mendingAttachmentUpdateInterval, "ChangeDresser.MendingAttachmentUpdateInterval", DEFAULT_MENDING_UPDATE_INTERVAL, false);

@@ -164,6 +164,7 @@ namespace ChangeDresser
                 Log.Warning(
                 "Unable to persist original apparel colors." + System.Environment.NewLine +
                 e.GetType().Name + " " + e.Message);
+                l.Clear();
             }
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
@@ -223,6 +224,11 @@ namespace ChangeDresser
                     l.Clear();
                     l = null;
                 }
+
+                if (!Settings.PersistApparelOriginalColor)
+                {
+                    this.Clear();
+                }
             }
 #if APPAREL_COLOR_TRACKER
             Log.Warning("End ApparelColorTracker.Expose");
@@ -251,7 +257,7 @@ namespace ChangeDresser
             public void ExposeData()
             {
                 Scribe_Values.Look(ref this.Color, "color", Color.white, true);
-                Scribe_References.Look(ref this.Apparel, "apparel");
+                Scribe_References.Look(ref this.Apparel, "apparel", false);
             }
         }
     }

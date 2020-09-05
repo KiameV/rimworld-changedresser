@@ -1,4 +1,5 @@
-﻿using ChangeDresser.UI.Util;
+﻿using ChangeDresser.UI;
+using ChangeDresser.UI.Util;
 using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
@@ -20,38 +21,6 @@ namespace ChangeDresser
         {
             var harmony = new Harmony("com.changedresser.rimworld.mod");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
-            /*Log.Message(
-                "ChangeDresser Harmony Patches:" + Environment.NewLine +
-                "  Prefix:" + Environment.NewLine +
-                "    Dialog_FormCaravan.PostOpen" + Environment.NewLine +
-                "    CaravanExitMapUtility.ExitMapAndCreateCaravan(IEnumerable<Pawn>, Faction, int)" + Environment.NewLine +
-                "    CaravanExitMapUtility.ExitMapAndCreateCaravan(IEnumerable<Pawn>, Faction, int, int)" + Environment.NewLine + 
-                "    Pawn.Kill - Priority First" + Environment.NewLine +
-                "    Pawn_ApparelTracker.Notify_ApparelAdded" + Environment.NewLine +
-                "    ScribeSaver.InitSaving" + Environment.NewLine +
-                "    SettlementAbandonUtility.Abandon" + Environment.NewLine +
-                "    Caravan.AddPawn - Priority First (undrafts any drafted pawns)" + Environment.NewLine +
-                "  Postfix:" + Environment.NewLine +
-                "    Pawn.GetGizmos" + Environment.NewLine +
-                "    Pawn_ApparelTracker.Notify_ApparelAdded" + Environment.NewLine +
-                "    Pawn_DraftController.Drafted { set }" + Environment.NewLine +
-                "    Pawn_DraftController.GetGizmos" + Environment.NewLine +
-                "    JobGiver_OptimizeApparel.TryGiveJob" + Environment.NewLine +
-                "    ReservationManager.CanReserve" + Environment.NewLine + 
-                "    OutfitDatabase.TryDelete" + Environment.NewLine +
-                "    CaravanFormingUtility.StopFormingCaravan" + Environment.NewLine +
-                "    WealthWatcher.ForceRecount" + Environment.NewLine +
-                "    Pawn.Kill - Priority First" + Environment.NewLine +
-                "    Pawn_ApparelTracker.Notify_ApparelRemoved");
-                */
-            /*if (ModsConfig.ActiveModsInLoadOrder.Any(m => "Mending".Equals(m.Name)))
-            {
-                Log.Message(
-                    "ChangeDresser (Mending) Harmony Patches:" + Environment.NewLine +
-                    "  Postfix:" + Environment.NewLine +
-                    "    WorkGiver_DoBill.TryFindBestBillIngredients - Priority Last" + Environment.NewLine +
-                    "    Game.Game_FinalizeInit - Priority Last");
-            }*/
         }
 
         public static Texture2D GetIcon(ThingDef td)
@@ -310,7 +279,23 @@ namespace ChangeDresser
 #endif
         static void Postfix(Pawn __instance, ref IEnumerable<Gizmo> __result)
         {
-            if (!__instance.Drafted && WorldComp.HasDressers())
+            if (__instance.IsPrisoner && WorldComp.HasDressers())
+            {
+                __result = new List<Gizmo>(__result)
+                {
+                    new Command_Action
+                    {
+                        icon = WidgetUtil.manageapparelTexture,
+                        defaultLabel = "ChangeDresser.Wearing".Translate(),
+                        activateSound = SoundDef.Named("Click"),
+                        action = delegate
+                        {
+                            Find.WindowStack.Add(new StorageUI(__instance));
+                        }
+                    }
+                };
+            }
+            else if (!__instance.Drafted && WorldComp.HasDressers())
             {
 #if DEBUG
                 ++i;
