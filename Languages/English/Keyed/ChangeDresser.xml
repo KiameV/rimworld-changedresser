@@ -25,6 +25,7 @@
 	<ChangeDresser.IncludeInTradeDealsDesc>Toggle whether to include the stored apparel in trade deals.</ChangeDresser.IncludeInTradeDealsDesc>
 	<ChangeDresser.UseDresserToDressFrom>Dress From</ChangeDresser.UseDresserToDressFrom>
 	<ChangeDresser.UseDresserToDressFromDesc>Allows pawns to remove apparel from this dresser (disable on dump dressers to improve performance)</ChangeDresser.UseDresserToDressFromDesc>
+	<ChangeDresser.UseDresser>Use Dresser</ChangeDresser.UseDresser>
 	
 	<!-- Common Strings -->
 	<ChangeDresser.Worn>Worn</ChangeDresser.Worn>

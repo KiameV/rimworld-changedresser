@@ -281,55 +281,58 @@ namespace ChangeDresser
 #endif
         static void Postfix(Pawn __instance, ref IEnumerable<Gizmo> __result)
         {
+            List<Gizmo> l = new List<Gizmo>();
             if ((__instance.IsPrisoner || (Settings.ShowDresserButtonForPawns && __instance.Faction == Faction.OfPlayer && __instance.def.race.Humanlike)) && WorldComp.HasDressers())
             {
                 bool isAlien = AlienRaceUtil.IsAlien(__instance);
-                __result = new List<Gizmo>(__result)
+                l.Add(new Command_Action
                 {
-                    new Command_Action
+                    icon = WidgetUtil.yesDressFromTexture,
+                    defaultLabel = "ChangeDresser.UseDresser".Translate(),
+                    activateSound = SoundDef.Named("Click"),
+                    action = delegate
                     {
-                        icon = WidgetUtil.yesDressFromTexture,
-                        defaultLabel = "ChangeDresser".Translate(),
-                        activateSound = SoundDef.Named("Click"),
-                        action = delegate
+                        List<FloatMenuOption> options = new List<FloatMenuOption>(6)
                         {
-                            List<FloatMenuOption> options = new List<FloatMenuOption>(6)
-                            {
                                 new FloatMenuOption("ChangeDresser.Wearing".Translate(), delegate() {
                                         Find.WindowStack.Add(new StorageUI(__instance));
                                     }),
                                 new FloatMenuOption("ChangeDresser.ChangeApparelColors".Translate(), delegate() {
                                         Find.WindowStack.Add(new DresserUI(DresserDtoFactory.Create(__instance, null, CurrentEditorEnum.ChangeDresserApparelColor)));
                                     })
-                            };
-                            if (Settings.IncludeColorByLayer)
+                        };
+                        if (Settings.IncludeColorByLayer)
+                        {
+                            options.Add(new FloatMenuOption("ChangeDresser.ChangeApparelColorsByLayer".Translate(), delegate ()
                             {
-                                options.Add(new FloatMenuOption("ChangeDresser.ChangeApparelColorsByLayer".Translate(), delegate() {
-                                    Find.WindowStack.Add(new DresserUI(DresserDtoFactory.Create(__instance, null, CurrentEditorEnum.ChangeDresserApparelLayerColor)));
-                                }));
-                            }
-                            if (!isAlien || AlienRaceUtil.HasHair(__instance))
-                            {
-                                options.Add(new FloatMenuOption("ChangeDresser.ChangeHair".Translate(), delegate() {
-                                    Find.WindowStack.Add(new DresserUI(DresserDtoFactory.Create(__instance, null, CurrentEditorEnum.ChangeDresserHair)));
-                                }));
-                            }
-                            if (Settings.ShowBodyChange)
-                            {
-                                options.Add(new FloatMenuOption("ChangeDresser.ChangeBody".Translate(), delegate() {
-                                    Find.WindowStack.Add(new DresserUI(DresserDtoFactory.Create(__instance, null, CurrentEditorEnum.ChangeDresserBody)));
-                                }));
-                                if (isAlien)
-                                {
-                                    options.Add(new FloatMenuOption("ChangeDresser.ChangeAlienBodyColor".Translate(), delegate() {
-                                        Find.WindowStack.Add(new DresserUI(DresserDtoFactory.Create(__instance, null, CurrentEditorEnum.ChangeDresserAlienSkinColor)));
-                                    }));
-                                }
-                            }
-                            Find.WindowStack.Add(new FloatMenu(options));
+                                Find.WindowStack.Add(new DresserUI(DresserDtoFactory.Create(__instance, null, CurrentEditorEnum.ChangeDresserApparelLayerColor)));
+                            }));
                         }
+                        if (!isAlien || AlienRaceUtil.HasHair(__instance))
+                        {
+                            options.Add(new FloatMenuOption("ChangeDresser.ChangeHair".Translate(), delegate ()
+                            {
+                                Find.WindowStack.Add(new DresserUI(DresserDtoFactory.Create(__instance, null, CurrentEditorEnum.ChangeDresserHair)));
+                            }));
+                        }
+                        if (Settings.ShowBodyChange)
+                        {
+                            options.Add(new FloatMenuOption("ChangeDresser.ChangeBody".Translate(), delegate ()
+                            {
+                                Find.WindowStack.Add(new DresserUI(DresserDtoFactory.Create(__instance, null, CurrentEditorEnum.ChangeDresserBody)));
+                            }));
+                            if (isAlien)
+                            {
+                                options.Add(new FloatMenuOption("ChangeDresser.ChangeAlienBodyColor".Translate(), delegate ()
+                                {
+                                    Find.WindowStack.Add(new DresserUI(DresserDtoFactory.Create(__instance, null, CurrentEditorEnum.ChangeDresserAlienSkinColor)));
+                                }));
+                            }
+                        }
+                        Find.WindowStack.Add(new FloatMenu(options));
                     }
-                };
+                });
+                l.AddRange(__result);
             }
             
             if (!__instance.Drafted && WorldComp.HasDressers())
@@ -341,7 +344,8 @@ namespace ChangeDresser
 #endif
                 if (WorldComp.PawnOutfits.TryGetValue(__instance, out PawnOutfitTracker outfits))
                 {
-                    List<Gizmo> l = new List<Gizmo>(__result);
+                    if (l.Count == 0)
+                        l.AddRange(__result);
 #if DEBUG
                     if (i == WAIT)
                         Log.Warning("DraftController.Postfix: Sets found! Pre Gizmo Count: " + l.Count);
@@ -394,7 +398,6 @@ namespace ChangeDresser
                     if (i == WAIT)
                         Log.Warning("Post Gizmo Count: " + l.Count);
 #endif
-                        __result = l;
                 }
             }
 #if DEBUG
@@ -408,6 +411,8 @@ namespace ChangeDresser
             if (i == WAIT)
                 i = 0;
 #endif
+            if (l.Count > 0)
+                __result = l;
         }
     }
 
