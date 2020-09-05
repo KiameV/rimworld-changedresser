@@ -116,6 +116,7 @@
 	<ChangeDresser.MendingAttachmentSettings>Mending-Attachment Settings</ChangeDresser.MendingAttachmentSettings>
 	<ChangeDresser.SecondsBetweenTicks>Seconds Between Ticks</ChangeDresser.SecondsBetweenTicks>
 	<ChangeDresser.HPPerTick>HP Per Tick</ChangeDresser.HPPerTick>
+	<ChangeDresser.ShowDresserButtonForPawns>Show Dresser Button for Pawns</ChangeDresser.ShowDresserButtonForPawns>
 	
 	<!-- Layers -->
 	<OnSkin>On Skin</OnSkin>

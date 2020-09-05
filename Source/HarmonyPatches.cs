@@ -1,4 +1,6 @@
 ﻿using ChangeDresser.UI;
+using ChangeDresser.UI.DTO;
+using ChangeDresser.UI.Enums;
 using ChangeDresser.UI.Util;
 using HarmonyLib;
 using RimWorld;
@@ -279,23 +281,58 @@ namespace ChangeDresser
 #endif
         static void Postfix(Pawn __instance, ref IEnumerable<Gizmo> __result)
         {
-            if (__instance.IsPrisoner && WorldComp.HasDressers())
+            if ((__instance.IsPrisoner || (Settings.ShowDresserButtonForPawns && __instance.Faction == Faction.OfPlayer && __instance.def.race.Humanlike)) && WorldComp.HasDressers())
             {
+                bool isAlien = AlienRaceUtil.IsAlien(__instance);
                 __result = new List<Gizmo>(__result)
                 {
                     new Command_Action
                     {
-                        icon = WidgetUtil.manageapparelTexture,
-                        defaultLabel = "ChangeDresser.Wearing".Translate(),
+                        icon = WidgetUtil.yesDressFromTexture,
+                        defaultLabel = "ChangeDresser".Translate(),
                         activateSound = SoundDef.Named("Click"),
                         action = delegate
                         {
-                            Find.WindowStack.Add(new StorageUI(__instance));
+                            List<FloatMenuOption> options = new List<FloatMenuOption>(6)
+                            {
+                                new FloatMenuOption("ChangeDresser.Wearing".Translate(), delegate() {
+                                        Find.WindowStack.Add(new StorageUI(__instance));
+                                    }),
+                                new FloatMenuOption("ChangeDresser.ChangeApparelColors".Translate(), delegate() {
+                                        Find.WindowStack.Add(new DresserUI(DresserDtoFactory.Create(__instance, null, CurrentEditorEnum.ChangeDresserApparelColor)));
+                                    })
+                            };
+                            if (Settings.IncludeColorByLayer)
+                            {
+                                options.Add(new FloatMenuOption("ChangeDresser.ChangeApparelColorsByLayer".Translate(), delegate() {
+                                    Find.WindowStack.Add(new DresserUI(DresserDtoFactory.Create(__instance, null, CurrentEditorEnum.ChangeDresserApparelLayerColor)));
+                                }));
+                            }
+                            if (!isAlien || AlienRaceUtil.HasHair(__instance))
+                            {
+                                options.Add(new FloatMenuOption("ChangeDresser.ChangeHair".Translate(), delegate() {
+                                    Find.WindowStack.Add(new DresserUI(DresserDtoFactory.Create(__instance, null, CurrentEditorEnum.ChangeDresserHair)));
+                                }));
+                            }
+                            if (Settings.ShowBodyChange)
+                            {
+                                options.Add(new FloatMenuOption("ChangeDresser.ChangeBody".Translate(), delegate() {
+                                    Find.WindowStack.Add(new DresserUI(DresserDtoFactory.Create(__instance, null, CurrentEditorEnum.ChangeDresserBody)));
+                                }));
+                                if (isAlien)
+                                {
+                                    options.Add(new FloatMenuOption("ChangeDresser.ChangeAlienBodyColor".Translate(), delegate() {
+                                        Find.WindowStack.Add(new DresserUI(DresserDtoFactory.Create(__instance, null, CurrentEditorEnum.ChangeDresserAlienSkinColor)));
+                                    }));
+                                }
+                            }
+                            Find.WindowStack.Add(new FloatMenu(options));
                         }
                     }
                 };
             }
-            else if (!__instance.Drafted && WorldComp.HasDressers())
+            
+            if (!__instance.Drafted && WorldComp.HasDressers())
             {
 #if DEBUG
                 ++i;
@@ -493,9 +530,20 @@ namespace ChangeDresser
     [HarmonyPatch(typeof(JobGiver_OptimizeApparel), "TryGiveJob", new Type[] { typeof(Pawn) })]
     static class Patch_JobGiver_OptimizeApparel
     {
-        static void Postfix(Pawn pawn, ref Job __result)
+        static void Prefix(Pawn pawn, ref bool __state)
         {
             if (Find.TickManager.TicksGame < pawn.mindState.nextApparelOptimizeTick)
+            {
+                __state = false;
+            }
+            else
+            {
+                __state = true;
+            }
+        }
+        static void Postfix(Pawn pawn, ref bool __state, ref Job __result)
+        {
+            if (!__state)
             {
                 return;
             }
@@ -558,7 +606,6 @@ namespace ChangeDresser
 #if BETTER_OUTFIT
             Log.Warning("End JobGiver_OptimizeApparel.Postfix");
 #endif
-            countInTime.Increment();
         }
 
         private static bool DoDressersHaveApparel()

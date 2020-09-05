@@ -34,7 +34,7 @@ namespace ChangeDresser.UI.DTO
         {
             bool isAlien = AlienRaceUtil.IsAlien(pawn);
             IEnumerable<CurrentEditorEnum> editors;
-            if (job.targetA.Thing is Building_Dresser)
+            if (job == null || job.targetA.Thing is Building_Dresser)
             {
                 editors = Building_Dresser.GetSupportedEditors(isAlien);
             }

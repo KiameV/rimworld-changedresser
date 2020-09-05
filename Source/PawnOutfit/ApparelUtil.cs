@@ -54,6 +54,7 @@ namespace ChangeDresser
 #endif
         }
 
+        static readonly MethodInfo optApparelMI = typeof(JobGiver_OptimizeApparel).GetMethod("TryGiveJob", BindingFlags.Instance | BindingFlags.NonPublic);
         public static void OptimizeApparel(Pawn pawn)
         {
             bool hasDressers = WorldComp.HasDressers(pawn.Map);
@@ -62,7 +63,6 @@ namespace ChangeDresser
 #if DRESSER_OUTFIT
             Log.Warning("Begin OptimizeApparelUtil.OptimizeApparel(Pawn: " + pawn.Name + ")");
 #endif
-                MethodInfo mi = typeof(JobGiver_OptimizeApparel).GetMethod("TryGiveJob", BindingFlags.Instance | BindingFlags.NonPublic);
                 JobGiver_OptimizeApparel apparelOptimizer = new JobGiver_OptimizeApparel();
                 object[] param = new object[] { pawn };
 
@@ -71,7 +71,8 @@ namespace ChangeDresser
 #if TRACE && DRESSER_OUTFIT
                 Log.Message(i + " start equip for loop");
 #endif
-                    Job job = mi.Invoke(apparelOptimizer, param) as Job;
+                    pawn.mindState.nextApparelOptimizeTick = 0;
+                    Job job = optApparelMI.Invoke(apparelOptimizer, param) as Job;
 #if TRACE && DRESSER_OUTFIT
                 Log.Message(i + " job is null: " + (string)((job == null) ? "yes" : "no"));
 #endif

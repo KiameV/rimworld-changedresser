@@ -28,60 +28,57 @@ namespace ChangeDresser
         private const int DEFAULT_MENDING_SPEED = 1;
         private const float DEFAULT_MENDING_UPDATE_INTERVAL = 5f;
 
-        private static bool showGenderAgeChange = true;
-        private static bool showBodyChange = true;
-        private static bool includeColorByLayer = true;
-        private static bool persistApparelOriginalColor = true;
-        private static bool shareHairAcrossGenders = false;
-        private static int mendingAttachmentMendingSpeed = DEFAULT_MENDING_SPEED;
-        private static string mendingAttachmentMendingSpeedBuffer = DEFAULT_MENDING_SPEED.ToString();
-        private static float mendingAttachmentUpdateInterval = DEFAULT_MENDING_UPDATE_INTERVAL;
-        private static string mendingAttachmentUpdateIntervalBuffer = DEFAULT_MENDING_UPDATE_INTERVAL.ToString();
+        public static bool ShowDresserButtonForPawns = true;
+        public static bool ShowGenderAgeChange = true;
+        public static bool ShowBodyChange = true;
+        public static bool IncludeColorByLayer = true;
+        public static bool PersistApparelOriginalColor = true;
+        public static bool ShareHairAcrossGenders = false;
+        public static int MendingAttachmentMendingSpeed = DEFAULT_MENDING_SPEED;
+        public static string MendingAttachmentMendingSpeedBuffer = DEFAULT_MENDING_SPEED.ToString();
+        public static float MendingAttachmentUpdateInterval = DEFAULT_MENDING_UPDATE_INTERVAL;
+        public static string MendingAttachmentUpdateIntervalBuffer = DEFAULT_MENDING_UPDATE_INTERVAL.ToString();
 
-        public static bool ShowGenderAgeChange { get { return showGenderAgeChange; } }
-        public static bool ShowBodyChange { get { return showBodyChange; } }
-        public static bool KeepForcedApparel { get { return true; } }
-        public static bool IncludeColorByLayer { get { return includeColorByLayer; } }
-        public static int RepairAttachmentDistance { get { return 6; } }
-        public static bool PersistApparelOriginalColor { get { return persistApparelOriginalColor; } }
-        public static bool ShareHairAcrossGenders { get { return shareHairAcrossGenders; } }
-        public static int MendingAttachmentMendingSpeed { get { return mendingAttachmentMendingSpeed; } }
-        public static long MendingAttachmentUpdateIntervalTicks { get { return (long)(mendingAttachmentUpdateInterval * TimeSpan.TicksPerSecond); } }
+        public const bool KeepForcedApparel = true;
+        public const int RepairAttachmentDistance = 6;
+        public static long MendingAttachmentUpdateIntervalTicks { get { return (long)(MendingAttachmentUpdateInterval * TimeSpan.TicksPerSecond); } }
 
         public override void ExposeData()
         {
             base.ExposeData();
-
-            Scribe_Values.Look<bool>(ref showGenderAgeChange, "ChangeDresser.ShowGenderAgeChange", true, true);
-            Scribe_Values.Look<bool>(ref showBodyChange, "ChangeDresser.ShowBodyChange", true, true);
-            Scribe_Values.Look<bool>(ref includeColorByLayer, "ChangeDresser.IncludeColorByLayer", true, true);
-            Scribe_Values.Look<bool>(ref persistApparelOriginalColor, "ChangeDresser.PersistApparelOriginalColor", false, true);
-            Scribe_Values.Look<bool>(ref shareHairAcrossGenders, "ChangeDresser.ShareHairAcrossGenders", false, false);
-            Scribe_Values.Look<int>(ref mendingAttachmentMendingSpeed, "ChangeDresser.MendingAttachmentHpPerTick", DEFAULT_MENDING_SPEED, false);
-            mendingAttachmentMendingSpeedBuffer = mendingAttachmentMendingSpeed.ToString();
-            Scribe_Values.Look<float>(ref mendingAttachmentUpdateInterval, "ChangeDresser.MendingAttachmentUpdateInterval", DEFAULT_MENDING_UPDATE_INTERVAL, false);
-            mendingAttachmentUpdateIntervalBuffer = string.Format("{0:0.0###}", mendingAttachmentUpdateInterval);
+            Scribe_Values.Look<bool>(ref ShowDresserButtonForPawns, "ChangeDresser.ShowDresserButtonForPawns", false);
+            Scribe_Values.Look<bool>(ref ShowGenderAgeChange, "ChangeDresser.ShowGenderAgeChange", true);
+            Scribe_Values.Look<bool>(ref ShowBodyChange, "ChangeDresser.ShowBodyChange", true);
+            Scribe_Values.Look<bool>(ref IncludeColorByLayer, "ChangeDresser.IncludeColorByLayer", true);
+            Scribe_Values.Look<bool>(ref PersistApparelOriginalColor, "ChangeDresser.PersistApparelOriginalColor", false);
+            Scribe_Values.Look<bool>(ref ShareHairAcrossGenders, "ChangeDresser.ShareHairAcrossGenders", false);
+            Scribe_Values.Look<int>(ref MendingAttachmentMendingSpeed, "ChangeDresser.MendingAttachmentHpPerTick", DEFAULT_MENDING_SPEED);
+            MendingAttachmentMendingSpeedBuffer = MendingAttachmentMendingSpeed.ToString();
+            Scribe_Values.Look<float>(ref MendingAttachmentUpdateInterval, "ChangeDresser.MendingAttachmentUpdateInterval", DEFAULT_MENDING_UPDATE_INTERVAL);
+            MendingAttachmentUpdateIntervalBuffer = string.Format("{0:0.0###}", MendingAttachmentUpdateInterval);
         }
 
         public static void DoSettingsWindowContents(Rect rect)
         {
-            bool origPersistColors = persistApparelOriginalColor;
+            bool origPersistColors = PersistApparelOriginalColor;
 
             Listing_Standard l = new Listing_Standard(GameFont.Small);
             float width = l.ColumnWidth;
             l.ColumnWidth = Math.Min(400, rect.width / 2);
             l.Begin(rect);
-            l.CheckboxLabeled("ChangeDresser.IncludeColorByLayer".Translate(), ref includeColorByLayer);
+            l.CheckboxLabeled("ChangeDresser.ShowDresserButtonForPawns".Translate(), ref ShowDresserButtonForPawns);
             l.Gap(4);
-            l.CheckboxLabeled("ChangeDresser.PersistApparelOriginalColor".Translate(), ref persistApparelOriginalColor);
+            l.CheckboxLabeled("ChangeDresser.IncludeColorByLayer".Translate(), ref IncludeColorByLayer);
             l.Gap(4);
-            l.CheckboxLabeled("ChangeDresser.ShareHairAcrossGenders".Translate(), ref shareHairAcrossGenders);
+            l.CheckboxLabeled("ChangeDresser.PersistApparelOriginalColor".Translate(), ref PersistApparelOriginalColor);
             l.Gap(4);
-            l.CheckboxLabeled("ChangeDresser.ShowBodyChange".Translate(), ref showBodyChange);
-            if (showBodyChange)
+            l.CheckboxLabeled("ChangeDresser.ShareHairAcrossGenders".Translate(), ref ShareHairAcrossGenders);
+            l.Gap(4);
+            l.CheckboxLabeled("ChangeDresser.ShowBodyChange".Translate(), ref ShowBodyChange);
+            if (ShowBodyChange)
             {
                 l.Gap(4);
-                l.CheckboxLabeled("ChangeDresser.ShowGenderAgeChange".Translate(), ref showGenderAgeChange);
+                l.CheckboxLabeled("ChangeDresser.ShowGenderAgeChange".Translate(), ref ShowGenderAgeChange);
                 l.Gap(20);
             }
             else
@@ -93,20 +90,20 @@ namespace ChangeDresser
             l.Label("ChangeDresser.MendingAttachmentSettings".Translate());
             l.Gap(4);
             NumberInput(l, "ChangeDresser.SecondsBetweenTicks",
-                ref mendingAttachmentUpdateInterval, ref mendingAttachmentUpdateIntervalBuffer,
+                ref MendingAttachmentUpdateInterval, ref MendingAttachmentUpdateIntervalBuffer,
                 DEFAULT_MENDING_UPDATE_INTERVAL, 0.25f, 120f);
             l.Gap(4);
 
             NumberInput(l, "ChangeDresser.HPPerTick",
-                ref mendingAttachmentMendingSpeed, ref mendingAttachmentMendingSpeedBuffer,
+                ref MendingAttachmentMendingSpeed, ref MendingAttachmentMendingSpeedBuffer,
                 DEFAULT_MENDING_SPEED, 1, 60);
 
             l.End();
 
-            if (origPersistColors != persistApparelOriginalColor &&
+            if (origPersistColors != PersistApparelOriginalColor &&
                 Current.Game != null && WorldComp.ApparelColorTracker != null)
             {
-                if (persistApparelOriginalColor)
+                if (PersistApparelOriginalColor)
                 {
                     WorldComp.ApparelColorTracker.PersistWornColors();
                 }
