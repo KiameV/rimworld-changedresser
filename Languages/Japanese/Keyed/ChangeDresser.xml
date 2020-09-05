@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <!-- Window Labels -->
   <ChangeDresser.DresserLabel>ドレッサー</ChangeDresser.DresserLabel>
@@ -116,6 +116,7 @@
   <ChangeDresser.MendingAttachmentSettings>修理付属品の設定</ChangeDresser.MendingAttachmentSettings>
   <ChangeDresser.SecondsBetweenTicks>ティック間の秒数</ChangeDresser.SecondsBetweenTicks>
   <ChangeDresser.HPPerTick>ティック毎のHP</ChangeDresser.HPPerTick>
+  <ChangeDresser.ShowDresserButtonForPawns>入植者にもドレッサーボタンを表示</ChangeDresser.ShowDresserButtonForPawns>
 
   <!-- Layers -->
   <OnSkin>下着</OnSkin>
