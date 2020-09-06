@@ -40,6 +40,8 @@ namespace ChangeDresser
 
         public bool UseDresserToDressFrom = true;
 
+        private StoragePriority storagePriority = DefaultStoragePriority;
+
         public Building_Dresser()
         {
             WEAR_APPAREL_FROM_DRESSER_JOB_DEF = this.wearApparelFromStorageJobDef;
@@ -139,7 +141,7 @@ namespace ChangeDresser
                 r.AddDresser(this);
             }
 
-            this.UpdatePreviousStorageFilter();
+            this.storagePriority = base.settings.Priority;
         }
 
         public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
@@ -460,12 +462,6 @@ namespace ChangeDresser
 					this.forceAddedApparel = null;
             }
 
-            if (Scribe.mode == LoadSaveMode.PostLoadInit)
-            {
-                if (!this.UseDresserToDressFrom)
-                    WorldComp.RemoveDesser(this);
-            }
-
 #if DEBUG
             Log.Message("End Building_Dresser.ExposeData" + Environment.NewLine);
 #endif
@@ -597,6 +593,12 @@ namespace ChangeDresser
                 this.lastAutoCollect = now;
                 this.ReclaimApparel();
             }*/
+
+            if (this.storagePriority != base.settings.Priority)
+            {
+                this.storagePriority = base.settings.Priority;
+                WorldComp.SortDressersToUse();
+            }
         }
 
 #region Float Menu Options
@@ -782,10 +784,6 @@ namespace ChangeDresser
                 delegate
                 {
                     this.UseDresserToDressFrom = !this.UseDresserToDressFrom;
-                    if (this.UseDresserToDressFrom)
-                        WorldComp.AddDresser(this);
-                    else
-                        WorldComp.RemoveDesser(this);
                 };
             a.groupKey = groupKey;
             ++groupKey;
@@ -795,7 +793,7 @@ namespace ChangeDresser
         }
 #endregion
 
-#region ThingFilters
+/*#region ThingFilters
         private ThingFilter previousStorageFilters = new ThingFilter();
         private FieldInfo AllowedDefsFI = typeof(ThingFilter).GetField("allowedDefs", BindingFlags.Instance | BindingFlags.NonPublic);
         protected bool AreStorageSettingsEqual()
@@ -831,6 +829,6 @@ namespace ChangeDresser
             previousAllowed.Clear();
             previousAllowed.AddRange(AllowedDefsFI.GetValue(currentFilters) as HashSet<ThingDef>);
         }
-        #endregion
+        #endregion*/
     }
 }

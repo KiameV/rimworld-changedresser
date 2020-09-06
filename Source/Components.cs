@@ -109,10 +109,10 @@ namespace ChangeDresser
                 return;
             }
 
-            if (dresser.UseDresserToDressFrom && 
-                !DressersToUse.Contains(dresser))
+            if (!DressersToUse.Contains(dresser))
             {
-                DressersToUse.AddLast(dresser);
+                DressersToUse.AddFirst(dresser);
+                SortDressersToUse();
             }
         }
 

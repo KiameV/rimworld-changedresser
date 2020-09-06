@@ -587,6 +587,8 @@ namespace ChangeDresser
 #endif
             foreach (Building_Dresser dresser in WorldComp.DressersToUse)
             {
+                if (!dresser.UseDresserToDressFrom)
+                    continue;
 #if TRACE && BETTER_OUTFIT
                 Log.Message("        Dresser: " + dresser.Label);
 #endif
