@@ -546,7 +546,9 @@ namespace ChangeDresser
                 __state = true;
             }
         }
-        static void Postfix(Pawn pawn, ref bool __state, ref Job __result)
+
+        static readonly FieldInfo wornApparelScoresFI = typeof(JobGiver_OptimizeApparel).GetField("wornApparelScores", BindingFlags.Instance | BindingFlags.NonPublic);
+        static void Postfix(Pawn pawn, JobGiver_OptimizeApparel __instance, ref bool __state, ref Job __result)
         {
             if (!__state)
             {
@@ -566,7 +568,7 @@ namespace ChangeDresser
             if (__result != null && __result.targetA.Thing is Apparel)
             {
                 thing = __result.targetA.Thing;
-                baseApparelScore = JobGiver_OptimizeApparel.ApparelScoreGain(pawn, thing as Apparel);
+                baseApparelScore = JobGiver_OptimizeApparel.ApparelScoreGain_NewTmp(pawn, thing as Apparel, wornApparelScoresFI.GetValue(__instance) as List<float>);
                 if (thing == null)
                 {
                     baseApparelScore = 0f;

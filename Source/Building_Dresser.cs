@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using UnityEngine;
 using Verse;
 using Verse.AI;
 
@@ -42,6 +43,8 @@ namespace ChangeDresser
 
         private StoragePriority storagePriority = DefaultStoragePriority;
 
+        public string Name = "";
+
         public Building_Dresser()
         {
             WEAR_APPAREL_FROM_DRESSER_JOB_DEF = this.wearApparelFromStorageJobDef;
@@ -72,7 +75,10 @@ namespace ChangeDresser
                     {
                         if (!a.Spawned)
                         {
-                            BuildingUtil.DropThing(a, this, this.CurrentMap, false);
+                            if (!BuildingUtil.DropThing(a, this, this.CurrentMap, false))
+                            {
+                                Log.Error("failed to store and then drop " + a.Label);
+                            }
                         }
                     }
                 }
@@ -119,6 +125,8 @@ namespace ChangeDresser
         {
             return this.StoredApparel.TryRemoveBestApparel(def, filter, out apparel);
         }
+
+        public override string Label => (this.Name == "") ? base.Label : this.Name;
 
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
@@ -421,6 +429,7 @@ namespace ChangeDresser
             Scribe_Values.Look(ref this.includeInTradeDeals, "includeInTradeDeals", true);
 			Scribe_Collections.Look(ref this.forceAddedApparel, false, "forceAddedApparel", LookMode.Deep, new object[0]);
             Scribe_Values.Look(ref this.UseDresserToDressFrom, "useDresserToDressFrom", true, false);
+            Scribe_Values.Look(ref this.Name, "name", "", false);
 #if DEBUG
             if (this.tempApparelList != null)
                 Log.Warning(" tempApparelList Count: " + this.tempApparelList.Count);
@@ -688,6 +697,16 @@ namespace ChangeDresser
                 l = new List<Gizmo>(1);
 
             int groupKey = this.GetType().Name.GetHashCode();
+
+            l.Add(new Command_Action
+            {
+                icon = ContentFinder<Texture2D>.Get("UI/Commands/RenameZone", true),
+                defaultLabel = "CommandRenameZoneLabel".Translate(),
+                action = delegate
+                {
+                    Find.WindowStack.Add(new Dialog_Rename(this));
+                },
+            });
 
             Command_Action a = new Command_Action();
             a.icon = WidgetUtil.manageapparelTexture;

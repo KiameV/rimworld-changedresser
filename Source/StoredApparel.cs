@@ -59,25 +59,29 @@ namespace ChangeDresser
 
         private void AddApparelToLinkedList(Apparel apparel, LinkedList<Apparel> l)
         {
+#if DEBUG
             if (!l.Contains(apparel))
             {
-                float score = JobGiver_OptimizeApparel.ApparelScoreRaw(null, apparel);
-                for (LinkedListNode<Apparel> n = l.First; n != null; n = n.Next)
-                {
-                    float nScore = JobGiver_OptimizeApparel.ApparelScoreRaw(null, apparel);
-                    if (score >= nScore)
-                    {
-                        l.AddBefore(n, apparel);
-                        return;
-                    }
-                    else if (score < nScore)
-                    {
-                        l.AddAfter(n, apparel);
-                        return;
-                    }
-                }
-                l.AddLast(apparel);
+                Log.Error("already contains apparel " + apparel.Label);
+                return;
             }
+#endif
+            float score = JobGiver_OptimizeApparel.ApparelScoreRaw(null, apparel);
+            for (LinkedListNode<Apparel> n = l.First; n != null; n = n.Next)
+            {
+                float nScore = JobGiver_OptimizeApparel.ApparelScoreRaw(null, apparel);
+                if (score >= nScore)
+                {
+                    l.AddBefore(n, apparel);
+                    return;
+                }
+                else if (score < nScore)
+                {
+                    l.AddAfter(n, apparel);
+                    return;
+                }
+            }
+            l.AddLast(apparel);
 
             /*
 #if TRACE
@@ -293,7 +297,7 @@ namespace ChangeDresser
 #endif
                             return true;
                         }
-#if DEBUG                        
+#if DEBUG
                         else
                             Log.Warning("Filter rejected");
 #endif

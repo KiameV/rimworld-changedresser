@@ -86,6 +86,7 @@
     <Compile Include="Building_ChangeMirror.cs" />
     <Compile Include="Building_Dresser.cs" />
     <Compile Include="Building_RepairChangeDresser.cs" />
+    <Compile Include="Dialog_Rename.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeApparelColor.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeApparelColorByLayer.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeBodyAlienColor.cs" />
@@ -122,6 +123,7 @@
     <Compile Include="UI\DTO\SelectionWidgetDTOs\HairColorSelectionDTO.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\HairStyleSelectionDTO.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\HeadTypeSelectionDTO.cs" />
+    <Compile Include="UI\DTO\SelectionWidgetDTOs\PawnSelectionWidgetDTO.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\SelectionColorWidgetDTO.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\SliderWidgetDTO.cs" />
     <Compile Include="UI\Enums\CurrentEditorEnum.cs" />
