@@ -547,71 +547,70 @@ namespace ChangeDresser
             }
         }
 
-        static readonly FieldInfo wornApparelScoresFI = typeof(JobGiver_OptimizeApparel).GetField("wornApparelScores", BindingFlags.Instance | BindingFlags.NonPublic);
+        static readonly FieldInfo wornApparelScoresFI = typeof(JobGiver_OptimizeApparel).GetField("wornApparelScores", BindingFlags.Static | BindingFlags.NonPublic);
         static void Postfix(Pawn pawn, JobGiver_OptimizeApparel __instance, ref bool __state, ref Job __result)
         {
-            if (!__state)
-            {
-                return;
-            }
+                if (!__state)
+                {
+                    return;
+                }
 
 #if BETTER_OUTFIT
             Log.Warning("Begin JobGiver_OptimizeApparel.Postfix(Pawn: " + pawn.Name.ToStringShort + "     Job: " + ((__result == null) ? "<null>" : __result.ToString()) + ")");
 #endif
-            if (!DoDressersHaveApparel() || pawn.apparel?.LockedApparel?.Count > 0)
-            {
-                return;
-            }
-
-            Thing thing = null;
-            float baseApparelScore = 0f;
-            if (__result != null && __result.targetA.Thing is Apparel)
-            {
-                thing = __result.targetA.Thing;
-                baseApparelScore = JobGiver_OptimizeApparel.ApparelScoreGain_NewTmp(pawn, thing as Apparel, wornApparelScoresFI.GetValue(__instance) as List<float>);
-                if (thing == null)
+                if (!DoDressersHaveApparel() || pawn.apparel?.LockedApparel?.Count > 0)
                 {
-                    baseApparelScore = 0f;
+                    return;
                 }
-                else
+
+                float baseApparelScore = 0f;
+                Apparel apparel = __result?.targetA.Thing as Apparel;
+                if (apparel != null)
                 {
+                    baseApparelScore = JobGiver_OptimizeApparel.ApparelScoreGain_NewTmp(pawn, apparel, wornApparelScoresFI.GetValue(__instance) as List<float>);
+                    if (apparel == null)
+                    {
+                        baseApparelScore = 0f;
+                    }
+                    else
+                    {
 #if BETTER_OUTFIT
                     Log.Message("    Game Found Better Apparel: " + ((thing == null) ? "<null>" : thing.Label) + "    Score: " + baseApparelScore);
 #endif
+                    }
                 }
-            }
 
-            Apparel a = null;
-            Building_Dresser containingDresser = null;
+                Apparel a = null;
+                Building_Dresser containingDresser = null;
 
 #if BETTER_OUTFIT
             Log.Message("    Loop Through Dressers:");
 #endif
-            foreach (Building_Dresser dresser in WorldComp.DressersToUse)
-            {
-                if (!dresser.UseDresserToDressFrom)
-                    continue;
+                foreach (Building_Dresser dresser in WorldComp.DressersToUse)
+                {
+                    if (!dresser.UseDresserToDressFrom)
+                        continue;
 #if TRACE && BETTER_OUTFIT
                 Log.Message("        Dresser: " + dresser.Label);
 #endif
-                float score = baseApparelScore;
-                if (dresser.FindBetterApparel(ref score, ref a, pawn, pawn.outfits.CurrentOutfit))
-                {
-                    thing = a;
-                    baseApparelScore = score;
-                    containingDresser = dresser;
+                    float score = baseApparelScore;
+                    if (dresser.FindBetterApparel(ref score, ref a, pawn, pawn.outfits.CurrentOutfit))
+                    {
+                        apparel = a;
+                        baseApparelScore = score;
+                        containingDresser = dresser;
 #if BETTER_OUTFIT
                     Log.Message("    Dresser Found Better Apparel: " + ((a == null) ? "<null>" : a.Label) + "    Score: " + baseApparelScore);
 #endif
+                    }
                 }
-            }
 #if BETTER_OUTFIT
             Log.Message("    Best Apparel: " + ((a == null) ? "<null>" : a.Label) + "    Score: " + baseApparelScore);
 #endif
-            if (a != null && containingDresser != null)
-            {
-                __result = new Job(containingDresser.wearApparelFromStorageJobDef, containingDresser, a);
-            }
+                if (a != null && containingDresser != null)
+                {
+                    __result = new Job(containingDresser.wearApparelFromStorageJobDef, containingDresser, apparel);
+                }
 #if BETTER_OUTFIT
             Log.Warning("End JobGiver_OptimizeApparel.Postfix");
 #endif
