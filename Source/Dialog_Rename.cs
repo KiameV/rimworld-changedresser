@@ -7,6 +7,7 @@
         public Dialog_Rename(Building_Dresser dresser) : base()
         {
             this.Dresser = dresser;
+            base.curName = dresser.Name;
         }
 
         protected override void SetName(string name)
