@@ -584,7 +584,7 @@ namespace ChangeDresser
                     }
                 }
 
-                baseApparelScore = JobGiver_OptimizeApparel.ApparelScoreGain_NewTmp(pawn, apparel, wornApparelScores);
+                baseApparelScore = JobGiver_OptimizeApparel.ApparelScoreGain(pawn, apparel, wornApparelScores);
                 if (apparel == null)
                 {
                     baseApparelScore = 0f;

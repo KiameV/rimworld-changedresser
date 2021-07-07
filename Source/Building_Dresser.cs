@@ -808,7 +808,7 @@ namespace ChangeDresser
             ++groupKey;
             l.Add(a);
 
-            return SaveStorageSettingsGizmoUtil.AddSaveLoadGizmos(l, SaveTypeEnum.Apparel_Management, this.settings.filter);
+            return l;// SaveStorageSettingsGizmoUtil.AddSaveLoadGizmos(l, SaveTypeEnum.Apparel_Management, this.settings.filter);
         }
 #endregion
 

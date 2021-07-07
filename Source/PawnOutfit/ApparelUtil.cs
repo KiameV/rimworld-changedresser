@@ -241,7 +241,7 @@ namespace ChangeDresser
                         cachedValues.Add(JobGiver_OptimizeApparel.ApparelScoreRaw(pawn, a));
                     }
                 }*/
-                float gain = JobGiver_OptimizeApparel.ApparelScoreGain_NewTmp(pawn, apparel, cachedValues);
+                float gain = JobGiver_OptimizeApparel.ApparelScoreGain(pawn, apparel, cachedValues);
 #if TRACE && BETTER_OUTFIT
                 Log.Message("    Gain: " + gain + "     Base Score: " + baseApparelScore);
 #endif

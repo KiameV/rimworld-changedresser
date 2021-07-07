@@ -50,16 +50,16 @@ namespace ChangeDresser.UI.DTO.SelectionWidgetDTOs
                 }
                 else
                 {
-                    if (def.hairGender == HairGender.Male ||
-                        def.hairGender == HairGender.MaleUsually ||
-                        def.hairGender == HairGender.Any)
+                    if (def.styleGender == StyleGender.Male ||
+                        def.styleGender == StyleGender.MaleUsually ||
+                        def.styleGender == StyleGender.Any)
                     {
                         this.maleHairDefs.Add(def);
                     }
 
-                    if (def.hairGender == HairGender.Female ||
-                        def.hairGender == HairGender.FemaleUsually ||
-                        def.hairGender == HairGender.Any)
+                    if (def.styleGender == StyleGender.Female ||
+                        def.styleGender == StyleGender.FemaleUsually ||
+                        def.styleGender == StyleGender.Any)
                     {
                         this.femaleHairDefs.Add(def);
                     }

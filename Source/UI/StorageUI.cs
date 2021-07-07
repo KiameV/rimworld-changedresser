@@ -240,7 +240,7 @@ namespace ChangeDresser.UI
                                 if (!WorldComp.AddApparel(a))
                                 {
                                     if (this.Pawn.Map == null ||
-                                        !GenDrop.TryDropSpawn_NewTmp(a, this.Pawn.Position, this.Pawn.Map, ThingPlaceMode.Near, out Thing t))
+                                        !GenDrop.TryDropSpawn(a, this.Pawn.Position, this.Pawn.Map, ThingPlaceMode.Near, out Thing t))
                                     {
                                         Log.Error("failed to drop apparel " + a.Label);
                                         this.Pawn.apparel.Wear(a);

@@ -103,7 +103,7 @@ namespace ChangeDresser.UI.Util
             GUI.BeginGroup(rect);
             Vector2 size = new Vector2(128f, 180f);
             Rect position = new Rect(rect.width * 0.5f - size.x * 0.5f, 10f + rect.height * 0.5f - size.y * 0.5f, size.x, size.y);
-            RenderTexture image = PortraitsCache.Get(dresserDto.Pawn, size, new Vector3(0f, 0f, 0f), 1f);
+            RenderTexture image = PortraitsCache.Get(dresserDto.Pawn, size, Rot4.South);
             GUI.DrawTexture(position, image);
             GUI.EndGroup();
 

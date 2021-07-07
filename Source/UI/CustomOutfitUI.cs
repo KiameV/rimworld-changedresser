@@ -172,10 +172,11 @@ namespace ChangeDresser.UI
                 y += 35;
 
                 Listing_Standard ls = new Listing_Standard();
+                ls.ColumnWidth = 775 - 216 - 20;
                 ls.Begin(new Rect(775, y, 216, inRect.height - y ));
                 Rect view = new Rect(0, 0, 200, 64 * this.apparelFilter.StatDefs.Count);
-                ls.BeginScrollView(
-                    new Rect(0, 0, 216, inRect.height - y ), ref filterScrollPosition, ref view);
+                Widgets.BeginScrollView(
+                    new Rect(0, 0, 216, inRect.height - y ), ref filterScrollPosition, view);
                 
                 ls.Label("HitPointsBasic".ToString() + " " + (int)this.apparelFilter.HP);
                 this.apparelFilter.HP = ls.Slider(this.apparelFilter.HP, 0, 100);
@@ -193,7 +194,7 @@ namespace ChangeDresser.UI
                     }
                 }
 
-                ls.EndScrollView(ref view);
+                Widgets.EndScrollView();
                 ls.End();
             }
             catch (Exception e)
