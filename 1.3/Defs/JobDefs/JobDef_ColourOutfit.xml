@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <JobDef>
+    <defName>ChangeApparelColor</defName>
+    <driverClass>ChangeDresser.DresserJobDriver.JobDriver_ChangeApparelColor</driverClass>
+    <reportString>Getting changed.</reportString>
+  </JobDef>
+  <JobDef>
+    <defName>ChangeApparelColorByLayer</defName>
+    <driverClass>ChangeDresser.DresserJobDriver.JobDriver_ChangeApparelColorByLayer</driverClass>
+    <reportString>Getting changed.</reportString>
+  </JobDef>
+  <JobDef>
+    <defName>ChangeHairColor</defName>
+    <driverClass>ChangeDresser.DresserJobDriver.JobDriver_ChangeHairStyle</driverClass>
+    <reportString>Change hair style and/or color.</reportString>
+  </JobDef>
+  <JobDef>
+    <defName>ChangeHairStyle</defName>
+    <driverClass>ChangeDresser.DresserJobDriver.JobDriver_ChangeHairStyle</driverClass>
+    <reportString>Change hair style and/or color.</reportString>
+  </JobDef>
+  <JobDef>
+    <defName>ChangeBody</defName>
+    <driverClass>ChangeDresser.DresserJobDriver.JobDriver_ChangeBody</driverClass>
+    <reportString>Change body attributes.</reportString>
+  </JobDef>
+  <JobDef>
+    <defName>StoreApparel</defName>
+    <driverClass>ChangeDresser.DresserJobDriver.JobDriver_StoreApparel</driverClass>
+    <reportString>Store Apparel.</reportString>
+  </JobDef>
+  <JobDef>
+    <defName>WearApparelFromStorage</defName>
+    <driverClass>ChangeDresser.DresserJobDriver.JobDriver_WearApparelFromStorage</driverClass>
+    <reportString>wearing TargetA.</reportString>
+  </JobDef>
+  <JobDef>
+    <defName>ChangeBodyAlienColor</defName>
+    <driverClass>ChangeDresser.DresserJobDriver.JobDriver_ChangeBodyAlienColor</driverClass>
+    <reportString>Change alien body color.</reportString>
+  </JobDef>
+</Defs>
