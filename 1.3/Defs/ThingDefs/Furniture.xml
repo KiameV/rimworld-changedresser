@@ -62,9 +62,6 @@
 					<li>RepairChangeDresser</li>
 				</linkableFacilities>
 			</li>
-			<li Class="SaveStorageSettings.CompProperties_SaveStorageSettings">
-				<name>Apparel_Management</name>
-			</li>
 		</comps>
 		<inspectorTabs>
 			<li>ITab_Storage</li>
