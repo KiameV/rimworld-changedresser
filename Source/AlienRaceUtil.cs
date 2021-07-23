@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Verse;
@@ -13,7 +14,7 @@ namespace ChangeDresser
 
         #region Get Field/Metho Info
         private static FieldInfo raceSettingsFieldInfo = null;
-        private static FieldInfo hairSettingsFieldInfo = null;
+        private static FieldInfo styleSettingsFieldInfo = null;
         private static FieldInfo generalSettingsFieldInfo = null;
 
         public static object GetAlienRaceSettings(Pawn pawn)
@@ -33,42 +34,36 @@ namespace ChangeDresser
             return raceSettingsFieldInfo.GetValue(pawn.def);
         }
 
-        public static object GetHairSettings(Pawn pawn)
+        public static Dictionary<Type, AlienRace.StyleSettings> GetStyleSettings(Pawn pawn)
         {
             object raceSettings = GetAlienRaceSettings(pawn);
             if (raceSettings == null)
             {
                 return null;
             }
-            if (hairSettingsFieldInfo == null)
+            if (styleSettingsFieldInfo == null)
             {
-                hairSettingsFieldInfo = raceSettings.GetType().GetField("hairSettings");
+                styleSettingsFieldInfo = raceSettings.GetType().GetField("styleSettings");
 #if ALIEN_DEBUG || DEBUG || REFLECTION_DEBUG
                 Log.Warning("hairSettingsFieldInfo found: " + (string)((hairSettingsFieldInfo != null) ? "True" : "False"));
 #endif
             }
-            if (hairSettingsFieldInfo == null)
+            if (styleSettingsFieldInfo == null)
             {
-                Log.ErrorOnce("Unable to get hairSettingsFieldInfo", "hairSettingsFieldInfo".GetHashCode());
+                Log.ErrorOnce("Unable to get styleSettingsFieldInfo", "styleSettingsFieldInfo".GetHashCode());
                 return null;
             }
-            return hairSettingsFieldInfo.GetValue(raceSettings);
+            return styleSettingsFieldInfo.GetValue(raceSettings) as Dictionary<Type, AlienRace.StyleSettings>;
         }
 
         public static bool HasHair(Pawn pawn)
         {
-            object hairSettings = GetHairSettings(pawn);
-            if (hairSettings == null)
+            Dictionary<Type, AlienRace.StyleSettings> styleSettings = GetStyleSettings(pawn);
+            if (styleSettings == null)
             {
                 return false;
             }
-            var fi = hairSettings.GetType().GetField("hasHair");
-            if (fi == null)
-            {
-                Log.ErrorOnce("Unable to get hasHair", "hasHair".GetHashCode());
-                return false;
-            }
-            return (bool)fi.GetValue(hairSettings);
+            return styleSettings.ContainsKey(typeof(HairDef));
         }
 
         public static object GetGeneralSettings(Pawn pawn)
@@ -95,14 +90,14 @@ namespace ChangeDresser
 
         public static List<string> GetHairTags(Pawn pawn)
         {
-            object hairSettings = GetHairSettings(pawn);
-            var fi = hairSettings.GetType().GetField("hairTags");
-            if (fi == null)
+            Dictionary<Type, AlienRace.StyleSettings> styleSettings = GetStyleSettings(pawn);
+            AlienRace.StyleSettings s = null;
+            if (styleSettings?.TryGetValue(typeof(HairDef), out s) == false)
             {
                 Log.ErrorOnce("Unable to get hairTags", "hairTags".GetHashCode());
                 return null;
             }
-            return (List<string>)fi.GetValue(hairSettings);
+            return s.styleTags;
         }
 
         private static FieldInfo GetMaleGenderProbabilityFieldInfo(Pawn pawn)
