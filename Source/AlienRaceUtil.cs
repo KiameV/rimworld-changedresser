@@ -34,7 +34,7 @@ namespace ChangeDresser
             return raceSettingsFieldInfo.GetValue(pawn.def);
         }
 
-        public static Dictionary<Type, AlienRace.StyleSettings> GetStyleSettings(Pawn pawn)
+        public static object GetStyleSettings(Pawn pawn)
         {
             object raceSettings = GetAlienRaceSettings(pawn);
             if (raceSettings == null)
@@ -58,7 +58,7 @@ namespace ChangeDresser
 
         public static bool HasHair(Pawn pawn)
         {
-            Dictionary<Type, AlienRace.StyleSettings> styleSettings = GetStyleSettings(pawn);
+            Dictionary<Type, AlienRace.StyleSettings> styleSettings = GetStyleSettings(pawn) as Dictionary<Type, AlienRace.StyleSettings>;
             if (styleSettings == null)
             {
                 return false;
@@ -90,7 +90,7 @@ namespace ChangeDresser
 
         public static List<string> GetHairTags(Pawn pawn)
         {
-            Dictionary<Type, AlienRace.StyleSettings> styleSettings = GetStyleSettings(pawn);
+            Dictionary<Type, AlienRace.StyleSettings> styleSettings = GetStyleSettings(pawn) as Dictionary<Type, AlienRace.StyleSettings>;
             AlienRace.StyleSettings s = null;
             if (styleSettings?.TryGetValue(typeof(HairDef), out s) == false)
             {
