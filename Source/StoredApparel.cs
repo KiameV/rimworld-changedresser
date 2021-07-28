@@ -66,19 +66,22 @@ namespace ChangeDresser
                 return;
             }
 #endif
-            float score = JobGiver_OptimizeApparel.ApparelScoreRaw(null, apparel);
-            for (LinkedListNode<Apparel> n = l.First; n != null; n = n.Next)
+            if (!apparel.def.apparel.slaveApparel)
             {
-                float nScore = JobGiver_OptimizeApparel.ApparelScoreRaw(null, apparel);
-                if (score >= nScore)
+                float score = JobGiver_OptimizeApparel.ApparelScoreRaw(null, apparel);
+                for (LinkedListNode<Apparel> n = l.First; n != null; n = n.Next)
                 {
-                    l.AddBefore(n, apparel);
-                    return;
-                }
-                else if (score < nScore)
-                {
-                    l.AddAfter(n, apparel);
-                    return;
+                    float nScore = JobGiver_OptimizeApparel.ApparelScoreRaw(null, apparel);
+                    if (score >= nScore)
+                    {
+                        l.AddBefore(n, apparel);
+                        return;
+                    }
+                    else if (score < nScore)
+                    {
+                        l.AddAfter(n, apparel);
+                        return;
+                    }
                 }
             }
             l.AddLast(apparel);
@@ -228,6 +231,7 @@ namespace ChangeDresser
 
         public bool TryRemoveApparel(ThingDef def, out Apparel apparel)
         {
+            //Log.Error("TryRemoveApparel(def, apparel)");
             LinkedList<Apparel> l;
             if (this.StoredApparelLookup.TryGetValue(def, out l))
             {
@@ -244,6 +248,7 @@ namespace ChangeDresser
 
         public bool TryRemoveBestApparel(ThingDef def, out Apparel apparel)
         {
+            //Log.Error("TryRemoveBestApparel(def, apparel)");
             LinkedList<Apparel> l;
             if (this.StoredApparelLookup.TryGetValue(def, out l))
             {
@@ -260,6 +265,7 @@ namespace ChangeDresser
 
         public bool RemoveApparel(Apparel apparel)
         {
+            //Log.Error("RemoveApparel(apparel)");
             LinkedList<Apparel> l;
             if (this.StoredApparelLookup.TryGetValue(apparel.def, out l))
             {
@@ -270,6 +276,7 @@ namespace ChangeDresser
 
         internal bool TryRemoveBestApparel(ThingDef def, ThingFilter filter, out Apparel apparel)
         {
+            //Log.Error("TryRemoveBestApparel(def, filter, apparel)");
 #if DEBUG
             Log.Message(Environment.NewLine + "Start StoredApparel.TryRemoveBestApperal Def: " + def.label);
 #endif
@@ -318,6 +325,7 @@ namespace ChangeDresser
 
         public List<Apparel> RemoveFilteredApparel(StorageSettings settings)
         {
+            //Log.Error("RemoveFilteredApparel(settings)");
             List<Apparel> removed = new List<Apparel>(0);
             foreach (LinkedList<Apparel> ll in this.StoredApparelLookup.Values)
             {
