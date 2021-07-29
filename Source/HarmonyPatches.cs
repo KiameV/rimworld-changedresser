@@ -329,6 +329,13 @@ namespace ChangeDresser
                                 }));
                             }
                         }
+                        if (ModsConfig.IdeologyActive)
+                        {
+                            options.Add(new FloatMenuOption("ChangeDresser.FavoriteColor".Translate(), delegate ()
+                            {
+                                Find.WindowStack.Add(new DresserUI(DresserDtoFactory.Create(__instance, null, CurrentEditorEnum.ChangeDresserFavoriteColor)));
+                            }));
+                        }
                         Find.WindowStack.Add(new FloatMenu(options));
                     }
                 });
@@ -626,7 +633,7 @@ namespace ChangeDresser
 #endif
             if (a != null && containingDresser != null)
             {
-                __result = new Job(containingDresser.wearApparelFromStorageJobDef, containingDresser, apparel);
+                __result = new Job(JobDefOfCD.WearApparelFromStorage, containingDresser, apparel);
             }
 #if BETTER_OUTFIT
             Log.Warning("End JobGiver_OptimizeApparel.Postfix");

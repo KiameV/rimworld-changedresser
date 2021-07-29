@@ -128,4 +128,7 @@
 
 	<ChangeDresser.All>All</ChangeDresser.All>
 	<ChangeDresser.Name>Name</ChangeDresser.Name>
+	
+	<ChangeDresser.FavoriteColor>Favorite Color</ChangeDresser.FavoriteColor>
+	<ChangeDresser.ChangeFavoriteColor>Change Favorite Color</ChangeDresser.ChangeFavoriteColor>
 </LanguageData>

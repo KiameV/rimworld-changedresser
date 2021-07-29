@@ -116,17 +116,23 @@ namespace ChangeDresser.UI.Util
 
             return rect;
         }
+        
+        public static void AddFavoriteColorSelectorWidget(float left, float top, float width, SelectionColorWidgetDTO selectionDto, ColorPresetsDTO presetsDto)
+        {
+            Widgets.DrawBoxSolid(new Rect(left, top, 30, 30), selectionDto.SelectedColor);
+            AddColorSelectorWidget(left, top + 40f, width, selectionDto, presetsDto, null);
+        }
 
-        public static void AddColorSelectorWidget(float left, float top, float width, SelectionColorWidgetDTO selectionDto, ColorPresetsDTO presetsDto)
+        public static void AddColorSelectorWidget(float left, float top, float width, SelectionColorWidgetDTO selectionDto, ColorPresetsDTO presetsDto, Color? favoriteColor)
         {
             List<SelectionColorWidgetDTO> l = new List<SelectionColorWidgetDTO>(1)
             {
                 selectionDto
             };
-            AddColorSelectorWidget(left, top, width, l, presetsDto);
+            AddColorSelectorWidget(left, top, width, l, presetsDto, favoriteColor);
         }
 
-        public static void AddColorSelectorWidget(float left, float top, float width, List<SelectionColorWidgetDTO> selectionDtos, ColorPresetsDTO presetsDto)
+        public static void AddColorSelectorWidget(float left, float top, float width, List<SelectionColorWidgetDTO> selectionDtos, ColorPresetsDTO presetsDto, Color? favoriteColor)
         {
             Text.Font = GameFont.Medium;
 
@@ -154,13 +160,20 @@ namespace ChangeDresser.UI.Util
             Copy(rgb, originalRgb);
             HSL originalHsl = new HSL(hsl);
 
-            GUI.BeginGroup(new Rect(width - 135, 0, 200, 200));
+            GUI.BeginGroup(new Rect(width - 135, 0, 225, 215));
             rgb.r = Widgets.HorizontalSlider(new Rect(0, 15, 125f, 20f), rgb.r, 0, 1, false, null, "R", ((int)(rgb.r * 255)).ToString());
             rgb.g = Widgets.HorizontalSlider(new Rect(0, 45, 125f, 20f), rgb.g, 0, 1, false, null, "ChangeDresser.G".Translate(), ((int)(rgb.g * 255)).ToString());
             rgb.b = Widgets.HorizontalSlider(new Rect(0, 75, 125f, 20f), rgb.b, 0, 1, false, null, "ChangeDresser.B".Translate(), ((int)(rgb.b * 255)).ToString());
             hsl.h = Widgets.HorizontalSlider(new Rect(0, 105, 125f, 20f), hsl.h, 0, 1, false, null, "ChangeDresser.H".Translate(), ((int)(hsl.h * 255)).ToString());
             hsl.s = Widgets.HorizontalSlider(new Rect(0, 135, 125f, 20f), hsl.s, 0, 1, false, null, "ChangeDresser.S".Translate(), ((int)(hsl.s * 255)).ToString());
-            hsl.l = Widgets.HorizontalSlider(new Rect(0, 175, 125f, 20f), hsl.l, 0, 1, false, null, "ChangeDresser.L".Translate(), ((int)(hsl.l * 255)).ToString());
+            hsl.l = Widgets.HorizontalSlider(new Rect(0, 165, 125f, 20f), hsl.l, 0, 1, false, null, "ChangeDresser.L".Translate(), ((int)(hsl.l * 255)).ToString());
+            Text.Font = GameFont.Small;
+            if (ModsConfig.IdeologyActive && favoriteColor.HasValue && Widgets.ButtonText(new Rect(0f, 185f, 125f, 20f), "ChangeDresser.FavoriteColor".Translate()))
+            {
+                rgb.r = favoriteColor.Value.r;
+                rgb.g = favoriteColor.Value.g;
+                rgb.b = favoriteColor.Value.b;
+            }
             GUI.EndGroup();
 
             bool skipRGB = false;
@@ -237,14 +250,14 @@ namespace ChangeDresser.UI.Util
             to.a = from.a;
         }
 
-        public static void AddColorSelectorV2Widget(float left, float top, float width, List<SelectionColorWidgetDTO> selectionDtos, ColorPresetsDTO presetsDto)
+        public static void AddColorSelectorV2Widget(float left, float top, float width, List<SelectionColorWidgetDTO> selectionDtos, ColorPresetsDTO presetsDto, Color? favoriteColor)
         {
             Text.Font = GameFont.Medium;
-            
+
             GUI.BeginGroup(new Rect(left, top, width, 225));
 
             GUI.color = Color.white;
-            
+
             Color originalRgb = Color.white;
             Color rgb = Color.white;
             if (presetsDto.HasSelected())
@@ -259,13 +272,19 @@ namespace ChangeDresser.UI.Util
             Color.RGBToHSV(rgb, out hsl.h, out hsl.s, out hsl.l);
             Copy(rgb, originalRgb);
             HSL originalHsl = new HSL(hsl);
-            
+
             rgb.r = Widgets.HorizontalSlider(new Rect(0f, 20f, 125f, 20f), rgb.r, 0, 1, false, null, "ChangeDresser.R".Translate(), ((int)(rgb.r * 255)).ToString());
-            rgb.g = Widgets.HorizontalSlider(new Rect(0f, 55f, 125f, 20f), rgb.g, 0, 1, false, null, "ChangeDresser.G".Translate(), ((int)(rgb.g * 255)).ToString());
-            rgb.b = Widgets.HorizontalSlider(new Rect(0f, 90f, 125f, 20f), rgb.b, 0, 1, false, null, "ChangeDresser.B".Translate(), ((int)(rgb.b * 255)).ToString());
-            hsl.h = Widgets.HorizontalSlider(new Rect(0f, 125f, 125f, 20f), hsl.h, 0, 1, false, null, "ChangeDresser.H".Translate(), ((int)(hsl.h * 255)).ToString());
-            hsl.s = Widgets.HorizontalSlider(new Rect(0f, 160f, 125f, 20f), hsl.s, 0, 1, false, null, "ChangeDresser.S".Translate(), ((int)(hsl.s * 255)).ToString());
-            hsl.l = Widgets.HorizontalSlider(new Rect(0f, 195f, 125f, 20f), hsl.l, 0, 1, false, null, "ChangeDresser.L".Translate(), ((int)(hsl.l * 255)).ToString());
+            rgb.g = Widgets.HorizontalSlider(new Rect(0f, 50f, 125f, 20f), rgb.g, 0, 1, false, null, "ChangeDresser.G".Translate(), ((int)(rgb.g * 255)).ToString());
+            rgb.b = Widgets.HorizontalSlider(new Rect(0f, 80f, 125f, 20f), rgb.b, 0, 1, false, null, "ChangeDresser.B".Translate(), ((int)(rgb.b * 255)).ToString());
+            hsl.h = Widgets.HorizontalSlider(new Rect(0f, 110f, 125f, 20f), hsl.h, 0, 1, false, null, "ChangeDresser.H".Translate(), ((int)(hsl.h * 255)).ToString());
+            hsl.s = Widgets.HorizontalSlider(new Rect(0f, 140f, 125f, 20f), hsl.s, 0, 1, false, null, "ChangeDresser.S".Translate(), ((int)(hsl.s * 255)).ToString());
+            hsl.l = Widgets.HorizontalSlider(new Rect(0f, 170f, 125f, 20f), hsl.l, 0, 1, false, null, "ChangeDresser.L".Translate(), ((int)(hsl.l * 255)).ToString());
+            if (ModsConfig.IdeologyActive && favoriteColor.HasValue && Widgets.ButtonText(new Rect(0f, 200f, 125f, 20f), "ChangeDresser.FavoriteColor".Translate()))
+            {
+                rgb.r = favoriteColor.Value.r;
+                rgb.g = favoriteColor.Value.g;
+                rgb.b = favoriteColor.Value.b;
+            }
 
             bool skipRGB = false;
             float l = 150f;
@@ -482,7 +501,7 @@ namespace ChangeDresser.UI.Util
             Text.Anchor = TextAnchor.UpperLeft;
         }
 
-        public static void AddAppararelColorSelectionWidget(float left, float top, float width, ApparelColorSelectionsContainer apparelSelectionsContainer, ClearColorLayers clearColorLayers)
+        public static void AddAppararelColorSelectionWidget(float left, float top, float width, ApparelColorSelectionsContainer apparelSelectionsContainer, ClearColorLayers clearColorLayers, Color? favoriteColor)
         {
             Text.Anchor = TextAnchor.MiddleCenter;
             if (apparelSelectionsContainer.Count == 0)
@@ -561,14 +580,13 @@ namespace ChangeDresser.UI.Util
                 }
                 else
                 {*/
-                AddColorSelectorWidget(left, top + apparelListRect.height + 10f, width, apparelSelectionsContainer.SelectedApparel, apparelSelectionsContainer.ColorPresetsDTO);
+                AddColorSelectorWidget(left, top + apparelListRect.height + 10f, width, apparelSelectionsContainer.SelectedApparel, apparelSelectionsContainer.ColorPresetsDTO, favoriteColor);
                 //}
             }
             Text.Anchor = TextAnchor.UpperLeft;
         }
 
-        public static void AddAppararelColorByLayerSelectionWidget(
-            float left, float top, float width, ApparelLayerSelectionsContainer layerSelectionsContainer, ClearColorLayers clearColorLayers)
+        public static void AddAppararelColorByLayerSelectionWidget(float left, float top, float width, ApparelLayerSelectionsContainer layerSelectionsContainer, ClearColorLayers clearColorLayers, Color? favoriteColor)
         {
             Text.Anchor = TextAnchor.MiddleCenter;
             if (layerSelectionsContainer.Count == 0)
@@ -654,7 +672,7 @@ namespace ChangeDresser.UI.Util
                 }
                 else
                 {*/
-                AddColorSelectorWidget(left, top + apparelListRect.height + 10f, width, layerSelectionsContainer.SelectedApparel, layerSelectionsContainer.ColorPresetsDTO);
+                AddColorSelectorWidget(left, top + apparelListRect.height + 10f, width, layerSelectionsContainer.SelectedApparel, layerSelectionsContainer.ColorPresetsDTO, favoriteColor);
                 //}
             }
             Text.Anchor = TextAnchor.UpperLeft;

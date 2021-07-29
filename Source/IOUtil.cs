@@ -8,7 +8,7 @@ using Verse;
 
 namespace ChangeDresser
 {
-    public enum ColorPresetType { Apparel, Hair };
+    public enum ColorPresetType { Apparel, Hair, FavoriteColor };
     static class IOUtil
     {
         public static ColorPresetsDTO LoadColorPresets(ColorPresetType type)

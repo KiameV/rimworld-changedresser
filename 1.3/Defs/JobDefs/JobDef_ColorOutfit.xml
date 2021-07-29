@@ -40,4 +40,9 @@
     <driverClass>ChangeDresser.DresserJobDriver.JobDriver_ChangeBodyAlienColor</driverClass>
     <reportString>Change alien body color.</reportString>
   </JobDef>
+  <JobDef>
+    <defName>ChangeFavoriteColor</defName>
+    <driverClass>ChangeDresser.DresserJobDriver.JobDriver_ChangeFavoriteColor</driverClass>
+    <reportString>Change favorite color.</reportString>
+  </JobDef>
 </Defs>
