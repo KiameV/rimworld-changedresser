@@ -108,7 +108,7 @@ namespace ChangeDresser.UI.DTO
                         }
                         else
                         {
-                            base.HairStyleSelectionDto = new HairStyleSelectionDTO(this.Pawn.story.hairDef, this.Pawn.gender);
+                            base.HairStyleSelectionDto = new HairStyleSelectionDTO(this.Pawn.story.hairDef, this.Pawn.gender, Settings.ShareHairAcrossGenders);
                         }
                     }
                     else

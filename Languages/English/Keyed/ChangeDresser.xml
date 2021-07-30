@@ -1,5 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
+	<!-- New for 1.3 -->
+	<ChangeDresser.FavoriteColor>Favorite Color</ChangeDresser.FavoriteColor>
+	<ChangeDresser.ChangeFavoriteColor>Change Favorite Color</ChangeDresser.ChangeFavoriteColor>
+	<ChangeDresser.BeardStyle>Beard Style</ChangeDresser.BeardStyle>
+	
 	<!-- Window Labels -->
 	<ChangeDresser.DresserLabel>Dresser</ChangeDresser.DresserLabel>
 	<ChangeDresser.ApparelStorageLabel>Apparel Storage</ChangeDresser.ApparelStorageLabel>
@@ -128,7 +133,4 @@
 
 	<ChangeDresser.All>All</ChangeDresser.All>
 	<ChangeDresser.Name>Name</ChangeDresser.Name>
-	
-	<ChangeDresser.FavoriteColor>Favorite Color</ChangeDresser.FavoriteColor>
-	<ChangeDresser.ChangeFavoriteColor>Change Favorite Color</ChangeDresser.ChangeFavoriteColor>
 </LanguageData>

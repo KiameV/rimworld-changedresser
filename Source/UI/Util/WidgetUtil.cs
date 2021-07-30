@@ -13,6 +13,8 @@ namespace ChangeDresser.UI.Util
     delegate void UpdatePawnListener(object sender, object value);
     delegate void ClearColorLayers();
 
+    enum SelectedStyle { Hair, Beard };
+
     [StaticConstructorOnStartup]
     static class WidgetUtil
     {
@@ -343,23 +345,35 @@ namespace ChangeDresser.UI.Util
             Text.Anchor = TextAnchor.UpperLeft;
         }
 
-        public static void AddListBoxWidget(float left, float top, float width, float height, string label, HairStyleSelectionDTO hairStyleSelectionDto)
+        public static void AddListBoxWidget(
+            float left, float top, float width, float height, 
+            ref SelectedStyle selectedStyle,
+            string hairLabel, AStyleSelectionDTO hsDto,
+            string beardLabel, AStyleSelectionDTO bsDto)
         {
             Rect rect = new Rect(left, top, width, height);
             GUI.BeginGroup(rect);
             GUI.color = Color.white;
-            Text.Font = GameFont.Medium;
+            Text.Font = GameFont.Small;
+            AStyleSelectionDTO dto = (selectedStyle == SelectedStyle.Hair) ? hsDto : bsDto;
+
             left = 0;
-            if (label != null)
+            bool isHair = selectedStyle == SelectedStyle.Hair;
+            if (Widgets.ButtonText(new Rect(left + (isHair ? 5 : 0), 0, 85, SelectionRowHeight), hairLabel, !isHair, !isHair, !isHair))
             {
-                //Text.Anchor = TextAnchor.MiddleLeft;
-                GUI.Label(new Rect(left, 0, 75, SelectionRowHeight), label, MiddleCenter);
-                left = 80;
+                selectedStyle = SelectedStyle.Hair;
+                dto = hsDto;
             }
+            if (Widgets.ButtonText(new Rect(left + (!isHair ? 5 : 0), SelectionRowHeight + 5, 85, SelectionRowHeight), beardLabel, isHair, isHair, isHair))
+            {
+                selectedStyle = SelectedStyle.Beard;
+                dto = bsDto;
+            }
+            left = 80;
 
             const float cellHeight = 30f;
             Rect listRect = new Rect(left, 0f, width - 100f, height);
-            Rect scrollRect = new Rect(0f, 0f, width - 116f, hairStyleSelectionDto.Count * cellHeight);
+            Rect scrollRect = new Rect(0f, 0f, width - 116f, dto.Count * cellHeight);
 
             GUI.BeginGroup(listRect);
             hairScrollPos = GUI.BeginScrollView(new Rect(GenUI.AtZero(listRect)), hairScrollPos, scrollRect);
@@ -369,17 +383,17 @@ namespace ChangeDresser.UI.Util
             Text.Anchor = TextAnchor.MiddleCenter;
 
             bool isMouseOverAnything = false;
-            for (int i = 0; i < hairStyleSelectionDto.Count; ++i)
+            for (int i = 0; i < dto.Count; ++i)
             {
-                HairDef hairDef = hairStyleSelectionDto[i];
+                var styleDef = dto[i];
                 
                 Rect textRect = new Rect(45f, cellHeight * i, scrollRect.width - 90f, cellHeight);
                 bool drawMouseOver = false;
-                Widgets.Label(textRect, new GUIContent(hairDef.label));
+                Widgets.Label(textRect, new GUIContent(styleDef.label));
                 if (Widgets.ButtonInvisible(textRect, false))
                 {
                     isMouseOverAnything = true;
-                    hairStyleSelectionDto.Index = i;
+                    dto.Index = i;
                 }
                 else if (Mouse.IsOver(textRect))
                 {
@@ -389,11 +403,11 @@ namespace ChangeDresser.UI.Util
                     if (pos.y > 200 && pos.y < 440)
                     {
                         isMouseOverAnything = true;
-                        hairStyleSelectionDto.MouseOverSelection = hairDef;
+                        dto.MouseOverSelection = styleDef;
                     }
                 }
 
-                if (hairStyleSelectionDto.Index == i)
+                if (dto.Index == i)
                 {
                     Widgets.DrawHighlight(textRect);
                 }
@@ -405,7 +419,7 @@ namespace ChangeDresser.UI.Util
 
             if (!isMouseOverAnything)
             {
-                hairStyleSelectionDto.MouseOverSelection = null;
+                dto.MouseOverSelection = null;
             }
 
             GUI.EndScrollView();

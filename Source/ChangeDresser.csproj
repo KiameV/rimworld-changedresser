@@ -119,7 +119,7 @@
     <Compile Include="UI\DTO\SelectionWidgetDTOs\EditorTypeSelectionDTO.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\GenderSelectionDTO.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\HairColorSelectionDTO.cs" />
-    <Compile Include="UI\DTO\SelectionWidgetDTOs\HairStyleSelectionDTO.cs" />
+    <Compile Include="UI\DTO\SelectionWidgetDTOs\AStyleSelectionDTO.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\HeadTypeSelectionDTO.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\PawnSelectionWidgetDTO.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\SelectionColorWidgetDTO.cs" />

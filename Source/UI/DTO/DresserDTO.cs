@@ -47,7 +47,9 @@ namespace ChangeDresser.UI.DTO
 
         public BodyTypeSelectionDTO BodyTypeSelectionDto { get; protected set; }
         public GenderSelectionDTO GenderSelectionDto { get; protected set; }
+        public SelectedStyle SelectedStyle = SelectedStyle.Hair;
         public HairStyleSelectionDTO HairStyleSelectionDto { get; protected set; }
+        public BeardStyleSelectionDTO BeardStyleSelectionDto { get; protected set; }
         public HairColorSelectionDTO HairColorSelectionDto { get; protected set; }
         public FavoriteColorSelectionDTO FavoriteColorDTO { get; protected set; }
         public HairColorSelectionDTO GradientHairColorSelectionDto { get; protected set; }
@@ -86,6 +88,7 @@ namespace ChangeDresser.UI.DTO
             this.GenderSelectionDto = null;
             this.HairStyleSelectionDto = null;
             this.HairColorSelectionDto = null;
+            this.BeardStyleSelectionDto = null;
             this.GradientHairColorSelectionDto = null;
             this.SkinColorSliderDto = null;
             this.HeadTypeSelectionDto = null;
@@ -130,12 +133,14 @@ namespace ChangeDresser.UI.DTO
                     this.BodyTypeSelectionDto.Gender = (Gender)this.GenderSelectionDto.SelectedItem;
                     this.HairStyleSelectionDto.Gender = (Gender)this.GenderSelectionDto.SelectedItem;
                     this.HeadTypeSelectionDto.Gender = (Gender)this.GenderSelectionDto.SelectedItem;
+                    this.BeardStyleSelectionDto.Gender = (Gender)this.GenderSelectionDto.SelectedItem;
                 };
             }
 
             if (this.EditorTypeSelectionDto.Contains(CurrentEditorEnum.ChangeDresserHair))
             {
-                this.HairStyleSelectionDto = new HairStyleSelectionDTO(this.Pawn.story.hairDef, this.Pawn.gender);
+                this.HairStyleSelectionDto = new HairStyleSelectionDTO(this.Pawn.story.hairDef, this.Pawn.gender, Settings.ShareHairAcrossGenders);
+                this.BeardStyleSelectionDto = new BeardStyleSelectionDTO(this.Pawn.style.beardDef, this.Pawn.gender);
 
                 ColorPresetsDTO hairColorPresets = IOUtil.LoadColorPresets(ColorPresetType.Hair);
                 this.HairColorSelectionDto = new HairColorSelectionDTO(this.Pawn.story.hairColor, hairColorPresets);
@@ -190,6 +195,8 @@ namespace ChangeDresser.UI.DTO
                 this.FavoriteColorDTO.UpdatePawnListener += updatePawn;
             if (this.HairStyleSelectionDto != null)
                 this.HairStyleSelectionDto.UpdatePawnListener += updatePawn;
+            if (this.BeardStyleSelectionDto != null)
+                this.BeardStyleSelectionDto.UpdatePawnListener += updatePawn;
             if (this.HairColorSelectionDto != null)
                 this.HairColorSelectionDto.UpdatePawnListener += updatePawn;
             if (this.GradientHairColorSelectionDto != null)
@@ -218,6 +225,7 @@ namespace ChangeDresser.UI.DTO
             this.GenderSelectionDto?.ResetToDefault();
             this.BodyTypeSelectionDto?.ResetToDefault();
             this.HairStyleSelectionDto?.ResetToDefault();
+            this.BeardStyleSelectionDto?.ResetToDefault();
             this.FavoriteColorDTO?.ResetToDefault();
             this.HairColorSelectionDto?.ResetToDefault();
             this.GradientHairColorSelectionDto?.ResetToDefault();

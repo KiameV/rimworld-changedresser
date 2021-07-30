@@ -62,6 +62,7 @@ namespace ChangeDresser.UI
             Prefs.HatsOnlyOnMap = this.originalHatsHideSetting;
             this.dresserDto.Pawn.Drawer.renderer.graphics.ResolveAllGraphics();
             PortraitsCache.SetDirty(this.dresserDto.Pawn);
+            GlobalTextureAtlasManager.TryMarkPawnFrameSetDirty(this.dresserDto.Pawn);
         }
         
         public override void DoWindowContents(Rect inRect)
@@ -168,7 +169,10 @@ namespace ChangeDresser.UI
                                 height += 250;
                             }*/
 
-                            WidgetUtil.AddListBoxWidget(editorLeft, editorTop, editorWidth, height, "ChangeDresser.HairStyle".Translate() + ":", this.dresserDto.HairStyleSelectionDto);
+                            WidgetUtil.AddListBoxWidget(editorLeft, editorTop, editorWidth, height, 
+                                ref this.dresserDto.SelectedStyle,
+                                "ChangeDresser.HairStyle".Translate(), this.dresserDto.HairStyleSelectionDto,
+                                "ChangeDresser.BeardStyle".Translate(), this.dresserDto.BeardStyleSelectionDto);
 
                             //if (showHairColor)
                             //{
@@ -404,6 +408,8 @@ namespace ChangeDresser.UI
                 {
                     this.ResetToDefault();
                 }
+                PortraitsCache.SetDirty(this.dresserDto.Pawn);
+                GlobalTextureAtlasManager.TryMarkPawnFrameSetDirty(this.dresserDto.Pawn);
             }
             catch (Exception e)
             {
@@ -454,7 +460,7 @@ namespace ChangeDresser.UI
                 }
                 else if (sender is BodyTypeSelectionDTO)
                 {
-                    pawn.story.bodyType = (BodyTypeDef)value;
+                    pawn.story.bodyType = value as BodyTypeDef;
                 }
                 else if (sender is GenderSelectionDTO)
                 {
@@ -473,7 +479,11 @@ namespace ChangeDresser.UI
                 }
                 else if (sender is HairStyleSelectionDTO)
                 {
-                    pawn.story.hairDef = (HairDef)value;
+                    pawn.story.hairDef = value as HairDef;
+                }
+                else if (sender is BeardStyleSelectionDTO)
+                {
+                    pawn.style.beardDef = value as BeardDef;
                 }
                 else if (sender is HeadTypeSelectionDTO)
                 {
