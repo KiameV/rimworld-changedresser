@@ -170,7 +170,7 @@ namespace ChangeDresser.UI.Util
             hsl.s = Widgets.HorizontalSlider(new Rect(0, 135, 125f, 20f), hsl.s, 0, 1, false, null, "ChangeDresser.S".Translate(), ((int)(hsl.s * 255)).ToString());
             hsl.l = Widgets.HorizontalSlider(new Rect(0, 165, 125f, 20f), hsl.l, 0, 1, false, null, "ChangeDresser.L".Translate(), ((int)(hsl.l * 255)).ToString());
             Text.Font = GameFont.Small;
-            if (ModsConfig.IdeologyActive && favoriteColor.HasValue && Widgets.ButtonText(new Rect(0f, 185f, 125f, 20f), "ChangeDresser.FavoriteColor".Translate()))
+            if (ModsConfig.IdeologyActive && favoriteColor.HasValue && Widgets.ButtonText(new Rect(0f, 185f, 125f, 20f), "ChangeDresserFavoriteColor".Translate()))
             {
                 rgb.r = favoriteColor.Value.r;
                 rgb.g = favoriteColor.Value.g;
@@ -281,7 +281,7 @@ namespace ChangeDresser.UI.Util
             hsl.h = Widgets.HorizontalSlider(new Rect(0f, 110f, 125f, 20f), hsl.h, 0, 1, false, null, "ChangeDresser.H".Translate(), ((int)(hsl.h * 255)).ToString());
             hsl.s = Widgets.HorizontalSlider(new Rect(0f, 140f, 125f, 20f), hsl.s, 0, 1, false, null, "ChangeDresser.S".Translate(), ((int)(hsl.s * 255)).ToString());
             hsl.l = Widgets.HorizontalSlider(new Rect(0f, 170f, 125f, 20f), hsl.l, 0, 1, false, null, "ChangeDresser.L".Translate(), ((int)(hsl.l * 255)).ToString());
-            if (ModsConfig.IdeologyActive && favoriteColor.HasValue && Widgets.ButtonText(new Rect(0f, 200f, 125f, 20f), "ChangeDresser.FavoriteColor".Translate()))
+            if (ModsConfig.IdeologyActive && favoriteColor.HasValue && Widgets.ButtonText(new Rect(0f, 200f, 125f, 20f), "ChangeDresserFavoriteColor".Translate()))
             {
                 rgb.r = favoriteColor.Value.r;
                 rgb.g = favoriteColor.Value.g;

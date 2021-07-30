@@ -28,6 +28,9 @@ namespace ChangeDresser
                 }
                 yield return CurrentEditorEnum.ChangeDresserBody;
             }
+
+            if (ModsConfig.IdeologyActive)
+                yield return CurrentEditorEnum.ChangeDresserFavoriteColor;
         }
 
         [DebuggerHidden]
@@ -87,6 +90,18 @@ namespace ChangeDresser
                             pawn.jobs.TryTakeOrderedJob(job);
                         }));
                 }
+            }
+
+            if (ModsConfig.IdeologyActive)
+            {
+                list.Add(new FloatMenuOption(
+                    "ChangeDresser.ChangeFavoriteColor".Translate(),
+                    delegate
+                    {
+                        Job job = new Job(JobDefOfCD.ChangeFavoriteColor, this);
+                        pawn.jobs.TryTakeOrderedJob(job);
+                    }));
+
             }
             return list;
         }

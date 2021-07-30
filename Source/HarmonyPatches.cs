@@ -331,7 +331,7 @@ namespace ChangeDresser
                         }
                         if (ModsConfig.IdeologyActive)
                         {
-                            options.Add(new FloatMenuOption("ChangeDresser.FavoriteColor".Translate(), delegate ()
+                            options.Add(new FloatMenuOption("ChangeDresserFavoriteColor".Translate(), delegate ()
                             {
                                 Find.WindowStack.Add(new DresserUI(DresserDtoFactory.Create(__instance, null, CurrentEditorEnum.ChangeDresserFavoriteColor)));
                             }));

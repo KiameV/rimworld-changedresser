@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
 	<!-- New for 1.3 -->
-	<ChangeDresser.FavoriteColor>Favorite Color</ChangeDresser.FavoriteColor>
+	<ChangeDresserFavoriteColor>Favorite Color</ChangeDresserFavoriteColor>
 	<ChangeDresser.ChangeFavoriteColor>Change Favorite Color</ChangeDresser.ChangeFavoriteColor>
 	<ChangeDresser.BeardStyle>Beard Style</ChangeDresser.BeardStyle>
 	
