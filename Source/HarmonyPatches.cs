@@ -977,6 +977,17 @@ namespace ChangeDresser
             }
         }
     }
+
+    [HarmonyPatch(typeof(MoveColonyUtility), "MoveColonyAndReset")]
+    static class Patch_MoveColonyUtility_MoveColonyAndReset
+    {
+        [HarmonyPriority(Priority.First)]
+        static void Prefix()
+        {
+            WorldComp.ClearAll();
+        }
+    }
+
     /*
     [HarmonyPatch(typeof(JobGiver_OptimizeApparel), "ApparelScoreRaw")]
     static class Patch_JobGiver_OptimizeApparel_ApparelScoreRaw

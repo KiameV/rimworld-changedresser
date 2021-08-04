@@ -131,7 +131,16 @@ namespace ChangeDresser
             }
         }
 
-		public static void CleanupCustomOutfits()
+        public static void ClearAll()
+        {
+            DressersToUse.Clear();
+            PawnOutfits.Clear();
+            OutfitsForBattle.Clear();
+            ApparelColorTracker.Clear();
+
+        }
+
+        public static void CleanupCustomOutfits()
 		{
 			foreach (PawnOutfitTracker t in PawnOutfits.Values)
 				t.Clean();
