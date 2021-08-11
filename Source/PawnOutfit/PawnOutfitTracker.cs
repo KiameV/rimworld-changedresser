@@ -403,29 +403,17 @@ namespace ChangeDresser
             Log.Warning("Start PawnOutfitTracker.ApplyApparelColor (Apparel: " + a.Label + ")");
 #endif
             int layer = Util.ToInt(this.GetOuterMostLayer(a));
-            if (this.ApparelColors != null && this.ApparelColors.Count > layer)
+            if (this.ApparelColors != null)
             {
-                SlotColor slotColor = this.ApparelColors[layer];
-                //a.DrawColor = slotColor.Color;
-                CompColorableUtility.SetColor(a, slotColor.Color, true);
-                /*foreach (ApparelLayerDef layer in a.def.apparel.layers)
+                if (this.ApparelColors.Count > layer)
                 {
-                    SlotColor slotColor = this.ApparelColors[(int)layer];
-                    if (slotColor.IsAssigned)
-                    {
-                        a.DrawColor = slotColor.Color;
-#if DEBUG || DEBUG_APPAREL_COLOR
-                        Log.Warning("    Setting layer " + layer + " color to: " + slotColor.Color);
-#endif
-                        break;
-                    }
-#if DEBUG || DEBUG_APPAREL_COLOR
-                    else
-                    {
-                        Log.Warning("    No color assigned for layer " + layer);
-                    }
-#endif
-                }*/
+                    SlotColor slotColor = this.ApparelColors[layer];
+                    CompColorableUtility.SetColor(a, slotColor.Color, true);
+                }
+                else if (this.ApparelColors.Count <= layer)
+                {
+                    Log.Warning($"[Change Dresser] unable to find top layer for apparel for layer " + this.GetOuterMostLayer(a).defName);
+                }
             }
 #if DEBUG || DEBUG_APPAREL_COLOR
             Log.Warning("End PawnOutfitTracker.ApplyApparelColor (Apparel: " + a.Label + ")");

@@ -48,7 +48,7 @@ namespace ChangeDresser.UI
 #if CUSTOM_OUTFIT_UI
             Log.Message("    Populate Selectable Pawns:");
 #endif
-            foreach (Pawn p in PawnsFinder.AllMapsCaravansAndTravelingTransportPods_Alive_Colonists)
+            foreach (Pawn p in PawnUtil.GetColonyPawns())
             {
 #if CUSTOM_OUTFIT_UI
                 Log.Message("        " + p.Name.ToStringShort + " " + p.Faction + " " + p.def.defName);

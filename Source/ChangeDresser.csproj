@@ -125,6 +125,7 @@
     <Compile Include="UI\DTO\SelectionWidgetDTOs\SelectionColorWidgetDTO.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\SliderWidgetDTO.cs" />
     <Compile Include="UI\Enums\CurrentEditorEnum.cs" />
+    <Compile Include="UI\GetPawnsUtil.cs" />
     <Compile Include="UI\StorageUI.cs" />
     <Compile Include="IOUtil.cs" />
     <Compile Include="UI\Util\HSL.cs" />

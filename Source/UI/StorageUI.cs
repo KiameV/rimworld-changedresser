@@ -73,7 +73,7 @@ namespace ChangeDresser.UI
             {
                 this.SelectionLabel = "TabPrisoner".Translate();
 
-                this.pawnSelections = new PawnSelectionWidgetDTO(new List<Pawn>(PawnsFinder.AllMaps_PrisonersOfColony));
+                this.pawnSelections = new PawnSelectionWidgetDTO(PawnUtil.GetPrisonerPawns());
                 if (!this.pawnSelections.SetSelectedPawn(this.Pawn))
                 {
                     Log.Error("unable to find prisoner " + this.Pawn.Name.ToStringShort);
@@ -83,15 +83,7 @@ namespace ChangeDresser.UI
             {
                 this.SelectionLabel = "";
 
-                List<Pawn> l = new List<Pawn>();
-                foreach (Pawn p in PawnsFinder.AllMaps_FreeColonistsSpawned)
-                {
-                    if (p.Faction == Faction.OfPlayer && p.RaceProps.Humanlike)
-                    {
-                        l.Add(p);
-                    }
-                }
-                this.pawnSelections = new PawnSelectionWidgetDTO(l);
+                this.pawnSelections = new PawnSelectionWidgetDTO(PawnUtil.GetColonyPawns());
                 if (!this.pawnSelections.SetSelectedPawn(this.Pawn))
                 {
                     Log.Error("unable to find colonist " + this.Pawn.Name.ToStringShort);

@@ -24,14 +24,16 @@ namespace ChangeDresser.UI
             this.forcePause = true;
             this.closeOnClickedOutside = false;
             
-            foreach (Pawn p in PawnsFinder.AllMapsCaravansAndTravelingTransportPods_Alive_Colonists)
+            foreach (Pawn p in PawnUtil.GetColonyPawns())
             {
                 if (p.Faction == Faction.OfPlayer && p.def.race.Humanlike && p.apparel?.LockedApparel?.Count == 0)
                 {
                     if (!WorldComp.PawnOutfits.ContainsKey(p))
                     {
-                        PawnOutfitTracker po = new PawnOutfitTracker();
-                        po.Pawn = p;
+                        PawnOutfitTracker po = new PawnOutfitTracker
+                        {
+                            Pawn = p
+                        };
                         Outfit currentOutfit = p.outfits.CurrentOutfit;
                         if (currentOutfit != null)
                         {
@@ -47,7 +49,7 @@ namespace ChangeDresser.UI
         {
             get
             {
-                return new Vector2(650f, 600f);
+                return new Vector2(750f, 650f);
             }
         }
 
@@ -58,6 +60,7 @@ namespace ChangeDresser.UI
                 const int NAME_WIDTH = 100;
                 const int CHECKBOX_WIDTH = 100;
                 const int HEIGHT = 35;
+                const int HEIGHT_PAWN_ROW = 65;
                 const int X_BUFFER = 10;
                 const int Y_BUFFER = 5;
 
@@ -135,11 +138,11 @@ namespace ChangeDresser.UI
                 int py = 0;
                 foreach (PawnOutfitTracker po in WorldComp.PawnOutfits.Values)
                 {
-                    Widgets.Label(new Rect(x, py, NAME_WIDTH, HEIGHT), po.Pawn.Name.ToStringShort);
-                    py += HEIGHT + Y_BUFFER;
+                    Widgets.Label(new Rect(x, py, NAME_WIDTH, HEIGHT_PAWN_ROW), PawnUtil.GetLabelAndStatsFor(po.Pawn));
+                    py += HEIGHT_PAWN_ROW + Y_BUFFER;
                 }
 				this.PreviousY = py;
-                Widgets.DrawLineVertical(NAME_WIDTH + 2, y, (HEIGHT + Y_BUFFER) * WorldComp.PawnOutfits.Values.Count);
+                Widgets.DrawLineVertical(NAME_WIDTH + 2, y, (HEIGHT_PAWN_ROW + Y_BUFFER) * WorldComp.PawnOutfits.Values.Count);
                 GUI.EndScrollView();
 
                 int mainScrollXMin = NAME_WIDTH + X_BUFFER + 4;
@@ -150,14 +153,14 @@ namespace ChangeDresser.UI
 
 				// Table of pawns and assigned outfits
 				py = 0;
-				foreach (PawnOutfitTracker po in WorldComp.PawnOutfits.Values)
+                foreach (PawnOutfitTracker po in WorldComp.PawnOutfits.Values)
                 {
                     x = 0;
                     foreach (Outfit o in allOutfits)
                     {
                         bool assign = po.Contains(o);
                         bool assignNoChange = assign;
-                        Widgets.Checkbox(x + 10, py, ref assign);
+                        Widgets.Checkbox(x + 10, py + 15, ref assign);
                         x += CHECKBOX_WIDTH + X_BUFFER;
 
                         if (assign != assignNoChange)
@@ -174,7 +177,7 @@ namespace ChangeDresser.UI
                         }
                         */
                     }
-                    py += HEIGHT + Y_BUFFER;
+                    py += HEIGHT_PAWN_ROW + Y_BUFFER;
                 }
 				
 				GUI.EndScrollView();
