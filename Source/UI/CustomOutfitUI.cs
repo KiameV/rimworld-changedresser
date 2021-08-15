@@ -10,7 +10,7 @@ namespace ChangeDresser.UI
     public class CustomOutfitUI : Window
     {
         //public enum ApparelFromEnum { Pawn, Storage };
-        private readonly Building_Dresser Dresser;
+        private Building_Dresser Dresser;
         private Pawn pawn = null;
         private PawnOutfitTracker outfitTracker = null;
         private CustomOutfit customOutfit;
@@ -19,8 +19,8 @@ namespace ChangeDresser.UI
         private Vector2 scrollPosLeft = new Vector2(0, 0);
         private Vector2 scrollPosRight = new Vector2(0, 0);
         private List<Pawn> selectablePawns = new List<Pawn>();
-        private List<Outfit> selectableOutfits = new List<Outfit>();
-        private List<Apparel> availableApparel = new List<Apparel>();
+        //--private List<Outfit> selectableOutfits = new List<Outfit>();
+        private Dictionary<string, Apparel> availableApparel = new Dictionary<string, Apparel>();
 
         private const int HEIGHT = 35;
         private const int X_BUFFER = 10;
@@ -30,12 +30,21 @@ namespace ChangeDresser.UI
         private CDApparelFilters apparelFilter = new CDApparelFilters();
         private Vector2 filterScrollPosition = new Vector2(0, 0);
 
-        public CustomOutfitUI(Building_Dresser dresser)
+        public CustomOutfitUI(Building_Dresser dresser = null, Pawn pawn = null)
         {
 #if CUSTOM_OUTFIT_UI
             Log.Warning("Begin CustomOutfitUI.CustomOutfitUI(Dresser: " + dresser.Label + ")");
 #endif
             this.Dresser = dresser;
+            this.pawn = pawn;
+            if (pawn != null)
+            {
+                if (!WorldComp.PawnOutfits.TryGetValue(this.pawn, out outfitTracker))
+                {
+                    outfitTracker = new PawnOutfitTracker(this.pawn);
+                    WorldComp.PawnOutfits.Add(this.pawn, outfitTracker);
+                }
+            }
 
             this.closeOnClickedOutside = false;
             this.doCloseButton = false;
@@ -48,20 +57,6 @@ namespace ChangeDresser.UI
 #if CUSTOM_OUTFIT_UI
             Log.Message("    Populate Selectable Pawns:");
 #endif
-            foreach (Pawn p in PawnsFinder.AllMapsCaravansAndTravelingTransportPods_Alive_Colonists)
-            {
-#if CUSTOM_OUTFIT_UI
-                Log.Message("        " + p.Name.ToStringShort + " " + p.Faction + " " + p.def.defName);
-#endif
-                if (p.Faction == Faction.OfPlayer && p.def.race.Humanlike && p.apparel?.LockedApparel?.Count == 0)
-                {
-#if CUSTOM_OUTFIT_UI
-                    Log.Message("            -- Added");
-#endif
-                    selectablePawns.Add(p);
-                }
-            }
-
             this.UpdateAvailableApparel();
 
 #if CUSTOM_OUTFIT_UI
@@ -81,12 +76,33 @@ namespace ChangeDresser.UI
         {
             try
             {
-                Text.Font = GameFont.Small;
+                Text.Font = GameFont.Medium;
                 GUI.color = Color.white;
-                Widgets.Label(new Rect(0, 0, 200, 50), "ChangeDresser.CustomOutfits".Translate());
+                Widgets.Label(new Rect(0, 0, 200, 32), "ChangeDresser.CustomOutfits".Translate());
+                Text.Font = GameFont.Small;
+                if (Widgets.ButtonText(new Rect(225, 0, 250, 32), ((this.Dresser == null) ? (string)"ChangeDresser.All".Translate() : this.Dresser.Label)))
+                {
+                    List<FloatMenuOption> options = new List<FloatMenuOption>
+                    {
+                        new FloatMenuOption("ChangeDresser.All".Translate(), delegate ()
+                        {
+                            this.Dresser = null;
+                            this.UpdateAvailableApparel();
+                        })
+                    };
+                    foreach (Building_Dresser cd in WorldComp.DressersToUse)
+                    {
+                        options.Add(new FloatMenuOption(cd.Label, delegate ()
+                        {
+                            this.Dresser = cd;
+                            this.UpdateAvailableApparel();
+                        }));
+                    }
+                    Find.WindowStack.Add(new FloatMenu(options));
+                }
                 int y = HEIGHT + Y_BUFFER;
                 int x = 0;
-                
+
                 x = this.DrawPawnSelection(x, y);
                 x = this.DrawOutfitSelection(x, y);
                 // New Outfit button
@@ -110,7 +126,7 @@ namespace ChangeDresser.UI
 
                     y += HEIGHT + Y_BUFFER;
                 }
-                
+
                 float height = inRect.height - y;
                 height -= HEIGHT * 3;
                 height -= Y_BUFFER * 2;
@@ -127,8 +143,12 @@ namespace ChangeDresser.UI
                 Widgets.Label(new Rect(750, y, 100, 32), "Filter".Translate());
                 y += 40;
 
-                Widgets.Label(new Rect(775, y, 75, 32), "ChangeDresser.Name".Translate());
-                this.apparelFilter.Name = Widgets.TextField(new Rect(855, y - 3, 120, 32), this.apparelFilter.Name);
+                Widgets.Label(new Rect(775, y, 60, 32), "ChangeDresser.Name".Translate());
+                this.apparelFilter.Name = Widgets.TextField(new Rect(840, y - 3, 120, 32), this.apparelFilter.Name);
+                if (Widgets.ButtonText(new Rect(970, y, 32, 32), "X"))
+                {
+                    this.apparelFilter.Name = "";
+                }
                 y += 35;
 
                 if (Widgets.ButtonText(new Rect(775, y, 200, 32), this.apparelFilter.LayerString))
@@ -172,10 +192,11 @@ namespace ChangeDresser.UI
                 y += 35;
 
                 Listing_Standard ls = new Listing_Standard();
+                //ls.ColumnWidth = 200;
                 ls.Begin(new Rect(775, y, 216, inRect.height - y ));
                 Rect view = new Rect(0, 0, 200, 64 * this.apparelFilter.StatDefs.Count);
-                ls.BeginScrollView(
-                    new Rect(0, 0, 216, inRect.height - y ), ref filterScrollPosition, ref view);
+                Widgets.BeginScrollView(
+                    new Rect(0, 0, 216, inRect.height - y ), ref filterScrollPosition, view);
                 
                 ls.Label("HitPointsBasic".ToString() + " " + (int)this.apparelFilter.HP);
                 this.apparelFilter.HP = ls.Slider(this.apparelFilter.HP, 0, 100);
@@ -193,7 +214,7 @@ namespace ChangeDresser.UI
                     }
                 }
 
-                ls.EndScrollView(ref view);
+                Widgets.EndScrollView();
                 ls.End();
             }
             catch (Exception e)
@@ -211,7 +232,7 @@ namespace ChangeDresser.UI
 
             if (this.pawn != null && this.outfitTracker != null && this.customOutfit != null)
             {
-                this.outfitTracker.UpdateCustomApparel(this.Dresser);
+                this.outfitTracker.UpdateCustomApparel(this.Dresser ?? (Thing)this.pawn);
             }
         }
 
@@ -243,7 +264,7 @@ namespace ChangeDresser.UI
             if (Widgets.ButtonText(new Rect(halfMiddle - 50, y, 100, 30), "Delete".Translate()))
             {
                 if (this.outfitTracker.Remove(this.customOutfit))
-                    this.outfitTracker.UpdateCustomApparel(this.Dresser);
+                    this.outfitTracker.UpdateCustomApparel(this.Dresser ?? (Thing)this.pawn);
                 this.customOutfit = null;
             }
 
@@ -251,21 +272,34 @@ namespace ChangeDresser.UI
             if (Widgets.ButtonText(new Rect(middle - 50, y, 100, 30), "Save".Translate()))
             {
                 this.outfitTracker.AddOutfit(this.customOutfit);
-                this.outfitTracker.UpdateCustomApparel(this.Dresser);
+                this.outfitTracker.UpdateCustomApparel(this.Dresser ?? (Thing)this.pawn);
                 foreach(Apparel a in this.customOutfit.Apparel)
                 {
-                    if (!this.Dresser.RemoveNoDrop(a))
+                    if (this.Dresser != null)
                     {
+                        if (!this.Dresser.RemoveNoDrop(a))
+                        {
 #if CUSTOM_OUTFIT_UI
                         Log.Warning("CustomOutfitUI.DrawBottomButtons -- Save failed to removed [" + a.Label + "] from dresser");
 #endif
-                    }
+                        }
 #if CUSTOM_OUTFIT_UI
                     else
                     {
                         Log.Warning("CustomOutfitUI.DrawBottomButtons -- Save removed [" + a.Label + "] from dresser");
                     }
 #endif
+                    }
+                    else
+                    {
+                        foreach(var cd in WorldComp.DressersToUse)
+                        {
+                            if (cd.RemoveNoDrop(a))
+                            {
+                                break;
+                            }
+                        }
+                    }
                 }
                 this.customOutfit = null;
             }
@@ -273,7 +307,7 @@ namespace ChangeDresser.UI
             // Cancel
             if (Widgets.ButtonText(new Rect(middle + halfMiddle - 50, y, 100, 30), "ChangeDresser.Cancel".Translate()))
             {
-                this.outfitTracker.UpdateCustomApparel(this.Dresser);
+                this.outfitTracker.UpdateCustomApparel(this.Dresser ?? (Thing)this.pawn);
                 this.customOutfit = null;
             }
 #if TRACE && CUSTOM_OUTFIT_UI
@@ -281,6 +315,7 @@ namespace ChangeDresser.UI
 #endif
         }
 
+        private float lastAvailableY = 0f;
         private void DrawAvailableApparel(float x, float y, float width, float height)
         {
 #if TRACE && CUSTOM_OUTFIT_UI
@@ -292,20 +327,20 @@ namespace ChangeDresser.UI
             y += HEIGHT + Y_BUFFER;*/
             
             Rect apparelListRect = new Rect(x, y, width - 10, height);
-            Rect apparelScrollRect = new Rect(0f, 0f, apparelListRect.width - 16f, this.availableApparel.Count * CELL_HEIGHT);
+            Rect apparelScrollRect = new Rect(0f, 0f, apparelListRect.width - 16f, lastAvailableY);
+            lastAvailableY = 0f;
 
             GUI.BeginGroup(apparelListRect);
             this.scrollPosLeft = GUI.BeginScrollView(new Rect(GenUI.AtZero(apparelListRect)), this.scrollPosLeft, apparelScrollRect);
-            
-            for (int i = 0, count = 0; i < this.availableApparel.Count; ++i)
+
+            foreach (Apparel apparel in this.availableApparel?.Values)
             {
-                Apparel apparel = this.availableApparel[i];
                 //if (searchText.Trim().Length == 0 || 
                 //    apparel.Label.ToLower().Contains(searchText))
                 if (this.apparelFilter.IncludeAppareL(apparel))
                 {
-                    Rect rowRect = new Rect(0, 2f + count * CELL_HEIGHT, apparelListRect.width, CELL_HEIGHT);
-                    ++count;
+                    Rect rowRect = new Rect(0, lastAvailableY, apparelListRect.width, CELL_HEIGHT);
+
                     GUI.BeginGroup(rowRect);
 
                     Widgets.ThingIcon(new Rect(0f, 0f, CELL_HEIGHT, CELL_HEIGHT), apparel);
@@ -334,6 +369,7 @@ namespace ChangeDresser.UI
                         }
                     }
                     GUI.EndGroup();
+                    lastAvailableY += 2f + CELL_HEIGHT;
                 }
             }
             GUI.EndScrollView();
@@ -343,6 +379,7 @@ namespace ChangeDresser.UI
 #endif
         }
 
+        private float lastWornY = 0;
         private void DrawOutfitApparel(float x, int y, float width, float height)
         {
 #if TRACE && CUSTOM_OUTFIT_UI
@@ -354,16 +391,15 @@ namespace ChangeDresser.UI
                 y += HEIGHT + Y_BUFFER;
 
                 Rect apparelListRect = new Rect(x, y, width - 10, height);
-                Rect apparelScrollRect = new Rect(0f, 0f, apparelListRect.width - 16f, this.customOutfit.Apparel.Count * CELL_HEIGHT);
+                Rect apparelScrollRect = new Rect(0f, 0f, apparelListRect.width - 16f, lastWornY);
 
                 GUI.BeginGroup(apparelListRect);
                 this.scrollPosRight = GUI.BeginScrollView(new Rect(GenUI.AtZero(apparelListRect)), this.scrollPosRight, apparelScrollRect);
 
-                for (int i = 0; i < this.customOutfit.Apparel.Count; ++i)
+                lastWornY = 0;
+                foreach (Apparel apparel in this.customOutfit.Apparel)
                 {
-                    Apparel apparel = this.customOutfit.Apparel[i];
-                    Rect rowRect = new Rect(0, 2f + i * CELL_HEIGHT, apparelListRect.width, CELL_HEIGHT);
-                    GUI.BeginGroup(rowRect);
+                    GUI.BeginGroup(new Rect(0, lastWornY, apparelListRect.width, CELL_HEIGHT));
 
                     if (Widgets.ButtonImage(new Rect(5, 10, 20, 20), WidgetUtil.previousTexture))
                     {
@@ -378,10 +414,11 @@ namespace ChangeDresser.UI
                         Find.WindowStack.Add(new Dialog_InfoCard(apparel));
                     }
 
-                    Widgets.Label(new Rect(30 + CELL_HEIGHT + 45f, 0f, rowRect.width - CELL_HEIGHT - 45f, CELL_HEIGHT), apparel.Label);
+                    Widgets.Label(new Rect(30 + CELL_HEIGHT + 45f, 0f, apparelListRect.width - CELL_HEIGHT - 45f, CELL_HEIGHT), apparel.Label);
                     this.UpdateAvailableApparel();
 
                     GUI.EndGroup();
+                    lastWornY += 2f + CELL_HEIGHT;
                 }
                 GUI.EndScrollView();
                 GUI.EndGroup();
@@ -423,7 +460,7 @@ namespace ChangeDresser.UI
 #if TRACE && CUSTOM_OUTFIT_UI
             Log.Warning("Begin CustomOutfitUI.DrawPawnSelection " + x + " " + y);
 #endif
-            string label = (this.pawn != null) ? this.pawn.Name.ToStringShort : "Select Pawn";
+            string label = (this.pawn != null) ? this.pawn.Name.ToStringShort : (string)"ChangeDresser.SelectPawn".Translate();
 #if TRACE && CUSTOM_OUTFIT_UI
             Log.Message("    Label: " + label);
 #endif
@@ -433,6 +470,8 @@ namespace ChangeDresser.UI
 #if TRACE && CUSTOM_OUTFIT_UI
                 Log.Message("    selectablePawns Count: " + this.selectablePawns.Count);
 #endif
+                if (this.selectablePawns.Count == 0)
+                    selectablePawns.AddRange(PawnUtil.GetColonyPawns());
                 foreach (Pawn p in this.selectablePawns)
                 {
 #if TRACE && CUSTOM_OUTFIT_UI
@@ -455,6 +494,7 @@ namespace ChangeDresser.UI
                             outfitTracker = new PawnOutfitTracker(this.pawn);
                             WorldComp.PawnOutfits.Add(this.pawn, outfitTracker);
                         }
+                        this.UpdateAvailableApparel();
 #if CUSTOM_OUTFIT_UI
                         Log.Warning("End CustomOutfitUI.DrawAvailableApparel.Delegate");
 #endif
@@ -488,7 +528,7 @@ namespace ChangeDresser.UI
 #endif
                             if (this.customOutfit != null)
                             {
-                                this.outfitTracker.UpdateCustomApparel(this.Dresser);
+                                this.outfitTracker.UpdateCustomApparel(this.Dresser ?? (Thing)this.pawn);
                             }
                             this.customOutfit = o;
 #if CUSTOM_OUTFIT_UI
@@ -535,33 +575,45 @@ namespace ChangeDresser.UI
         public void UpdateAvailableApparel()
         {
             this.availableApparel.Clear();
-            if (this.pawn != null)
+            this.pawn?.apparel?.WornApparel?.ForEach(a =>
             {
-                this.availableApparel.AddRange(this.pawn.apparel.WornApparel);
-            }
-            if (this.outfitTracker != null)
-            {
+                if (a != null)
+                    this.availableApparel[a.ThingID] = a;
+            });
+
+            if (this.outfitTracker?.CustomApparel != null)
                 foreach (Apparel a in this.outfitTracker.CustomApparel)
-                {
-                    if (!this.availableApparel.Contains(a))
-                    {
-                        this.availableApparel.Add(a);
-                    }
-                }
+                    if (a != null)
+                        this.availableApparel[a.ThingID] = a;
+
+            if (this.Dresser?.Apparel != null)
+            {
+                foreach (Apparel a in this.Dresser.Apparel)
+                    if (a != null)
+                        this.availableApparel[a.ThingID] = a;
             }
-            this.availableApparel.AddRange(this.Dresser.Apparel);
+            else
+            {
+                foreach (var cd in WorldComp.DressersToUse)
+                    foreach (Apparel a in cd.Apparel)
+                        if (a != null)
+                            this.availableApparel[a.ThingID] = a;
+            }
         }
 
         private void AddApparelToOutfit(Apparel apparel)
         {
-            if (this.availableApparel.Remove(apparel))
-                this.customOutfit.Apparel.Add(apparel);
+            if (this.availableApparel.Remove(apparel.ThingID))
+                this.customOutfit.Add(apparel);
         }
 
         private void RemoveApparelFromOutfit(Apparel apparel)
         {
-            if (this.customOutfit.Apparel.Remove(apparel))
-                this.availableApparel.Add(apparel);
+            if (this.customOutfit.Remove(apparel))
+            {
+                this.pawn.apparel.Remove(apparel);
+                this.availableApparel[apparel.ThingID] = apparel;
+            }
         }
 
         private bool CanWear(Apparel apparel)

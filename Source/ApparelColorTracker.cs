@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using ChangeDresser.UI;
+using RimWorld;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
@@ -30,17 +31,14 @@ namespace ChangeDresser
                     this.colors = new Dictionary<Apparel, ApparelColor>();
                 }
 
-                foreach (Pawn p in PawnsFinder.AllMapsCaravansAndTravelingTransportPods_Alive_Colonists)
+                foreach (Pawn p in PawnUtil.GetColonyPawns())
                 {
-                    if (p.Faction == Faction.OfPlayer && p.def.race.Humanlike)
-                    {
 #if APPAREL_COLOR_TRACKER
                         Log.Message("    Pawn: " + p.Name.ToStringShort);
 #endif
-                        foreach (Apparel a in p.apparel.WornApparel)
-                        {
-                            this.PersistColor(a);
-                        }
+                    foreach (Apparel a in p.apparel?.WornApparel)
+                    {
+                        this.PersistColor(a);
                     }
                 }
             }

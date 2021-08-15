@@ -152,9 +152,8 @@ namespace ChangeDresser
                         this.BeingRepaird.HitPoints = this.BeingRepaird.MaxHitPoints;
                     }
 
-                    float generatedHeat = GenTemperature.ControlTemperatureTempChange(
-                        base.Position, base.Map, 10, float.MaxValue);
-                    this.GetRoomGroup().Temperature += generatedHeat;
+                    float generatedHeat = GenTemperature.ControlTemperatureTempChange(base.Position, base.Map, 10, float.MaxValue);
+                    this.GetRoom(RegionType.Set_All).Temperature += generatedHeat;
 
                     this.compPowerTrader.PowerOutput = -this.compPowerTrader.Props.basePowerConsumption;
                 }

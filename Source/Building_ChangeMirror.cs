@@ -8,10 +8,6 @@ namespace ChangeDresser
 {
     class Building_ChangeMirror : Building
     {
-        private JobDef changeApparelColorJobDef = DefDatabase<JobDef>.GetNamed("ChangeApparelColor", true);
-        private JobDef changeHairStyleJobDef = DefDatabase<JobDef>.GetNamed("ChangeHairStyle", true);
-        private JobDef changeBodyJobDef = DefDatabase<JobDef>.GetNamed("ChangeBody", true);
-        public readonly JobDef changeBodyAlienColor = DefDatabase<JobDef>.GetNamed("ChangeBodyAlienColor", true);
 
         public static IEnumerable<CurrentEditorEnum> GetSupportedEditors(bool isAlien)
         {
@@ -32,6 +28,9 @@ namespace ChangeDresser
                 }
                 yield return CurrentEditorEnum.ChangeDresserBody;
             }
+
+            if (ModsConfig.IdeologyActive)
+                yield return CurrentEditorEnum.ChangeDresserFavoriteColor;
         }
 
         [DebuggerHidden]
@@ -45,7 +44,7 @@ namespace ChangeDresser
                     "ChangeDresser.ChangeApparelColors".Translate(),
                     delegate
                     {
-                        Job job = new Job(this.changeApparelColorJobDef, this);
+                        Job job = new Job(JobDefOfCD.ChangeApparelColor, this);
                         pawn.jobs.TryTakeOrderedJob(job);
                     }));
             }
@@ -56,7 +55,7 @@ namespace ChangeDresser
                     "ChangeDresser.ChangeHair".Translate(),
                     delegate
                     {
-                        Job job = new Job(this.changeHairStyleJobDef, this);
+                        Job job = new Job(JobDefOfCD.ChangeHairStyle, this);
                         pawn.jobs.TryTakeOrderedJob(job);
                     }));
             }
@@ -67,7 +66,7 @@ namespace ChangeDresser
                     "ChangeDresser.ChangeBody".Translate(),
                     delegate
                     {
-                        Job job = new Job(this.changeBodyJobDef, this);
+                        Job job = new Job(JobDefOfCD.ChangeBody, this);
                         pawn.jobs.TryTakeOrderedJob(job);
                     }));
 
@@ -77,10 +76,32 @@ namespace ChangeDresser
                         "ChangeDresser.ChangeAlienBodyColor".Translate(),
                         delegate
                         {
-                            Job job = new Job(this.changeBodyAlienColor, this);
+                            Job job = new Job(JobDefOfCD.ChangeBodyAlienColor, this);
                             pawn.jobs.TryTakeOrderedJob(job);
                         }));
                 }
+                if (ModsConfig.IdeologyActive)
+                {
+                    list.Add(new FloatMenuOption(
+                        "ChangeDresser.ChangeFavoriteColor".Translate(),
+                        delegate
+                        {
+                            Job job = new Job(JobDefOfCD.ChangeFavoriteColor, this);
+                            pawn.jobs.TryTakeOrderedJob(job);
+                        }));
+                }
+            }
+
+            if (ModsConfig.IdeologyActive)
+            {
+                list.Add(new FloatMenuOption(
+                    "ChangeDresser.ChangeFavoriteColor".Translate(),
+                    delegate
+                    {
+                        Job job = new Job(JobDefOfCD.ChangeFavoriteColor, this);
+                        pawn.jobs.TryTakeOrderedJob(job);
+                    }));
+
             }
             return list;
         }

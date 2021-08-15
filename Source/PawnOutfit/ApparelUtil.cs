@@ -198,16 +198,18 @@ namespace ChangeDresser
 #if TRACE && BETTER_OUTFIT
                 Log.Message("        Keep Forced Apparel: " + Settings.KeepForcedApparel);
 #endif
+                List<Apparel> wornApparel = pawn.apparel.WornApparel;
+                List<float> cachedValues = new List<float>(wornApparel.Count);
                 if (Settings.KeepForcedApparel)
                 {
                     bool skipApparelType = false;
-                    List<Apparel> wornApparel = pawn.apparel.WornApparel;
-                    for (int i = 0; i < wornApparel.Count; i++)
+                    foreach (Apparel a in wornApparel)
                     {
+                        cachedValues.Add(JobGiver_OptimizeApparel.ApparelScoreRaw(pawn, a));
                         try
                         {
-                            if (!pawn.outfits.forcedHandler.IsForced(wornApparel[i]) &&
-                                !ApparelUtility.CanWearTogether(wornApparel[i].def, apparel.def, pawn.RaceProps.body))
+                            if (!pawn.outfits.forcedHandler.IsForced(a) &&
+                                !ApparelUtility.CanWearTogether(a.def, apparel.def, pawn.RaceProps.body))
                             {
 #if TRACE && BETTER_OUTFIT
                             Log.Message("        Cannot wear together");
@@ -216,11 +218,11 @@ namespace ChangeDresser
                                 break;
                             }
                         }
-                        catch(Exception e)
+                        catch (Exception e)
                         {
                             try
                             {
-                                Log.Warning("Problem when calling CanWearTogether (" + wornApparel[i]?.Label + ", " + apparel?.Label + ", " + pawn?.RaceProps?.body?.label + ") - " + e.GetType().Name + " " + e.Message);
+                                Log.Warning("Problem when calling CanWearTogether (" + a?.Label + ", " + apparel?.Label + ", " + pawn?.RaceProps?.body?.label + ") - " + e.GetType().Name + " " + e.Message);
                             }
                             catch { }
                             skipApparelType = true;
@@ -232,8 +234,14 @@ namespace ChangeDresser
                         break;
                     }
                 }
-
-                float gain = JobGiver_OptimizeApparel.ApparelScoreGain(pawn, apparel);
+                /*else
+                {
+                    foreach (Apparel a in wornApparel)
+                    {
+                        cachedValues.Add(JobGiver_OptimizeApparel.ApparelScoreRaw(pawn, a));
+                    }
+                }*/
+                float gain = JobGiver_OptimizeApparel.ApparelScoreGain(pawn, apparel, cachedValues);
 #if TRACE && BETTER_OUTFIT
                 Log.Message("    Gain: " + gain + "     Base Score: " + baseApparelScore);
 #endif

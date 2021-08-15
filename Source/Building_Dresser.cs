@@ -1,27 +1,31 @@
 ﻿using ChangeDresser.UI.Enums;
 using ChangeDresser.UI.Util;
 using RimWorld;
-using SaveStorageSettingsUtil;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Text;
+using UnityEngine;
 using Verse;
 using Verse.AI;
 
 namespace ChangeDresser
 {
+    [DefOf]
+    public static class JobDefOfCD
+    {
+        public static JobDef ChangeApparelColorByLayer;
+        public static JobDef ChangeHairStyle;
+        public static JobDef ChangeBody;
+        public static JobDef StoreApparel;
+        public static JobDef ChangeFavoriteColor;
+        public static JobDef WearApparelFromStorage;
+        public static JobDef ChangeBodyAlienColor;
+        public static JobDef ChangeApparelColor;
+    }
+
     public class Building_Dresser : Building_Storage//, IStoreSettingsParent
     {
         public const long THIRTY_SECONDS = TimeSpan.TicksPerMinute / 2;
-
-        public readonly JobDef changeApparelColorJobDef = DefDatabase<JobDef>.GetNamed("ChangeApparelColor", true);
-        public readonly JobDef changeApparelColorByLayerJobDef = DefDatabase<JobDef>.GetNamed("ChangeApparelColorByLayer", true);
-        public readonly JobDef changeHairStyleJobDef = DefDatabase<JobDef>.GetNamed("ChangeHairStyle", true);
-        public readonly JobDef changeBodyJobDef = DefDatabase<JobDef>.GetNamed("ChangeBody", true);
-        public readonly JobDef storeApparelJobDef = DefDatabase<JobDef>.GetNamed("StoreApparel", true);
-        public readonly JobDef wearApparelFromStorageJobDef = DefDatabase<JobDef>.GetNamed("WearApparelFromStorage", true);
-        public readonly JobDef changeBodyAlienColor = DefDatabase<JobDef>.GetNamed("ChangeBodyAlienColor", true);
 
         public static JobDef WEAR_APPAREL_FROM_DRESSER_JOB_DEF { get; private set; }
 
@@ -40,9 +44,13 @@ namespace ChangeDresser
 
         public bool UseDresserToDressFrom = true;
 
+        private StoragePriority storagePriority = DefaultStoragePriority;
+
+        public string Name = "";
+
         public Building_Dresser()
         {
-            WEAR_APPAREL_FROM_DRESSER_JOB_DEF = this.wearApparelFromStorageJobDef;
+            WEAR_APPAREL_FROM_DRESSER_JOB_DEF = JobDefOfCD.WearApparelFromStorage;
 
             this.StoredApparel = new StoredApparel();
 
@@ -70,7 +78,10 @@ namespace ChangeDresser
                     {
                         if (!a.Spawned)
                         {
-                            BuildingUtil.DropThing(a, this, this.CurrentMap, false);
+                            if (!BuildingUtil.DropThing(a, this, this.CurrentMap, false))
+                            {
+                                Log.Error("failed to store and then drop " + a.Label);
+                            }
                         }
                     }
                 }
@@ -96,6 +107,9 @@ namespace ChangeDresser
                 }
                 yield return CurrentEditorEnum.ChangeDresserBody;
             }
+
+            if (ModsConfig.IdeologyActive)
+                yield return CurrentEditorEnum.ChangeDresserFavoriteColor;
         }
 
         internal int GetApparelCount(ThingDef def, ThingFilter ingredientFilter)
@@ -118,6 +132,8 @@ namespace ChangeDresser
             return this.StoredApparel.TryRemoveBestApparel(def, filter, out apparel);
         }
 
+        public override string Label => (this.Name == "") ? base.Label : this.Name;
+
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
             base.SpawnSetup(map, respawningAfterLoad);
@@ -139,7 +155,7 @@ namespace ChangeDresser
                 r.AddDresser(this);
             }
 
-            this.UpdatePreviousStorageFilter();
+            this.storagePriority = base.settings.Priority;
         }
 
         public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
@@ -270,9 +286,9 @@ namespace ChangeDresser
                     {
 						try
 						{
-							if (t is Apparel)
+							if (t is Apparel a)
 							{
-								if (!WorldComp.AddApparel((Apparel)t) &&
+								if (!WorldComp.AddApparel(a) &&
 									force &&
 									t.Spawned)
 								{
@@ -353,9 +369,9 @@ namespace ChangeDresser
 #endif
                     if (t != null && t != this && !(t is Blueprint) && !(t is Building))
                     {
-                        if (t is Apparel)
+                        if (t is Apparel a)
                         {
-                            this.AddApparel((Apparel)t);
+                            WorldComp.AddApparel(a);
                         }
                         else
                         {
@@ -383,14 +399,7 @@ namespace ChangeDresser
 
             Apparel a = (Apparel)newItem;
             base.Notify_ReceivedThing(a);
-            if (!this.StoredApparel.Contains(a))
-            {
-                if (newItem.Spawned)
-                {
-                    newItem.DeSpawn();
-                }
-                this.StoredApparel.AddApparel(a);
-            }
+            WorldComp.AddApparel(a);
         }
 
         private List<Apparel> tempApparelList = null;
@@ -419,6 +428,7 @@ namespace ChangeDresser
             Scribe_Values.Look(ref this.includeInTradeDeals, "includeInTradeDeals", true);
 			Scribe_Collections.Look(ref this.forceAddedApparel, false, "forceAddedApparel", LookMode.Deep, new object[0]);
             Scribe_Values.Look(ref this.UseDresserToDressFrom, "useDresserToDressFrom", true, false);
+            Scribe_Values.Look(ref this.Name, "name", "", false);
 #if DEBUG
             if (this.tempApparelList != null)
                 Log.Warning(" tempApparelList Count: " + this.tempApparelList.Count);
@@ -458,12 +468,6 @@ namespace ChangeDresser
 
 				if (this.forceAddedApparel != null && this.forceAddedApparel.Count == 0)
 					this.forceAddedApparel = null;
-            }
-
-            if (Scribe.mode == LoadSaveMode.PostLoadInit)
-            {
-                if (!this.UseDresserToDressFrom)
-                    WorldComp.RemoveDesser(this);
             }
 
 #if DEBUG
@@ -597,6 +601,12 @@ namespace ChangeDresser
                 this.lastAutoCollect = now;
                 this.ReclaimApparel();
             }*/
+
+            if (this.storagePriority != base.settings.Priority)
+            {
+                this.storagePriority = base.settings.Priority;
+                WorldComp.SortDressersToUse();
+            }
         }
 
 #region Float Menu Options
@@ -610,7 +620,7 @@ namespace ChangeDresser
                     "ChangeDresser.ChangeApparelColors".Translate(),
                     delegate
                     {
-                        Job job = new Job(changeApparelColorJobDef, this);
+                        Job job = new Job(JobDefOfCD.ChangeApparelColor, this);
                         pawn.jobs.TryTakeOrderedJob(job);
                     }));
                 if (Settings.IncludeColorByLayer)
@@ -619,7 +629,7 @@ namespace ChangeDresser
                         "ChangeDresser.ChangeApparelColorsByLayer".Translate(),
                         delegate
                         {
-                            Job job = new Job(changeApparelColorByLayerJobDef, this);
+                            Job job = new Job(JobDefOfCD.ChangeApparelColorByLayer, this);
                             pawn.jobs.TryTakeOrderedJob(job);
                         }));
                 }
@@ -630,7 +640,7 @@ namespace ChangeDresser
                     "ChangeDresser.ChangeHair".Translate(),
                     delegate
                     {
-                        Job job = new Job(changeHairStyleJobDef, this);
+                        Job job = new Job(JobDefOfCD.ChangeHairStyle, this);
                         pawn.jobs.TryTakeOrderedJob(job);
                     }));
             }
@@ -640,7 +650,7 @@ namespace ChangeDresser
                     "ChangeDresser.ChangeBody".Translate(),
                     delegate
                     {
-                        Job job = new Job(changeBodyJobDef, this);
+                        Job job = new Job(JobDefOfCD.ChangeBody, this);
                         pawn.jobs.TryTakeOrderedJob(job);
                     }));
 
@@ -650,10 +660,20 @@ namespace ChangeDresser
                         "ChangeDresser.ChangeAlienBodyColor".Translate(),
                         delegate
                         {
-                            Job job = new Job(changeBodyAlienColor, this);
+                            Job job = new Job(JobDefOfCD.ChangeBodyAlienColor, this);
                             pawn.jobs.TryTakeOrderedJob(job);
                         }));
                 }
+            }
+            if (ModsConfig.IdeologyActive)
+            {
+                list.Add(new FloatMenuOption(
+                    "ChangeDresser.ChangeFavoriteColor".Translate(),
+                    delegate
+                    {
+                        Job job = new Job(JobDefOfCD.ChangeFavoriteColor, this);
+                        pawn.jobs.TryTakeOrderedJob(job);
+                    }));
             }
             if (pawn.apparel?.LockedApparel?.Count == 0)
             {
@@ -661,7 +681,7 @@ namespace ChangeDresser
                     "ChangeDresser.StoreApparel".Translate(),
                     delegate
                     {
-                        Job job = new Job(storeApparelJobDef, this);
+                        Job job = new Job(JobDefOfCD.StoreApparel, this);
                         pawn.jobs.TryTakeOrderedJob(job);
                     }));
             }
@@ -686,6 +706,16 @@ namespace ChangeDresser
                 l = new List<Gizmo>(1);
 
             int groupKey = this.GetType().Name.GetHashCode();
+
+            l.Add(new Command_Action
+            {
+                icon = ContentFinder<Texture2D>.Get("UI/Commands/RenameZone", true),
+                defaultLabel = "CommandRenameZoneLabel".Translate(),
+                action = delegate
+                {
+                    Find.WindowStack.Add(new Dialog_Rename(this));
+                },
+            });
 
             Command_Action a = new Command_Action();
             a.icon = WidgetUtil.manageapparelTexture;
@@ -782,20 +812,16 @@ namespace ChangeDresser
                 delegate
                 {
                     this.UseDresserToDressFrom = !this.UseDresserToDressFrom;
-                    if (this.UseDresserToDressFrom)
-                        WorldComp.AddDresser(this);
-                    else
-                        WorldComp.RemoveDesser(this);
                 };
             a.groupKey = groupKey;
             ++groupKey;
             l.Add(a);
 
-            return SaveStorageSettingsGizmoUtil.AddSaveLoadGizmos(l, SaveTypeEnum.Apparel_Management, this.settings.filter);
+            return l;// SaveStorageSettingsGizmoUtil.AddSaveLoadGizmos(l, SaveTypeEnum.Apparel_Management, this.settings.filter);
         }
 #endregion
 
-#region ThingFilters
+/*#region ThingFilters
         private ThingFilter previousStorageFilters = new ThingFilter();
         private FieldInfo AllowedDefsFI = typeof(ThingFilter).GetField("allowedDefs", BindingFlags.Instance | BindingFlags.NonPublic);
         protected bool AreStorageSettingsEqual()
@@ -831,6 +857,6 @@ namespace ChangeDresser
             previousAllowed.Clear();
             previousAllowed.AddRange(AllowedDefsFI.GetValue(currentFilters) as HashSet<ThingDef>);
         }
-        #endregion
+        #endregion*/
     }
 }

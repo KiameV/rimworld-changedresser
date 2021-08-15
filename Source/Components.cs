@@ -67,7 +67,15 @@ namespace ChangeDresser
                 return true;
             if (map == null || apparel.Map == null)
                 return AddApparelAnyDresser(apparel);
-            
+
+            foreach (PawnOutfitTracker t in PawnOutfits.Values)
+                if (t.ContainsCustomApparel(apparel))
+                {
+                    if (apparel.Spawned)
+                        apparel.DeSpawn();
+                    return true;
+                }
+
             foreach (Building_Dresser d in DressersToUse)
             {
                 if (d.Map == map && d.settings.AllowedToAccept(apparel))
@@ -90,6 +98,16 @@ namespace ChangeDresser
 
         private static bool AddApparelAnyDresser(Apparel apparel)
         {
+            if (apparel == null)
+                return true;
+            foreach (PawnOutfitTracker t in PawnOutfits.Values)
+                if (t.ContainsCustomApparel(apparel))
+                {
+                    if (apparel.Spawned)
+                        apparel.DeSpawn();
+                    return true;
+                }
+
             foreach (Building_Dresser d in DressersToUse)
             {
                 if (d.settings.AllowedToAccept(apparel))
@@ -109,10 +127,10 @@ namespace ChangeDresser
                 return;
             }
 
-            if (dresser.UseDresserToDressFrom && 
-                !DressersToUse.Contains(dresser))
+            if (!DressersToUse.Contains(dresser))
             {
-                DressersToUse.AddLast(dresser);
+                DressersToUse.AddFirst(dresser);
+                SortDressersToUse();
             }
         }
 
@@ -131,7 +149,16 @@ namespace ChangeDresser
             }
         }
 
-		public static void CleanupCustomOutfits()
+        public static void ClearAll()
+        {
+            DressersToUse.Clear();
+            PawnOutfits.Clear();
+            OutfitsForBattle.Clear();
+            ApparelColorTracker.Clear();
+
+        }
+
+        public static void CleanupCustomOutfits()
 		{
 			foreach (PawnOutfitTracker t in PawnOutfits.Values)
 				t.Clean();

@@ -27,7 +27,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\Steam\steamapps\common\RimWorld\Mods\ChangeDresser\1.2\Assemblies\</OutputPath>
+    <OutputPath>..\..\..\Steam\steamapps\common\RimWorld\Mods\ChangeDresser\1.3\Assemblies\</OutputPath>
     <DefineConstants>
     </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -36,23 +36,20 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony, Version=2.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Lib.Harmony.2.0.2\lib\net472\0Harmony.dll</HintPath>
+    <Reference Include="0Harmony, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Lib.Harmony.2.1.0\lib\net472\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="AlienRace">
-      <HintPath>..\..\..\Steam\steamapps\workshop\content\294100\839005762\1.2\Assemblies\AlienRace.dll</HintPath>
+      <HintPath>..\..\..\Steam\steamapps\workshop\content\294100\839005762\1.3\Assemblies\AlienRace.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>D:\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="SaveStorageSettingsUtil, Version=1.1.0.1, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\SaveStorageSettings\Source\SaveStorageSettingsUtil\bin\Release\SaveStorageSettingsUtil.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Runtime.InteropServices.RuntimeInformation" />
     <Reference Include="UnityEngine">
       <HintPath>D:\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.dll</HintPath>
@@ -86,10 +83,12 @@
     <Compile Include="Building_ChangeMirror.cs" />
     <Compile Include="Building_Dresser.cs" />
     <Compile Include="Building_RepairChangeDresser.cs" />
+    <Compile Include="Dialog_Rename.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeApparelColor.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeApparelColorByLayer.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeBodyAlienColor.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeBody.cs" />
+    <Compile Include="DresserJobDriver\JobDriver_ChangeFavoriteColor.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeHairStyle.cs" />
     <Compile Include="DresserJobDriver\JobDriver_StoreApparel.cs" />
     <Compile Include="Components.cs" />
@@ -117,14 +116,17 @@
     <Compile Include="UI\DTO\SelectionWidgetDTOs\ApparelColorSelectionsContainer.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\ASelectionWidgetDTO.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\BodyTypeSelectionDTO.cs" />
+    <Compile Include="UI\DTO\SelectionWidgetDTOs\FavoriteColorSelectionDTO.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\EditorTypeSelectionDTO.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\GenderSelectionDTO.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\HairColorSelectionDTO.cs" />
-    <Compile Include="UI\DTO\SelectionWidgetDTOs\HairStyleSelectionDTO.cs" />
+    <Compile Include="UI\DTO\SelectionWidgetDTOs\AStyleSelectionDTO.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\HeadTypeSelectionDTO.cs" />
+    <Compile Include="UI\DTO\SelectionWidgetDTOs\PawnSelectionWidgetDTO.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\SelectionColorWidgetDTO.cs" />
     <Compile Include="UI\DTO\SelectionWidgetDTOs\SliderWidgetDTO.cs" />
     <Compile Include="UI\Enums\CurrentEditorEnum.cs" />
+    <Compile Include="UI\GetPawnsUtil.cs" />
     <Compile Include="UI\StorageUI.cs" />
     <Compile Include="IOUtil.cs" />
     <Compile Include="UI\Util\HSL.cs" />

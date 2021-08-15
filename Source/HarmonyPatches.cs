@@ -329,6 +329,20 @@ namespace ChangeDresser
                                 }));
                             }
                         }
+                        if (ModsConfig.IdeologyActive)
+                        {
+                            options.Add(new FloatMenuOption("ChangeDresserFavoriteColor".Translate(), delegate ()
+                            {
+                                Find.WindowStack.Add(new DresserUI(DresserDtoFactory.Create(__instance, null, CurrentEditorEnum.ChangeDresserFavoriteColor)));
+                            }));
+                        }
+                        if (WorldComp.HasDressers() && __instance.RaceProps.Humanlike && __instance.Faction?.IsPlayerSafe() == true)
+                        {
+                            options.Add(new FloatMenuOption("ChangeDresser.CustomOutfits".Translate(), delegate ()
+                            {
+                                Find.WindowStack.Add(new CustomOutfitUI(null, __instance));
+                            }));
+                        }
                         Find.WindowStack.Add(new FloatMenu(options));
                     }
                 });
@@ -546,7 +560,9 @@ namespace ChangeDresser
                 __state = true;
             }
         }
-        static void Postfix(Pawn pawn, ref bool __state, ref Job __result)
+
+        static readonly FieldInfo wornApparelScoresFI = typeof(JobGiver_OptimizeApparel).GetField("wornApparelScores", BindingFlags.Static | BindingFlags.NonPublic);
+        static void Postfix(Pawn pawn, JobGiver_OptimizeApparel __instance, ref bool __state, ref Job __result)
         {
             if (!__state)
             {
@@ -561,13 +577,29 @@ namespace ChangeDresser
                 return;
             }
 
-            Thing thing = null;
             float baseApparelScore = 0f;
-            if (__result != null && __result.targetA.Thing is Apparel)
+            Apparel apparel = __result?.targetA.Thing as Apparel;
+            if (apparel != null)
             {
-                thing = __result.targetA.Thing;
-                baseApparelScore = JobGiver_OptimizeApparel.ApparelScoreGain(pawn, thing as Apparel);
-                if (thing == null)
+                List<Apparel> wornApparel = pawn.apparel.WornApparel;
+                List<float> wornApparelScores = wornApparelScoresFI.GetValue(__instance) as List<float>;
+                if (wornApparelScores.Count == 0)
+                {
+                    foreach (Apparel wa in wornApparel)
+                    {
+                        wornApparelScores.Add(JobGiver_OptimizeApparel.ApparelScoreRaw(pawn, wa));
+                    }
+                }
+                else
+                {
+                    while (wornApparelScores.Count < pawn.apparel.WornApparel.Count)
+                    {
+                        wornApparelScores.Add(0);
+                    }
+                }
+
+                baseApparelScore = JobGiver_OptimizeApparel.ApparelScoreGain(pawn, apparel, wornApparelScores);
+                if (apparel == null)
                 {
                     baseApparelScore = 0f;
                 }
@@ -587,13 +619,15 @@ namespace ChangeDresser
 #endif
             foreach (Building_Dresser dresser in WorldComp.DressersToUse)
             {
+                if (!dresser.UseDresserToDressFrom)
+                    continue;
 #if TRACE && BETTER_OUTFIT
                 Log.Message("        Dresser: " + dresser.Label);
 #endif
                 float score = baseApparelScore;
                 if (dresser.FindBetterApparel(ref score, ref a, pawn, pawn.outfits.CurrentOutfit))
                 {
-                    thing = a;
+                    apparel = a;
                     baseApparelScore = score;
                     containingDresser = dresser;
 #if BETTER_OUTFIT
@@ -606,7 +640,7 @@ namespace ChangeDresser
 #endif
             if (a != null && containingDresser != null)
             {
-                __result = new Job(containingDresser.wearApparelFromStorageJobDef, containingDresser, a);
+                __result = new Job(JobDefOfCD.WearApparelFromStorage, containingDresser, apparel);
             }
 #if BETTER_OUTFIT
             Log.Warning("End JobGiver_OptimizeApparel.Postfix");
@@ -950,6 +984,31 @@ namespace ChangeDresser
             }
         }
     }
+
+    [HarmonyPatch(typeof(MoveColonyUtility), "MoveColonyAndReset")]
+    static class Patch_MoveColonyUtility_MoveColonyAndReset
+    {
+        [HarmonyPriority(Priority.First)]
+        static void Prefix()
+        {
+            WorldComp.ClearAll();
+        }
+    }
+
+    /*[HarmonyPatch(typeof(ThingWithComps), "Notify_Unequipped")]
+    static class Patch_ThingWithComps_Notify_Unequipped
+    {
+        [HarmonyPriority(Priority.First)]
+        static void Prefix(ThingWithComps __instance)
+        {
+            if (__instance is Apparel a && a.Wearer != null && WorldComp.PawnOutfits.TryGetValue(a.Wearer, out PawnOutfitTracker t))
+            {
+                Log.Error($"Removed from custom: {t.RemoveCustomApparel(a)}");
+                
+            }
+        }
+    }*/
+
     /*
     [HarmonyPatch(typeof(JobGiver_OptimizeApparel), "ApparelScoreRaw")]
     static class Patch_JobGiver_OptimizeApparel_ApparelScoreRaw
