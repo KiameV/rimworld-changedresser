@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <ChangeApparelColor.reportString>変更する</ChangeApparelColor.reportString>
+  <ChangeApparelColorByLayer.reportString>変更を適用しました</ChangeApparelColorByLayer.reportString>
+  <ChangeHairColor.reportString>髪の色を変更する(髪型も)</ChangeHairColor.reportString>
+  <ChangeHairStyle.reportString>髪型を変更する(色も)</ChangeHairStyle.reportString>
+  <ChangeBody.reportString>体型を変更する</ChangeBody.reportString>
+  <StoreApparel.reportString>衣服を保存</StoreApparel.reportString>
+  <WearApparelFromStorage.reportString>TargetAを着用する</WearApparelFromStorage.reportString>
+  <ChangeBodyAlienColor.reportString>エイリアンの体色を変更する</ChangeBodyAlienColor.reportString>
+  <ChangeFavoriteColor.reportString>お気に入り色変更する</ChangeFavoriteColor.reportString>
+
+</LanguageData>
