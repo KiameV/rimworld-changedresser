@@ -336,6 +336,13 @@ namespace ChangeDresser
                                 Find.WindowStack.Add(new DresserUI(DresserDtoFactory.Create(__instance, null, CurrentEditorEnum.ChangeDresserFavoriteColor)));
                             }));
                         }
+                        if (WorldComp.HasDressers() && __instance.RaceProps.Humanlike && __instance.Faction?.IsPlayerSafe() == true)
+                        {
+                            options.Add(new FloatMenuOption("ChangeDresser.CustomOutfits".Translate(), delegate ()
+                            {
+                                Find.WindowStack.Add(new CustomOutfitUI(null, __instance));
+                            }));
+                        }
                         Find.WindowStack.Add(new FloatMenu(options));
                     }
                 });
@@ -987,6 +994,20 @@ namespace ChangeDresser
             WorldComp.ClearAll();
         }
     }
+
+    /*[HarmonyPatch(typeof(ThingWithComps), "Notify_Unequipped")]
+    static class Patch_ThingWithComps_Notify_Unequipped
+    {
+        [HarmonyPriority(Priority.First)]
+        static void Prefix(ThingWithComps __instance)
+        {
+            if (__instance is Apparel a && a.Wearer != null && WorldComp.PawnOutfits.TryGetValue(a.Wearer, out PawnOutfitTracker t))
+            {
+                Log.Error($"Removed from custom: {t.RemoveCustomApparel(a)}");
+                
+            }
+        }
+    }*/
 
     /*
     [HarmonyPatch(typeof(JobGiver_OptimizeApparel), "ApparelScoreRaw")]

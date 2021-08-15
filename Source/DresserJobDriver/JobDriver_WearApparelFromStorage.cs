@@ -26,8 +26,8 @@ namespace ChangeDresser.DresserJobDriver
                     Pawn pawn = this.GetActor();
 
                     Thing t = this.TargetB.Thing;
-                    if (t is Apparel && 
-                        dresser.RemoveNoDrop((Apparel)t))
+                    if (t is Apparel a && 
+                        dresser.RemoveNoDrop(a))
                     {
                         List<Apparel> worn = new List<Apparel>(pawn.apparel.WornApparel);
                         foreach (Apparel w in worn)
@@ -55,7 +55,7 @@ namespace ChangeDresser.DresserJobDriver
                             }
                             else
                             {
-                                dresser.AddApparel(w);
+                                WorldComp.AddApparel(w);
                             }
                         }
                         

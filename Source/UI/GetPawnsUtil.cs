@@ -17,21 +17,22 @@ namespace ChangeDresser.UI
 		public static List<Pawn> GetColonyPawns(bool includeDead = false)
 		{
 			SortedDictionary<string, List<Pawn>> pawns = new SortedDictionary<string, List<Pawn>>();
-			foreach (Pawn p in PawnsFinder.AllMapsCaravansAndTravelingTransportPods_Alive_Colonists)
+			foreach (Pawn p in PawnsFinder.AllMapsCaravansAndTravelingTransportPods_Alive_OfPlayerFaction)
 			{
-				if (p != null && p.Faction == Faction.OfPlayer && p.def.race.Humanlike && p.apparel?.LockedApparel?.Count == 0 && p.guest == null && !p.IsQuestLodger())
-				{
-					if (!includeDead && p.Dead)
-						continue;
+				if (p == null || !p.def.race.Humanlike || p.IsQuestHelper() || p.IsQuestLodger() || p.apparel?.LockedApparel?.Count != 0)
+					continue;
+				//if (p.guest != null)
+				//	continue;
+				if (!includeDead && p.Dead)
+					continue;
 
-					string name = p.Name.ToStringShort;
-					if (!pawns.TryGetValue(name, out List<Pawn> ps))
-					{
-						ps = new List<Pawn>();
-						pawns[name] = ps;
-					}
-					ps.Add(p);
+				string name = p.Name.ToStringShort;
+				if (!pawns.TryGetValue(name, out List<Pawn> ps))
+				{
+					ps = new List<Pawn>();
+					pawns[name] = ps;
 				}
+				ps.Add(p);
 			}
 
 			List<Pawn> result = new List<Pawn>();

@@ -60,6 +60,7 @@
 	<ChangeDresser.AlienSecondarySkinColor>Secondary Skin Color</ChangeDresser.AlienSecondarySkinColor>
 	<ChangeDresser.AlienPrimaryHairColor>Primary Hair Color</ChangeDresser.AlienPrimaryHairColor>
 	<ChangeDresser.AlienSecondaryHairColor>Secondary Hair Color</ChangeDresser.AlienSecondaryHairColor>
+	<ChangeDresser.SelectPawn>Select Pawn</ChangeDresser.SelectPawn>
 		
 	<!-- Assign Outfits UI -->
 	<ChangeDresser.ManageOutfits>Manage Outfits</ChangeDresser.ManageOutfits>

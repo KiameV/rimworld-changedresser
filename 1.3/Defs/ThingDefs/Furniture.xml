@@ -43,19 +43,19 @@
 		<staticSunShadowHeight>0.5</staticSunShadowHeight>
 		<surfaceType>Item</surfaceType>
 		<canOverlapZones>false</canOverlapZones>
-		<placeWorkers>
-			<li>PlaceWorker_ShowFacilitiesConnections</li>
-		</placeWorkers>
 		<researchPrerequisites>
 			<li>ComplexFurniture</li>
 		</researchPrerequisites>
+		<placeWorkers>
+			<li>PlaceWorker_ShowFacilitiesConnections</li>
+		</placeWorkers>
 		<comps>
 			<li Class="CompProperties_Facility">
 				<statOffsets>
 					<Comfort>0.05</Comfort>
 				</statOffsets>
 				<maxSimultaneous>1</maxSimultaneous>
-				<maxDistance>6</maxDistance>
+				<maxDistance>8</maxDistance>
 			</li>
 			<li Class="CompProperties_AffectedByFacilities">
 				<linkableFacilities>

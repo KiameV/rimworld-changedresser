@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Verse;
 using System;
+using System.Linq;
 
 namespace ChangeDresser
 {
@@ -10,7 +11,7 @@ namespace ChangeDresser
     public interface IDresserOutfit : IExposable
     {
         void Dress(Pawn pawn);
-        void Undress(Pawn pawn, List<Apparel> customApparel);
+        void Undress(Pawn pawn, IEnumerable<Apparel> customApparel);
         bool IsValid();
         OutfitType OutfitType { get; set; }
         string UniqueId { get; set; }
@@ -24,7 +25,8 @@ namespace ChangeDresser
         private OutfitType outfitType = OutfitType.Civilian;
         private bool isBeingWorn = false;
         private string uniqueId;
-        public List<Apparel> Apparel = new List<Apparel>();
+        private HashSet<Apparel> apparel = new HashSet<Apparel>();
+        public IEnumerable<Apparel> Apparel => apparel;
         public string Name = "";
         public Outfit Outfit = null;
 
@@ -32,12 +34,7 @@ namespace ChangeDresser
 
 		public void Clean()
 		{
-			for (int i = this.Apparel.Count - 1; i >= 0; --i)
-			{
-				Apparel a = this.Apparel[i];
-				if (a == null || a.Destroyed || a.HitPoints <= 0)
-					this.Apparel.RemoveAt(i);
-			}
+            this.apparel.RemoveWhere(a => a == null || a.Destroyed || a.HitPoints <= 0);
 		}
 
 		public void Dress(Pawn pawn)
@@ -89,7 +86,7 @@ namespace ChangeDresser
 #endif
         }
 
-        public void Undress(Pawn pawn, List<Apparel> customApparel)
+        public void Undress(Pawn pawn, IEnumerable<Apparel> customApparel)
         {
 #if DRESSER_OUTFIT
             Log.Warning("Begin CustomOutfit.Undress(Pawn: " + pawn.Name.ToStringShort + ")");
@@ -180,13 +177,16 @@ namespace ChangeDresser
 
 		public void ExposeData()
         {
-            Scribe_Values.Look<string>(ref this.Name, "name");
-            Scribe_Values.Look<OutfitType>(ref this.outfitType, "type");
-            Scribe_Values.Look<bool>(ref this.isBeingWorn, "isBeingWorn", false, false);
-            Scribe_Values.Look<string>(ref this.uniqueId, "uniqueId");
-            Scribe_References.Look<Outfit>(ref this.Outfit, "outfit");
+            Scribe_Values.Look(ref this.Name, "name");
+            Scribe_Values.Look(ref this.outfitType, "type");
+            Scribe_Values.Look(ref this.isBeingWorn, "isBeingWorn", false, false);
+            Scribe_Values.Look(ref this.uniqueId, "uniqueId");
+            Scribe_References.Look(ref this.Outfit, "outfit");
 
-            Scribe_Collections.Look<Apparel>(ref this.Apparel, false, "apparel", LookMode.Reference, new object[0]);
+            Scribe_Collections.Look(ref this.apparel, "apparel", LookMode.Reference);
+
+            if (this.apparel == null)
+                this.apparel = new HashSet<Apparel>();
         }
 
         public bool IsValid()
@@ -206,14 +206,31 @@ namespace ChangeDresser
         {
             get
             {
-                if (this.Apparel != null && this.Apparel.Count > 0)
+                if (this.apparel != null && this.apparel.Count > 0)
                 {
-                    return this.Apparel[0].def;
+                    return this.apparel.First().def;
                 }
                 return null;
             }
         }
         public bool IsBeingWorn { get { return this.isBeingWorn; } }
+
+        internal bool Add(Apparel apparel)
+        {
+            if (this.apparel.Add(apparel))
+                return true;
+            return this.Contains(apparel);
+        }
+
+        internal bool Contains(Apparel apparel)
+        {
+            return this.apparel.Contains(apparel);
+        }
+
+        internal bool Remove(Apparel apparel)
+        {
+            return this.apparel.Remove(apparel);
+        }
     }
 
     public class DefinedOutfit : IDresserOutfit
@@ -271,7 +288,7 @@ namespace ChangeDresser
 #endif
         }
 
-        public void Undress(Pawn pawn, List<Apparel> customApparel)
+        public void Undress(Pawn pawn, IEnumerable<Apparel> customApparel)
         {
 #if DRESSER_OUTFIT
 Log.Warning("Begin DefinedOutfit.Undress(Pawn: " + pawn.Name.ToStringShort + ")");

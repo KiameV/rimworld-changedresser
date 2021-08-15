@@ -286,9 +286,9 @@ namespace ChangeDresser
                     {
 						try
 						{
-							if (t is Apparel)
+							if (t is Apparel a)
 							{
-								if (!WorldComp.AddApparel((Apparel)t) &&
+								if (!WorldComp.AddApparel(a) &&
 									force &&
 									t.Spawned)
 								{
@@ -369,9 +369,9 @@ namespace ChangeDresser
 #endif
                     if (t != null && t != this && !(t is Blueprint) && !(t is Building))
                     {
-                        if (t is Apparel)
+                        if (t is Apparel a)
                         {
-                            this.AddApparel((Apparel)t);
+                            WorldComp.AddApparel(a);
                         }
                         else
                         {
@@ -399,14 +399,7 @@ namespace ChangeDresser
 
             Apparel a = (Apparel)newItem;
             base.Notify_ReceivedThing(a);
-            if (!this.StoredApparel.Contains(a))
-            {
-                if (newItem.Spawned)
-                {
-                    newItem.DeSpawn();
-                }
-                this.StoredApparel.AddApparel(a);
-            }
+            WorldComp.AddApparel(a);
         }
 
         private List<Apparel> tempApparelList = null;

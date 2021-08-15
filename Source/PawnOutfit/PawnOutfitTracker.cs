@@ -9,7 +9,7 @@ namespace ChangeDresser
     public class PawnOutfitTracker : IExposable
     {
         public Pawn Pawn = null;
-        private List<Apparel> customApparel = new List<Apparel>();
+        private HashSet<Apparel> customApparel = new HashSet<Apparel>();
 		public IEnumerable<Apparel> CustomApparel => customApparel;
 
         public List<DefinedOutfit> DefinedOutfits = new List<DefinedOutfit>();
@@ -91,22 +91,21 @@ namespace ChangeDresser
 
 		public void Clean()
 		{
-			bool found = false;
-			for (int i = this.customApparel.Count - 1; i >= 0; --i)
-			{
-				Apparel a = this.customApparel[i];
-				if (a == null || a.Destroyed || a.HitPoints <= 0)
-				{
-					found = true;
-					customApparel.RemoveAt(i);
-				}
-			}
+            List<Apparel> toRemove = new List<Apparel>();
+            foreach (Apparel a in this.customApparel)
+            {
+                if (a == null || a.Destroyed || a.HitPoints <= 0)
+                {
+                    toRemove.Add(a);
+                }
+            }
 
-			if (!found)
-				return;
-
-			foreach (CustomOutfit c in CustomOutfits)
-				c.Clean();
+            if (toRemove.Count != 0)
+            {
+                toRemove.ForEach(a => this.customApparel.Remove(a));
+                foreach (CustomOutfit c in CustomOutfits)
+                    c.Clean();
+            }
 		}
 
 		public Color GetLayerColor(ApparelLayerDef layer, bool getFromWorn = false)
@@ -521,12 +520,35 @@ namespace ChangeDresser
 
         public bool ContainsCustomApparel(Apparel apparel)
         {
-            return this.customApparel.Contains(apparel);
+            if (this.customApparel.Contains(apparel))
+                return true;
+
+            foreach (CustomOutfit o in this.CustomOutfits)
+            {
+                if (o.IsBeingWorn)
+                {
+                    return o.Contains(apparel);
+                }
+            }
+            return false;
         }
 
-        public void RemoveCustomApparel(Apparel apparel)
+        public bool RemoveCustomApparel(Apparel apparel)
         {
-            this.customApparel.Remove(apparel);
+            bool removed = false;
+            foreach (CustomOutfit o in this.CustomOutfits)
+                if (o.Remove(apparel))
+                {
+                    removed = true;
+                    break;
+                }
+            if (this.customApparel.Remove(apparel))
+            {
+                if (!removed)
+                    Log.Warning("[Change Dresser] failed to remove apparel from a CustomOutfit but removed from customApparel;");
+                return true;
+            }
+            return false;
         }
 
         public void UpdateOutfitType(Outfit outfit, OutfitType outfitType)
@@ -553,7 +575,7 @@ namespace ChangeDresser
 #endif
         }
 
-        public void UpdateCustomApparel(Building_Dresser dresser)
+        public void UpdateCustomApparel(Thing dropAt)
         {
 #if DRESSER_OUTFIT
             Log.Warning("Begin PawnOutfitTracker.UpdateCustomApparel(Dresser: " + ((dresser == null) ? "<null>" : dresser.Label) + ")");
@@ -583,13 +605,13 @@ namespace ChangeDresser
 #endif
                 if (!WorldComp.AddApparel(a))
                 {
-                    if (dresser == null)
+                    if (dropAt?.Map == null)
                     {
                         Log.Error("Unable to drop " + a.Label + " on ground.");
                     }
                     else
                     {
-                        BuildingUtil.DropThing(a, dresser, dresser.Map, false);
+                        BuildingUtil.DropThing(a, dropAt.Position, dropAt.Map, false);
                     }
                 }
             }
@@ -612,7 +634,7 @@ namespace ChangeDresser
             Scribe_Collections.Look(ref this.DefinedOutfits, "definedOutfits", LookMode.Deep, new object[0]);
             Scribe_Collections.Look(ref this.CustomOutfits, "customOutfits", LookMode.Deep, new object[0]);
             Scribe_Collections.Look(ref this.ApparelColors, "apparelColors", LookMode.Deep, new object[0]);
-            Scribe_Collections.Look(ref this.customApparel, false, "customApparel", LookMode.Deep, new object[0]);
+            Scribe_Collections.Look(ref this.customApparel, "customApparel", LookMode.Deep);
 
             Scribe_Values.Look(ref this.currentlyWorn, "currentlyWorn");
             Scribe_Values.Look(ref this.lastBattleOutfit, "lastBattleOutfit");
@@ -629,7 +651,10 @@ namespace ChangeDresser
 				this.Clean();
 			}
 
-		}
+            if (this.customApparel == null)
+                this.customApparel = new HashSet<Apparel>();
+
+        }
 
         public IEnumerable<IDresserOutfit> AllOutfits
         {
