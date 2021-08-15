@@ -1,5 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
+  <!-- New for 1.3 -->
+  <ChangeDresserFavoriteColor>お気に入り色</ChangeDresserFavoriteColor>
+  <ChangeDresser.ChangeFavoriteColor>お気に入り色変更</ChangeDresser.ChangeFavoriteColor>
+  <ChangeDresser.BeardStyle>ヒゲスタイル</ChangeDresser.BeardStyle>
+
   <!-- Window Labels -->
   <ChangeDresser.DresserLabel>ドレッサー</ChangeDresser.DresserLabel>
   <ChangeDresser.ApparelStorageLabel>服装の在庫</ChangeDresser.ApparelStorageLabel>
@@ -55,6 +60,7 @@
   <ChangeDresser.AlienSecondarySkinColor>二番目の肌色</ChangeDresser.AlienSecondarySkinColor>
   <ChangeDresser.AlienPrimaryHairColor>一番目の髪色</ChangeDresser.AlienPrimaryHairColor>
   <ChangeDresser.AlienSecondaryHairColor>二番目の髪色</ChangeDresser.AlienSecondaryHairColor>
+  <ChangeDresser.SelectPawn>ポーンを選択</ChangeDresser.SelectPawn>
 
   <!-- Assign Outfits UI -->
   <ChangeDresser.ManageOutfits>衣装の管理</ChangeDresser.ManageOutfits>
