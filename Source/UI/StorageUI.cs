@@ -76,7 +76,7 @@ namespace ChangeDresser.UI
                 this.pawnSelections = new PawnSelectionWidgetDTO(PawnUtil.GetPrisonerPawns());
                 if (!this.pawnSelections.SetSelectedPawn(this.Pawn))
                 {
-                    Log.Error("unable to find prisoner " + this.Pawn.Name.ToStringShort);
+                    Log.Error("[Change Dresser] unable to find prisoner " + this.Pawn.Name.ToStringShort);
                 }
             }
             else
@@ -86,7 +86,7 @@ namespace ChangeDresser.UI
                 this.pawnSelections = new PawnSelectionWidgetDTO(PawnUtil.GetColonyPawns());
                 if (!this.pawnSelections.SetSelectedPawn(this.Pawn))
                 {
-                    Log.Error("unable to find colonist " + this.Pawn.Name.ToStringShort);
+                    Log.Error("[Change Dresser] unable to find colonist " + this.Pawn.Name.ToStringShort);
                 }
             }
             this.pawnSelections.SelectionChangeListener += this.OnPawnChange;
@@ -192,7 +192,7 @@ namespace ChangeDresser.UI
                             {
                                 if (!this.Pawn.apparel.TryDrop(apparel))
                                 {
-                                    Log.Error("Problem dropping " + apparel.Label);
+                                    Log.Error("[Change Dresser] Problem dropping " + apparel.Label);
                                 }
                                 GUI.EndGroup();
                                 break;
@@ -234,7 +234,7 @@ namespace ChangeDresser.UI
                                     if (this.Pawn.Map == null ||
                                         !GenDrop.TryDropSpawn(a, this.Pawn.Position, this.Pawn.Map, ThingPlaceMode.Near, out Thing t))
                                     {
-                                        Log.Error("failed to drop apparel " + a.Label);
+                                        Log.Error("[Change Dresser] failed to drop apparel " + a.Label);
                                         this.Pawn.apparel.Wear(a);
                                     }
                                 }
@@ -296,7 +296,7 @@ namespace ChangeDresser.UI
                                     }
                                     else
                                     {
-                                        Log.Error("Problem dropping " + apparel.Label);
+                                        Log.Error("[Change Dresser] Problem dropping " + apparel.Label);
                                     }
                                 }
                             }
@@ -328,7 +328,7 @@ namespace ChangeDresser.UI
                             }
                             else
                             {
-                                Log.Error("Problem dropping " + apparel.Label);
+                                Log.Error("[Change Dresser] Problem dropping " + apparel.Label);
                             }
                         }
 
@@ -341,7 +341,7 @@ namespace ChangeDresser.UI
             }
             catch (Exception e)
             {
-                Log.Error(this.GetType().Name + " closed due to: " + e.GetType().Name + " " + e.Message);
+                Log.Error("[Change Dresser] " + this.GetType().Name + " closed due to: " + e.GetType().Name + " " + e.Message);
                 Messages.Message(this.GetType().Name + " closed due to: " + e.GetType().Name + " " + e.Message, MessageTypeDefOf.RejectInput);
                 base.Close();
             }

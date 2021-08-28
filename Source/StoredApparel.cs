@@ -66,24 +66,28 @@ namespace ChangeDresser
                 return;
             }
 #endif
-            if (!apparel.def.apparel.slaveApparel)
+            try
             {
-                float score = JobGiver_OptimizeApparel.ApparelScoreRaw(null, apparel);
-                for (LinkedListNode<Apparel> n = l.First; n != null; n = n.Next)
+                if (!apparel.def.apparel.slaveApparel)
                 {
-                    float nScore = JobGiver_OptimizeApparel.ApparelScoreRaw(null, apparel);
-                    if (score >= nScore)
+                    float score = JobGiver_OptimizeApparel.ApparelScoreRaw(null, apparel);
+                    for (LinkedListNode<Apparel> n = l.First; n != null; n = n.Next)
                     {
-                        l.AddBefore(n, apparel);
-                        return;
-                    }
-                    else if (score < nScore)
-                    {
-                        l.AddAfter(n, apparel);
-                        return;
+                        float nScore = JobGiver_OptimizeApparel.ApparelScoreRaw(null, apparel);
+                        if (score >= nScore)
+                        {
+                            l.AddBefore(n, apparel);
+                            return;
+                        }
+                        else if (score < nScore)
+                        {
+                            l.AddAfter(n, apparel);
+                            return;
+                        }
                     }
                 }
             }
+            catch { }
             l.AddLast(apparel);
 
             /*
