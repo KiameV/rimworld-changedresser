@@ -268,7 +268,7 @@ namespace ChangeDresser.UI
             }
             catch (Exception e)
             {
-                Log.Error(this.GetType().Name + " closed due to: " + e.GetType().Name + " " + e.Message);
+                Log.Error("[Change Dresser] " + this.GetType().Name + " closed due to: " + e.GetType().Name + " " + e.Message);
                 Messages.Message(this.GetType().Name + " closed due to: " + e.GetType().Name + " " + e.Message, MessageTypeDefOf.NegativeEvent);
                 base.Close();
             }
@@ -413,7 +413,7 @@ namespace ChangeDresser.UI
             }
             catch (Exception e)
             {
-                Log.Error("Error on DresserUI.PreClose: " + e.GetType().Name + " " + e.Message + Environment.NewLine + e.StackTrace);
+                Log.Error("[Change Dresser] Error on DresserUI.PreClose: " + e.GetType().Name + " " + e.Message + Environment.NewLine + e.StackTrace);
             }
 #if TRACE
             Log.Message("End DresserUI.PreClose" + Environment.NewLine);

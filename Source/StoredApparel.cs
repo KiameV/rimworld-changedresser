@@ -53,7 +53,7 @@ namespace ChangeDresser
             }
             else
             {
-                Log.Error("Tried to add null apparel");
+                Log.Error("[Change Dresser] Tried to add null apparel");
             }
         }
 
@@ -316,7 +316,7 @@ namespace ChangeDresser
                     }
                     catch
                     {
-                        Log.Error("catch");
+                        Log.Error("[Change Dresser] Failed to remove best apparel");
                     }
                 }
             }
@@ -379,46 +379,6 @@ namespace ChangeDresser
             Log.Warning("End StoredApparel.FindBetterApparel    Found Better:" + result);
 #endif
             return result;
-            /*
-            Apparel betterApparel = null;
-            foreach (LinkedList<Apparel> ll in this.StoredApparelLookup.Values)
-            {
-                foreach (Apparel apparel in ll)
-                {
-                    if (currentOutfit.filter.Allows(apparel))
-                    {
-                        if (Settings.KeepForcedApparel)
-                        {
-                            List<Apparel> wornApparel = pawn.apparel.WornApparel;
-                            for (int i = 0; i < wornApparel.Count; i++)
-                            {
-                                if (!ApparelUtility.CanWearTogether(wornApparel[i].def, apparel.def, pawn.RaceProps.body) &&
-                                    !pawn.outfits.forcedHandler.AllowedToAutomaticallyDrop(wornApparel[i]))
-                                {
-                                    continue;
-                                }
-                            }
-                        }
-
-                        if (!apparel.IsForbidden(pawn))
-                        {
-                            float gain = JobGiver_OptimizeApparel.ApparelScoreGain(pawn, apparel);
-                            if (gain >= 0.05f && gain > baseApparelScore)
-                            {
-                                if (ApparelUtility.HasPartsToWear(pawn, apparel.def))
-                                {
-                                    if (ReservationUtility.CanReserveAndReach(pawn, dresser, PathEndMode.OnCell, pawn.NormalMaxDanger(), 1))
-                                    {
-                                        betterApparel = apparel;
-                                        baseApparelScore = gain;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            return betterApparel;*/
         }
     }
 }

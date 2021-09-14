@@ -25,7 +25,7 @@ namespace ChangeDresser.UI.DTO
             AlienComp ac = base.Pawn.TryGetComp<AlienComp>();
             if (ac == null || !(base.Pawn.def is ThingDef_AlienRace ar))
             {
-                Log.Error("Failed to get alien race for " + base.Pawn.Name.ToStringShort);
+                Log.Error("[Change Dresser] Failed to get alien race for " + base.Pawn.Name.ToStringShort);
                 return;
             }
             AlienSettings raceSettings = ar.alienRace;

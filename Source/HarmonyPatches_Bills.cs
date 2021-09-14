@@ -97,7 +97,7 @@ namespace ChangeDresser
             {
                 if (bill.Map == null)
                 {
-                    Log.Error("Bill's map is null");
+                    Log.Error("[Change Dresser] Bill's map is null");
                     return;
                 }
 

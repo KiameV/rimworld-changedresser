@@ -86,7 +86,7 @@ namespace ChangeDresser
                         Apparel a = ((job.targetB != null) ? job.targetB.Thing : null) as Apparel;
                         if (a == null)
                         {
-                            Log.Warning("ChangeDresser: OptimizeApparelUtil.OptimizeApparel: Problem equiping pawn. Apparel is null.");
+                            Log.Warning("[Change Dresser] OptimizeApparelUtil.OptimizeApparel: Problem equiping pawn. Apparel is null.");
                             break;
                         }
 #if TRACE && DRESSER_OUTFIT
@@ -101,7 +101,7 @@ namespace ChangeDresser
 
                         if (d == null || a == null)
                         {
-                            Log.Warning("ChangeDresser: OptimizeApparelUtil.OptimizeApparel: Problem equiping pawn. Dresser or Apparel is null.");
+                            Log.Warning("[Change Dresser] OptimizeApparelUtil.OptimizeApparel: Problem equiping pawn. Dresser or Apparel is null.");
                             break;
                         }
 #if TRACE && DRESSER_OUTFIT
@@ -222,7 +222,7 @@ namespace ChangeDresser
                         {
                             try
                             {
-                                Log.Warning("Problem when calling CanWearTogether (" + a?.Label + ", " + apparel?.Label + ", " + pawn?.RaceProps?.body?.label + ") - " + e.GetType().Name + " " + e.Message);
+                                Log.Warning("[Change Dresser] Problem when calling CanWearTogether (" + a?.Label + ", " + apparel?.Label + ", " + pawn?.RaceProps?.body?.label + ") - " + e.GetType().Name + " " + e.Message);
                             }
                             catch { }
                             skipApparelType = true;

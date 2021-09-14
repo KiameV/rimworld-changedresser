@@ -99,7 +99,7 @@ namespace ChangeDresser
             catch (Exception e)
             {
                 Messages.Message("ChangeDresser.ProblemSavingPreset".Translate() + " " + type + ".", MessageTypeDefOf.SilentInput);
-                Log.Error(e.GetType() + " " + e.Message);
+                Log.Error("[Change Dresser] " + e.GetType() + " " + e.Message);
             }
         }
 
@@ -139,7 +139,7 @@ namespace ChangeDresser
             }
             catch (Exception ex)
             {
-                Log.Error("ChangeDresser: Failed to get folder name - " + ex);
+                Log.Error("[Change Dresser] Failed to get folder name - " + ex);
                 path = null;
                 return false;
             }

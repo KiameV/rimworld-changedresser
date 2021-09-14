@@ -123,7 +123,7 @@ namespace ChangeDresser
         {
             if (dresser == null || dresser.Map == null)
             {
-                Log.Error("Cannot add ChangeDresser that is either null or has a null map.");
+                Log.Error("[Change Dresser] Cannot add ChangeDresser that is either null or has a null map.");
                 return;
             }
 

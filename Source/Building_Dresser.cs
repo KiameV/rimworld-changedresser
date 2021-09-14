@@ -80,7 +80,7 @@ namespace ChangeDresser
                         {
                             if (!BuildingUtil.DropThing(a, this, this.CurrentMap, false))
                             {
-                                Log.Error("failed to store and then drop " + a.Label);
+                                Log.Error("[Change Dresser] failed to store and then drop " + a.Label);
                             }
                         }
                     }
@@ -168,7 +168,7 @@ namespace ChangeDresser
             catch (Exception e)
             {
                 Log.Error(
-                    "ChangeDresser:Building_Dresser.Destroy\n" +
+                    "[Change Dresser] Building_Dresser.Destroy\n" +
                     e.GetType().Name + " " + e.Message + "\n" +
                     e.StackTrace);
             }
@@ -184,7 +184,7 @@ namespace ChangeDresser
             catch (Exception e)
             {
                 Log.Error(
-                    "ChangeDresser:Building_Dresser.DeSpawn\n" +
+                    "[Change Dresser] Building_Dresser.DeSpawn\n" +
                     e.GetType().Name + " " + e.Message + "\n" +
                     e.StackTrace);
             }
@@ -199,7 +199,7 @@ namespace ChangeDresser
             catch (Exception e)
             {
                 Log.Error(
-                    "ChangeDresser:Building_Dresser.Dispose\n" +
+                    "[Change Dresser] Building_Dresser.Dispose\n" +
                     e.GetType().Name + " " + e.Message + "\n" +
                     e.StackTrace);
             }
@@ -236,7 +236,7 @@ namespace ChangeDresser
             catch (Exception e)
             {
                 Log.Error(
-                    "ChangeDresser:Building_Dresser.DropApparel\n" +
+                    "[Change Dresser] Building_Dresser.DropApparel\n" +
                     e.GetType().Name + " " + e.Message + "\n" +
                     e.StackTrace);
             }
@@ -531,7 +531,7 @@ namespace ChangeDresser
             catch (Exception e)
             {
                 Log.Error(
-                    "ChangeDresser:Building_Dresser.Remove\n" +
+                    "[Change Dresser] Building_Dresser.Remove\n" +
                     e.GetType().Name + " " + e.Message + "\n" +
                     e.StackTrace);
             }
