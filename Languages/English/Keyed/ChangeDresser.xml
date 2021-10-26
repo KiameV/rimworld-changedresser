@@ -131,6 +131,7 @@
 	<Shell>Shell</Shell>
 	<Belt>Belt</Belt>
 	<Overhead>Overhead</Overhead>
+	<EyeCover>Eye Cover</EyeCover>
 
 	<ChangeDresser.All>All</ChangeDresser.All>
 	<ChangeDresser.Name>Name</ChangeDresser.Name>
