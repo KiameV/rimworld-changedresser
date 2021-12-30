@@ -25,12 +25,14 @@ namespace ChangeDresser.UI.Util
         public static Texture2D copyIconTexture;
         public static Texture2D pasteIconTexture;
         public static Texture2D dropTexture;
+        public static Texture2D upTexture;
         public static Texture2D colorFinder;
         public static Texture2D noneTexture;
         public static Texture2D yesSellTexture;
         public static Texture2D noSellTexture;
         public static Texture2D yesDressFromTexture;
         public static Texture2D noDressFromTexture;
+        public static Texture2D orderTexture;
 
         public static Texture2D manageapparelTexture;
         public static Texture2D assignweaponsTexture;
@@ -47,11 +49,13 @@ namespace ChangeDresser.UI.Util
             copyIconTexture = ContentFinder<Texture2D>.Get("UI/copy", true);
             pasteIconTexture = ContentFinder<Texture2D>.Get("UI/paste", true);
             dropTexture = ContentFinder<Texture2D>.Get("UI/drop", true);
+            upTexture = ContentFinder<Texture2D>.Get("UI/up", true);
             noneTexture = ContentFinder<Texture2D>.Get("UI/none", true);
             yesSellTexture = ContentFinder<Texture2D>.Get("UI/yessell", true);
             noSellTexture = ContentFinder<Texture2D>.Get("UI/nosell", true);
             yesDressFromTexture = ContentFinder<Texture2D>.Get("UI/dressfrom", true);
             noDressFromTexture = ContentFinder<Texture2D>.Get("UI/nodressfrom", true);
+            orderTexture = ContentFinder<Texture2D>.Get("UI/order", true);
 
             manageapparelTexture = ContentFinder<Texture2D>.Get("UI/manageapparel", true);
             assignweaponsTexture = ContentFinder<Texture2D>.Get("UI/assignweapons", true);

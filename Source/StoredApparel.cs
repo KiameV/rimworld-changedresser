@@ -327,6 +327,17 @@ namespace ChangeDresser
             return false;
         }
 
+        public IEnumerable<Apparel> EmptyNoDrop()
+        {
+            foreach (LinkedList<Apparel> ll in this.StoredApparelLookup.Values)
+            {
+                foreach (var a in ll)
+                    yield return a;
+                ll.Clear();
+            }
+            this.StoredApparelLookup.Clear();
+        }
+
         public List<Apparel> RemoveFilteredApparel(StorageSettings settings)
         {
             //Log.Error("RemoveFilteredApparel(settings)");

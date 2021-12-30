@@ -668,7 +668,7 @@ namespace ChangeDresser
         static void Postfix(ref int __result, RecipeWorkerCounter __instance, Bill_Production bill)
         {
             List<ThingDefCountClass> products = __instance.recipe.products;
-            if (WorldComp.DressersToUse.Count > 0 && products != null)
+            if (WorldComp.DresserCount > 0 && products != null)
             {
                 foreach (ThingDefCountClass product in products)
                 {
