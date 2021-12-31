@@ -137,8 +137,8 @@
   <ChangeDresser.Name>名前</ChangeDresser.Name>
 
   <!-- Sort -->
-  <ChangeDresser.StorageOrder>収納順</ChangeDresser.StorageOrder>
-  <ChangeDresser.DressFromOrder>衣装順</ChangeDresser.DressFromOrder>
+  <ChangeDresser.StorageOrder>衣服の保管順</ChangeDresser.StorageOrder>
+  <ChangeDresser.DressFromOrder>着替えの優先順</ChangeDresser.DressFromOrder>
   <ChangeDresser.StorageOrderDesc>入植者が衣服を保管して着るドレッサーの優先順位を変更します.</ChangeDresser.StorageOrderDesc>
   <ChangeDresser.SortApparel>衣服ソート</ChangeDresser.SortApparel>
   <ChangeDresser.SaveFirst>問題が発生して衣服が消失する可能性があるため,最初にセーブしてください.続けますか？</ChangeDresser.SaveFirst>
