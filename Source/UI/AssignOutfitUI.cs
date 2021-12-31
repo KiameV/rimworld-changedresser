@@ -184,7 +184,7 @@ namespace ChangeDresser.UI
             }
             catch(Exception e)
             {
-                Log.Error(e.GetType() + Environment.NewLine + e.Message + Environment.NewLine + e.StackTrace);
+                Log.Error("[Change Dresser] " + e.GetType() + Environment.NewLine + e.Message + Environment.NewLine + e.StackTrace);
             }
         }
 

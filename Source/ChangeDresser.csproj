@@ -84,6 +84,7 @@
     <Compile Include="Building_Dresser.cs" />
     <Compile Include="Building_RepairChangeDresser.cs" />
     <Compile Include="Dialog_Rename.cs" />
+    <Compile Include="Dialog_Reorder.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeApparelColor.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeApparelColorByLayer.cs" />
     <Compile Include="DresserJobDriver\JobDriver_ChangeBodyAlienColor.cs" />

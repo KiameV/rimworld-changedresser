@@ -131,7 +131,15 @@
 	<Shell>Shell</Shell>
 	<Belt>Belt</Belt>
 	<Overhead>Overhead</Overhead>
+	<EyeCover>Eye Cover</EyeCover>
 
 	<ChangeDresser.All>All</ChangeDresser.All>
 	<ChangeDresser.Name>Name</ChangeDresser.Name>
+	
+	<!-- Sort -->
+	<ChangeDresser.StorageOrder>Storage Order</ChangeDresser.StorageOrder>
+	<ChangeDresser.DressFromOrder>Dress From Order</ChangeDresser.DressFromOrder>
+	<ChangeDresser.StorageOrderDesc>Change the dresser priority order from which colonists will store and dress apparel.</ChangeDresser.StorageOrderDesc>
+	<ChangeDresser.SortApparel>Sort Apparel</ChangeDresser.SortApparel>
+	<ChangeDresser.SaveFirst>Please save first incase there's an issue and apparel is lost. Contiue?</ChangeDresser.SaveFirst>
 </LanguageData>

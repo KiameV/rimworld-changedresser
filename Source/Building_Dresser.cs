@@ -80,7 +80,7 @@ namespace ChangeDresser
                         {
                             if (!BuildingUtil.DropThing(a, this, this.CurrentMap, false))
                             {
-                                Log.Error("failed to store and then drop " + a.Label);
+                                Log.Error("[Change Dresser] failed to store and then drop " + a.Label);
                             }
                         }
                     }
@@ -168,7 +168,7 @@ namespace ChangeDresser
             catch (Exception e)
             {
                 Log.Error(
-                    "ChangeDresser:Building_Dresser.Destroy\n" +
+                    "[Change Dresser] Building_Dresser.Destroy\n" +
                     e.GetType().Name + " " + e.Message + "\n" +
                     e.StackTrace);
             }
@@ -184,7 +184,7 @@ namespace ChangeDresser
             catch (Exception e)
             {
                 Log.Error(
-                    "ChangeDresser:Building_Dresser.DeSpawn\n" +
+                    "[Change Dresser] Building_Dresser.DeSpawn\n" +
                     e.GetType().Name + " " + e.Message + "\n" +
                     e.StackTrace);
             }
@@ -199,7 +199,7 @@ namespace ChangeDresser
             catch (Exception e)
             {
                 Log.Error(
-                    "ChangeDresser:Building_Dresser.Dispose\n" +
+                    "[Change Dresser] Building_Dresser.Dispose\n" +
                     e.GetType().Name + " " + e.Message + "\n" +
                     e.StackTrace);
             }
@@ -236,7 +236,7 @@ namespace ChangeDresser
             catch (Exception e)
             {
                 Log.Error(
-                    "ChangeDresser:Building_Dresser.DropApparel\n" +
+                    "[Change Dresser] Building_Dresser.DropApparel\n" +
                     e.GetType().Name + " " + e.Message + "\n" +
                     e.StackTrace);
             }
@@ -269,7 +269,12 @@ namespace ChangeDresser
             }
         }
 
-		internal void ReclaimApparel(bool force = false)
+        public IEnumerable<Apparel> EmptyNoDrop()
+        {
+            return this.StoredApparel.EmptyNoDrop();
+        }
+
+        internal void ReclaimApparel(bool force = false)
         {
 			if (base.Map == null)
 				return;
@@ -531,7 +536,7 @@ namespace ChangeDresser
             catch (Exception e)
             {
                 Log.Error(
-                    "ChangeDresser:Building_Dresser.Remove\n" +
+                    "[Change Dresser] Building_Dresser.Remove\n" +
                     e.GetType().Name + " " + e.Message + "\n" +
                     e.StackTrace);
             }
@@ -717,7 +722,7 @@ namespace ChangeDresser
                 },
             });
 
-            Command_Action a = new Command_Action();
+            Command_Action a = new();
             a.icon = WidgetUtil.manageapparelTexture;
             a.defaultDesc = "ChangeDresser.ManageApparelDesc".Translate();
             a.defaultLabel = "ChangeDresser.ManageApparel".Translate();
@@ -727,7 +732,7 @@ namespace ChangeDresser
             ++groupKey;
             l.Add(a);
 
-            a = new Command_Action();
+            a = new();
             a.icon = WidgetUtil.assignweaponsTexture;
             a.defaultDesc = "ChangeDresser.AssignOutfitsDesc".Translate();
             a.defaultLabel = "ChangeDresser.AssignOutfits".Translate();
@@ -737,7 +742,7 @@ namespace ChangeDresser
             ++groupKey;
             l.Add(a);
 
-            a = new Command_Action();
+            a = new();
             a.icon = WidgetUtil.customapparelTexture;
             a.defaultDesc = "ChangeDresser.CustomOutfitsDesc".Translate();
             a.defaultLabel = "ChangeDresser.CustomOutfits".Translate();
@@ -747,35 +752,27 @@ namespace ChangeDresser
             ++groupKey;
             l.Add(a);
 
-            a = new Command_Action();
+            a = new();
             a.icon = WidgetUtil.emptyTexture;
             a.defaultDesc = "ChangeDresser.EmptyDesc".Translate();
             a.defaultLabel = "ChangeDresser.Empty".Translate();
             a.activateSound = SoundDef.Named("Click");
-            a.action =
-                delegate
-                {
-                    this.Empty<Apparel>();
-                };
+            a.action = () => this.Empty<Apparel>();
             a.groupKey = groupKey;
             ++groupKey;
             l.Add(a);
 
-            a = new Command_Action();
+            a = new();
             a.icon = WidgetUtil.collectTexture;
             a.defaultDesc = "ChangeDresser.CollectDesc".Translate();
             a.defaultLabel = "ChangeDresser.Collect".Translate();
             a.activateSound = SoundDef.Named("Click");
-            a.action =
-                delegate
-                {
-                    this.ReclaimApparel();
-                };
+            a.action = () => this.ReclaimApparel();
             a.groupKey = groupKey;
             ++groupKey;
             l.Add(a);
 
-            a = new Command_Action();
+            a = new();
             if (this.includeInTradeDeals)
             {
                 a.icon = WidgetUtil.yesSellTexture;
@@ -787,16 +784,12 @@ namespace ChangeDresser
             a.defaultDesc = "ChangeDresser.IncludeInTradeDealsDesc".Translate();
             a.defaultLabel = "ChangeDresser.IncludeInTradeDeals".Translate();
             a.activateSound = SoundDef.Named("Click");
-            a.action =
-                delegate
-                {
-                    this.includeInTradeDeals = !this.includeInTradeDeals;
-                };
+            a.action = () => this.includeInTradeDeals = !this.includeInTradeDeals;
             a.groupKey = groupKey;
             ++groupKey;
             l.Add(a);
 
-            a = new Command_Action();
+            a = new();
             if (this.UseDresserToDressFrom)
             {
                 a.icon = WidgetUtil.yesDressFromTexture;
@@ -808,11 +801,17 @@ namespace ChangeDresser
             a.defaultDesc = "ChangeDresser.UseDresserToDressFromDesc".Translate();
             a.defaultLabel = "ChangeDresser.UseDresserToDressFrom".Translate();
             a.activateSound = SoundDef.Named("Click");
-            a.action =
-                delegate
-                {
-                    this.UseDresserToDressFrom = !this.UseDresserToDressFrom;
-                };
+            a.action = () => this.UseDresserToDressFrom = !this.UseDresserToDressFrom;
+            a.groupKey = groupKey;
+            ++groupKey;
+            l.Add(a);
+
+            a = new();
+            a.icon = WidgetUtil.orderTexture;
+            a.defaultDesc = "ChangeDresser.StorageOrderDesc".Translate();
+            a.defaultLabel = "ChangeDresser.StorageOrder".Translate();
+            a.activateSound = SoundDef.Named("Click");
+            a.action = () => Find.WindowStack.Add(new Dialog_Reorder());
             a.groupKey = groupKey;
             ++groupKey;
             l.Add(a);
