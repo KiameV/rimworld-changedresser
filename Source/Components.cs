@@ -66,7 +66,7 @@ namespace ChangeDresser
         {
             var d = new Dialog_MessageBox(
                 "ChangeDresser.SaveFirst".Translate(), 
-                "yes".Translate(), ()=>
+                "Yes".Translate(), ()=>
                 {
                     List<Apparel> dropped = new();
                     foreach (var d in DressersToUse)
@@ -81,7 +81,7 @@ namespace ChangeDresser
 
                     Messages.Message("Done re-sorting apparel", MessageTypeDefOf.PositiveEvent);
                 },
-                "no".Translate());
+                "No".Translate());
             Find.WindowStack.Add(d);
         }
 
